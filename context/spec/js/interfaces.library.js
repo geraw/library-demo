@@ -1,0 +1,1118 @@
+//@provengo summon rest
+//////////////////////////////////////////////////////////////////////////
+// Interface layer for the library REST service.
+//
+// This file is the only layer that should know the concrete transport shape:
+// REST URLs, HTTP verbs, request/response-code conventions, and JSON payloads.
+// It exposes three kinds of API to the rest of the model:
+//
+// 1. Action functions such as createBook/deleteLoan that send REST requests.
+// 2. EventSets such as AnyBookAdded and matchDeleteUser that classify events.
+// 3. extractEventData(), which converts a concrete event into semantic fields.
+//
+// Stories use action functions and EventSets to describe behavior. The DAL uses
+// EventSets plus extractEventData() to update the Context model without parsing
+// URLs, bodies, or transport parameters itself.
+//////////////////////////////////////////////////////////////////////////
+
+// TODO: Change the SUT and the open=api file so that the id's are generated not required as inputs.
+
+var host = (typeof host !== 'undefined') ? host : 'localhost';
+var port = (typeof port !== 'undefined') ? port : 23242;
+var protocol = (typeof protocol !== 'undefined') ? protocol : 'http';
+var path = '';
+
+const svc = new RESTSession(protocol + "://" + host + ":" + port + path, "provengo-client", { headers: { "Content-Type": "application/json", "api_key": "special-key" } });
+
+// Sends one of several request variants (each with its own body/expectedResponseCodes/parameters)
+// by offering them all to bp.sync at once, so the event selection mechanism (not this code) picks
+// which single variant is actually sent - letting fuzzing/exploration choose the request shape
+// instead of a scripted for-loop that sends every case every time.
+function requestOneOf(method, url, variants, onSelected) {
+  if (!variants || variants.length === 0) pvg.fail("requestOneOf requires at least one variant");
+  var events = variants.map(function (v, i) {
+    var eventName = v.name || v.description || (method.toUpperCase() + " " + (v.url || url) + " (variant " + i + ")");
+    return bp.Event(eventName, { variant: v });
+  });
+  var selectedEvent = bp.sync({ request: events });
+  var chosen = selectedEvent.data.variant;
+  if (onSelected) onSelected(chosen);
+  var requestUrl = chosen.url || url;
+  var requestOptions = {
+    expectedResponseCodes: chosen.expectedResponseCodes,
+    parameters: chosen.parameters || { description: chosen.description || selectedEvent.name }
+  };
+  if (chosen.body !== undefined) requestOptions.body = JSON.stringify(chosen.body);
+  return svc[method](requestUrl, requestOptions);
+}
+
+svc.postOneOf = function (url, variants, onSelected) { return requestOneOf("post", url, variants, onSelected); };
+svc.getOneOf = function (url, variants, onSelected) { return requestOneOf("get", url, variants, onSelected); };
+svc.deleteOneOf = function (url, variants, onSelected) { return requestOneOf("delete", url, variants, onSelected); };
+svc.putOneOf = function (url, variants, onSelected) { return requestOneOf("put", url, variants, onSelected); };
+
+const pvg = { fail: function (msg) { bp.log.error(msg); throw new Error(msg); } };
+
+function asInteger(value) { return Number.parseInt(value, 10); }
+
+function asString(value) { return String(value); }
+
+function entityDescription(entityName, id) {
+  return entityName + " " + id;
+}
+
+function relationDescription(entityName, id, details) {
+  return entityDescription(entityName, id) + (details ? " " + details : "");
+}
+
+function createDescription(entityName, id) {
+  return "Create: " + entityDescription(entityName, id);
+}
+
+function deleteDescription(entityName, id, details) {
+  return "Delete: " + relationDescription(entityName, id, details);
+}
+
+function verifyExistsDescription(entityName, id, listName) {
+  return "Verify: " + entityDescription(entityName, id) + " exists in " + listName + " list";
+}
+
+function verifyAbsentDescription(entityName, id, listName) {
+  return "Verify: " + entityDescription(entityName, id) + " is absent from " + listName + " list";
+}
+
+function verifyRejectedDescription(entityName, id, action, reason) {
+  return "Verify: " + action + " " + entityDescription(entityName, id) + " is rejected" + (reason ? " because " + reason : "");
+}
+
+function extractId(e) {
+  var body = getJsonBody(e);
+  if (body && body.id !== undefined && body.id !== null) return asInteger(body.id);
+  if (body && body.userId !== undefined && body.userId !== null) return asInteger(body.userId);
+
+  if (e && e.data && e.data.parameters) {
+    if (e.data.parameters.id !== undefined && e.data.parameters.id !== null) return asInteger(e.data.parameters.id);
+    if (e.data.parameters.userId !== undefined && e.data.parameters.userId !== null) return asInteger(e.data.parameters.userId);
+  }
+
+  var pathValue = getRequestPath(e);
+  if (pathValue) {
+    var segments = pathValue.split("/").filter(function (s) { return s.length > 0; });
+    if (segments.length >= 3 && segments[0] === "loans") return asInteger(segments[1]);
+    if (segments.length >= 2) return asInteger(segments[segments.length - 1]);
+  }
+
+  pvg.fail("Could not extract ID from event fields");
+}
+
+function getExpectedResponseCodes(e) {
+  var data = e && e.data ? e.data : e;
+  if (!data) return [];
+  if (Array.isArray(data.expectedResponseCodes)) return data.expectedResponseCodes;
+  if (data.options && Array.isArray(data.options.expectedResponseCodes)) return data.options.expectedResponseCodes;
+  if (data.parameters && Array.isArray(data.parameters.expectedResponseCodes)) return data.parameters.expectedResponseCodes;
+  return [];
+}
+
+function hasExpectedCode(e, code) {
+  return getExpectedResponseCodes(e).indexOf(code) !== -1;
+}
+
+function getRequestPath(e) {
+  var data = e && e.data ? e.data : e;
+  if (!data) return "";
+  var p = data.path || data.url || data.endpoint || "";
+  if (!p) return "";
+  p = String(p).replace(/^https?:\/\/[^\/]+/, "");
+  var qIdx = p.indexOf("?");
+  return qIdx === -1 ? p : p.substring(0, qIdx);
+}
+
+function getJsonBody(e) {
+  var data = e && e.data ? e.data : e;
+  if (!data || data.body === undefined || data.body === null) return null;
+  if (typeof data.body === "object") return data.body;
+  if (typeof data.body === "string") {
+    try { return JSON.parse(data.body); } catch (err) { return null; }
+  }
+  return null;
+}
+
+// Boundary adapter from concrete REST events to semantic event data.
+// Consumers can depend on fields like id, userId, bookId, title, and
+// loanNumber without knowing whether the values came from a JSON body,
+// REST path, query parameter, or request metadata.
+function extractEventData(e) {
+  var body = getJsonBody(e) || {};
+  var data = e && e.data ? e.data : e;
+  var parameters = data && data.parameters ? data.parameters : {};
+  
+  var id = body.id !== undefined && body.id !== null ? body.id : parameters.id;
+  var userId = body.userId !== undefined && body.userId !== null ? body.userId : parameters.userId;
+  var bookId = body.bookId !== undefined && body.bookId !== null ? body.bookId : parameters.bookId;
+
+  // Try extracting from path if they are not in body/parameters
+  var pathValue = data.path || data.url || "";
+  if (pathValue) {
+    pathValue = String(pathValue).replace(/^https?:\/\/[^\/]+/, "");
+    var segments = pathValue.split("/").filter(function (s) { return s.length > 0; });
+    if (segments.length >= 2) {
+      var lastSegment = segments[segments.length - 1];
+      var lastSegmentInt = Number.parseInt(lastSegment, 10);
+      if (!isNaN(lastSegmentInt)) {
+        if (segments[0] === "users") {
+          if (id === undefined || id === null) id = lastSegmentInt;
+        } else if (segments[0] === "books") {
+          if (id === undefined || id === null) id = lastSegmentInt;
+        } else if (segments[0] === "holds") {
+          if (id === undefined || id === null) id = lastSegmentInt;
+        } else if (segments[0] === "loans") {
+          if (segments.length >= 3) {
+            var userSeg = Number.parseInt(segments[1], 10);
+            var bookSeg = Number.parseInt(segments[2], 10);
+            if (!isNaN(userSeg) && (userId === undefined || userId === null)) userId = userSeg;
+            if (!isNaN(bookSeg) && (bookId === undefined || bookId === null)) bookId = bookSeg;
+          }
+        }
+      }
+    }
+  }
+
+  return {
+    id: id,
+    title: body.title !== undefined && body.title !== null ? body.title : body.name,
+    name: body.name,
+    userId: userId,
+    bookId: bookId,
+    loanNumber: parameters.loanNumber
+  };
+}
+
+function isValidRequestEvent(e, actionName) {
+  return e && e.data && e.data.action === actionName && e.data.type === "valid";
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// Broad event classifiers.
+//
+// These EventSets describe meaningful domain events in interface terms:
+// "a book was successfully added", "a loan was successfully deleted", etc.
+// Their predicates may inspect REST details, but callers should treat the
+// EventSet names as the public contract.
+//////////////////////////////////////////////////////////////////////////
+
+var AnyBookAdded = bp.EventSet("Any Books Added", function (e) {
+  var body = getJsonBody(e);
+  return e.name === "POST" && getRequestPath(e) === "/books" && hasExpectedCode(e, 201) && body && body.id !== undefined;
+});
+
+var AnyUserAdded = bp.EventSet("Any Users Added", function (e) {
+  var body = getJsonBody(e);
+  return e.name === "POST" && getRequestPath(e) === "/users" && hasExpectedCode(e, 201) && body && body.id !== undefined && body.name !== undefined;
+});
+
+var AnyLoanAdded = bp.EventSet("Any Loans Added", function (e) {
+  var body = getJsonBody(e);
+  return e.name === "POST" && getRequestPath(e) === "/loans" && hasExpectedCode(e, 201) && body && body.userId !== undefined && body.bookId !== undefined;
+});
+
+var AnyHoldAdded = bp.EventSet("Any Holds Added", function (e) {
+  var body = getJsonBody(e);
+  return e.name === "POST" && getRequestPath(e) === "/holds" && hasExpectedCode(e, 201) && body && body.id !== undefined;
+});
+
+var AnyBookDeleted = bp.EventSet("Any Books Deleted", function (e) {
+  return e.name === "DELETE" && getRequestPath(e).startsWith("/books/") && hasExpectedCode(e, 200);
+});
+
+var AnyUserDeleted = bp.EventSet("Any Users Deleted", function (e) {
+  return e.name === "DELETE" && getRequestPath(e).startsWith("/users/") && hasExpectedCode(e, 200);
+});
+
+var AnyLoanDeleted = bp.EventSet("Any Loans Deleted", function (e) {
+  return e.name === "DELETE" && getRequestPath(e).startsWith("/loans/") && hasExpectedCode(e, 200);
+});
+
+var AnyHoldDeleted = bp.EventSet("Any Holds Deleted", function (e) {
+  return e.name === "DELETE" && getRequestPath(e).startsWith("/holds/") && hasExpectedCode(e, 200);
+});
+
+
+//////////////////////////////////////////////////////////////////////////
+// SUT list readers and verification helpers.
+//
+// Verification functions read the real SUT state and assert that it matches
+// the scenario expectation. They are intentionally kept in the interface
+// layer because they are REST-facing checks, not Context model updates.
+//////////////////////////////////////////////////////////////////////////
+
+function readSutList(listName, url, parameters) {
+  try {
+    var requestParameters = parameters || {};
+    if (requestParameters.description === undefined || requestParameters.description === null) {
+      requestParameters.description = "Verify: read " + listName + " list";
+    }
+    var response = svc.get(url, { parameters: requestParameters, expectedResponseCodes: [200] });
+    if (response === undefined || response === null) return null;
+    if (response.lib === "REST" || response.method !== undefined) return null;
+    if (response.data && (response.data.lib === "REST" || response.data.method !== undefined)) return null;
+    var listData = (typeof response === "string") ? JSON.parse(response) : response;
+    if (!Array.isArray(listData) && listData && typeof listData.body === "string") listData = JSON.parse(listData.body);
+    if (!Array.isArray(listData) && listData && Array.isArray(listData.data)) listData = listData.data;
+    if (!Array.isArray(listData) && listData && Array.isArray(listData.items)) listData = listData.items;
+    if (!Array.isArray(listData) && listData && Array.isArray(listData.results)) listData = listData.results;
+    if (Array.isArray(listData)) return listData;
+    pvg.fail("Could not inspect " + listName + " response as a SUT list");
+  } catch (err) {
+    if (String(err).indexOf("EndOfContextException") !== -1) return null;
+    pvg.fail("Failed to read " + listName + " from the SUT: " + err);
+  }
+}
+
+function verifySutListContains(listName, url, parameters, predicate, failureMessage) {
+  // Verification is executed against the SUT by fetching only the requested SUT list slice before inspecting it.
+  var listData = readSutList(listName, url, parameters);
+  if (listData === null) return;
+  var found = listData.find(predicate);
+  if (!found) pvg.fail(failureMessage);
+}
+
+function verifySutListDoesNotContain(listName, url, parameters, predicate, failureMessage) {
+  // Verification is executed against the SUT by fetching only the requested SUT list slice before inspecting it.
+  var listData = readSutList(listName, url, parameters);
+  if (listData === null) return;
+  var found = listData.find(predicate);
+  if (found) pvg.fail(failureMessage + ": " + JSON.stringify(found));
+}
+
+function tryToUpdateAndExpectError(entityName, id, url, body, expectedCode) {
+  expectedCode = expectedCode === undefined || expectedCode === null ? 405 : asInteger(expectedCode);
+  var description = verifyRejectedDescription(entityName, id, "update", "this API does not expose update routes");
+  svc.put(url, { body: JSON.stringify(body || {}), expectedResponseCodes: [expectedCode], parameters: { description: description } });
+}
+
+// Malformed-delete and malformed-read rejection cases are covered by the dynamic valid/invalid
+// loops inside deleteBook/deleteUser/deleteLoan/deleteHold and verifyBookDetailExists, so this
+// file has no separate verifyMalformedDeleteIsRejected/verifyMalformedReadIsRejected helpers.
+
+function verifyMissingEntityReadIsRejected(entityName, id, url) {
+  var description = verifyRejectedDescription(entityName, id, "read", "the entity does not exist");
+  svc.get(url, { expectedResponseCodes: [404], parameters: { description: description } });
+}
+
+// The /books, /users, and /holds search endpoints accept any `q` value and always answer 200 (no
+// format validation), so verifyBookExists/verifyUserExists/verifyHoldExists below have no
+// rejectable invalid variant to fuzz - they read the SUT list directly. /loans search does
+// validate userId/bookId, so verifyLoanExists uses the same dynamic valid/invalid loop as the
+// create/delete actions (verifyListQueryFuzzIsAccepted/verifyLoanQueryFuzzIsRejected below).
+
+
+//////////////////////////////////////////////////////////////////////////
+// Interface action functions.
+//
+// These functions are the only place stories should actuate the SUT. They
+// normalize argument types, build URLs/bodies, and attach semantic parameters
+// that extractEventData() can later expose to other layers.
+//////////////////////////////////////////////////////////////////////////
+
+function createBook(id, title) {
+  id = asInteger(id);
+  title = asString(title);
+
+  var reqDescription = createDescription("Book", id);
+  var variants = [
+    { name: "createBook (valid-standard): " + id, body: { id: id, title: title }, expectedResponseCodes: [201], parameters: { description: reqDescription } },
+    { name: "createBook (valid-spaced-title): " + id, body: { id: id, title: " " + title }, expectedResponseCodes: [201], parameters: { description: reqDescription } },
+    { name: "createBook (valid-string-id): " + id, body: { id: String(id), title: title }, expectedResponseCodes: [201], parameters: { description: reqDescription } },
+    { name: "createBook (valid-swapped-order): " + id, body: { title: title, id: id }, expectedResponseCodes: [201], parameters: { description: reqDescription } }
+  ];
+
+  var invalidCases = [
+    { label: "missing title", body: { "id": id } },
+    { label: "missing id", body: { "title": title } },
+    { label: "missing all required fields", body: {} },
+    { label: "id has wrong type", body: { "id": "bad-book-id", "title": title } },
+    { label: "title has wrong type", body: { "id": id, "title": 12345 } },
+    { label: "multiple wrong types", body: { "id": true, "title": false } },
+    { label: "id is null", body: { "id": null, "title": title } },
+    { label: "title is null", body: { "id": id, "title": null } },
+    { label: "id is zero", body: { "id": 0, "title": title } },
+    { label: "id is negative", body: { "id": -id, "title": title } },
+    { label: "title is empty", body: { "id": id, "title": "" } },
+    { label: "id is object", body: { "id": { "val": id }, "title": title } }
+  ];
+
+  variants = variants.concat(invalidCases.map(function(c) {
+    var description = "createBook (invalid - " + c.label + "): " + id;
+    return { name: description, body: c.body, expectedResponseCodes: [400], parameters: { description: description } };
+  }));
+
+  while (true) {
+    var selectedIsValid = false;
+    var response = svc.postOneOf("/books", variants, function(chosen) {
+      selectedIsValid = chosen.expectedResponseCodes.indexOf(201) !== -1;
+    });
+    if (selectedIsValid) return response;
+  }
+}
+
+function tryToCreateBookWithSameIdAndExpectError(id, expectedCode) {
+  id = asInteger(id);
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  var url = "/books";
+  var reqDescription = verifyRejectedDescription("Book", id, "create", "the id already exists");
+  var body = {
+    "id": id,
+    "title": "Duplicate book " + id
+  };
+  let response = svc.post(url, { body: JSON.stringify(body), expectedResponseCodes: [expectedCode], parameters: { description: reqDescription } });
+  return response;
+}
+
+function tryToCreateBookWithBadParametersAndExpectError(id, expectedCode) {
+  id = asInteger(id);
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  var url = "/books";
+  var reqDescription = verifyRejectedDescription("Book", id, "create", "required parameters are missing or invalid");
+  var cases = [
+    { name: "missing title", body: { "id": id } },
+    { name: "missing id", body: { "title": "Book title " + id } },
+    { name: "missing all required fields", body: {} },
+    { name: "id has wrong type", body: { "id": "bad-book-id", "title": "Book title " + id } },
+    { name: "title has wrong type", body: { "id": id, "title": 12345 } },
+    { name: "multiple wrong types", body: { "id": true, "title": false } },
+    { name: "id and title have swapped types", body: { "title": id, "id": "Book title " + id } },
+    { name: "id is null", body: { "id": null, "title": "Book title " + id } },
+    { name: "title is null", body: { "id": id, "title": null } },
+    { name: "id is zero", body: { "id": 0, "title": "Book title " + id } },
+    { name: "id is negative", body: { "id": -id, "title": "Book title " + id } },
+    { name: "title is empty", body: { "id": id, "title": "" } },
+    { name: "unexpected field", body: { "id": id, "title": "Book title " + id, "unexpected": "value" } }
+  ];
+  var variants = cases.map(function (c) {
+    return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
+  });
+  svc.postOneOf(url, variants);
+}
+
+function deleteBook(id) {
+  id = asInteger(id);
+  var variants = [
+    { name: "deleteBook (valid): " + id, url: "/books/" + id, expectedResponseCodes: [200], parameters: { description: deleteDescription("Book", id), id: id }, valid: true },
+    { name: "deleteBook (invalid - bad-id): " + id, url: "/books/bad-id", expectedResponseCodes: [400] },
+    { name: "deleteBook (invalid - zero): " + id, url: "/books/0", expectedResponseCodes: [400] },
+    { name: "deleteBook (invalid - negative): " + id, url: "/books/-1", expectedResponseCodes: [400] }
+  ];
+  while (true) {
+    var valid = false;
+    var response = svc.deleteOneOf("/books/" + id, variants, function (chosen) { valid = chosen.valid === true; });
+    if (valid) return response;
+  }
+}
+
+// The book detail endpoint validates its id path parameter (malformed/zero/negative id -> 400)
+// before checking existence (valid-format-but-missing id -> 404), so it gets the same
+// dynamic valid/invalid fuzzing loop as the create/delete actions. See the Fuzzing
+// Interface Layer Contract at the bottom of lib_stories.js.
+function verifyBookDetailExists(id) {
+  id = asInteger(id);
+
+  var description = verifyExistsDescription("Book", id, "book detail");
+  var variants = [
+    { name: "readBookDetail (valid-standard): " + id, url: "/books/" + id, expectedResponseCodes: [200], parameters: { description: description, id: id }, valid: true },
+    { name: "readBookDetail (valid-padded-id): " + id, url: "/books/00" + id, expectedResponseCodes: [200], parameters: { description: description, id: id }, valid: true },
+    { name: "readBookDetail (invalid - bad-id): " + id, url: "/books/bad-id", expectedResponseCodes: [400] },
+    { name: "readBookDetail (invalid - zero): " + id, url: "/books/0", expectedResponseCodes: [400] },
+    { name: "readBookDetail (invalid - negative): " + id, url: "/books/-1", expectedResponseCodes: [400] }
+  ];
+  while (true) {
+    var valid = false;
+    var response = svc.getOneOf("/books/" + id, variants, function (chosen) { valid = chosen.valid === true; });
+    if (valid) {
+      if (response === undefined || response === null) return;
+      if (response.lib === "REST" || response.method !== undefined) return;
+      if (response.data && (response.data.lib === "REST" || response.data.method !== undefined)) return;
+      var bookData = (typeof response === "string") ? JSON.parse(response) : response;
+      if (bookData && typeof bookData.body === "string") bookData = JSON.parse(bookData.body);
+      if (!bookData || asInteger(bookData.id) !== id) pvg.fail("Book " + id + " detail response did not contain the requested id");
+      return;
+    }
+  }
+}
+
+// verifyBookReadFuzz and verifyBookDeleteFuzz (static per-field fuzz cases) were replaced by
+// the dynamic valid/invalid loop inside createBook/deleteBook/verifyBookDetailExists above.
+
+function tryToUpdateBookAndExpectError(id, body, expectedCode) {
+  id = asInteger(id);
+  expectedCode = expectedCode === undefined || expectedCode === null ? 405 : asInteger(expectedCode);
+  tryToUpdateAndExpectError("Book", id, "/books/" + id, body, expectedCode);
+}
+
+function verifyBookExists(id) {
+  // Verification is executed against the SUT dataset by reading the books list and searching for this book id.
+  id = asInteger(id);
+  verifySutListContains("books", "/books", { q: asString(id), description: verifyExistsDescription("Book", id, "books") }, function (item) {
+    return item && asInteger(item.id) === id;
+  }, "Book " + id + " was not found in the SUT books list");
+}
+
+function verifyBookAbsentFromAllLists(id) {
+  // Verification is executed against SUT datasets: books directly, and loans/holds indirectly by bookId.
+  id = asInteger(id);
+  verifySutListDoesNotContain("books", "/books", { q: asString(id), description: verifyAbsentDescription("Book", id, "books") }, function (item) {
+    return item && asInteger(item.id) === id;
+  }, "Book " + id + " still appears in books list");
+  verifySutListDoesNotContain("loans", "/loans", { bookId: asString(id), description: verifyAbsentDescription("Book", id, "loans") }, function (item) {
+    return item && asInteger(item.bookId) === id;
+  }, "Book " + id + " still appears in loans list");
+  verifySutListDoesNotContain("holds", "/holds", { q: asString(id), description: verifyAbsentDescription("Book", id, "holds") }, function (item) {
+    return item && asInteger(item.bookId) === id;
+  }, "Book " + id + " still appears in holds list");
+}
+
+function tryToDeleteBookAndExpectError(id, expectedCode) {
+  id = asInteger(id);
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  var url = "/books/" + id;
+  var description = verifyRejectedDescription("Book", id, "delete", "the operation is not allowed in this state");
+  svc.delete(url, { expectedResponseCodes: [expectedCode], parameters: { description: description } });
+}
+
+function tryToDeleteDeletedBookAndExpectError(id) {
+  tryToDeleteBookAndExpectError(id, 404);
+}
+
+function tryToDeleteNonexistingBookAndExpectError(id) {
+  tryToDeleteBookAndExpectError(id, 404);
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Specific event matchers.
+//
+// The broad Any* EventSets classify all successful operations of a type and
+// are useful for DAL effects. The match* helpers below are narrower EventSets
+// for stories: they wait for or block a specific object, duplicate attempt, or
+// cascading delete condition.
+//////////////////////////////////////////////////////////////////////////
+
+function matchAddBook(id) {
+  return bp.EventSet("Add Book " + id, function (e) {
+    var body = getJsonBody(e);
+    if (e.name === "POST" && getRequestPath(e) === "/books" && hasExpectedCode(e, 201) && body && asInteger(body.id) === asInteger(id)) return true;
+    return isValidRequestEvent(e, "createBook") && e.data.body && asInteger(e.data.body.id) === asInteger(id);
+  });
+}
+
+function matchDeleteBook(id) {
+  return bp.EventSet("Deleted Books " + id, function (e) {
+    if (e.name === "DELETE" && getRequestPath(e) === ("/books/" + asInteger(id)) && hasExpectedCode(e, 200)) return true;
+    return isValidRequestEvent(e, "deleteBook") && e.data.url === ("/books/" + asInteger(id));
+  });
+}
+
+function matchDeleteBookOrUser(bookId, userId) {
+  return bp.EventSet("Deleted Book/User " + bookId + "/" + userId, function (e) {
+    if (e.name === "DELETE" && hasExpectedCode(e, 200)) {
+      var path = getRequestPath(e);
+      if (path === ("/books/" + asInteger(bookId)) || path === ("/users/" + asInteger(userId))) return true;
+    }
+    if (isValidRequestEvent(e, "deleteBook") && e.data.url === ("/books/" + asInteger(bookId))) return true;
+    if (isValidRequestEvent(e, "deleteUser") && e.data.url === ("/users/" + asInteger(userId))) return true;
+    return false;
+  });
+}
+
+function matchDeleteHoldOrBookOrUser(holdId, bookId, userId) {
+  return bp.EventSet("Deleted Hold/Book/User " + holdId + "/" + userId + "/" + bookId, function (e) {
+    if (e.name === "DELETE" && hasExpectedCode(e, 200)) {
+      var path = getRequestPath(e);
+      if (path === ("/holds/" + asInteger(holdId)) || path === ("/books/" + asInteger(bookId)) || path === ("/users/" + asInteger(userId))) return true;
+    }
+    if (isValidRequestEvent(e, "deleteHold") && e.data.url === ("/holds/" + asInteger(holdId))) return true;
+    if (isValidRequestEvent(e, "deleteBook") && e.data.url === ("/books/" + asInteger(bookId))) return true;
+    if (isValidRequestEvent(e, "deleteUser") && e.data.url === ("/users/" + asInteger(userId))) return true;
+    return false;
+  });
+}
+
+function matchAddLoanForHeldResourceOrDeleteHoldOrBookOrUser(holdId, bookId, userId) {
+  return bp.EventSet("Added Loan for Held Resource or Deleted Hold/Book/User " + holdId + "/" + userId + "/" + bookId, function (e) {
+    if (e.name === "POST" && getRequestPath(e) === "/loans" && hasExpectedCode(e, 201)) {
+      var body = getJsonBody(e);
+      if (body && (asInteger(body.userId) === asInteger(userId) || asInteger(body.bookId) === asInteger(bookId))) return true;
+    }
+    if (isValidRequestEvent(e, "createLoan") && e.data.body) {
+      if (asInteger(e.data.body.userId) === asInteger(userId) || asInteger(e.data.body.bookId) === asInteger(bookId)) return true;
+    }
+    if (e.name === "DELETE" && hasExpectedCode(e, 200)) {
+      var path = getRequestPath(e);
+      if (path === ("/holds/" + asInteger(holdId)) || path === ("/books/" + asInteger(bookId)) || path === ("/users/" + asInteger(userId))) return true;
+    }
+    if (isValidRequestEvent(e, "deleteHold") && e.data.url === ("/holds/" + asInteger(holdId))) return true;
+    if (isValidRequestEvent(e, "deleteBook") && e.data.url === ("/books/" + asInteger(bookId))) return true;
+    if (isValidRequestEvent(e, "deleteUser") && e.data.url === ("/users/" + asInteger(userId))) return true;
+    return false;
+  });
+}
+
+function matchAnyBookDeleted() {
+  return AnyBookDeleted;
+}
+
+function deleteLoan(userId, bookId, loanNumber) {
+  userId = asInteger(userId);
+  bookId = asInteger(bookId);
+  loanNumber = loanNumber === undefined || loanNumber === null ? null : asInteger(loanNumber);
+
+  var invalidCases = [
+    { label: "bad-user-id", url: "/loans/bad-user-id/" + bookId },
+    { label: "bad-book-id", url: "/loans/" + userId + "/bad-book-id" },
+    { label: "zero userId", url: "/loans/0/" + bookId },
+    { label: "zero bookId", url: "/loans/" + userId + "/0" },
+    { label: "negative userId", url: "/loans/-1/" + bookId },
+    { label: "negative bookId", url: "/loans/" + userId + "/-1" }
+  ];
+
+  var reqDescription = deleteDescription("Loan", userId + "/" + bookId, loanNumber === null ? "" : "number " + loanNumber);
+  var parameters = { description: reqDescription, userId: userId, bookId: bookId };
+  if (loanNumber !== null) parameters.loanNumber = loanNumber;
+  var variants = [{ name: "deleteLoan (valid): " + userId + "/" + bookId, url: "/loans/" + userId + "/" + bookId, expectedResponseCodes: [200], parameters: parameters, valid: true }];
+  variants = variants.concat(invalidCases.map(function(c) {
+    return { name: "deleteLoan (invalid - " + c.label + "): " + userId + "/" + bookId, url: c.url, expectedResponseCodes: [400] };
+  }));
+
+  while (true) {
+    var valid = false;
+    var response = svc.deleteOneOf("/loans/" + userId + "/" + bookId, variants, function (chosen) { valid = chosen.valid === true; });
+    if (valid) return response;
+  }
+}
+
+// verifyLoanReadFuzz and verifyLoanDeleteFuzz (static per-field fuzz cases) were replaced by the
+// dynamic valid/invalid loop inside createLoan/deleteLoan/verifyLoanExists above.
+
+function tryToUpdateLoanAndExpectError(userId, bookId, body, expectedCode) {
+  userId = asInteger(userId);
+  bookId = asInteger(bookId);
+  expectedCode = expectedCode === undefined || expectedCode === null ? 405 : asInteger(expectedCode);
+  tryToUpdateAndExpectError("Loan", userId + "/" + bookId, "/loans/" + userId + "/" + bookId, body, expectedCode);
+}
+
+function createLoan(userId, bookId, loanNumber, expectedCode, description) {
+  userId = asInteger(userId);
+  bookId = asInteger(bookId);
+  if (expectedCode === undefined && (loanNumber === 201 || loanNumber === 400 || loanNumber === 404)) {
+    expectedCode = loanNumber;
+    loanNumber = null;
+  }
+  loanNumber = loanNumber === undefined || loanNumber === null ? null : asInteger(loanNumber);
+
+  var reqDescription = description || (createDescription("Loan", userId + "/" + bookId) + (loanNumber === null ? "" : " number " + loanNumber));
+  expectedCode = expectedCode === undefined || expectedCode === null ? 201 : asInteger(expectedCode);
+  var parameters = { description: reqDescription };
+  if (loanNumber !== null) parameters.loanNumber = loanNumber;
+  var variants = [
+    { name: "createLoan (valid-standard): " + userId + "/" + bookId, body: { userId: userId, bookId: bookId }, expectedResponseCodes: [expectedCode], parameters: parameters, valid: true },
+    { name: "createLoan (valid-string-userId): " + userId + "/" + bookId, body: { userId: String(userId), bookId: bookId }, expectedResponseCodes: [expectedCode], parameters: parameters, valid: true },
+    { name: "createLoan (valid-string-bookId): " + userId + "/" + bookId, body: { userId: userId, bookId: String(bookId) }, expectedResponseCodes: [expectedCode], parameters: parameters, valid: true },
+    { name: "createLoan (valid-swapped-order): " + userId + "/" + bookId, body: { bookId: bookId, userId: userId }, expectedResponseCodes: [expectedCode], parameters: parameters, valid: true }
+  ];
+
+  var invalidCases = [
+    { label: "missing bookId", body: { "userId": userId } },
+    { label: "missing userId", body: { "bookId": bookId } },
+    { label: "missing all required fields", body: {} },
+    { label: "userId has wrong type", body: { "userId": "bad-user-id", "bookId": bookId } },
+    { label: "bookId has wrong type", body: { "userId": userId, "bookId": "bad-book-id" } },
+    { label: "multiple wrong types", body: { "userId": true, "bookId": false } },
+    { label: "userId is null", body: { "userId": null, "bookId": bookId } },
+    { label: "bookId is null", body: { "userId": userId, "bookId": null } },
+    { label: "userId is zero", body: { "userId": 0, "bookId": bookId } },
+    { label: "bookId is zero", body: { "userId": userId, "bookId": 0 } },
+    { label: "userId is negative", body: { "userId": -userId, "bookId": bookId } },
+    { label: "bookId is negative", body: { "userId": userId, "bookId": -bookId } },
+    { label: "userId is object", body: { "userId": { "val": userId }, "bookId": bookId } },
+    { label: "bookId is object", body: { "userId": userId, "bookId": { "val": bookId } } }
+  ];
+
+  variants = variants.concat(invalidCases.map(function(c) {
+    return { name: "createLoan (invalid - " + c.label + "): " + userId + "/" + bookId, body: c.body, expectedResponseCodes: [400] };
+  }));
+
+  while (true) {
+    var valid = false;
+    var response = svc.postOneOf("/loans", variants, function (chosen) { valid = chosen.valid === true; });
+    if (valid) return response;
+  }
+}
+
+function tryToCreateLoanAndExpectError(userId, bookId, loanNumber, expectedCode) {
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  return createLoan(userId, bookId, loanNumber, expectedCode, verifyRejectedDescription("Loan", userId + "/" + bookId, "create", "the operation is not allowed in this state"));
+}
+
+function tryToCreateLoanWithBadParametersAndExpectError(userId, expectedCode) {
+  userId = asInteger(userId);
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  var url = "/loans";
+  var reqDescription = verifyRejectedDescription("Loan", userId, "create", "required parameters are missing or invalid");
+  var cases = [
+    { name: "missing bookId", body: { "userId": userId } },
+    { name: "missing userId", body: { "bookId": userId } },
+    { name: "missing all required fields", body: {} },
+    { name: "userId has wrong type", body: { "userId": "bad-user-id", "bookId": userId } },
+    { name: "bookId has wrong type", body: { "userId": userId, "bookId": "bad-book-id" } },
+    { name: "multiple wrong types", body: { "userId": true, "bookId": false } },
+    { name: "userId and bookId have swapped invalid values", body: { "bookId": userId, "userId": -userId } },
+    { name: "userId is null", body: { "userId": null, "bookId": userId } },
+    { name: "bookId is null", body: { "userId": userId, "bookId": null } },
+    { name: "userId is zero", body: { "userId": 0, "bookId": userId } },
+    { name: "bookId is zero", body: { "userId": userId, "bookId": 0 } },
+    { name: "userId is negative", body: { "userId": -userId, "bookId": userId } },
+    { name: "bookId is negative", body: { "userId": userId, "bookId": -userId } },
+    { name: "unexpected field", body: { "userId": userId, "bookId": userId, "unexpected": "value" } }
+  ];
+  var variants = cases.map(function (c) {
+    return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
+  });
+  svc.postOneOf(url, variants);
+}
+
+// The loans search endpoint validates userId/bookId (malformed/zero/negative -> 400) before
+// filtering, so it gets the same dynamic valid/invalid fuzzing loop as the create/delete actions.
+function verifyLoanExists(bookId, userId) {
+  bookId = asInteger(bookId);
+  userId = asInteger(userId);
+
+  var invalidCases = [
+    { label: "bad userId", parameters: { userId: "bad-user-id", bookId: asString(bookId) } },
+    { label: "bad bookId", parameters: { userId: asString(userId), bookId: "bad-book-id" } },
+    { label: "zero userId", parameters: { userId: "0", bookId: asString(bookId) } },
+    { label: "zero bookId", parameters: { userId: asString(userId), bookId: "0" } },
+    { label: "negative userId", parameters: { userId: "-1", bookId: asString(bookId) } },
+    { label: "negative bookId", parameters: { userId: asString(userId), bookId: "-1" } }
+  ];
+
+  var validParameters = { userId: asString(userId), bookId: asString(bookId), description: verifyExistsDescription("Loan", userId + "/" + bookId, "loans") };
+  var variants = [{ name: "readLoans (valid): " + userId + "/" + bookId, parameters: validParameters, expectedResponseCodes: [200], valid: true }];
+  variants = variants.concat(invalidCases.map(function (c) {
+    var eventName = "Req: readLoans (invalid - " + c.label + "): " + userId + "/" + bookId;
+    var parameters = { userId: c.parameters.userId, bookId: c.parameters.bookId, description: eventName };
+    return { name: eventName, parameters: parameters, expectedResponseCodes: [400] };
+  }));
+
+  while (true) {
+    var valid = false;
+    var response = svc.getOneOf("/loans", variants, function (chosen) { valid = chosen.valid === true; });
+    if (valid) {
+      if (response === undefined || response === null || response.lib === "REST" || response.method !== undefined) return;
+      if (response.data && (response.data.lib === "REST" || response.data.method !== undefined)) return;
+      var listData = typeof response === "string" ? JSON.parse(response) : response;
+      if (!Array.isArray(listData) && listData && typeof listData.body === "string") listData = JSON.parse(listData.body);
+      if (!Array.isArray(listData) && listData && Array.isArray(listData.data)) listData = listData.data;
+      if (!Array.isArray(listData) || !listData.some(function (item) { return item && asInteger(item.userId) === userId && asInteger(item.bookId) === bookId; })) {
+        pvg.fail("Loan " + userId + "/" + bookId + " was not found in the SUT loans list");
+      }
+      return;
+    }
+  }
+}
+
+function verifyLoanAbsentFromAllLists(bookId, userId) {
+  // Verification is executed against the SUT dataset by reading the loans list and confirming the loan is absent.
+  bookId = bookId === undefined || bookId === null ? null : asInteger(bookId);
+  userId = asInteger(userId);
+  var loanId = userId + (bookId === null ? "" : "/" + bookId);
+  var parameters = { userId: asString(userId), description: verifyAbsentDescription("Loan", loanId, "loans") };
+  if (bookId !== null) parameters.bookId = asString(bookId);
+  verifySutListDoesNotContain("loans", "/loans", parameters, function (item) {
+    if (!item || asInteger(item.userId) !== userId) return false;
+    return bookId === null || asInteger(item.bookId) === bookId;
+  }, "Loan " + userId + (bookId === null ? "" : "/" + bookId) + " still appears in loans list");
+}
+
+function tryToDeleteLoanAndExpectError(userId, bookId, expectedCode) {
+  userId = asInteger(userId);
+  bookId = asInteger(bookId);
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  var url = "/loans/" + userId + "/" + bookId;
+  var description = verifyRejectedDescription("Loan", userId + "/" + bookId, "delete", "the operation is not allowed in this state");
+  svc.delete(url, { expectedResponseCodes: [expectedCode], parameters: { description: description } });
+}
+
+function tryToDeleteDeletedLoanAndExpectError(userId, bookId) {
+  tryToDeleteLoanAndExpectError(userId, bookId, 404);
+}
+
+function tryToDeleteNonexistingLoanAndExpectError(userId, bookId) {
+  tryToDeleteLoanAndExpectError(userId, bookId, 404);
+}
+
+function matchAddLoan(userId) {
+  return bp.EventSet("Add Loan " + userId, function (e) {
+    var body = getJsonBody(e);
+    if (e.name === "POST" && getRequestPath(e) === "/loans" && hasExpectedCode(e, 201) && body && asInteger(body.userId) === asInteger(userId)) return true;
+    return isValidRequestEvent(e, "createLoan") && e.data.body && asInteger(e.data.body.userId) === asInteger(userId);
+  });
+}
+
+function matchDeleteLoan(userId) {
+  return bp.EventSet("Deleted Loans " + userId, function (e) {
+    if (e.name === "DELETE" && getRequestPath(e).startsWith("/loans/" + asInteger(userId) + "/") && hasExpectedCode(e, 200)) return true;
+    return isValidRequestEvent(e, "deleteLoan") && e.data.url.startsWith("/loans/" + asInteger(userId) + "/");
+  });
+}
+
+function matchAnyLoanDeleted() {
+  return AnyLoanDeleted;
+}
+
+function createUser(id, name) {
+  id = asInteger(id);
+  name = asString(name);
+
+  var reqDescription = createDescription("User", id);
+  var variants = [
+    { name: "createUser (valid-standard): " + id, body: { id: id, name: name }, expectedResponseCodes: [201], parameters: { description: reqDescription }, valid: true },
+    { name: "createUser (valid-spaced-name): " + id, body: { id: id, name: " " + name }, expectedResponseCodes: [201], parameters: { description: reqDescription }, valid: true },
+    { name: "createUser (valid-string-id): " + id, body: { id: String(id), name: name }, expectedResponseCodes: [201], parameters: { description: reqDescription }, valid: true },
+    { name: "createUser (valid-swapped-order): " + id, body: { name: name, id: id }, expectedResponseCodes: [201], parameters: { description: reqDescription }, valid: true }
+  ];
+
+  var invalidCases = [
+    { label: "missing name", body: { "id": id } },
+    { label: "missing id", body: { "name": name } },
+    { label: "missing all required fields", body: {} },
+    { label: "id has wrong type", body: { "id": "bad-user-id", "name": name } },
+    { label: "name has wrong type", body: { "id": id, "name": 12345 } },
+    { label: "multiple wrong types", body: { "id": true, "name": false } },
+    { label: "id is null", body: { "id": null, "name": name } },
+    { label: "name is null", body: { "id": id, "name": null } },
+    { label: "id is zero", body: { "id": 0, "name": name } },
+    { label: "id is negative", body: { "id": -id, "name": name } },
+    { label: "name is empty", body: { "id": id, "name": "" } },
+    { label: "id is object", body: { "id": { "val": id }, "name": name } }
+  ];
+
+  variants = variants.concat(invalidCases.map(function(c) {
+    return { name: "createUser (invalid - " + c.label + "): " + id, body: c.body, expectedResponseCodes: [400] };
+  }));
+
+  while (true) {
+    var valid = false;
+    var response = svc.postOneOf("/users", variants, function (chosen) { valid = chosen.valid === true; });
+    if (valid) return response;
+  }
+}
+
+function tryToCreateUserWithSameIdAndExpectError(id, expectedCode) {
+  id = asInteger(id);
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  var url = "/users";
+  var reqDescription = verifyRejectedDescription("User", id, "create", "the id already exists");
+  var body = {
+    "id": id,
+    "name": "Duplicate user " + id
+  };
+  let response = svc.post(url, { body: JSON.stringify(body), expectedResponseCodes: [expectedCode], parameters: { description: reqDescription } });
+  return response;
+}
+
+function tryToCreateUserWithBadParametersAndExpectError(id, expectedCode) {
+  id = asInteger(id);
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  var url = "/users";
+  var reqDescription = verifyRejectedDescription("User", id, "create", "required parameters are missing or invalid");
+  var cases = [
+    { name: "missing name", body: { "id": id } },
+    { name: "missing id", body: { "name": "User name " + id } },
+    { name: "missing all required fields", body: {} },
+    { name: "id has wrong type", body: { "id": "bad-user-id", "name": "User name " + id } },
+    { name: "name has wrong type", body: { "id": id, "name": 12345 } },
+    { name: "multiple wrong types", body: { "id": true, "name": false } },
+    { name: "id and name have swapped types", body: { "name": id, "id": "User name " + id } },
+    { name: "id is null", body: { "id": null, "name": "User name " + id } },
+    { name: "name is null", body: { "id": id, "name": null } },
+    { name: "id is zero", body: { "id": 0, "name": "User name " + id } },
+    { name: "id is negative", body: { "id": -id, "name": "User name " + id } },
+    { name: "name is empty", body: { "id": id, "name": "" } },
+    { name: "unexpected field", body: { "id": id, "name": "User name " + id, "unexpected": "value" } }
+  ];
+  var variants = cases.map(function (c) {
+    return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
+  });
+  svc.postOneOf(url, variants);
+}
+
+function deleteUser(id) {
+  id = asInteger(id);
+
+  var variants = [
+    { name: "deleteUser (valid): " + id, url: "/users/" + id, expectedResponseCodes: [200], parameters: { description: deleteDescription("User", id), id: id }, valid: true },
+    { name: "deleteUser (invalid - bad-id): " + id, url: "/users/bad-id", expectedResponseCodes: [400] },
+    { name: "deleteUser (invalid - zero): " + id, url: "/users/0", expectedResponseCodes: [400] },
+    { name: "deleteUser (invalid - negative): " + id, url: "/users/-1", expectedResponseCodes: [400] }
+  ];
+  while (true) {
+    var valid = false;
+    var response = svc.deleteOneOf("/users/" + id, variants, function (chosen) { valid = chosen.valid === true; });
+    if (valid) return response;
+  }
+}
+
+// verifyUserDeleteFuzz (static per-field fuzz cases) was replaced by the dynamic valid/invalid
+// loop inside createUser/deleteUser above. verifyUserReadFuzz was removed and not replaced: the
+// /users search endpoint accepts any `q` value and always answers 200, so there is no rejectable
+// invalid variant to fuzz for user reads (see the note above verifyMissingEntityReadIsRejected).
+
+function tryToUpdateUserAndExpectError(id, body, expectedCode) {
+  id = asInteger(id);
+  expectedCode = expectedCode === undefined || expectedCode === null ? 405 : asInteger(expectedCode);
+  tryToUpdateAndExpectError("User", id, "/users/" + id, body, expectedCode);
+}
+
+function verifyUserExists(id) {
+  // Verification is executed against the SUT dataset by reading the users list and searching for this user id.
+  id = asInteger(id);
+  verifySutListContains("users", "/users", { q: asString(id), description: verifyExistsDescription("User", id, "users") }, function (item) {
+    return item && asInteger(item.id) === id;
+  }, "User " + id + " was not found in the SUT users list");
+}
+
+function verifyUserAbsentFromAllLists(id) {
+  // Verification is executed against SUT datasets: users directly, and loans/holds indirectly by userId.
+  id = asInteger(id);
+  verifySutListDoesNotContain("users", "/users", { q: asString(id), description: verifyAbsentDescription("User", id, "users") }, function (item) {
+    return item && asInteger(item.id) === id;
+  }, "User " + id + " still appears in users list");
+  verifySutListDoesNotContain("loans", "/loans", { userId: asString(id), description: verifyAbsentDescription("User", id, "loans") }, function (item) {
+    return item && asInteger(item.userId) === id;
+  }, "User " + id + " still appears in loans list");
+  verifySutListDoesNotContain("holds", "/holds", { q: asString(id), description: verifyAbsentDescription("User", id, "holds") }, function (item) {
+    return item && asInteger(item.userId) === id;
+  }, "User " + id + " still appears in holds list");
+}
+
+function tryToDeleteUserAndExpectError(id, expectedCode) {
+  id = asInteger(id);
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  var url = "/users/" + id;
+  var description = verifyRejectedDescription("User", id, "delete", "the operation is not allowed in this state");
+  svc.delete(url, { expectedResponseCodes: [expectedCode], parameters: { description: description } });
+}
+
+function tryToDeleteDeletedUserAndExpectError(id) {
+  tryToDeleteUserAndExpectError(id, 404);
+}
+
+function tryToDeleteNonexistingUserAndExpectError(id) {
+  tryToDeleteUserAndExpectError(id, 404);
+}
+
+function matchAddUser(id) {
+  return bp.EventSet("Add User " + id, function (e) {
+    var body = getJsonBody(e);
+    if (e.name === "POST" && getRequestPath(e) === "/users" && hasExpectedCode(e, 201) && body && asInteger(body.id) === asInteger(id)) return true;
+    return isValidRequestEvent(e, "createUser") && e.data.body && asInteger(e.data.body.id) === asInteger(id);
+  });
+}
+
+function matchAnyUserAdded() {
+  return AnyUserAdded;
+}
+
+function matchDeleteUser(id) {
+  return bp.EventSet("Deleted Users " + id, function (e) {
+    if (e.name === "DELETE" && getRequestPath(e) === ("/users/" + asInteger(id)) && hasExpectedCode(e, 200)) return true;
+    return isValidRequestEvent(e, "deleteUser") && e.data.url === ("/users/" + asInteger(id));
+  });
+}
+
+function matchAnyUserDeleted() {
+  return AnyUserDeleted;
+}
+
+function createHold(bookId, id, userId, expectedCode, description) {
+  bookId = asInteger(bookId);
+  id = asInteger(id);
+  userId = asInteger(userId);
+
+  var reqDescription = description || (createDescription("Hold", id) + " for User " + userId + " and Book " + bookId);
+  expectedCode = expectedCode === undefined || expectedCode === null ? 201 : asInteger(expectedCode);
+  var variants = [
+    { name: "createHold (valid-standard): " + id, body: { id: id, userId: userId, bookId: bookId }, expectedResponseCodes: [expectedCode], parameters: { description: reqDescription }, valid: true },
+    { name: "createHold (valid-string-id): " + id, body: { id: String(id), userId: userId, bookId: bookId }, expectedResponseCodes: [expectedCode], parameters: { description: reqDescription }, valid: true },
+    { name: "createHold (valid-swapped-order): " + id, body: { bookId: bookId, id: id, userId: userId }, expectedResponseCodes: [expectedCode], parameters: { description: reqDescription }, valid: true }
+  ];
+
+  var invalidCases = [
+    { name: "missing bookId", body: { "id": id, "userId": userId } },
+    { name: "missing userId", body: { "id": id, "bookId": bookId } },
+    { name: "missing id", body: { "userId": userId, "bookId": bookId } },
+    { name: "missing all required fields", body: {} },
+    { name: "id has wrong type", body: { "id": "bad-hold-id", "userId": userId, "bookId": bookId } },
+    { name: "userId has wrong type", body: { "id": id, "userId": "bad-user-id", "bookId": bookId } },
+    { name: "bookId has wrong type", body: { "id": id, "userId": userId, "bookId": "bad-book-id" } },
+    { name: "multiple wrong types", body: { "id": true, "userId": false, "bookId": "bad-book-id" } },
+    { name: "id is null", body: { "id": null, "userId": userId, "bookId": bookId } },
+    { name: "userId is null", body: { "id": id, "userId": null, "bookId": bookId } },
+    { name: "bookId is null", body: { "id": id, "userId": userId, "bookId": null } },
+    { name: "id is zero", body: { "id": 0, "userId": userId, "bookId": bookId } },
+    { name: "userId is zero", body: { "id": id, "userId": 0, "bookId": bookId } },
+    { name: "bookId is zero", body: { "id": id, "userId": userId, "bookId": 0 } },
+    { name: "id is negative", body: { "id": -id, "userId": userId, "bookId": bookId } },
+    { name: "userId is negative", body: { "id": id, "userId": -userId, "bookId": bookId } },
+    { name: "bookId is negative", body: { "id": id, "userId": userId, "bookId": -bookId } },
+    { name: "id is object", body: { "id": { "val": id }, "userId": userId, "bookId": bookId } },
+    { name: "userId is object", body: { "id": id, "userId": { "val": userId }, "bookId": bookId } },
+    { name: "bookId is object", body: { "id": id, "userId": userId, "bookId": { "val": bookId } } }
+  ];
+
+  variants = variants.concat(invalidCases.map(function(c) {
+    return { name: "createHold (invalid - " + c.name + "): " + id, body: c.body, expectedResponseCodes: [400] };
+  }));
+
+  while (true) {
+    var valid = false;
+    var response = svc.postOneOf("/holds", variants, function (chosen) { valid = chosen.valid === true; });
+    if (valid) return response;
+  }
+}
+
+function tryToCreateHoldAndExpectError(bookId, id, userId, expectedCode) {
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  return createHold(bookId, id, userId, expectedCode, verifyRejectedDescription("Hold", id, "create", "the operation is not allowed in this state"));
+}
+
+function tryToCreateHoldWithSameIdAndExpectError(bookId, id, userId, expectedCode) {
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  return createHold(bookId, id, userId, expectedCode, verifyRejectedDescription("Hold", id, "create", "the id already exists"));
+}
+
+function tryToCreateHoldWithBadParametersAndExpectError(id, userId, expectedCode) {
+  id = asInteger(id);
+  userId = asInteger(userId);
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  var url = "/holds";
+  var reqDescription = verifyRejectedDescription("Hold", id, "create", "required parameters are missing or invalid");
+  var cases = [
+    { name: "missing bookId", body: { "id": id, "userId": userId } },
+    { name: "missing userId", body: { "id": id, "bookId": userId } },
+    { name: "missing id", body: { "userId": userId, "bookId": userId } },
+    { name: "missing all required fields", body: {} },
+    { name: "id has wrong type", body: { "id": "bad-hold-id", "userId": userId, "bookId": userId } },
+    { name: "userId has wrong type", body: { "id": id, "userId": "bad-user-id", "bookId": userId } },
+    { name: "bookId has wrong type", body: { "id": id, "userId": userId, "bookId": "bad-book-id" } },
+    { name: "multiple wrong types", body: { "id": true, "userId": false, "bookId": "bad-book-id" } },
+    { name: "parameters have swapped invalid values", body: { "bookId": id, "id": "Hold " + id, "userId": "User " + userId } },
+    { name: "id is null", body: { "id": null, "userId": userId, "bookId": userId } },
+    { name: "userId is null", body: { "id": id, "userId": null, "bookId": userId } },
+    { name: "bookId is null", body: { "id": id, "userId": userId, "bookId": null } },
+    { name: "id is zero", body: { "id": 0, "userId": userId, "bookId": userId } },
+    { name: "userId is zero", body: { "id": id, "userId": 0, "bookId": userId } },
+    { name: "bookId is zero", body: { "id": id, "userId": userId, "bookId": 0 } },
+    { name: "id is negative", body: { "id": -id, "userId": userId, "bookId": userId } },
+    { name: "userId is negative", body: { "id": id, "userId": -userId, "bookId": userId } },
+    { name: "bookId is negative", body: { "id": id, "userId": userId, "bookId": -userId } },
+    { name: "unexpected field", body: { "id": id, "userId": userId, "bookId": userId, "unexpected": "value" } }
+  ];
+  var variants = cases.map(function (c) {
+    return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
+  });
+  svc.postOneOf(url, variants);
+}
+
+function deleteHold(id, expectedCode, userId, bookId) {
+  id = asInteger(id);
+  if (bookId === undefined && userId !== undefined && userId !== null) {
+    bookId = userId;
+    userId = expectedCode;
+    expectedCode = null;
+  }
+  userId = userId === undefined || userId === null ? null : asInteger(userId);
+  bookId = bookId === undefined || bookId === null ? null : asInteger(bookId);
+
+  var reqDescription = deleteDescription("Hold", id, userId === null || bookId === null ? "" : "for User " + userId + " and Book " + bookId);
+  expectedCode = expectedCode === undefined || expectedCode === null ? 200 : asInteger(expectedCode);
+  var parameters = { description: reqDescription, id: id };
+  if (userId !== null) parameters.userId = userId;
+  if (bookId !== null) parameters.bookId = bookId;
+  var variants = [
+    { name: "deleteHold (valid): " + id, url: "/holds/" + id, expectedResponseCodes: [expectedCode], parameters: parameters, valid: true },
+    { name: "deleteHold (invalid - bad-id): " + id, url: "/holds/bad-id", expectedResponseCodes: [400] },
+    { name: "deleteHold (invalid - zero): " + id, url: "/holds/0", expectedResponseCodes: [400] },
+    { name: "deleteHold (invalid - negative): " + id, url: "/holds/-1", expectedResponseCodes: [400] }
+  ];
+
+  while (true) {
+    var valid = false;
+    var response = svc.deleteOneOf("/holds/" + id, variants, function (chosen) { valid = chosen.valid === true; });
+    if (valid) return response;
+  }
+}
+
+// verifyHoldDeleteFuzz (static per-field fuzz cases) was replaced by the dynamic valid/invalid
+// loop inside createHold/deleteHold above. verifyHoldReadFuzz was removed and not replaced: the
+// /holds search endpoint accepts any `q` value and always answers 200, so there is no rejectable
+// invalid variant to fuzz for hold reads (see the note above verifyMissingEntityReadIsRejected).
+
+function tryToUpdateHoldAndExpectError(id, userId, bookId, body, expectedCode) {
+  id = asInteger(id);
+  userId = asInteger(userId);
+  bookId = asInteger(bookId);
+  expectedCode = expectedCode === undefined || expectedCode === null ? 405 : asInteger(expectedCode);
+  tryToUpdateAndExpectError("Hold", id, "/holds/" + id, body, expectedCode);
+}
+
+function verifyHoldExists(id) {
+  // Verification is executed against the SUT dataset by reading the holds list and searching for this hold id.
+  id = asInteger(id);
+  verifySutListContains("holds", "/holds", { q: asString(id), description: verifyExistsDescription("Hold", id, "holds") }, function (item) {
+    return item && asInteger(item.id) === id;
+  }, "Hold " + id + " was not found in the SUT holds list");
+}
+
+function verifyHoldAbsentFromAllLists(id) {
+  // Verification is executed against the SUT dataset by confirming this hold id is absent from the holds list.
+  id = asInteger(id);
+  verifySutListDoesNotContain("holds", "/holds", { q: asString(id), description: verifyAbsentDescription("Hold", id, "holds") }, function (item) {
+    return item && asInteger(item.id) === id;
+  }, "Hold " + id + " still appears in holds list");
+}
+
+function tryToDeleteHoldAndExpectError(id, expectedCode) {
+  id = asInteger(id);
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  var url = "/holds/" + id;
+  var description = verifyRejectedDescription("Hold", id, "delete", "the operation is not allowed in this state");
+  svc.delete(url, { expectedResponseCodes: [expectedCode], parameters: { description: description } });
+}
+
+function tryToDeleteDeletedHoldAndExpectError(id) {
+  tryToDeleteHoldAndExpectError(id, 404);
+}
+
+function tryToDeleteNonexistingHoldAndExpectError(id) {
+  tryToDeleteHoldAndExpectError(id, 404);
+}
+
+function matchAddHold(id) {
+  return bp.EventSet("Add Hold " + id, function (e) {
+    var body = getJsonBody(e);
+    if (e.name === "POST" && getRequestPath(e) === "/holds" && hasExpectedCode(e, 201) && body && asInteger(body.id) === asInteger(id)) return true;
+    return isValidRequestEvent(e, "createHold") && e.data.body && asInteger(e.data.body.id) === asInteger(id);
+  });
+}
+
+function matchDeleteHold(id) {
+  return bp.EventSet("Deleted Holds " + id, function (e) {
+    if (e.name === "DELETE" && getRequestPath(e) === ("/holds/" + asInteger(id)) && hasExpectedCode(e, 200)) return true;
+    return isValidRequestEvent(e, "deleteHold") && e.data.url === ("/holds/" + asInteger(id));
+  });
+}
+
+function matchAnyHoldDeleted() {
+  return AnyHoldDeleted;
+}
