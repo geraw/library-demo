@@ -59,7 +59,11 @@ function generateMissingId(existingId) {
 
 ctx.bthread("verifyUserExistsAfterCreation", "User.All", function (user) {
   block(matchDeleteUser(user.id), function () {
-    verifyUserExists(user.id);
+    // stillRelevant is a defense-in-depth check for the block() guard above: block() has a
+    // narrow gap where an offered "verify" event can still lose the race to a legitimate
+    // concurrent deletion (see verifyBookExistsAfterCreation below for the observed case), so
+    // the verify functions re-check the entity is still expected to exist before failing.
+    verifyUserExists(user.id, function () { return entityExists('User.All', userId(user.id)); });
   });
 });
 
@@ -84,8 +88,16 @@ ctx.bthread("verifyUserDeletion", function () {
 
 ctx.bthread("verifyBookExistsAfterCreation", "Book.All", function (book) {
   block(matchDeleteBook(book.id), function () {
-    verifyBookExists(book.id);
-    verifyBookDetailExists(book.id);
+    // block(matchDeleteBook(...)) is meant to keep this book's real DELETE from actuating while
+    // we verify, but the offered "verify" events themselves can sit unselected for many
+    // synchronization rounds (other b-threads keep running while this one waits), and that
+    // window isn't fully covered by the block. Observed in practice: a book got deleted while
+    // verifyBookDetailExists's fuzz-retry loop was still mid-flight, turning an expected 200 into
+    // an unexpected 404. stillRelevant lets the verify functions bail out quietly instead of
+    // failing when the entity legitimately stopped existing while we were waiting our turn.
+    var stillExists = function () { return entityExists('Book.All', bookId(book.id)); };
+    verifyBookExists(book.id, stillExists);
+    verifyBookDetailExists(book.id, stillExists);
   });
 });
 
@@ -103,7 +115,7 @@ bthread("verifyBookDeletion", function () {
 
 ctx.bthread("verifyLoanExistsAfterCreation", "Loan.All", function (loan) {
   block(matchDeleteLoan(loan.userid), function () {
-    verifyLoanExists(loan.bookid, loan.userid);
+    verifyLoanExists(loan.bookid, loan.userid, function () { return entityExists('Loan.All', loanId(loan.userid, loan.bookid)); });
   });
 });
 
@@ -121,7 +133,7 @@ bthread("verifyLoanDeletion", function () {
 
 ctx.bthread("verifyHoldExistsAfterCreation", "Hold.All", function (hold) {
   block(matchDeleteHold(hold.holdid), function () {
-    verifyHoldExists(hold.holdid);
+    verifyHoldExists(hold.holdid, function () { return entityExists('Hold.All', holdId(hold.holdid)); });
   });
 });
 
@@ -169,7 +181,12 @@ bthread("createRandomBooks", function () {
 //////////////////////////////////////////////////////////////////////////
 
 ctx.bthread("createLoan", "UserBook.CanCreateLoan", function (userbook) {
-  createLoan(userbook.userid, userbook.bookid, generateLoanId());
+  // Mirror image of the deleteUser/deleteBook guard: block user/book deletion
+  // while this create offer is pending, so the user/book can't disappear out
+  // from under it and turn the expected 201 into an unexpected 400.
+  block(matchDeleteBookOrUser(userbook.bookid, userbook.userid), function () {
+    createLoan(userbook.userid, userbook.bookid, generateLoanId());
+  });
 });
 
 ctx.bthread("verifyCannotCreateLoan", "UserBook.CannotCreateLoan", function (userbook) {
@@ -177,7 +194,9 @@ ctx.bthread("verifyCannotCreateLoan", "UserBook.CannotCreateLoan", function (use
 });
 
 ctx.bthread("createHold", "UserBook.CanCreateHold", function (userbook) {
-  createHold(userbook.bookid, generateHoldId(), userbook.userid);
+  block(matchDeleteBookOrUser(userbook.bookid, userbook.userid), function () {
+    createHold(userbook.bookid, generateHoldId(), userbook.userid);
+  });
 });
 
 ctx.bthread("verifyCannotCreateHold", "UserBook.CannotCreateHold", function (userbook) {
@@ -199,11 +218,19 @@ ctx.bthread("verifyCannotCreateHold", "UserBook.CannotCreateHold", function (use
 /////////////////////////////////////////////////////////////////////////
 
 ctx.bthread("deleteUser", "User.CanDelete", function (user) {
-  deleteUser(user.id);
+  // Block new holds/loans for this user while the delete offer is pending, so a
+  // concurrently-created hold/loan can't turn the expected 200 into a 400 by the
+  // time this offer is finally selected. See matchAddHoldOrLoanForUser.
+  block(matchAddHoldOrLoanForUser(user.id), function () {
+    deleteUser(user.id);
+  });
 });
 
 ctx.bthread("deleteBook", "Book.CanDelete", function (book) {
-  deleteBook(book.id);
+  // Same race guard as deleteUser above, for books. See matchAddHoldOrLoanForBook.
+  block(matchAddHoldOrLoanForBook(book.id), function () {
+    deleteBook(book.id);
+  });
 });
 
 ctx.bthread("deleteLoan", "Loan.All", function (loan) {
@@ -242,7 +269,10 @@ ctx.bthread("verifyHoldOnlyBlocksUserAndBookDeletion", "Hold.All", function (hol
     tryToDeleteUserAndExpectError(hold.userid);
     tryToDeleteBookAndExpectError(hold.bookid);
   });
-  deleteHold(hold.holdid, hold.userid, hold.bookid);
+
+  // The general deleteHold bthread is the single valid deletion path for this
+  // hold. Doing an extra delete here creates a second valid delete on the same
+  // resource, which can race and turn a valid 200 into an unexpected 404.
 });
 
 ctx.bthread("verifyCannotCreateLoanWithBadParameters", "UserBook.All", function (userbook) {

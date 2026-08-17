@@ -28,13 +28,22 @@ const svc = new RESTSession(protocol + "://" + host + ":" + port + path, "proven
 // by offering them all to bp.sync at once, so the event selection mechanism (not this code) picks
 // which single variant is actually sent - letting fuzzing/exploration choose the request shape
 // instead of a scripted for-loop that sends every case every time.
-function requestOneOf(method, url, variants, onSelected) {
+// A variant's chooser event can sit offered for many synchronization rounds before it wins
+// (other b-threads keep running while this one waits its turn), so `block()`-based guards taken
+// out before offering don't cover the whole wait. `stillRelevant`, when given, is re-checked
+// right after the chooser event wins but before the real REST call fires - the request is
+// aborted (REQUEST_ABORTED) instead of actuating a stale "valid" expectation against an entity
+// that stopped existing while we were waiting. See verifyBookDetailExists/verifyLoanExists.
+const REQUEST_ABORTED = { aborted: true };
+
+function requestOneOf(method, url, variants, onSelected, stillRelevant) {
   if (!variants || variants.length === 0) pvg.fail("requestOneOf requires at least one variant");
   var events = variants.map(function (v, i) {
     var eventName = v.name || v.description || (method.toUpperCase() + " " + (v.url || url) + " (variant " + i + ")");
     return bp.Event(eventName, { variant: v });
   });
   var selectedEvent = bp.sync({ request: events });
+  if (stillRelevant && !stillRelevant()) return REQUEST_ABORTED;
   var chosen = selectedEvent.data.variant;
   if (onSelected) onSelected(chosen);
   var requestUrl = chosen.url || url;
@@ -46,10 +55,10 @@ function requestOneOf(method, url, variants, onSelected) {
   return svc[method](requestUrl, requestOptions);
 }
 
-svc.postOneOf = function (url, variants, onSelected) { return requestOneOf("post", url, variants, onSelected); };
-svc.getOneOf = function (url, variants, onSelected) { return requestOneOf("get", url, variants, onSelected); };
-svc.deleteOneOf = function (url, variants, onSelected) { return requestOneOf("delete", url, variants, onSelected); };
-svc.putOneOf = function (url, variants, onSelected) { return requestOneOf("put", url, variants, onSelected); };
+svc.postOneOf = function (url, variants, onSelected, stillRelevant) { return requestOneOf("post", url, variants, onSelected, stillRelevant); };
+svc.getOneOf = function (url, variants, onSelected, stillRelevant) { return requestOneOf("get", url, variants, onSelected, stillRelevant); };
+svc.deleteOneOf = function (url, variants, onSelected, stillRelevant) { return requestOneOf("delete", url, variants, onSelected, stillRelevant); };
+svc.putOneOf = function (url, variants, onSelected, stillRelevant) { return requestOneOf("put", url, variants, onSelected, stillRelevant); };
 
 const pvg = { fail: function (msg) { bp.log.error(msg); throw new Error(msg); } };
 
@@ -270,12 +279,15 @@ function readSutList(listName, url, parameters) {
   }
 }
 
-function verifySutListContains(listName, url, parameters, predicate, failureMessage) {
+function verifySutListContains(listName, url, parameters, predicate, failureMessage, stillRelevant) {
   // Verification is executed against the SUT by fetching only the requested SUT list slice before inspecting it.
   var listData = readSutList(listName, url, parameters);
   if (listData === null) return;
   var found = listData.find(predicate);
-  if (!found) pvg.fail(failureMessage);
+  // stillRelevant re-checks that the entity is expected to exist at the moment of the read: a
+  // concurrent (legitimate) deletion between when this verification was offered and when the GET
+  // actually ran would otherwise read as a false failure instead of a moot check.
+  if (!found && (!stillRelevant || stillRelevant())) pvg.fail(failureMessage);
 }
 
 function verifySutListDoesNotContain(listName, url, parameters, predicate, failureMessage) {
@@ -415,7 +427,7 @@ function deleteBook(id) {
 // before checking existence (valid-format-but-missing id -> 404), so it gets the same
 // dynamic valid/invalid fuzzing loop as the create/delete actions. See the Fuzzing
 // Interface Layer Contract at the bottom of lib_stories.js.
-function verifyBookDetailExists(id) {
+function verifyBookDetailExists(id, stillRelevant) {
   id = asInteger(id);
 
   var description = verifyExistsDescription("Book", id, "book detail");
@@ -428,7 +440,8 @@ function verifyBookDetailExists(id) {
   ];
   while (true) {
     var valid = false;
-    var response = svc.getOneOf("/books/" + id, variants, function (chosen) { valid = chosen.valid === true; });
+    var response = svc.getOneOf("/books/" + id, variants, function (chosen) { valid = chosen.valid === true; }, stillRelevant);
+    if (response === REQUEST_ABORTED) return;
     if (valid) {
       if (response === undefined || response === null) return;
       if (response.lib === "REST" || response.method !== undefined) return;
@@ -450,12 +463,12 @@ function tryToUpdateBookAndExpectError(id, body, expectedCode) {
   tryToUpdateAndExpectError("Book", id, "/books/" + id, body, expectedCode);
 }
 
-function verifyBookExists(id) {
+function verifyBookExists(id, stillRelevant) {
   // Verification is executed against the SUT dataset by reading the books list and searching for this book id.
   id = asInteger(id);
   verifySutListContains("books", "/books", { q: asString(id), description: verifyExistsDescription("Book", id, "books") }, function (item) {
     return item && asInteger(item.id) === id;
-  }, "Book " + id + " was not found in the SUT books list");
+  }, "Book " + id + " was not found in the SUT books list", stillRelevant);
 }
 
 function verifyBookAbsentFromAllLists(id) {
@@ -533,6 +546,33 @@ function matchDeleteHoldOrBookOrUser(holdId, bookId, userId) {
     if (isValidRequestEvent(e, "deleteHold") && e.data.url === ("/holds/" + asInteger(holdId))) return true;
     if (isValidRequestEvent(e, "deleteBook") && e.data.url === ("/books/" + asInteger(bookId))) return true;
     if (isValidRequestEvent(e, "deleteUser") && e.data.url === ("/users/" + asInteger(userId))) return true;
+    return false;
+  });
+}
+
+// Guards for the deleteUser/deleteBook stories: once an entity becomes eligible
+// for deletion, the delete offer can stay pending (unselected) for many events
+// while other b-threads keep running. Without blocking, a hold or loan could be
+// added for that same user/book while the offer is pending, turning the delete's
+// expected 200 into an unexpected 400 once it is finally selected. Wrapping the
+// delete call in block(matchAddHoldOrLoanForUser/Book(...), fn) keeps the entity
+// hold/loan-free for as long as the delete offer is outstanding.
+function matchAddHoldOrLoanForUser(userId) {
+  return bp.EventSet("Add Hold/Loan for User " + userId, function (e) {
+    var body = getJsonBody(e);
+    if (!body) return false;
+    if (AnyHoldAdded.contains(e) && asInteger(body.userId) === asInteger(userId)) return true;
+    if (AnyLoanAdded.contains(e) && asInteger(body.userId) === asInteger(userId)) return true;
+    return false;
+  });
+}
+
+function matchAddHoldOrLoanForBook(bookId) {
+  return bp.EventSet("Add Hold/Loan for Book " + bookId, function (e) {
+    var body = getJsonBody(e);
+    if (!body) return false;
+    if (AnyHoldAdded.contains(e) && asInteger(body.bookId) === asInteger(bookId)) return true;
+    if (AnyLoanAdded.contains(e) && asInteger(body.bookId) === asInteger(bookId)) return true;
     return false;
   });
 }
@@ -682,7 +722,7 @@ function tryToCreateLoanWithBadParametersAndExpectError(userId, expectedCode) {
 
 // The loans search endpoint validates userId/bookId (malformed/zero/negative -> 400) before
 // filtering, so it gets the same dynamic valid/invalid fuzzing loop as the create/delete actions.
-function verifyLoanExists(bookId, userId) {
+function verifyLoanExists(bookId, userId, stillRelevant) {
   bookId = asInteger(bookId);
   userId = asInteger(userId);
 
@@ -705,14 +745,16 @@ function verifyLoanExists(bookId, userId) {
 
   while (true) {
     var valid = false;
-    var response = svc.getOneOf("/loans", variants, function (chosen) { valid = chosen.valid === true; });
+    var response = svc.getOneOf("/loans", variants, function (chosen) { valid = chosen.valid === true; }, stillRelevant);
+    if (response === REQUEST_ABORTED) return;
     if (valid) {
       if (response === undefined || response === null || response.lib === "REST" || response.method !== undefined) return;
       if (response.data && (response.data.lib === "REST" || response.data.method !== undefined)) return;
       var listData = typeof response === "string" ? JSON.parse(response) : response;
       if (!Array.isArray(listData) && listData && typeof listData.body === "string") listData = JSON.parse(listData.body);
       if (!Array.isArray(listData) && listData && Array.isArray(listData.data)) listData = listData.data;
-      if (!Array.isArray(listData) || !listData.some(function (item) { return item && asInteger(item.userId) === userId && asInteger(item.bookId) === bookId; })) {
+      var stillFound = Array.isArray(listData) && listData.some(function (item) { return item && asInteger(item.userId) === userId && asInteger(item.bookId) === bookId; });
+      if (!stillFound && (!stillRelevant || stillRelevant())) {
         pvg.fail("Loan " + userId + "/" + bookId + " was not found in the SUT loans list");
       }
       return;
@@ -873,12 +915,12 @@ function tryToUpdateUserAndExpectError(id, body, expectedCode) {
   tryToUpdateAndExpectError("User", id, "/users/" + id, body, expectedCode);
 }
 
-function verifyUserExists(id) {
+function verifyUserExists(id, stillRelevant) {
   // Verification is executed against the SUT dataset by reading the users list and searching for this user id.
   id = asInteger(id);
   verifySutListContains("users", "/users", { q: asString(id), description: verifyExistsDescription("User", id, "users") }, function (item) {
     return item && asInteger(item.id) === id;
-  }, "User " + id + " was not found in the SUT users list");
+  }, "User " + id + " was not found in the SUT users list", stillRelevant);
 }
 
 function verifyUserAbsentFromAllLists(id) {
@@ -1066,12 +1108,12 @@ function tryToUpdateHoldAndExpectError(id, userId, bookId, body, expectedCode) {
   tryToUpdateAndExpectError("Hold", id, "/holds/" + id, body, expectedCode);
 }
 
-function verifyHoldExists(id) {
+function verifyHoldExists(id, stillRelevant) {
   // Verification is executed against the SUT dataset by reading the holds list and searching for this hold id.
   id = asInteger(id);
   verifySutListContains("holds", "/holds", { q: asString(id), description: verifyExistsDescription("Hold", id, "holds") }, function (item) {
     return item && asInteger(item.id) === id;
-  }, "Hold " + id + " was not found in the SUT holds list");
+  }, "Hold " + id + " was not found in the SUT holds list", stillRelevant);
 }
 
 function verifyHoldAbsentFromAllLists(id) {
