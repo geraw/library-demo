@@ -1,304 +1,304 @@
-# מיפוי באגים לשתילה — Library Management System (sut_type.py)
+# Bug Mutation Map — Library Management System (sut_type.py)
 
-## עדכון אחרון
+## Latest update
 
-מסמך זה עודכן לנוכח גרסת המערכת הנוכחית והוגדר מחדש כבסיס למיפוי מוטציות ולבדיקות שליליות עבור המערכת Library Management System.
+This document has been updated in view of the current system version and has been redefined as a basis for mutation mapping and negative tests for the Library Management System.
 
-## הקדמה — מטרת המסמך ומבנהו
+## Introduction — the purpose of the document and its structure
 
-מסמך זה נועד לשמש כבסיס לתכנון בדיקות שליליות (Negative Testing) ובדיקות Mutation למערכת בדיקה לדוגמה (System Under Test) — API מבוסס Flask לניהול ספרייה, הכולל ארבע ישויות: `User`, `Book`, `Loan` (השאלה) ו-`Hold` (רישום לתור/השאלה עתידית).
+This document is intended to be used as a basis for planning negative testing and mutation testing for an example System Under Test — a Flask-based API for library management, which includes four entities: `User`, `Book`, `Loan` (a checked-out book) and `Hold` (a place in a waitlist/future loan).
 
-**הרעיון המרכזי:** לכל שורה במסמך יש לתאר שינוי קונקרטי וממוקד בקוד הקיים (מוטציה בודדת — לא תיקון אמיתי, אלא שתילה מכוונת של תקלה) שיוצר התנהגות שגויה. מטרת השתילה היא לבדוק שקיימת חבילת בדיקות שתופסת (kill) כל מוטציה כזו. שורה שאף בדיקה קיימת לא תופסת מצביעה על פער אמיתי בכיסוי הבדיקות של המערכת.
+**The main idea:** Each line in the document must describe a concrete and targeted change in the existing code (a single mutation - not a real fix, but a deliberate planting of a fault) that creates incorrect behavior. The purpose of planting is to check that there is a test package that catches (kills) any such mutation. A line that no existing test catches indicates a real gap in the system's test coverage.
 
-הבאגים חולקו לארבעה פרקים, לפי ההגדרה הבאה:
+The bugs were divided into four chapters, according to the following definition:
 
-| פרק | הגדרה | דוגמה אופיינית |
-|---|---|---|
-| **1. באגי Types** | תקלות בבדיקת סוג/תקינות של **שדה בודד** בקלט (id, name, title וכו') — כולל קבלה/דחייה שגויה של סוגי נתונים, ערכי קצה מספריים, קידוד תווים ופורמט JSON גולמי. הבדיקה כאן היא ברמת "האם השדה הבודד עצמו תקין", עוד לפני שנוגעים בלוגיקה העסקית. | קבלת `true`/`false` כ-id תקין כי `bool` הוא תת-מחלקה של `int` בפייתון. |
-| **2. באגי API בודד** | תקלות בהתנהגות של **קריאה בודדת** ל-endpoint ספציפי — לוגיקה עסקית שגויה בתוך פונקציית הראוט עצמה (סדר בדיקות, קודי סטטוס, סינון, כפילויות), כולל היבטי תשתית (routing, HTTP methods, JSON parsing ברמת הבקשה כולה) שרלוונטיים לנקודת קצה ספציפית או קבוצת endpoints. | מחיקת הבדיקה "Book is already loaned" ב-`POST /loans`, כך שספר יכול להיות מושאל לשני יוזרים בו-זמנית. |
-| **3. שילובי קריאות הגיוניים** | תקלות שמתגלות רק כשמריצים **רצף טבעי וסביר** של כמה קריאות API יחד (למשל: הוספת יוזר → הוספת ספר → hold → loan → מחיקת loan → מחיקת ספר/יוזר), כולל וריאציות סבירות כמו כמה יוזרים/ספרים בו-זמנית, ביטול והחזרה. כל צעד בפני עצמו עלול להיראות תקין, אך הצירוף חושף את הבאג. | מחיקת יוזר שיש לו hold פעיל (כי הבדיקה המקבילה הוסרה), מה שמשאיר hold "יתום" שמצביע ליוזר לא קיים. |
-| **4. שילובי קלט בסבירות נמוכה** | תקלות שנחשפות רק ב**רצפים לא-טבעיים אך חוקיים מבחינת ה-API** — חזרתיות קיצונית (retry storms, יצירה/מחיקה חוזרת מהירה), עומס, וסדר פעולות שלקוח תקין כמעט אף פעם לא היה מבצע בכוונה (אך client שגוי/באג אחר עלול לגרום לו). כולל race conditions, בעיות idempotency, ודליפות state עדינות. | מחיקת מילת המפתח `global` בטעות מתוך אחת מפונקציות ה-DELETE, מה שגורם ל-`UnboundLocalError` רק בנתיב קוד מסוים שנחשף רק אחרי הרבה קריאות חוזרות. |
+| chapter | definition | A typical example |
+| --- | --- | --- |
+| **1. Type Bugs** | Errors in checking the type/validity of a **single field** in the input (id, name, title, etc.) — including incorrect acceptance/rejection of data types, numeric endpoints, character encoding and raw JSON format. The test here is at the level of "is the single field itself correct", before even touching the business logic. | receiving `true`/`false` as a proper id because `bool` is a subclass of `int` in Python. |
+| **2. Single-API Bugs** | Faults in the behavior of a **single call** to a specific endpoint — incorrect business logic within the route function itself (order of checks, status codes, filtering, duplicates), including infrastructure aspects (routing, HTTP methods, JSON parsing at the entire request level) that are relevant to a specific endpoint or group of endpoints. | Deleting the check "Book is already loaned" in `POST /loans`, so a book can be loaned to two users at the same time. |
+| **3. Logical Call Combinations** | Faults that are only detected when you run a **natural and reasonable sequence** of several API calls together (for example: adding a user → adding a book → hold → loan → deleting a loan → deleting a book/user), including reasonable variations such as several users/books at the same time, cancellation and return. Each step on its own may seem fine, but the combination reveals the bug. | Deleting a user that has an active hold (because the corresponding check has been removed), leaving an "orphaned" hold that points to a non-existent user. |
+| **4. Low-Probability Input Combinations** | Faults that are revealed only in **unnatural but legal sequences in terms of the API** — extreme repetitiveness (retry storms, rapid repeated creation/deletion), overload, and order of operations that a normal client would almost never perform on purpose (but a wrong client/other bug may cause it). Including race conditions, idempotency issues, and subtle state leaks. | Deleting the keyword `global` by mistake from one of the DELETE functions, causing `UnboundLocalError` Only in a certain code path that is revealed only after many repeated calls. |
 
-**הערה:** בכל פרק, חלק מהשורות מתארות גם "הזדמנות לשתול באג שמחמיר" חוסר תפקודי קיים במערכת (כמו העדר קשר לוגי אמיתי בין `Hold` ל-`Loan`, או העדר atomicity/thread-safety) — אלה מסומנות באופן מפורש בטקסט ואינן נחשבות באג קיים כשלעצמו, אלא נקודת מינוף לשתילת מוטציה.
-
----
-
-## פרק 1 — באגי Types בשדות קלט
-
-### 1.1 פונקציות ולידציה גנריות
-שינויים כאן משפיעים על **כל** השדות שמשתמשים בפונקציה הרלוונטית — משפיעים על כמה endpoints בו-זמנית.
-
-| # | באג לשתילה | תיאור |
-|---|---|---|
-| 1.1.1 | `is_int`: הסרת הבדיקה `not isinstance(value, bool)` | `True`/`False` יתקבלו כ-int תקין (bool הוא תת-מחלקה של int בפייתון) |
-| 1.1.2 | `is_int`: החלפת `isinstance(value, int)` ל-`isinstance(value, (int, float))` | מספרים עשרוניים (1.5) יתקבלו כ-int |
-| 1.1.3 | `is_positive_int`: החלפת `value > 0` ל-`value >= 0` | 0 יתקבל כערך חיובי |
-| 1.1.4 | `is_positive_int`: מחיקת התנאי לגמרי | ערכים שליליים/0 יתקבלו כחוקיים |
-| 1.1.5 | `is_valid_id`: הסרת בדיקת `isinstance(value, bool)` בענף ה-int | `true`/`false` יתקבלו כ-id |
-| 1.1.6 | `is_valid_id`: הסרת ה-`try/except` סביב `int(value)` | מחרוזת לא מספרית תגרום ל-500 (Unhandled Exception) במקום 400 |
-| 1.1.7 | `is_valid_id`: החלפת `parsed > 0` ל-`parsed >= 0` בענף המחרוזת | `"0"` יתקבל כ-id תקין |
-| 1.1.8 | `is_valid_id`: קבלת float כמחרוזת (`"1.5"`) — שינוי ל-`float(value)` במקום `int(value)` | id עשרוני יתקבל |
-| 1.1.9 | `is_valid_id`: טיפול לא-עקבי ברווחים (`" 5 "`) | חוסר עקביות בין קלט JSON למחרוזות URL |
-| 1.1.10 | `is_str`: הרחבה ל-`isinstance(value, (str, bytes))` | bytes יתקבלו כמחרוזת |
-| 1.1.11 | `is_non_empty_str`: הסרת `.strip()` | מחרוזת עם רווחים בלבד (`"   "`) תתקבל כשם/כותרת תקינים |
-| 1.1.12 | `is_non_empty_str`: החלפת `!= ""` ל-`is not None` בלבד | מחרוזת ריקה `""` תתקבל |
-| 1.1.13 | `parse_positive_int`: הסרת ה-`try/except` | קלט לא-מספרי יגרום ל-Exception לא מטופל (500) במקום הודעת שגיאה 400 |
-| 1.1.14 | `parse_positive_int`: החלפת `parsed <= 0` ל-`parsed < 0` | 0 יתקבל כ-id חוקי בפעולות מבוססות URL (DELETE) |
-| 1.1.15 | `parse_positive_int`: קבלת `"3.0"` בשקט (`int(float(value))` במקום `int(value)`) | קלט עשרוני-טכני יתקבל ב-URL, בניגוד לדחייה של אותו קלט ב-JSON body |
-
-### 1.2 ערכי קצה מתקדמים — JSON / קידוד / ייצוג מספרי
-מקרי קצה עדינים יותר, המבוססים על תכונות אמיתיות של Python ו-JSON, שקל לשתול בהם מוטציה בטעות בעת "שיפור" הקוד.
-
-| # | באג לשתילה | תיאור |
-|---|---|---|
-| 1.2.1 | `is_valid_id`: הוספת ענף `elif isinstance(value, float): return value > 0` | `id: Infinity`/`id: NaN` (ש-JSON module של פייתון מקבל כברירת מחדל דרך `allow_nan=True`) יעברו ולידציה — `Infinity > 0` הוא True, ואז `int(value)` יזרוק `OverflowError` לא מטופל (500) |
-| 1.2.2 | הוספת `int(value, 0)` (auto base detection) במקום `int(value)` הרגיל | מחרוזות כמו `"0x5"`, `"0o7"`, `"0b101"` יתקבלו כ-id תקין במקום להידחות |
-| 1.2.3 | הוספת בדיקה שדוחה כל id עם רווח (`if " " in value: return False`) לפני ה-parse | `" 5"`/`"5 "` יידחו בטעות, בניגוד להתנהגות הנוכחית התקינה (כי `int(" 5 ")` עובד בפייתון) |
-| 1.2.4 | שתילת regex-חלקי לבדיקת ספרות (רק ASCII) | פייתון's `int()` תומך בפועל בחלק מספרות היוניקוד (למשל `"٥"` ערבית, `"５"` full-width) — regex לא-שלם ישנה את הזמינות הזו בצורה לא מתועדת ולא עקבית |
-| 1.2.5 | `id` נשלח כ-JSON number עם `.0` (למשל `5.0`) — כרגע נדחה לגמרי (רק int/str נתמכים); שתילת "נוחות" שמקבלת float עם חלק עשרוני אפס | id עשרוני-טכנית (`5.0`) יתקבל בניגוד לחוזה המתועד "must be a positive integer" |
-| 1.2.6 | שתילת המרה דרך `float()` באמצע שרשרת עיבוד ה-id (כמו 1.1.8) על id-ים ארוכים מאוד (300+ ספרות) | אובדן דיוק שקט — שני id-ים "שונים" מתכנסים לאותו float ומתנגשים בטעות |
-| 1.2.7 | קבלת `id` כרשימה עם איבר בודד (`[5]`) ע"י שתילת `except (TypeError, ValueError): value = value[0]` בתוך ה-try | id בפורמט לא-תקני מתקבל בשקט, בניגוד לכוונת ה-API |
-
-### 1.3 שדה `User.id`
-| # | באג | תיאור |
-|---|---|---|
-| 1.3.1 | דילוג על קריאה ל-`is_valid_id` (מחיקת התנאי כולו) | כל ערך יתקבל כ-id (כולל אובייקטים, רשימות) |
-| 1.3.2 | קבלת float כ-id (שינוי `is_valid_id`) | `1.5` יופיע כ-id של יוזר |
-| 1.3.3 | קבלת bool כ-id (`true`) | יוזר עם `id: true` ⇒ יאוחסן בפועל כ-`1` |
-| 1.3.4 | אי-נרמול `user["id"] = int(...)` — השארת ה-id כמחרוזת כשנשלח כמחרוזת | `"5"` ו-`5` ייחשבו כשני יוזרים שונים בבדיקת כפילות |
-| 1.3.5 | שינוי סדר בדיקות — קודם duplicate ואז type | הודעת שגיאה שגויה תוחזר כש-id גם כפול וגם לא תקין |
-
-### 1.4 שדה `User.name`
-| # | באג | תיאור |
-|---|---|---|
-| 1.4.1 | הסרת בדיקת `"name" not in user` | שדה חסר יעבור ל-`is_non_empty_str(None)` — עדיין ייתפס, לכן זהו mutant "שקוף" (edge case טוב לבדיקה שמוודאת שהבדיקה ה"כפולה" הזו אכן משנה משהו) |
-| 1.4.2 | קבלת מספר כ-`name` (שינוי `is_non_empty_str` ל-`value is not None`) | `name: 123` יתקבל |
-| 1.4.3 | שתילת "נירמול" שגוי שמסיר תווים בלתי-נראים (`\u200b`, `\u200c`) **מהערך המאוחסן בפועל**, לא רק מהבדיקה | שם שנשמר במאגר שונה מהערך שנשלח במקור — GET מחזיר ערך שונה מ-POST |
-| 1.4.4 | שתילת בדיקת ייחודיות ל-`name` המבוססת על ערך מנורמל (strip) | שני יוזרים בכוונה בעלי אותו שם עם/בלי רווח מובנה (`"כהן"` מול `"כהן "`) יידחו כ"כפולים" בטעות, בניגוד להתנהגות המקורית שמתייחסת לשמות רק כטקסט תיאורי לא-ייחודי |
-
-### 1.5 שדה `Book.id` / `Book.title`
-| # | באג | תיאור |
-|---|---|---|
-| 1.5.1–1.5.5 | מקבילים ל-1.3.1–1.3.5 ו-1.4.1–1.4.4 עבור `Book.id`/`Book.title` | כל הווריאציות הנ"ל רלוונטיות במקביל גם ל-`add_book` |
-| 1.5.6 | בדיקת `is_non_empty_str(book.get("title"))` מוחלפת בבדיקה שגויה שמקבלת `None` | כותרת חסרה תתקבל כ-`null` |
-| 1.5.7 | שתילת ולידציית ייחודיות שגויה על `title` (בעוד שה-id בלבד אמור להיות המפתח הייחודי) | ספר עם כותרת זהה לספר קיים אחר (תרחיש לגיטימי — כמה עותקים/מהדורות) נדחה בטעות כ"כפול" |
-
-### 1.6 שדה `Loan.userId` / `Loan.bookId`
-| # | באג | תיאור |
-|---|---|---|
-| 1.6.1 | שינוי הסדר: קודם `user_exists` ואז type-check | קלט לא-מספרי יגרום להתנגשות בפונקציית `user_exists` (שמצפה ל-int) ⇒ 500 |
-| 1.6.2 | הסרת הבדיקה `if user_id is not None and not is_valid_id(...)` | ערכים לא תקינים (כמו float) יעברו הלאה עד קריסה ב-`int()` |
-| 1.6.3 | היפוך הלוגיקה `if book_id is not None` ל-`if book_id is None` | הבדיקה תרוץ תמיד/אף פעם, כך שסוג לא תקין ל-bookId לא יזוהה כשגם userId ריק |
-| 1.6.4 | אי-נרמול `int(user_id)`/`int(book_id)` | ערכי מחרוזת יישמרו ב-loan record, ישברו השוואות מאוחרות (`==` בין `"3"` ל-`3`) |
-| 1.6.5 | שתילת בדיקה שגויה שדוחה loan כש-`userId == bookId` (קורלציה מקרית בין שני namespaces שונים לגמרי) | דחיות false-positive אמיתיות כש-id של יוזר וספר מתלכדים במקרה — אין קשר לוגי אמיתי בין שני ה-namespace-ים |
-
-### 1.7 שדה `Hold.id` / `Hold.userId` / `Hold.bookId`
-| # | באג | תיאור |
-|---|---|---|
-| 1.7.1 | היפוך סדר הבדיקה `"id" not in hold` מול `is_valid_id` | הודעת שגיאה שגויה כשגם המפתח חסר וגם (תיאורטית) לא תקין |
-| 1.7.2 | הסרת נרמול ל-int עבור `hold["userId"]`/`hold["bookId"]` בלבד (השארת `id` בלבד מנורמל) | חוסר עקביות טיפוסים בין שדות אותה ישות |
-| 1.7.3 | דילוג מוחלט על ולידציית `bookId` (מחיקת 3 השורות) | ניתן ליצור hold עם bookId לא חוקי לגמרי |
-
-### 1.8 שדות ID דרך ה-URL (Path Params) — `delete_user`, `delete_book`, `delete_hold`, `delete_loan`
-| # | באג | תיאור |
-|---|---|---|
-| 1.8.1 | שינוי `parse_positive_int` כך שיקבל גם `"0"` | מחיקה עם id=0 לא תיחסם |
-| 1.8.2 | אי-קריאה ל-`parse_positive_int` בכלל (שימוש ישיר ב-`int(id)` בלי try) | קלט לא מספרי ב-URL יגרום ל-500 |
-| 1.8.3 | ב-`delete_loan` — שימוש רק ב-`parse_positive_int` על `user_id` ולא על `book_id` (או להיפך) | חצי מהוולידציה נעלמת, אחד הפרמטרים יכול להתקבל לא תקין |
+**Note:** In each chapter, some of the lines also describe "an opportunity to plant a bug that aggravates" an existing dysfunction in the system (such as the lack of a real logical connection between `Hold` to-`Loan`, or the lack of atomicity/thread-safety) — these are explicitly marked in the text and are not considered an existing bug per se, but a leverage point for planting a mutation.
 
 ---
 
-## פרק 2 — באגים מקריאות API בודדות (Logic bugs, לא Type)
+## Chapter 1 — Type Bugs in Input Fields
 
-### 2.1 היבטים כלל-מערכתיים (JSON parsing / HTTP / Routing)
-תקלות ברמת התשתית שרלוונטיות לכמה endpoints בבת אחת, ולא לשדה בודד אלא להתנהגות הקריאה כולה.
+### 1.1 Generic validation functions
+Changes here affect **all** the fields that use the relevant function — affect several endpoints at the same time.
 
-| # | באג | תיאור |
-|---|---|---|
-| 2.1.1 | הסרת ה-`if request.is_json` ב-`/reset` — קריאה ישירה ל-`request.get_json()` בלי בדיקה | בקשת reset בלי body/עם Content-Type שגוי תזרוק 400/415 לא מטופל במקום להתעלם בשקט |
-| 2.1.2 | `add_user`/`add_book`/`add_loan`/`add_hold` — קריאה ל-`request.get_json(silent=True)` בלי בדיקת None בהמשך | body ריק/לא-JSON יעביר `None` הלאה, `None.get("id")` יזרוק AttributeError (500) במקום 400 |
-| 2.1.3 | קבלת **מערך** JSON (`[]` או `[{"id":1}]`) במקום object כ-body, בלי `isinstance(data, dict)` | רשימה לא-ריקה תעביר את כל הבדיקות הלאה ותקרוס ב-`.get()` (ל-list אין `get`) |
-| 2.1.4 | Mass Assignment — המערכת לא מסננת שדות לא צפויים ב-body (`{"id":1,"name":"x","isAdmin":true}`) ומאחסנת את האובייקט כולו כמו שהוא | שדות זרים "נדבקים" לרשומה ומוחזרים ב-GET, חושפים structure לא מתועד |
-| 2.1.5 | הוספת `methods=["GET","POST"]` בטעות לראוט DELETE של `/users/<id>` | קריאת GET תפעיל בטעות את לוגיקת המחיקה |
-| 2.1.6 | הסרת ה-`<id>` type converter המרומז (string) והחלפתו ב-`<int:id>` | בקשה עם id לא-מספרי (`/users/abc`) תחזיר 404 גנרי של Flask לפני שהקוד הפנימי מקבל סיכוי להחזיר 400 עקבי כמו שאר המערכת |
-| 2.1.7 | הוספת ראוט כפול case-sensitive (`/Users` לצד `/users`) שמצביע ללוגיקה ישנה | התנהגות שונה בין `/users` ל-`/Users` |
-| 2.1.8 | `strict_slashes=False` מתווסף בחלק מהראוטים ולא בכולם | `/books/` מתנהג שונה מ-`/books` בחלק מה-endpoints |
-| 2.1.9 | חשיפת traceback מלא (Flask `debug=True`) בכל exception לא מטופל | דליפת מידע פנימי (נתיבים, שמות משתנים) ללקוח — רלוונטי לבדיקת אבטחה/פרטיות |
-| 2.1.10 | לוגים (`logger.error`/`logger.info`) שמדפיסים את כל גוף הבקשה הגולמי | דליפת מידע רגיש ללוגים אם יתווספו שדות רגישים בעתיד |
+| # | Mutation to Introduce | Description |
+| --- | --- | --- |
+| 1.1.1 | `is_int`: Remove the test `not isinstance(value, bool)` | `True`/`False` will be accepted as a valid int (bool is a subclass of int in Python) |
+| 1.1.2 | `is_int`: Replacement `isinstance(value, int)` to-`isinstance(value, (int, float))` | Decimal numbers (1.5) will be accepted as int |
+| 1.1.3 | `is_positive_int`: Replacement `value > 0` to-`value >= 0` | 0 will be accepted as a positive value |
+| 1.1.4 | `is_positive_int`: Deleting the condition completely | Negative values/0 will be accepted as valid |
+| 1.1.5 | `is_valid_id`: Remove a test `isinstance(value, bool)` In the int branch | `true`/`false` will be accepted as id |
+| 1.1.6 | `is_valid_id`: removing the `try/except` around `int(value)` | A non-numeric string will result in 500 (Unhandled Exception) instead of 400 |
+| 1.1.7 | `is_valid_id`: Replacement `parsed > 0` to-`parsed >= 0` in the string branch | `"0"` will be accepted as a valid id |
+| 1.1.8 | `is_valid_id`: getting a float as a string (`"1.5"`) — change to `float(value)` instead of `int(value)` | A decimal id will be accepted |
+| 1.1.9 | `is_valid_id`: Inconsistent handling of whitespace (`" 5 "`) | Inconsistency between JSON input and URL strings |
+| 1.1.10 | `is_str`: extension to `isinstance(value, (str, bytes))` | bytes will be accepted as a string |
+| 1.1.11 | `is_non_empty_str`: Removal `.strip()` | string with spaces only (`"   "`) will be accepted as a valid name/title |
+| 1.1.12 | `is_non_empty_str`: Replacement `!= ""` to-`is not None` only | an empty string `""` you will be accepted |
+| 1.1.13 | `parse_positive_int`: removing the `try/except` | Non-numeric input will result in an Unhandled Exception (500) instead of a 400 error message |
+| 1.1.14 | `parse_positive_int`: Replacement `parsed <= 0` to-`parsed < 0` | 0 will be accepted as a valid id in URL-based operations (DELETE) |
+| 1.1.15 | `parse_positive_int`: receiving `"3.0"` quietly (`int(float(value))` instead of `int(value)`) | Decimal-technical input will be accepted in the URL, as opposed to rejecting the same input in the JSON body |
+
+### 1.2 Advanced endpoints — JSON / encoding / numerical representation
+More subtle edge cases, based on real Python and JSON features, are easy to accidentally mutate when "enhancing" the code.
+
+| # | Mutation to Introduce | Description |
+| --- | --- | --- |
+| 1.2.1 | `is_valid_id`: Adding a branch `elif isinstance(value, float): return value > 0` | `id: Infinity`/`id: NaN`(Python's JSON module accepts by default a path `allow_nan=True`) will undergo validation -`Infinity > 0` is True, then `int(value)` will throw `OverflowError` Untreated (500) |
+| 1.2.2 | added `int(value, 0)`(auto base detection) instead `int(value)` the usual | Strings like `"0x5"`, `"0o7"`, `"0b101"` will be accepted as a valid id instead of being rejected |
+| 1.2.3 | Added a test that rejects any id with a space (`if " " in value: return False`) before the parse | `" 5"`/`"5 "` will be mistakenly rejected, contrary to the current normal behavior (because `int(" 5 ")` working in Python) |
+| 1.2.4 | Planting regex-partials to check digits (ASCII only) | Python's `int()` Actually supports some of the Unicode characters (eg `"٥"` Arabic,`"５"` full-width) — an incomplete regex will change this availability in an undocumented and inconsistent way |
+| 1.2.5 | `id` Sent as a JSON number with `.0`(for example `5.0`) — currently completely deprecated (only int/str are supported); Planting "convenience" that accepts a float with a zero decimal part | technical-decimal id (`5.0`) will be accepted contrary to the documented contract "must be a positive integer" |
+| 1.2.6 | Planting gall through `float()` In the middle of the id processing chain (like 1.1.8) on very long ids (300+ digits) | Silent precision loss — two "different" ids converge to the same float and accidentally collide |
+| 1.2.7 | receiving `id` as a list with a single member (`[5]`) by planting `except (TypeError, ValueError): value = value[0]` inside the try | A non-standard formatted id is silently accepted, contrary to API intent |
+
+### 1.3 Field `User.id`
+| # | Bug | Description |
+| --- | --- | --- |
+| 1.3.1 | skip a call to `is_valid_id`(deletion of the entire condition) | Each value will be accepted as an id (including objects, lists) |
+| 1.3.2 | getting float as id (change `is_valid_id`) | `1.5` will appear as user id |
+| 1.3.3 | getting bool as id (`true`) | Yozer with `id: true`⇒ will actually be stored as `1` |
+| 1.3.4 | Non-normalization `user["id"] = int(...)`— leaving the id as a string when sent as a string | `"5"` and-`5` will be considered as two different contributors in the duplication check |
+| 1.3.5 | Changing the order of tests - first duplicate then type | An incorrect error message will be returned when id is both duplicate and invalid |
+
+### 1.4 Field `User.name`
+| # | Bug | Description |
+| --- | --- | --- |
+| 1.4.1 | Removing a test `"name" not in user` | Missing field will go to `is_non_empty_str(None)`— will still be caught, so it is a "transparent" mutant (a good edge case for testing that makes sure that this "double" testing does make a difference) |
+| 1.4.2 | receiving a number as `name`(Change `is_non_empty_str` to-`value is not None`) | `name: 123` will be accepted |
+| 1.4.3 | Introducing incorrect normalization that removes invisible characters (`\u200b`, `\u200c`) **from the actual stored value**, not just from the test | A name stored in the repository is different from the value originally sent — GET returns a different value than POST |
+| 1.4.4 | Planting a uniqueness check for `name` based on a normalized value (strip) | Two users intentionally with the same name with/without trailing whitespace (`"Cohen"` versus `"Cohen "`) will be rejected as "duplicates" by mistake, in contrast to the original behavior which treats names only as non-unique descriptive text |
+
+### 1.5 field `Book.id` / `Book.title`
+| # | Bug | Description |
+| --- | --- | --- |
+| 1.5.1–1.5.5 | Equivalent to 1.3.1–1.3.5 and 1.4.1–1.4.4 for `Book.id`/`Book.title` | All the above variations are also relevant at the same time to `add_book` |
+| 1.5.6 | inspection `is_non_empty_str(book.get("title"))` is replaced by an incorrect check that you receive `None` | Missing title will be received as `null` |
+| 1.5.7 | Planting incorrect uniqueness validation on `title`(while only the id should be the unique key) | A book with the same title as another existing book (legitimate scenario — several copies/editions) mistakenly rejected as "duplicate" |
+
+### 1.6 Field `Loan.userId` / `Loan.bookId`
+| # | Bug | Description |
+| --- | --- | --- |
+| 1.6.1 | Changing the order: first `user_exists` Then type-check | A non-numeric input will cause the function to crash `user_exists`(which expects an int) ⇒ 500 |
+| 1.6.2 | Removing the test `if user_id is not None and not is_valid_id(...)` | Invalid values ​​(like float) will be passed on until crashing in `int()` |
+| 1.6.3 | Reverse the logic `if book_id is not None` to-`if book_id is None` | The test will run always/never, so an invalid type for bookId will not be detected when userId is also empty |
+| 1.6.4 | Non-normalization `int(user_id)`/`int(book_id)` | String values ​​will be stored in the loan record, breaking late comparisons (`==` between `"3"` to-`3`) |
+| 1.6.5 | Planting a wrong test that rejects a loan when `userId == bookId`(random correlation between two completely different namespaces) | True false-positive rejections when a user id and a book happen to coincide — there is no real logical connection between the two namespaces |
+
+### 1.7 Field `Hold.id` / `Hold.userId` / `Hold.bookId`
+| # | Bug | Description |
+| --- | --- | --- |
+| 1.7.1 | Reverse the test order `"id" not in hold` opposite `is_valid_id` | Wrong error message when the key is both missing and (theoretically) incorrect |
+| 1.7.2 | Denormalize to int for `hold["userId"]`/`hold["bookId"]` only (left `id` normalized only) | Type inconsistencies between fields of the same entity |
+| 1.7.3 | Complete skipping of validation `bookId`(deleting the 3 lines) | You can create a hold with a completely invalid bookId |
+
+### 1.8 ID fields through the URL (Path Params) —`delete_user`, `delete_book`, `delete_hold`, `delete_loan`
+| # | Bug | Description |
+| --- | --- | --- |
+| 1.8.1 | change `parse_positive_int` so that he will also receive `"0"` | A deletion with id=0 will not be blocked |
+| 1.8.2 | failure to call `parse_positive_int` at all (direct use of `int(id)` without try) | Non-numeric input in URL will result in 500 |
+| 1.8.3 | on-`delete_loan`— use only `parse_positive_int` on `user_id` and not on `book_id`(or vice versa) | Half of the validation disappears, one of the parameters can be received incorrectly |
+
+---
+
+## Chapter 2 — Bugs from individual API calls (Logic bugs, not Type)
+
+### 2.1 System-wide aspects (JSON parsing / HTTP / Routing)
+Faults at the infrastructure level that are relevant to several endpoints at once, and not to a single field but to the behavior of the entire request.
+
+| # | Bug | Description |
+| --- | --- | --- |
+| 2.1.1 | removing the `if request.is_json` on-`/reset`— direct call to `request.get_json()` without inspection | A reset request without a body/with an incorrect Content-Type will throw an unhandled 400/415 instead of silently ignoring |
+| 2.1.2 | `add_user`/`add_book`/`add_loan`/`add_hold`— a call to `request.get_json(silent=True)` No None check later | An empty/non-JSON body will pass `None` further,`None.get("id")` will throw AttributeError (500) instead of 400 |
+| 2.1.3 | Getting an **array** JSON (`[]` or `[{"id":1}]`) instead of object as body, without `isinstance(data, dict)` | A non-empty list will pass all checks on and crash in `.get()`(The list does not have `get`) |
+| 2.1.4 | Mass Assignment — the system does not filter unexpected fields in the body (`{"id":1,"name":"x","isAdmin":true}`) and stores the entire object as it is | Extraneous fields "stick" to the record and are returned in GET, revealing an undocumented structure |
+| 2.1.5 | added `methods=["GET","POST"]` Accidentally root DELETE of `/users/<id>` | A GET call will accidentally trigger the delete logic |
+| 2.1.6 | removing the `<id>` the implicit type converter (string) and replacing it with `<int:id>` | A request with a non-numeric id (`/users/abc`) will return Flask's generic 404 before the internal code gets a chance to return a consistent 400 like the rest of the system |
+| 2.1.7 | Adding a case-sensitive double route (`/Users` to the side `/users`) which points to old logic | Different behavior between `/users` to-`/Users` |
+| 2.1.8 | `strict_slashes=False` Added in some Rautes and not all | `/books/` behaves differently from `/books` in some endpoints |
+| 2.1.9 | Full traceback exposure (Flask `debug=True`) in any unhandled exception | Leakage of internal information (paths, variable names) to the client - relevant for security/privacy testing |
+| 2.1.10 | logs (`logger.error`/`logger.info`) that print the entire raw request body | Leakage of sensitive information to logs if sensitive fields are added in the future |
 
 ### 2.2 `/reset` (POST)
-| # | באג | תיאור |
-|---|---|---|
-| 2.2.1 | סדר הניקוי משתנה כך ש-`loans`/`holds` לא מתאפסים | reset חלקי — נתונים ישנים נשארים |
-| 2.2.2 | שינוי התנאי `if "users" in data` ל-`if data.get("users")` | reset עם `"users": []` יתנהג שונה |
-| 2.2.3 | `users.extend(...)` מוחלף ב-assignment ישיר בתוך ה-if בלי `global` | `UnboundLocalError` בזמן ריצה |
-| 2.2.4 | אי-איפוס אחד מהמאגרים (למשל `books`) לפני טעינת נתונים חדשים | ספרים ישנים "יידבקו" למאגר החדש |
-| 2.2.5 | היעדר ולידציית type על ה-payload — הקוד "מסתמך" על כך ש-`data["users"]` הוא list ולא בודק | שליחת `"users": "abc"` תגרום ל-`users.extend("abc")` לרוץ בהצלחה בשקט ולהוסיף 3 יוזרים "פנטומים" (`'a'`, `'b'`, `'c'`) — קורס רק בהמשך כשמנסים `.get("id")` על מחרוזת בודדת |
-| 2.2.6 | היעדר בדיקת ייחודיות בתוך ה-seed עצמו (`"users": [{"id":1},{"id":1}]`) | שתילת "תיקון" שמפעיל את בדיקת הכפילות הרגילה גם ב-reset תשבור seed-ים לגיטימיים של טסטים |
+| # | Bug | Description |
+| --- | --- | --- |
+| 2.2.1 | The cleaning order changes so that -`loans`/`holds` Do not reset | partial reset — old data remains |
+| 2.2.2 | Change of condition `if "users" in data` to-`if data.get("users")` | reset with `"users": []` will behave differently |
+| 2.2.3 | `users.extend(...)` Replaced by a direct assignment inside the if without `global` | `UnboundLocalError` while running |
+| 2.2.4 | Failure to reset one of the collections (eg `books`) before loading new data | Old books will be "glued" to the new dataset |
+| 2.2.5 | The lack of type validation on the payload — the code "relies" on the fact that `data["users"]` It is a list and does not check | Sending `"users": "abc"` cause to `users.extend("abc")` Run successfully in silence and add 3 "phantom" users (`'a'`, `'b'`, `'c'`) — crashes only later when trying `.get("id")` on a single string |
+| 2.2.6 | The absence of a uniqueness check within the seed itself (`"users": [{"id":1},{"id":1}]`) | Planting a "fix" that activates the normal duplication check even on reset will break legitimate test seeds |
 
 ### 2.3 `POST /users`
-| # | באג | תיאור |
-|---|---|---|
-| 2.3.1 | בדיקת הכפילות `user.get("id") in [...]` מבוצעת **לפני** נרמול ה-id | `id: "5"` לא יזוהה ככפול מול `id: 5` קיים |
-| 2.3.2 | הסרת בדיקת הכפילות לגמרי | ניתן להוסיף שני יוזרים עם אותו id |
-| 2.3.3 | שינוי קוד סטטוס הצלחה מ-201 ל-200 | קוד תגובה שגוי בהצלחה |
-| 2.3.4 | שינוי קוד השגיאה של "id חסר" מ-400 ל-404/422 | קוד סטטוס שגוי בכשל ולידציה |
-| 2.3.5 | `users.append(user)` הופך ל-`users.insert(0, user)` | סדר היוזרים במאגר משתנה — משפיע על `GET /users` אם יש תלות בסדר |
-| 2.3.6 | ה-object שמוחזר אחרי POST הוא ה-user לפני נרמול (id כמחרוזת) | קליינט מקבל id כ-`"5"` בזמן שבמאגר נשמר `5` |
-| 2.3.7 | שתילת "ניקוי" חלקי של שדות זרים (ר' 2.1.4) לפני ההחזרה ללקוח, שלא תואם למה שנשמר במאגר בפועל | תגובת ה-API חושפת structure פנימי לא עקבי |
+| # | Bug | Description |
+| --- | --- | --- |
+| 2.3.1 | Duplication check `user.get("id") in [...]` is performed **before** the normalization of the id | `id: "5"` will not be recognized as duplicate mol `id: 5` exists |
+| 2.3.2 | Removing the duplicate check completely | You can add two users with the same id |
+| 2.3.3 | Changed success status code from 201 to 200 | Incorrect response code successfully |
+| 2.3.4 | Changed "missing id" error code from 400 to 404/422 | Incorrect status code on validation failure |
+| 2.3.5 | `users.append(user)` turns into `users.insert(0, user)` | The order of the users in the pool changes - affects `GET /users` If there is a dependency, fine |
+| 2.3.6 | The object that is returned after POST is the user before normalization (id as a string) | client receives id as `"5"` while the repository stores `5` |
+| 2.3.7 | Planting partial "cleaning" of foreign fields (ref. 2.1.4) before returning it to the client, which does not correspond to what is actually kept in the database | The API response exposes an inconsistent internal structure |
 
 ### 2.4 `DELETE /users/<id>`
-| # | באג | תיאור |
-|---|---|---|
-| 2.4.1 | היפוך תנאי: `Cannot delete user with active loans` נבדק על `bookId` במקום `userId` | לוגיקת חסימה שגויה — משתמש יימחק גם עם הלוואות פעילות, או ייחסם משתמש בלי הלוואות |
-| 2.4.2 | הסרת בדיקת ה-holds (רק loans נבדק) | ניתן למחוק יוזר עם hold פעיל |
-| 2.4.3 | הסרת בדיקת ה-loans (רק holds נבדק) | ניתן למחוק יוזר עם loan פעיל — יישאר "יתום" loan ל-userId לא קיים |
-| 2.4.4 | `users.remove(user)` מוחלף במחיקה לפי אינדקס שגוי (`users.pop(0)`) | היוזר הלא נכון נמחק |
-| 2.4.5 | שינוי קוד ההצלחה ל-204 בלי לשנות תיעוד/גוף | חוסר עקביות |
-| 2.4.6 | Not Found מוחזר גם כשהיוזר קיים בפועל (`if user:` הופך ל-`if not user:`) | מחיקה תקינה תדווח כ-404 |
-| 2.4.7 | **חוסר קיים כבר בקוד:** בניגוד ל-`delete_book`, אין כאן בדיקת "המשתמש בכלל קיים" (404) *לפני* בדיקות ה-loans/holds — הסדר הפוך מ-`delete_book`. שתילת מוטציה שמחמירה זאת (הסרת ה-`if user:` הסופי לגמרי) | ניסיון למחוק `userId` שלא קיים אך "מתלכד" עם רשומת loan/hold ישנה (data corruption) יחזיר בטעות "Cannot delete user with active loans" (400) במקום "User not found" (404) |
+| # | Bug | Description |
+| --- | --- | --- |
+| 2.4.1 | Reverse condition: `Cannot delete user with active loans` Tested on `bookId` instead of `userId` | Incorrect blocking logic — a user will be deleted even with active loans, or a user without loans will be blocked |
+| 2.4.2 | Removing the holds check (only loans are checked) | You can delete a user with an active hold |
+| 2.4.3 | Removing the loans check (only holds are checked) | You can delete a user with an active loan - an "orphaned" loan for a non-existent userId will remain |
+| 2.4.4 | `users.remove(user)` Replaced by deletion by wrong index (`users.pop(0)`) | The wrong user is deleted |
+| 2.4.5 | Changing the success code to 204 without changing documentation/body | Inconsistency |
+| 2.4.6 | Not Found is returned even when the user actually exists (`if user:` turns into `if not user:`) | A normal deletion will be reported as a 404 |
+| 2.4.7 | **Lack already exists in the code:** Contrary to `delete_book`, there is no "the user exists at all" check here (404) *before* the loans/holds checks - reverse order from `delete_book`. Planting a mutation that makes it worse (removing the `if user:` completely final) | Attempt to delete `userId` which does not exist but "merges" with an old loan/hold record (data corruption) will mistakenly return "Cannot delete user with active loans" (400) instead of "User not found" (404) |
 
 ### 2.5 `GET /users` (Search)
-| # | באג | תיאור |
-|---|---|---|
-| 2.5.1 | הסרת `.lower()` מ-`query` | חיפוש הופך case-sensitive בניגוד לכוונה |
-| 2.5.2 | `if query else users` הופך ל-`if query else []` | חיפוש ללא פרמטר `q` מחזיר רשימה ריקה במקום כל היוזרים |
-| 2.5.3 | חיפוש `query in str(user)` הופך ל-`query == str(user)` | חיפוש חלקי (substring) הופך לחיפוש מדויק בלבד |
-| 2.5.4 | פילטר לא מתבצע כלל (`results = users` תמיד) | פרמטר `q` מתעלם ומוחזרים כל היוזרים |
-| 2.5.5 | שינוי `str(user)` ל-`json.dumps(user)` | חיפוש רגיש לפורמט מפתחות (מירכאות כפולות מול בודדות) — queries מסוימים שעבדו קודם מפסיקים לתפוס |
+| # | Bug | Description |
+| --- | --- | --- |
+| 2.5.1 | removal `.lower()` from-`query` | Search becomes case-sensitive contrary to intent |
+| 2.5.2 | `if query else users` turns into `if query else []` | Search without parameter `q` Returns an empty list instead of all users |
+| 2.5.3 | Search `query in str(user)` turns into `query == str(user)` | A partial search (substring) becomes an exact search only |
+| 2.5.4 | Filter is not performed at all (`results = users` always) | parameter `q` Ignores and returns all entries |
+| 2.5.5 | change `str(user)` to-`json.dumps(user)` | Search sensitive to key format (double versus single quotes) — certain queries that worked before stop catching |
 
 ### 2.6 `POST /books`
-| # | באג | תיאור |
-|---|---|---|
-| 2.6.1–2.6.6 | מקבילים ל-2.3.1–2.3.6 עבור books | כפילות לפני נרמול, הסרת בדיקת כפילות, קוד סטטוס שגוי וכו' |
-| 2.6.7 | ה-`else` ב-`add_book` (השונה מ-`add_user` שלא משתמש ב-else) מוסר, מה שגורם ל-fallthrough | קוד ירוץ פעמיים / יחזיר תגובה כפולה או none |
+| # | Bug | Description |
+| --- | --- | --- |
+| 2.6.1–2.6.6 | Corresponds to 2.3.1–2.3.6 for books | Duplicates before normalization, removing duplicate check, wrong status code, etc. |
+| 2.6.7 | the-`else` on-`add_book`(different from `add_user` that doesn't use else) is removed, causing a fallthrough | Code will run twice / return double response or none |
 
 ### 2.7 `DELETE /books/<id>`
-| # | באג | תיאור |
-|---|---|---|
-| 2.7.1 | בדיקת "ספר לא קיים" (404) מוסרת — מעבר ישר לבדיקת loans/holds | מחיקת ספר לא קיים תיכשל בטעות עם "Cannot delete book with active loans" (false positive) במקום 404 |
-| 2.7.2 | היפוך תנאי בדיקת loans (`bookId` מוחלף ב-`userId`) | חסימה שגויה/העדר חסימה |
-| 2.7.3 | הסרת בדיקת holds | ספר עם hold פעיל יימחק |
-| 2.7.4 | הסרת בדיקת loans | ספר מושאל יימחק — ה-loan יישאר מפנה ל-bookId לא קיים |
-| 2.7.5 | הפילטר `books = [b for b in books if b.get("id") != book_id]` הופך ל-`==` | כל הספרים חוץ מהמבוקש יימחקו (מחיקה הפוכה) |
-| 2.7.6 | `booksRemaining` בתגובה מחושב **לפני** המחיקה בפועל | מספר שגוי מוחזר ללקוח |
+| # | Bug | Description |
+| --- | --- | --- |
+| 2.7.1 | The "book does not exist" check (404) is removed - a direct transition to the loans/holds check | Deleting a non-existent book will fail with "Cannot delete book with active loans" (false positive) instead of 404 |
+| 2.7.2 | Reversing the conditions of loans inspection (`bookId` replaced by `userId`) | Incorrect block/no block |
+| 2.7.3 | Removal of holds check | A book with an active hold will be deleted |
+| 2.7.4 | Removal of loans check | A borrowed book will be deleted — the loan will remain a reference to a non-existent bookId |
+| 2.7.5 | The filter `books = [b for b in books if b.get("id") != book_id]` turns into `==` | All books except the one requested will be deleted (reverse deletion) |
+| 2.7.6 | `booksRemaining` The response is calculated **before** the actual deletion | An incorrect number is returned to the client |
 
 ### 2.8 `GET /books`, `GET /books/<id>`
-| # | באג | תיאור |
-|---|---|---|
-| 2.8.1 | זהה לבאגי 2.5.1–2.5.4 עבור ספרים | |
-| 2.8.2 | `get_book`: התנאי `if book:` הפוך → ספר קיים יחזיר 404 | |
-| 2.8.3 | `get_book`: דילוג על `parse_positive_int`, השוואה ישירה של מחרוזת URL ל-id (int) | לעולם לא ימצא — כל בקשה תחזיר 404 גם לספר קיים |
-| 2.8.4 | היעדר תמיכה בפרמטר `q` ב-`GET /loans` (בשונה משאר ה-endpoints) — שתילת תמיכה חלקית/באגית תוך שימוש בפילטר הבאגי מ-2.5.3/2.5.4 | אי-עקביות API חדשה מול שאר ה-endpoints |
+| # | Bug | Description |
+| --- | --- | --- |
+| 2.8.1 | Same as buggy 2.5.1–2.5.4 for books |  |
+| 2.8.2 | `get_book`: the condition `if book:` Reverse → existing book will return 404 |  |
+| 2.8.3 | `get_book`: skipping over `parse_positive_int`, direct comparison of URL string to id (int) | It will never find — every request will return a 404 even to an existing book |
+| 2.8.4 | Lack of parameter support `q` on-`GET /loans`(different from the other endpoints) — planting partial/buggy support using the buggy filter from 2.5.3/2.5.4 | New API inconsistency against other endpoints |
 
 ### 2.9 `POST /loans`
-| # | באג | תיאור |
-|---|---|---|
-| 2.9.1 | סדר הבדיקות מתחלף — קודם `book_exists` ואז `user_exists` | הודעת שגיאה שגויה כששניהם לא קיימים |
-| 2.9.2 | הסרת הבדיקה "Loan already exists" | אפשר ליצור loan כפול זהה |
-| 2.9.3 | הסרת הבדיקה "User already has an active loan" | יוזר אחד יכול לשאול כמה ספרים בו-זמנית (שינוי בכוונת עסקית — invariant "1 יוזר / 1 הלוואה") |
-| 2.9.4 | הסרת הבדיקה "Book is already loaned" | ספר יכול "להיות מושאל" למספר יוזרים בו-זמנית |
-| 2.9.5 | היפוך סדר בדיקות 2.9.2–2.9.4 כך שההודעה שמוצגת לא תואמת את המצב בפועל | קליינט מקבל הודעת שגיאה לא-רלוונטית למצב האמיתי |
-| 2.9.6 | `user_exists`/`book_exists` נבדקים לפני ולידציית type (חזרה לבאג 1.6.1) | 500 על קלט לא תקין |
-| 2.9.7 | Loan record נשמר בסדר שדות שונה/עם שדות נוספים | לא משפיע פונקציונלית אך יכול לשבור בדיקות מבנה JSON קפדניות |
+| # | Bug | Description |
+| --- | --- | --- |
+| 2.9.1 | The order of the tests changes - first `book_exists` And then `user_exists` | False error message when both do not exist |
+| 2.9.2 | Removing the "Loan already exists" check | You can create an identical double loan |
+| 2.9.3 | Removing the "User already has an active loan" check | One user can borrow several books at the same time (change in business intention - invariant "1 user / 1 loan") |
+| 2.9.4 | Removing the "Book is already loaned" test | A book can "be loaned" to several contributors at the same time |
+| 2.9.5 | Reversing the order of tests 2.9.2–2.9.4 so that the message displayed does not correspond to the actual situation | Client receives an error message irrelevant to the real situation |
+| 2.9.6 | `user_exists`/`book_exists` Tested before type validation (back to bug 1.6.1) | 500 for improper input |
+| 2.9.7 | Loan record is saved in a different order of fields/with additional fields | Does not affect functionality but can break strict JSON structure checks |
 
 ### 2.10 `DELETE /loans/<user_id>/<book_id>`
-| # | באג | תיאור |
-|---|---|---|
-| 2.10.1 | הפילטר בונה רשימה חדשה עם `and` שהופך ל-`or` | כל loan שמתאים ל-userId **או** bookId יימחק (מחיקה רחבה מדי) |
-| 2.10.2 | `before_count == after_count` הופך ל-`!=` (היפוך תנאי 404) | מחיקה מוצלחת תדווח כ-404 ולהפך |
-| 2.10.3 | פרמטרים user_id/book_id מתחלפים בקריאה הפנימית | לעולם לא ימצא loan תואם |
+| # | Bug | Description |
+| --- | --- | --- |
+| 2.10.1 | The filter builds a new list with `and` which becomes `or` | Any loan that matches the userId **or** bookId will be deleted (deletion is too broad) |
+| 2.10.2 | `before_count == after_count` turns into `!=`(404 condition reversal) | A successful deletion will be reported as a 404 and vice versa |
+| 2.10.3 | User_id/book_id parameters are exchanged in the inner call | It will never find a matching loan |
 
 ### 2.11 `GET /loans` (Search + Filters)
-| # | באג | תיאור |
-|---|---|---|
-| 2.11.1 | הבדיקה `if user_id is not None and user_id != ""` הופכת ל-`or` | פילטר ירוץ תמיד גם ללא פרמטר |
-| 2.11.2 | סינון `book_id` מיושם על `results` המקורי (`loans`) ולא על `results` המסונן כבר לפי `user_id` | פילטר AND הופך בפועל ל-OR/מתעלם מהפילטר הראשון |
-| 2.11.3 | ולידציית ה-id בפילטרים (`parse_positive_int`) מוסרת | פרמטר לא מספרי יגרום ל-500 בהשוואה |
-| 2.11.4 | שתילת שינוי שמאפשר פרמטר `userId` כרשימה (`?userId=1&userId=2`) ומטפל בה לא נכון (חיבור מחרוזות במקום שגיאה) | חיפוש עם ריבוי ערכים מייצר תוצאה שגויה |
+| # | Bug | Description |
+| --- | --- | --- |
+| 2.11.1 | the test `if user_id is not None and user_id != ""` turns into `or` | A filter will always run even without a parameter |
+| 2.11.2 | filtering `book_id` applied to `results` the original (`loans`) and not on `results` already filtered by `user_id` | AND filter actually becomes OR/ignores the first filter |
+| 2.11.3 | id validation in filters (`parse_positive_int`) removed | A non-numeric parameter will result in 500 in the comparison |
+| 2.11.4 | Planting a change that allows a parameter `userId` as a list (`?userId=1&userId=2`) and handles it incorrectly (concatenation of strings instead of an error) | A search with multiple values ​​produces an incorrect result |
 
 ### 2.12 `POST /holds`
-| # | באג | תיאור |
-|---|---|---|
-| 2.12.1 | סדר בדיקות id/userId/bookId מתחלף | הודעת שגיאה לא עקבית כשכמה שדות חסרים בו-זמנית |
-| 2.12.2 | הסרת בדיקת `user_exists` | hold ייווצר למשתמש לא קיים |
-| 2.12.3 | הסרת בדיקת `book_exists` | hold ייווצר לספר לא קיים |
-| 2.12.4 | הסרת בדיקת "Hold already exists" (לפי id) | hold כפול עם אותו id יתווסף (דריסת רשומה קיימת בפועל תיווצר כפולה) |
-| 2.12.5 | נרמול ל-int מתבצע רק על `id`, לא על `userId`/`bookId` | חוסר עקביות טיפוסים בתוך רשומת hold |
-| 2.12.6 | **א-סימטריה עם `add_loan`:** `add_loan` בודק 3 תנאי כפילות עסקית (loan קיים, יוזר עסוק, ספר עסוק) בעוד `add_hold` בודק רק תנאי אחד (id כפול). שתילת "תיקון" שגוי שמוסיף בדיקת "user already has a hold" (הגבלה לא-קיימת ולא-רצויה במקור) | יוזר שרוצה להיות בתור לכמה ספרים בו-זמנית (תרחיש לגיטימי!) ייחסם בטעות |
+| # | Bug | Description |
+| --- | --- | --- |
+| 2.12.1 | The order of id/userId/bookId checks alternates | Inconsistent error message when several fields are missing at the same time |
+| 2.12.2 | Removing a test `user_exists` | hold will be created for a user that does not exist |
+| 2.12.3 | Removing a test `book_exists` | hold will be created for a book that does not exist |
+| 2.12.4 | Removing the "Hold already exists" check (by id) | A double hold with the same id will be added (overriding an existing record will actually create a duplicate) |
+| 2.12.5 | Normalization to int is performed only on `id`, not on `userId`/`bookId` | Type inconsistency within a hold record |
+| 2.12.6 | **A-symmetry with `add_loan`:** `add_loan` Checks 3 business duplication conditions (existing loan, user already has a loan, busy book) while `add_hold` Checks only one condition (double id). Planting a wrong "fix" that adds a "user already has a hold" check (a non-existent and unwanted restriction in the source) | A user who wants to queue for several books at the same time (a legitimate scenario!) will be mistakenly blocked |
 
 ### 2.13 `DELETE /holds/<id>`
-| # | באג | תיאור |
-|---|---|---|
-| 2.13.1 | הפילטר `hold.get("id") != hold_id` הופך ל-`==` (מחיקה הפוכה) | כל ה-holds חוץ מהמבוקש יימחקו |
-| 2.13.2 | תנאי 404 הופך (`before_count != len(holds)`) | תוצאה הפוכה מהמצופה |
-| 2.13.3 | שתילת בדיקה שגויה חדשה ("hold קשור ל-loan פעיל") שחוסמת מחיקה — בניגוד ל-`delete_book`/`delete_user`, כרגע אין כאן חסימה כזו במקור | יגרום לכשל ב-flow תקין של ביטול/מימוש hold |
+| # | Bug | Description |
+| --- | --- | --- |
+| 2.13.1 | The filter `hold.get("id") != hold_id` turns into `==`(reverse deletion) | All holds except the requested one will be deleted |
+| 2.13.2 | The 404 condition becomes (`before_count != len(holds)`) | The opposite result than expected |
+| 2.13.3 | Planting a new incorrect check ("hold is related to an active loan") that blocks deletion — unlike `delete_book`/`delete_user`, currently there is no such block here in the original implementation | will cause a failure in the normal flow of cancellation/realization of hold |
 
 ### 2.14 `GET /holds`
-| # | באג | תיאור |
-|---|---|---|
-| 2.14.1–2.14.4 | זהה לבאגי חיפוש 2.5.1–2.5.4 עבור holds | |
+| # | Bug | Description |
+| --- | --- | --- |
+| 2.14.1–2.14.4 | Same as 2.5.1–2.5.4 search bug for holds |  |
 
 ---
 
-## פרק 3 — באגים משילובי קריאות "הגיוניים" (Flows סבירים)
+## Chapter 3 — Bugs from "logical" call combinations (reasonable flows)
 
-הרצף הבסיסי: **צור יוזר → צור ספר → בקש hold → בצע loan → מחק את ה-hold/בצע return (מחיקת loan) → מחק יוזר/ספר**. כולל וריאציות סבירות (כמה יוזרים/ספרים, ביטול והחזרה, חיפוש אחרי פעולה).
+The basic sequence: **Create a user → Create a book → Request a hold → Execute a loan → Delete the hold/execute a return (deleting a loan) → Delete a user/book**. Includes reasonable variations (some contributors/books, cancellation and return, search after action).
 
-| # | תרחיש (רצף) | באג פוטנציאלי לשתילה | תוצאה |
-|---|---|---|---|
-| 3.1 | User→Book→Hold→Loan (על אותו ספר/יוזר) | הסרת קשר בין hold ל-loan — `add_loan` לא בודק ואינו סוגר holds קיימים | ה-hold נשאר "פתוח" גם אחרי שהספר כבר הושאל בפועל, ומונע מחיקת ספר/יוזר גם כשההשאלה כבר הסתיימה |
-| 3.2 | Hold על ספר → Loan לאותו ספר ע"י יוזר **אחר** | היעדר בדיקה ש-loan לא יכול להיווצר לספר עם hold פעיל של יוזר אחר | ספר עם hold של יוזר A מושאל בפועל ליוזר B — עוקף את מטרת ה-hold |
-| 3.3 | Loan → DELETE loan (return) → DELETE book | שתילת באג ב-`delete_loan` שמוחק loan רק חלקית (`and`→`or`, ר' 2.10.1) | מחיקת ספר ש"עדיין מושאל" תיכשל / ספר לא קשור יינזק |
-| 3.4 | Loan → DELETE loan → Loan מחדש על אותו userId+bookId | הסרת/היחלשות הבדיקה שמאפשרת יצירת loan זהה שוב לאחר מחיקה (ר' 2.9.2) | loan כפול "ישן" שלא נמחק כראוי ייווצר לצד החדש |
-| 3.5 | User A עושה Hold על ספר X, User B מנסה Hold על אותו ספר X | שתילת "תיקון" שגוי שחוסם holds מרובים על אותו ספר (אין מניעה כזו כיום, וזה תרחיש תור-המתנה לגיטימי) | תרחיש תור-המתנה (multiple holds) נשבר |
-| 3.6 | Loan נכשל כי הספר כבר מושאל → ניסיון Hold על אותו ספר | ערבוב שגוי בין `book_exists` (קיום פיזי) לבין "זמינות להשאלה" | Hold ייכשל בטעות עם "Book does not exist" |
-| 3.7 | DELETE user שיש לו hold בלבד (בלי loan) | הסרת בדיקת holds ב-`delete_user` (2.4.2) | יוזר עם hold פעיל יימחק, וה-hold יישאר "יתום" ומצביע ל-userId לא קיים |
-| 3.8 | DELETE book שיש לו loan פעיל, ואז ניסיון ליצור loan חדש לאותו bookId (אחרי שהמחיקה נכשלה כמצופה) | שתילת מחיקה חלקית שמתבצעת בפועל למרות שהתגובה מדווחת "נכשל" (חוסר atomicity) | תגובת API אומרת "נכשל" אך הפעולה בוצעה בפועל |
-| 3.9 | 2 יוזרים, 2 ספרים, השאלה צולבת (User1↔Book1, User2↔Book2), מחיקת User1 | היפוך userId/bookId בבדיקת active loans (2.4.1) | User1 יימחק בטעות למרות loan פעיל, ואילו User2 ייחסם ללא סיבה |
-| 3.10 | Hold → Loan → DELETE hold (ניסיון "לבטל hold" אחרי שכבר הושאל בפועל) | חוסר וולידציה שה-hold עדיין רלוונטי, בשילוב מוטציית מחיקה שגויה (2.13.1/2.13.2) | מצב לא עקבי: holds/loans לא מסונכרנים |
-| 3.11 | רצף מלא תקין: User→Book→Hold→Loan→DeleteLoan→DeleteHold→DeleteBook→DeleteUser | כל אחד מהבאגים ב-2.4.1–2.4.6, 2.7.1–2.7.6, 2.13.1–2.13.3 ישבור נקודה אחרת ברצף המלא | רצף ה-happy-path "הסטנדרטי" ביותר של המערכת נשבר בכל נקודה — קריטי לבדיקת רגרסיה |
-| 3.12 | 3 ספרים, 3 יוזרים, כל יוזר שואל ספר אחר, יוזר אחד מחזיר ולוקח ספר של יוזר אחר לאחר שהוחזר | הסרת בדיקת "Book is already loaned" (2.9.4) בשילוב עם timing של DELETE loan | ספר "יינגס" בין שני יוזרים בו-זמנית אם ה-DELETE וה-POST של loan חדש לא atomic |
-| 3.13 | `GET /loans?userId=X&bookId=Y` אחרי רצף השאלה/החזרה | באג 2.11.2 (פילטר bookId לא מצטבר על userId) | תוצאות חיפוש שגויות מוצגות אחרי פעולות תקינות לגמרי |
-| 3.14 | `/reset` באמצע רצף (איפוס בין תרחישי טסט) עם seed data חלקי (`users` בלבד, בלי books/loans/holds) | באג 2.2.1/2.2.3/2.2.4 ברענון חלקי | מצב "מלוכלך" בין טסטים — טסטים הבאים ברצף ייכשלו בגלל דליפת state |
-| 3.15 | Loan → DELETE loan (return) → **אותו** userId+bookId מבקש Loan מחדש מיד | שתילת state "ישן" שנשאר ב-list נסתר (למשל אם `delete_loan` בונה `loans[:]` slice-copy במקום assignment ישיר) | ה-loan החדש נוצר בהצלחה מבחינת ה-API, אך "עותק ישן" עדיין קיים ומשפיע על ספירות עתידיות |
-| 3.16 | User1 hold על ספר X → User2 hold על אותו ספר X (תור המתנה, מותר כרגע) → Loan ל-**User2** (מקדים את User1 בתור) | שתילת "אכיפת FIFO" שגויה שחוסמת את User2 מלשאול כי "לא ראשון בתור" — הגבלה שלא קיימת היום | תרחיש עסקי לגיטימי (מי שמגיע ראשון יכול לשאול) נשבר |
-| 3.17 | Hold על ספר → DELETE hold (ביטול) → DELETE book מצליח → POST loan חדש לאותו bookId (שכבר לא קיים) | הסרת בדיקת `book_exists` ב-`add_loan` (מוטציה של 1.6.2/2.9.6) בשילוב עם רצף טבעי זה | ניתן ליצור loan לספר שנמחק לגמרי מהמערכת — "רפאים" |
-| 3.18 | User+Book+Hold+Loan עבור **שני** משתמשים בשתי בקשות נפרדות לחלוטין (bookId שונה לגמרי) | שתילת mutable default argument בפונקציית עזר משותפת (אנטי-פטרן קלאסי בפייתון: `def helper(cache={})`) | פעולה על User A/Book A "מזהמת" בטעות תוצאה של User B/Book B הבלתי-קשורים |
-| 3.19 | DELETE loan (return) → מיד `GET /loans?bookId=X` לבדיקה שהוחזר | שתילת אינדקס משני (secondary cache) ל-search שלא מסונכרן עם הרשימה הראשית בזמן אמת | ה-loan שנמחק עדיין "מופיע" זמנית בתוצאות חיפוש מיד אחרי המחיקה |
-| 3.20 | רצף מלא (3.11) אך עם Book עם title זהה ל-title של ספר אחר שכבר נמחק בעבר (title reuse) | שתילת ולידציית ייחודיות שגויה על `title` (ר' 1.5.7) | ספר חדש עם כותרת שכבר הייתה קיימת בעבר (ונמחקה) נדחה בטעות כ"כפול" |
-
----
-
-## פרק 4 — באגים מרצפי קלט לא-הגיוניים / בסבירות נמוכה (Stress / Edge Sequences)
-
-תרחישים אלה חוזרים על אותה פעולה שוב ושוב, או מבצעים סדר לא-טבעי (אך חוקי מבחינת ה-API) שיחשוף מצבי race / דליפת state / חוסר אידמפוטנטיות.
-
-| # | תרחיש | באג פוטנציאלי | תוצאה |
-|---|---|---|---|
-| 4.1 | יצירת אותו יוזר (`POST /users` עם אותו id) פעמים רבות ברצף | הסרת/היחלשות בדיקת הכפילות (2.3.2) | ריבוי רשומות זהות ב-`users` — מחיקה תסיר רשומה אחת בלבד מתוך כמה כפילויות |
-| 4.2 | מחיקת אותו יוזר (`DELETE /users/<id>`) פעמים רבות ברציפות | שתילת באג שהופך את הבדיקה כך שהקריאה השנייה תזרוק 500 (למשל גישה ל-`user.get(...)` על `None`) | קריאה כפולה תקרוס במקום להחזיר 404 בעדינות |
-| 4.3 | יצירה ומחיקה חוזרות של אותו hold id ב-loop מהיר (Create→Delete→Create→Delete... 50 פעם) | דליפת רשומות "רפאים" בשילוב 2.12.4 (הסרת בדיקת "Hold already exists") | לאחר X איטרציות, `holds` מכיל עותקים שחוסמים delete_book/delete_user |
-| 4.4 | הרשמה → מחיקה → הרשמה מיידית עם אותו id אך `name` שונה | שתילת lookup שגוי ב-`user_exists` שמסתמך על state לא מעודכן | היוזר "החדש" נכשל ליצירה כי המערכת חושבת שהישן עדיין קיים |
-| 4.5 | יצירת N holds לאותו bookId ע"י יוזרים שונים (תור המתנה), ואז מחיקת כולם בסדר הפוך (LIFO) | פילטר מחיקה שמניח סדר FIFO (למשל שימוש ב-index קבוע במקום סינון לפי id, וריאציה של 2.13.1) | hold לא נכון נמחק כשסדר המחיקה שונה מסדר היצירה |
-| 4.6 | `POST /loans` נכשל (ספר כבר מושאל) → retry loop של אותה בקשה 100 פעם | פעולה לא-אידמפוטנטית שבטעות **כן** מוסיפה רשומה בכל ניסיון למרות כשל מדווח (ר' 3.8) | ריבוי loans "כפולים" בפועל לאותו bookId למרות שה-API טוען שרק loan אחד נוצר |
-| 4.7 | מחיקת ספר/יוזר לפני שמעולם נוצר (`DELETE /books/999`) חוזרת פעמים רבות | side-effect שגוי שנצבר (למשל מונה/לוג ללא בקרה) | Log flooding / האטת המערכת תחת עומס בקשות שגויות חוזרות |
-| 4.8 | `POST /reset` נקרא שוב ושוב תוך כדי שרשרת פעולות אחרות רצה | גישה לא thread-safe ל-global lists (רלוונטי אם יתווסף threading) | Race condition בין reset לפעולות אחרות — התנהגות לא דטרמיניסטית |
-| 4.9 | יצירת hold → ביטול → יצירה מחדש עם אותו `id` אך `bookId`/`userId` שונים לגמרי, חוזר על עצמו | שתילת "אופטימיזציה" שגויה שמשתמשת מחדש (cache) ברשומת hold לפי id בלי לעדכן שדות בפועל | Hold מכיל שילוב user/book שגוי — "רפאים" מהאיטרציה הקודמת |
-| 4.10 | Loan, Hold ומחיקת user לאותו userId ברצף צפוף מאוד/כמעט-בו-זמני | חוסר atomicity כללי סביב `any(...)` + `.append(...)` ללא lock | תנאי מרוץ קלאסי (TOCTOU) אם הקוד ישונה להיות מקבילי |
-| 4.11 | Delete user → Delete same user → Add user עם אותו id → Delete שוב, בלולאה של עשרות פעמים | הסרה לפי ערך אובייקט (`users.remove(user)`) ולא לפי id, בשילוב יוזרים "שווים" מבחינת תוכן | הסרת היוזר הלא נכון כשקיימים שני dict-ים זהים בתוכן שנוצרו-נמחקו-נוצרו |
-| 4.12 | `GET /users?q=...` עם query ארוך/מיוחד (regex meta-characters, `%00`, אימוג'י) חוזר על עצמו | שתילת שינוי מ-`in` (substring) ל-`re.search` בלי escaping | Regex Injection / ReDoS פוטנציאלי בחיפוש |
-| 4.13 | הוספת יוזר → הוספת אותו ספר N פעמים עם id שונה אך title זהה → חיפוש לפי title | שתילת "תיקון" שגוי שמוסיף בדיקת ייחודיות על title (ר' 1.5.7/3.20) | הוספת ספרים עם כותרות זהות (תרחיש לגיטימי — כמה עותקים) נחסמת בטעות |
-| 4.14 | `POST /holds` עם **אותו** `id` אך `userId`/`bookId` שונים, 50 פעם ברצף מהיר | שתילת בדיקת כפילות שקוראת ל-snapshot מקומי של `holds` שלא מתעדכן בזמן אמת | תחת ריצה מהירה מספיק (תיאורטית, בסביבת async/threading) עלולים להיווצר כמה holds עם אותו id |
-| 4.15 | ניסיון חוזר (100 פעמים) ליצור אותו User אחרי שנחסם ע"י hold פעיל שנמחק בינתיים | שתילת "אופטימיזציה" עם short-circuit cache שמניחה שהבקשה תיכשל שוב כמו קודם | False negative — משתמש לא יכול להירשם מחדש גם אחרי שהחסימה בפועל הוסרה |
-| 4.16 | יצירת 10,000 ספרים ואז `GET /books?q=` (ללא query) בלולאה חוזרת | שתילת אכיפת פילטר גם ללא q (וריאציה קיצונית של 2.5.2) שמריצה `str(book)` על כל רשומה בכל בקשה | בעיית ביצועים/DoS פוטנציאלית תחת עומס |
-| 4.17 | Fuzzing ארוך טווח: יצירה/מחיקה אקראית לסירוגין באלפי בקשות | הסרת מילת המפתח `global` בטעות מתוך אחת מפונקציות ה-DELETE ב-refactor עתידי | `UnboundLocalError` שנחשף רק ב-branch מסוים בתוך הפונקציה — קשה מאוד לאתר |
-| 4.18 | Retry storm: אותה בקשת `DELETE /loans/<u>/<b>` נשלחת פעמיים ברצף צפוף (בגלל timeout) | שתילת שינוי בפילטר `delete_loan` שמסיר loans לפי `userId` בלבד (מתעלם מ-`bookId`) בקריאה חוזרת | הקריאה השנייה (שאמורה להיכשל בעדינות עם 404) מוחקת בטעות loan אחר לגמרי של אותו יוזר עם ספר שונה |
+| # | scenario (sequence) | Potential planting bug | result |
+| --- | --- | --- | --- |
+| 3.1 | User→Book→Hold→Loan (on the same book/user) | Removing the connection between hold and loan —`add_loan` Does not check and does not close existing holds | The hold remains "open" even after the book has actually been borrowed, and prevents the deletion of a book/user even when the loan has already ended |
+| 3.2 | Hold on a book → Loan for the same book by a **other** user | The absence of a check that a loan cannot be created for a book with an active hold of another user | A book with a hold by user A is actually loaned to user B — bypassing the purpose of the hold |
+| 3.3 | Loan → DELETE loan (return) → DELETE book | planting a bug in `delete_loan` that deletes the loan only partially (`and`→`or`, R. 2.10.1) | Deleting a book that is "still borrowed" will fail / an unrelated book will be damaged |
+| 3.4 | Loan → DELETE loan → Loan again on the same userId+bookId | Removal/weakening of the test that allows the creation of an identical loan again after deletion (cf. 2.9.2) | An "old" duplicate loan that was not properly deleted will be created on the new side |
+| 3.5 | User A makes a Hold on book X, User B tries to Hold on the same book X | Planting a wrong "fix" that blocks multiple holds on the same book (there is no such prevention today, and this is a legitimate queue-waiting scenario) | The queue-wait scenario (multiple holds) is broken |
+| 3.6 | Loan failed because the book is already borrowed → Hold attempt on the same book | Wrong mixing between `book_exists`(physical existence) and "availability for loan" | Hold will fail with "Book does not exist" error |
+| 3.7 | DELETE user who has hold only (no loan) | Removing the holds check in `delete_user` (2.4.2) | A user with an active hold will be deleted, and the hold will remain "orphaned" pointing to a non-existent userId |
+| 3.8 | DELETE a book that has an active loan, then attempt to create a new loan for the same bookId (after the deletion failed as expected) | Planting a partial deletion that is actually carried out even though the response reports "failed" (lack of atomicity) | The API response says "failed" but the operation was actually performed |
+| 3.9 | 2 users, 2 books, cross query (User1↔Book1, User2↔Book2), deletion of User1 | Reverse userId/bookId in checking active loans (2.4.1) | User1 will be accidentally deleted despite an active loan, while User2 will be blocked for no reason |
+| 3.10 | Hold → Loan → DELETE hold (attempt to "cancel hold" after it has actually been borrowed) | Lack of validation that the hold is still relevant, combined with an incorrect deletion mutation (2.13.1/2.13.2) | Inconsistent state: holds/loans are not synchronized |
+| 3.11 | Full sequence is correct: User→Book→Hold→Loan→DeleteLoan→DeleteHold→DeleteBook→DeleteUser | Each of the bugs in 2.4.1–2.4.6, 2.7.1–2.7.6, 2.13.1–2.13.3 will break a different point in the full sequence | The system's most "standard" happy-path sequence is broken at every point—critical for regression testing |
+| 3.12 | 3 books, 3 users, each user borrows another book, one user returns and takes another user's book after it has been returned | Removal of the "Book is already loaned" check (2.9.4) in combination with DELETE loan timing | A book is "double-booked" between two users at the same time if the DELETE and POST of a new loan are not atomic |
+| 3.13 | `GET /loans?userId=X&bookId=Y` after the loan/return sequence | Bug 2.11.2 (bookId filter does not accumulate on userId) | Incorrect search results are displayed after perfectly normal actions |
+| 3.14 | `/reset` in the middle of a sequence (reset between test scenarios) with partial seed data (`users` only, without books/loans/holds) | 2.2.1/2.2.3/2.2.4 bug in partial refresh | "Dirty" state between tests — subsequent tests will fail due to state leakage |
+| 3.15 | Loan → DELETE loan (return) → **same** userId+bookId request Loan again immediately | Planting an "old" state that remains in a hidden list (eg if `delete_loan` builder `loans[:]` slice-copy instead of direct assignment) | The new loan was successfully created as far as the API is concerned, but an "old copy" still exists and affects future counts |
+| 3.16 | User1 hold on book X → User2 hold on the same book X (waiting queue, currently allowed) → Loan to **User2** (putting User1 ahead of the queue) | Planting a wrong "FIFO enforcement" that blocks User2 from borrowing because "not first in line" — a restriction that does not exist today | A legitimate business scenario (whoever arrives first can borrow) is broken |
+| 3.17 | Hold on a book → DELETE hold (cancellation) → DELETE book succeeds → POST new loan for the same bookId (which no longer exists) | Removing a test `book_exists` on-`add_loan`(1.6.2/2.9.6 mutation) combined with this natural sequence | You can create a loan for a book that has been completely deleted from the system - "ghosts" |
+| 3.18 | User+Book+Hold+Loan for **two** users in two completely separate requests (completely different bookId) | Planting a mutable default argument in a common helper function (classic anti-pattern in Python: `def helper(cache={})`) | An action on User A/Book A accidentally "contaminates" a result of the unrelated User B/Book B |
+| 3.19 | DELETE loan (return) → immediately `GET /loans?bookId=X` for a returned test | Planting a secondary index (secondary cache) for search that is not synchronized with the main list in real time | The deleted loan still temporarily "appears" in search results immediately after the deletion |
+| 3.20 | Full sequence (3.11) but with a Book with the same title as the title of another book that has already been deleted (title reuse) | Planting incorrect uniqueness validation on `title`(cf. 1.5.7) | A new book with a title that already existed before (and was deleted) was mistakenly rejected as "duplicate" |
 
 ---
 
-## הערה מתודולוגית
+## Chapter 4 — Bugs from Illogical / Low-Probability Input Sequences (Stress / Edge Sequences)
 
-- כל הבאגים לעיל הם **בעיה שניתן להכניס לקוד הקיים** (mutation), לא באגים שכבר קיימים במערכת בפועל — למעט המקרים המסומנים במפורש כ"חוסר קיים כבר בקוד" (למשל 2.4.7, 2.9.3, 2.12.6), המצביעים על חוסר עקביות אמיתי שכדאי להכיר לפני שמשתלים בו מוטציה נוספת.
-- חלק מהבאגים בפרקים 3–4 מבוססים גם על "חוסרים תפקודיים קיימים" במערכת (למשל: אין קשר לוגי אמיתי בין hold ל-loan, אין atomicity, אין thread-safety) — אלה **לא** נספרים כבאגים לשתילה בפני עצמם, אלא כהזדמנויות לשתול באג שמחמיר התנהגות קיימת (מסומן במפורש בטבלאות, למשל 3.1, 3.2, 4.10).
-- מומלץ להשתמש בטבלה זו כבסיס למטריצת Mutation Testing: לכל שורה — לשתול את הבאג, להריץ את חבילת הטסטים הקיימת, ולוודא שלפחות טסט אחד "תופס" (kill) את המוטציה. שורה שאף טסט לא תופס מצביעה על פער בכיסוי הבדיקות.
+These scenarios repeat the same action over and over again, or perform an unnatural (but legal in terms of the API) order that will reveal race / state leak / lack of idempotency situations.
+
+| # | scenario | Potential bug | result |
+| --- | --- | --- | --- |
+| 4.1 | Creating the same user (`POST /users` with the same id) many times in a row | Removing/Weakening Duplicate Check (2.3.2) | Multiple identical records in `users`— Delete will remove only one record out of several duplicates |
+| 4.2 | delete it youzer (`DELETE /users/<id>`) many times in a row | Planting a bug that reverses the test so that the second call will throw a 500 (e.g. access to `user.get(...)` on `None`) | A double call will crash instead of gently returning a 404 |
+| 4.3 | Repeated creation and deletion of the same hold id in a fast loop (Create→Delete→Create→Delete... 50 times) | Leakage of "ghost" records in combination 2.12.4 (removal of "Hold already exists" check) | After X iterations,`holds` Contains copies that block delete_book/delete_user |
+| 4.4 | Registration → deletion → immediate registration with the same id but `name` different | planting an incorrect lookup in `user_exists` which relies on out-of-date state | The "new" user fails to create because the system thinks the old one still exists |
+| 4.5 | Creating N holds for the same bookId by different users (waiting queue), then deleting them all in reverse order (LIFO) | A deletion filter that assumes a FIFO order (for example using a fixed index instead of filtering by id, a variation of 2.13.1) | false hold is deleted when the deletion order is different from the creation order |
+| 4.6 | `POST /loans` Failed (book already borrowed) → retry loop of the same request 100 times | A non-idempotent operation that by mistake **yes** adds a record in every attempt despite a reported failure (ref. 3.8) | Multiple "duplicate" loans in practice for the same bookId even though the API claims that only one loan was created |
+| 4.7 | Deleting a book/user before it was ever created (`DELETE /books/999`) repeats many times | Incorrect accumulated side-effect (e.g. counter/log without control) | Log flooding / slowing down the system under the load of repeated incorrect requests |
+| 4.8 | `POST /reset` is called repeatedly while a chain of other operations is running | Non-thread-safe access to global lists (relevant if threading is added) | Race condition between reset and other operations - non-deterministic behavior |
+| 4.9 | Create hold → cancel → recreate with same `id` but `bookId`/`userId` Completely different, repeats itself | Planting a wrong "optimization" that reuses (cache) the hold record by id without actually updating fields | Hold contains an incorrect user/book combination — "ghosts" from the previous iteration |
+| 4.10 | Loan, Hold and user deletion for the same userId in a very tight/almost-simultaneous sequence | A general lack of atomicity around `any(...)` + `.append(...)` without lock | Classic race condition (TOCTOU) if the code is changed to be parallel |
+| 4.11 | Delete user → Delete same user → Add user with the same id → Delete again, in a loop dozens of times | remove by object value (`users.remove(user)`) and not by id, in combination with "equal" users in terms of content | Removing the wrong user when there are two identical dicts in created-deleted-created content |
+| 4.12 | `GET /users?q=...` with a long/special query (regex meta-characters,`%00`, emoji) repeats itself | planting change from `in`(substring) to `re.search` without escaping | Regex Injection / Potential ReDoS in search |
+| 4.13 | Adding a user → adding the same book N times with a different id but the same title → search by title | Planting a wrong "fix" that adds a uniqueness check on title (cf. 1.5.7/3.20) | Adding books with identical titles (legitimate scenario — several copies) is blocked by mistake |
+| 4.14 | `POST /holds` with the **same** `id` but different `userId`/`bookId` values, 50 times in quick succession | Planting a duplicate check that calls a local snapshot of `holds` which is not updated in real time | Under fast enough running (theoretically, in an async/threading environment) several holds with the same id may be created |
+| 4.15 | Repeated attempt (100 times) to create the same User after being blocked by an active hold that has been deleted in the meantime | Planting an "optimization" with a short-circuit cache that assumes the request will fail again like before | False negative — a user cannot re-register even after the actual block has been removed |
+| 4.16 | Creating 10,000 books and then `GET /books?q=`(without query) in a repeating loop | Planting filter enforcement even without q (extreme variation of 2.5.2) running `str(book)` on every record in every request | Potential performance/DoS issue under load |
+| 4.17 | Long-term fuzzing: intermittent random creation/deletion in thousands of requests | Removing the keyword `global` Accidentally from one of the DELETE functions in a future refactor | `UnboundLocalError` which is revealed only in a certain branch within the function - very difficult to locate |
+| 4.18 | Retry storm: same request `DELETE /loans/<u>/<b>` Sent twice in a tight sequence (due to timeout) | Planting a change in the filter `delete_loan` which removes loans according to `userId` only (ignoring `bookId`) on a retry | The second call (which should fail gracefully with a 404) accidentally deletes a completely different loan of the same user with a different book |
+
+---
+
+## Methodological note
+
+- All the above bugs are **problems that can be introduced into the existing code** (mutation), not bugs that already exist in the actual system - except for the cases that are explicitly marked as "a lack that already exists in the code" (for example 2.4.7, 2.9.3, 2.12.6), which indicate a real inconsistency that should be recognized before another mutation is implanted in it.
+- Some of the bugs in chapters 3–4 are also based on "existing functional deficiencies" in the system (for example: there is no real logical connection between hold and loan, no atomicity, no thread-safety) — these **do not** count as planting bugs in themselves, but as opportunities to plant a bug that worsens existing behavior (expressly marked in the tables, for example 3.1, 3.2, 4.10).
+- It is recommended to use this table as a basis for the Mutation Testing matrix: for each row - plant the bug, run the existing test package, and make sure that at least one test "catches" (kills) the mutation. A line that no test captures indicates a gap in test coverage.
