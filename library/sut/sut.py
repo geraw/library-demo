@@ -51,9 +51,22 @@ def parse_positive_int(value: Any, field_name: str) -> Tuple[bool, Optional[int]
     return True, numeric, None
 
 
-def generate_unique_id(existing_ids: set) -> int:
-    """Return a simple server-owned sequential id."""
-    return max(existing_ids, default=0) + 1
+# Per-entity-type monotonic counters. Unlike a max(existing_ids)+1 scheme, these never reuse an id
+# after its entity is deleted: deleting the highest-numbered entity leaves a permanent gap instead
+# of letting the next create silently reissue that id to an unrelated new entity.
+_next_ids: Dict[str, int] = {"users": 1, "books": 1, "loans": 1, "holds": 1}
+
+
+def generate_unique_id(id_kind: str) -> int:
+    """Return the next server-owned sequential id for id_kind, never previously issued for it."""
+    next_id = _next_ids[id_kind]
+    _next_ids[id_kind] += 1
+    return next_id
+
+
+def _reset_id_counter(id_kind: str, seeded_ids: set) -> None:
+    """On a database reset, restart id_kind's counter past any explicitly seeded ids."""
+    _next_ids[id_kind] = max(seeded_ids, default=0) + 1
 
 
 def get_json_object() -> Tuple[Optional[Dict[str, Any]], Optional[Response]]:
@@ -85,6 +98,11 @@ def reset_database() -> tuple[Response, int]:
             if "books" in data:
                 books.extend(data["books"])
 
+    _reset_id_counter("users", {u["id"] for u in users})
+    _reset_id_counter("books", {b["id"] for b in books})
+    _reset_id_counter("loans", {loan["id"] for loan in loans})
+    _reset_id_counter("holds", {hold["id"] for hold in holds})
+
     return (
         jsonify(
             {
@@ -112,7 +130,7 @@ def add_user() -> tuple[Response, int]:
     if not isinstance(name, str) or name == "":
         return jsonify({"error": "name must be a non-empty string"}), 400
 
-    user_id = generate_unique_id({u["id"] for u in users})
+    user_id = generate_unique_id("users")
     user = {"id": user_id, "name": name}
     users.append(user)
     logger.info(f"Added new user: {user}")
@@ -162,7 +180,7 @@ def add_book() -> tuple[Response, int]:
     if not isinstance(title, str) or title == "":
         return jsonify({"error": "title must be a non-empty string"}), 400
 
-    book_id = generate_unique_id({b["id"] for b in books})
+    book_id = generate_unique_id("books")
     book = {"id": book_id, "title": title}
     books.append(book)
     logger.info(f"Added new book: {book}")
@@ -239,7 +257,7 @@ def add_loan() -> tuple[Response, int]:
     if any(loan.get("userId") == user_id and loan.get("bookId") == book_id for loan in loans):
         return jsonify({"error": "Loan already exists"}), 400
 
-    loan_id = generate_unique_id({loan["id"] for loan in loans})
+    loan_id = generate_unique_id("loans")
     loan = {"id": loan_id, "userId": user_id, "bookId": book_id}
     loans.append(loan)
     logger.info(f"Added new loan: {loan}")
@@ -314,7 +332,7 @@ def add_hold() -> tuple[Response, int]:
     if not any(b.get("id") == book_id for b in books):
         return jsonify({"error": f"Book {book_id} does not exist"}), 400
 
-    hold_id = generate_unique_id({hold["id"] for hold in holds})
+    hold_id = generate_unique_id("holds")
     hold = {"id": hold_id, "userId": user_id, "bookId": book_id}
     holds.append(hold)
     logger.info(f"Added new hold: {hold}")

@@ -286,7 +286,11 @@ function createBook(logicalId, title) {
   var idParameters = { description: reqDescription, id: logicalId };
   var variants = [
     { name: "createBook (valid-standard): " + logicalId, body: { title: title }, expectedResponseCodes: [201], parameters: idParameters, callback: captureResponse },
-    { name: "createBook (valid-spaced-title): " + logicalId, body: { title: " " + title }, expectedResponseCodes: [201], parameters: idParameters, callback: captureResponse }
+    { name: "createBook (valid-spaced-title): " + logicalId, body: { title: " " + title }, expectedResponseCodes: [201], parameters: idParameters, callback: captureResponse },
+    // Positive counterpart to the "no unexpected-field case" note in
+    // tryToCreateBookWithBadParametersAndExpectError below: locks in that an unrecognized field
+    // is accepted (silently ignored), not merely untested.
+    { name: "createBook (valid-unexpected-field): " + logicalId, body: { title: title, unexpected: "value" }, expectedResponseCodes: [201], parameters: idParameters, callback: captureResponse }
   ];
 
   var invalidCases = [
@@ -608,7 +612,11 @@ function createLoan(userId, logicalBookId, loanNumber, expectedCode, description
   // created and has no RTV entry.
   var variants = [
     { name: "createLoan (valid-standard): " + userId + "/" + logicalBookId, body: { userId: realUserId(userId, logicalRtvUserId), bookId: realBookId(logicalBookId, logicalRtvBookId) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 && loanNumber !== null ? rememberCreatedId("LOAN", loanNumber) : undefined, valid: true },
-    { name: "createLoan (valid-swapped-order): " + userId + "/" + logicalBookId, body: { bookId: realBookId(logicalBookId, logicalRtvBookId), userId: realUserId(userId, logicalRtvUserId) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 && loanNumber !== null ? rememberCreatedId("LOAN", loanNumber) : undefined, valid: true }
+    { name: "createLoan (valid-swapped-order): " + userId + "/" + logicalBookId, body: { bookId: realBookId(logicalBookId, logicalRtvBookId), userId: realUserId(userId, logicalRtvUserId) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 && loanNumber !== null ? rememberCreatedId("LOAN", loanNumber) : undefined, valid: true },
+    // Positive counterpart to the "no unexpected-field case" note in
+    // tryToCreateLoanWithBadParametersAndExpectError below: locks in that an unrecognized field
+    // is accepted (silently ignored), not merely untested.
+    { name: "createLoan (valid-unexpected-field): " + userId + "/" + logicalBookId, body: { userId: realUserId(userId, logicalRtvUserId), bookId: realBookId(logicalBookId, logicalRtvBookId), unexpected: "value" }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 && loanNumber !== null ? rememberCreatedId("LOAN", loanNumber) : undefined, valid: true }
   ];
 
   var invalidCases = [
@@ -803,7 +811,11 @@ function createUser(id, name) {
   var callback = rememberCreatedId("USER", id);
   var variants = [
     { name: "createUser (valid-standard): " + id, body: { name: name }, expectedResponseCodes: [201], parameters: parameters, callback: callback, valid: true },
-    { name: "createUser (valid-spaced-name): " + id, body: { name: " " + name }, expectedResponseCodes: [201], parameters: parameters, callback: callback, valid: true }
+    { name: "createUser (valid-spaced-name): " + id, body: { name: " " + name }, expectedResponseCodes: [201], parameters: parameters, callback: callback, valid: true },
+    // Positive counterpart to the "no unexpected-field case" note in
+    // tryToCreateUserWithBadParametersAndExpectError below: locks in that an unrecognized field
+    // is accepted (silently ignored), not merely untested.
+    { name: "createUser (valid-unexpected-field): " + id, body: { name: name, unexpected: "value" }, expectedResponseCodes: [201], parameters: parameters, callback: callback, valid: true }
   ];
 
   var invalidCases = [
@@ -967,7 +979,11 @@ function createHold(logicalBookId, id, userId, expectedCode, description, logica
   // created and has no RTV entry.
   var variants = [
     { name: "createHold (valid-standard): " + id, body: { userId: realUserId(userId, logicalRtvUserId), bookId: realBookId(logicalBookId, logicalRtvBookId) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 ? rememberCreatedId("HOLD", id) : undefined, valid: true },
-    { name: "createHold (valid-swapped-order): " + id, body: { bookId: realBookId(logicalBookId, logicalRtvBookId), userId: realUserId(userId, logicalRtvUserId) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 ? rememberCreatedId("HOLD", id) : undefined, valid: true }
+    { name: "createHold (valid-swapped-order): " + id, body: { bookId: realBookId(logicalBookId, logicalRtvBookId), userId: realUserId(userId, logicalRtvUserId) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 ? rememberCreatedId("HOLD", id) : undefined, valid: true },
+    // Positive counterpart to the "no unexpected-field case" note in
+    // tryToCreateHoldWithBadParametersAndExpectError below: locks in that an unrecognized field
+    // is accepted (silently ignored), not merely untested.
+    { name: "createHold (valid-unexpected-field): " + id, body: { userId: realUserId(userId, logicalRtvUserId), bookId: realBookId(logicalBookId, logicalRtvBookId), unexpected: "value" }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 ? rememberCreatedId("HOLD", id) : undefined, valid: true }
   ];
 
   // No id-related cases: the SUT assigns the hold's real id itself (see sut.py's POST /holds,

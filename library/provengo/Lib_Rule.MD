@@ -217,3 +217,20 @@ To support flexible integrations, SUT endpoints allow several valid options for 
 - **Valid ID formats**: IDs (such as `id`, `userId`, `bookId`) can be passed as either a positive integer (e.g. `123`) or a string representing a positive integer (e.g. `"123"`).
 - **Parameter ordering**: The order of keys in JSON request bodies is flexible and does not affect validation.
 - **Invalid ID formats**: Passing IDs as non-integer/non-numeric-string types, such as objects (e.g., `{"val": 123}`), arrays, booleans, or null, is invalid and expected to fail with `400`.
+- **Unrecognized fields**: All four `POST` create endpoints (`/users`, `/books`, `/loans`, `/holds`)
+  read only their documented required fields and silently ignore anything else in the body -
+  an unexpected field never causes a `400`. Each `create*` function's `valid-unexpected-field`
+  variant in `interfaces.library.js` exercises this as a positive case (expects `201`), not a
+  rejected one; there is deliberately no "unexpected field" case in the corresponding
+  `tryToCreate*WithBadParametersAndExpectError` fuzzers.
+
+## ID Generation
+
+Server-owned ids (`/users`, `/books`, `/loans`, `/holds` create responses) are assigned from a
+per-entity-type monotonic counter that only ever increases (see `_next_ids`/`generate_unique_id`
+in `sut.py`). Deleting an entity never frees its id for reuse - the next created entity of that
+type always gets a strictly higher id than any previously issued, leaving a permanent gap where
+the deleted one was. This matters for the RTV mechanism in `interfaces.library.js`: an RTV entry
+(`USERn`/`BOOKn`/`LOANn`/`HOLDn`) recorded at creation stays a valid, permanent reference to that
+specific real id for the rest of the run, even after the entity is deleted - it can never later
+resolve to some other, unrelated entity that happens to reuse the same real id.
