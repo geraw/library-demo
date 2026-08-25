@@ -67,26 +67,6 @@ const pvg = { fail: function (msg) { bp.log.error(msg); throw new Error(msg); } 
 
 // asInteger, asString, and the *Description builders now live in lib/utils.js.
 
-function extractId(e) {
-  var body = getJsonBody(e);
-  if (body && body.id !== undefined && body.id !== null) return asInteger(body.id);
-  if (body && body.userId !== undefined && body.userId !== null) return asInteger(body.userId);
-
-  if (e && e.data && e.data.parameters) {
-    if (e.data.parameters.id !== undefined && e.data.parameters.id !== null) return asInteger(e.data.parameters.id);
-    if (e.data.parameters.userId !== undefined && e.data.parameters.userId !== null) return asInteger(e.data.parameters.userId);
-  }
-
-  var pathValue = getRequestPath(e);
-  if (pathValue) {
-    var segments = pathValue.split("/").filter(function (s) { return s.length > 0; });
-    if (segments.length >= 3 && segments[0] === "loans") return asInteger(segments[1]);
-    if (segments.length >= 2) return asInteger(segments[segments.length - 1]);
-  }
-
-  pvg.fail("Could not extract ID from event fields");
-}
-
 // getExpectedResponseCodes, hasExpectedCode, getRequestPath, and getJsonBody now live in lib/utils.js.
 
 // Boundary adapter from concrete REST events to semantic event data.
@@ -173,7 +153,6 @@ function realId(entityType, logicalId, logicalRtv) {
 
 function realUserId(logicalId, logicalRtv) { return realId("USER", logicalId, logicalRtv); }
 function realBookId(logicalId, logicalRtv) { return realId("BOOK", logicalId, logicalRtv); }
-function realLoanId(logicalId, logicalRtv) { return realId("LOAN", logicalId, logicalRtv); }
 function realHoldId(logicalId, logicalRtv) { return realId("HOLD", logicalId, logicalRtv); }
 
 // realId()'s `@{...}` expression is only substituted by the REST layer when placed into a
@@ -187,7 +166,6 @@ function realIdValue(entityType, logicalId) {
 
 function realUserIdValue(logicalId) { return realIdValue("USER", logicalId); }
 function realBookIdValue(logicalId) { return realIdValue("BOOK", logicalId); }
-function realLoanIdValue(logicalId) { return realIdValue("LOAN", logicalId); }
 function realHoldIdValue(logicalId) { return realIdValue("HOLD", logicalId); }
 
 // Callback functions execute later than model generation. Constructing a callback
@@ -434,14 +412,6 @@ function tryToDeleteDeletedBookAndExpectError(id) {
   tryToDeleteBookAndExpectError(id, 404);
 }
 
-// id was never created (see generateMissingId()), so it has no RTV entry: build the request
-// directly with the plain id instead of going through tryToDeleteBookAndExpectError/realBookId.
-function tryToDeleteNonexistingBookAndExpectError(id) {
-  id = asInteger(id);
-  var description = verifyRejectedDescription("Book", id, "delete", "the operation is not allowed in this state");
-  svc.delete("/books/" + id, { expectedResponseCodes: [404], parameters: { description: description } });
-}
-
 //////////////////////////////////////////////////////////////////////////
 // Specific event matchers.
 //
@@ -485,20 +455,6 @@ function matchDeleteBookOrUser(bookId, userId) {
   return bp.EventSet("Deleted Book/User " + bookId + "/" + userId, function (e) {
     if (!(e.name === "DELETE" && hasExpectedCode(e, 200))) return false;
     var path = getRequestPath(e);
-    if (path.startsWith("/books/")) return extractEventData(e).id === bookId;
-    if (path.startsWith("/users/")) return extractEventData(e).id === userId;
-    return false;
-  });
-}
-
-function matchDeleteHoldOrBookOrUser(holdId, bookId, userId) {
-  holdId = asInteger(holdId);
-  bookId = asInteger(bookId);
-  userId = asInteger(userId);
-  return bp.EventSet("Deleted Hold/Book/User " + holdId + "/" + userId + "/" + bookId, function (e) {
-    if (!(e.name === "DELETE" && hasExpectedCode(e, 200))) return false;
-    var path = getRequestPath(e);
-    if (path.startsWith("/holds/")) return extractEventData(e).id === holdId;
     if (path.startsWith("/books/")) return extractEventData(e).id === bookId;
     if (path.startsWith("/users/")) return extractEventData(e).id === userId;
     return false;
@@ -773,15 +729,6 @@ function tryToDeleteDeletedLoanAndExpectError(userId, bookId) {
   tryToDeleteLoanAndExpectError(userId, bookId, 404);
 }
 
-// userId/bookId were never created (see generateMissingId()), so they have no RTV entry: build the
-// request directly with the plain ids instead of going through tryToDeleteLoanAndExpectError/realId.
-function tryToDeleteNonexistingLoanAndExpectError(userId, bookId) {
-  userId = asInteger(userId);
-  bookId = asInteger(bookId);
-  var description = verifyRejectedDescription("Loan", userId + "/" + bookId, "delete", "the operation is not allowed in this state");
-  svc.delete("/loans/" + userId + "/" + bookId, { expectedResponseCodes: [404], parameters: { description: description } });
-}
-
 function matchAddLoan(userId) {
   userId = asInteger(userId);
   return bp.EventSet("Add Loan " + userId, function (e) {
@@ -835,19 +782,6 @@ function createUser(id, name) {
     var response = svc.postOneOf("/users", variants, function (chosen) { valid = chosen.valid === true; });
     if (valid) return response;
   }
-}
-
-function tryToCreateUserWithSameIdAndExpectError(id, expectedCode) {
-  id = asInteger(id);
-  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
-  var url = "/users";
-  var reqDescription = verifyRejectedDescription("User", id, "create", "the id already exists");
-  var body = {
-    "id": id,
-    "name": "Duplicate user " + id
-  };
-  let response = svc.post(url, { body: JSON.stringify(body), expectedResponseCodes: [expectedCode], parameters: { description: reqDescription } });
-  return response;
 }
 
 function tryToCreateUserWithBadParametersAndExpectError(id, expectedCode) {
@@ -949,10 +883,6 @@ function matchAddUser(id) {
   });
 }
 
-function matchAnyUserAdded() {
-  return AnyUserAdded;
-}
-
 function matchDeleteUser(id) {
   return bp.EventSet("Deleted Users " + id, function (e) {
     if (e.name === "DELETE" && getRequestPath(e).startsWith("/users/") && hasExpectedCode(e, 200) && asInteger(extractEventData(e).id) === asInteger(id)) return true;
@@ -1017,11 +947,6 @@ function createHold(logicalBookId, id, userId, expectedCode, description, logica
     });
     if (valid) return response;
   }
-}
-
-function tryToCreateHoldAndExpectError(bookId, id, userId, expectedCode) {
-  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
-  return createHold(bookId, id, userId, expectedCode, verifyRejectedDescription("Hold", id, "create", "the operation is not allowed in this state"));
 }
 
 // missingBookId/userId/missingUserId were never created (see generateMissingId()), so they have no
@@ -1143,14 +1068,6 @@ function tryToDeleteHoldAndExpectError(id, expectedCode) {
 
 function tryToDeleteDeletedHoldAndExpectError(id) {
   tryToDeleteHoldAndExpectError(id, 404);
-}
-
-// id was never created (see generateMissingId()), so it has no RTV entry: build the request
-// directly with the plain id instead of going through tryToDeleteHoldAndExpectError/realHoldId.
-function tryToDeleteNonexistingHoldAndExpectError(id) {
-  id = asInteger(id);
-  var description = verifyRejectedDescription("Hold", id, "delete", "the operation is not allowed in this state");
-  svc.delete("/holds/" + id, { expectedResponseCodes: [404], parameters: { description: description } });
 }
 
 function matchAddHold(id) {
