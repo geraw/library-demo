@@ -190,7 +190,7 @@ ctx.bthread("createLoan", "UserBook.CanCreateLoan", function (userbook) {
 });
 
 ctx.bthread("verifyCannotCreateLoan", "UserBook.CannotCreateLoan", function (userbook) {
-  tryToCreateLoanAndExpectError(userbook.bookid, userbook.userid, generateLoanId());
+  tryToCreateLoanAndExpectError(userbook.userid, userbook.bookid, generateLoanId());
 });
 
 ctx.bthread("createHold", "UserBook.CanCreateHold", function (userbook) {
