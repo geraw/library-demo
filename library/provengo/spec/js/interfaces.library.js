@@ -65,37 +65,7 @@ svc.putOneOf = function (url, variants, onSelected, stillRelevant) { return requ
 
 const pvg = { fail: function (msg) { bp.log.error(msg); throw new Error(msg); } };
 
-function asInteger(value) { return Number.parseInt(value, 10); }
-
-function asString(value) { return String(value); }
-
-function entityDescription(entityName, id) {
-  return entityName + " " + id;
-}
-
-function relationDescription(entityName, id, details) {
-  return entityDescription(entityName, id) + (details ? " " + details : "");
-}
-
-function createDescription(entityName, id) {
-  return "Create: " + entityDescription(entityName, id);
-}
-
-function deleteDescription(entityName, id, details) {
-  return "Delete: " + relationDescription(entityName, id, details);
-}
-
-function verifyExistsDescription(entityName, id, listName) {
-  return "Verify: " + entityDescription(entityName, id) + " exists in " + listName + " list";
-}
-
-function verifyAbsentDescription(entityName, id, listName) {
-  return "Verify: " + entityDescription(entityName, id) + " is absent from " + listName + " list";
-}
-
-function verifyRejectedDescription(entityName, id, action, reason) {
-  return "Verify: " + action + " " + entityDescription(entityName, id) + " is rejected" + (reason ? " because " + reason : "");
-}
+// asInteger, asString, and the *Description builders now live in lib/utils.js.
 
 function extractId(e) {
   var body = getJsonBody(e);
@@ -117,38 +87,7 @@ function extractId(e) {
   pvg.fail("Could not extract ID from event fields");
 }
 
-function getExpectedResponseCodes(e) {
-  var data = e && e.data ? e.data : e;
-  if (!data) return [];
-  if (Array.isArray(data.expectedResponseCodes)) return data.expectedResponseCodes;
-  if (data.options && Array.isArray(data.options.expectedResponseCodes)) return data.options.expectedResponseCodes;
-  if (data.parameters && Array.isArray(data.parameters.expectedResponseCodes)) return data.parameters.expectedResponseCodes;
-  return [];
-}
-
-function hasExpectedCode(e, code) {
-  return getExpectedResponseCodes(e).indexOf(code) !== -1;
-}
-
-function getRequestPath(e) {
-  var data = e && e.data ? e.data : e;
-  if (!data) return "";
-  var p = data.path || data.url || data.endpoint || "";
-  if (!p) return "";
-  p = String(p).replace(/^https?:\/\/[^\/]+/, "");
-  var qIdx = p.indexOf("?");
-  return qIdx === -1 ? p : p.substring(0, qIdx);
-}
-
-function getJsonBody(e) {
-  var data = e && e.data ? e.data : e;
-  if (!data || data.body === undefined || data.body === null) return null;
-  if (typeof data.body === "object") return data.body;
-  if (typeof data.body === "string") {
-    try { return JSON.parse(data.body); } catch (err) { return null; }
-  }
-  return null;
-}
+// getExpectedResponseCodes, hasExpectedCode, getRequestPath, and getJsonBody now live in lib/utils.js.
 
 // Boundary adapter from concrete REST events to semantic event data.
 // Consumers can depend on fields like id, userId, bookId, title, and
@@ -201,10 +140,6 @@ function extractEventData(e) {
     bookId: bookId,
     loanNumber: parameters.loanNumber
   };
-}
-
-function isValidRequestEvent(e, actionName) {
-  return e && e.data && e.data.action === actionName && e.data.type === "valid";
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -266,18 +201,7 @@ function rememberCreatedId(entityType, logicalId) {
   };
 }
 
-// Pulls the real id the SUT assigned out of a create response. The REST library hands the actual
-// response to a request's `callback` (svc.post()'s return value is just the request event, not
-// the response - see createBook), as a Java map shaped {headers, code, body}, where `body` is the
-// response's raw JSON text. During static analysis no real HTTP call happens and no callback
-// fires, so callers only get here with a real captured response.
-function extractResponseBody(response) {
-  if (response === undefined || response === null) return null;
-  var bodyText = response.body;
-  if (typeof bodyText !== "string") return null;
-  try { return JSON.parse(bodyText); } catch (err) { return null; }
-}
-
+// extractResponseBody now lives in lib/utils.js.
 
 //////////////////////////////////////////////////////////////////////////
 // Broad event classifiers.
@@ -327,70 +251,12 @@ var AnyHoldDeleted = bp.EventSet("Any Holds Deleted", function (e) {
 });
 
 
-//////////////////////////////////////////////////////////////////////////
-// SUT list readers and verification helpers.
-//
-// Verification functions read the real SUT state and assert that it matches
-// the scenario expectation. They are intentionally kept in the interface
-// layer because they are REST-facing checks, not Context model updates.
-//////////////////////////////////////////////////////////////////////////
-
-function readSutList(listName, url, parameters) {
-  try {
-    var requestParameters = parameters || {};
-    if (requestParameters.description === undefined || requestParameters.description === null) {
-      requestParameters.description = "Verify: read " + listName + " list";
-    }
-    var response = svc.get(url, { parameters: requestParameters, expectedResponseCodes: [200] });
-    if (response === undefined || response === null) return null;
-    if (response.lib === "REST" || response.method !== undefined) return null;
-    if (response.data && (response.data.lib === "REST" || response.data.method !== undefined)) return null;
-    var listData = (typeof response === "string") ? JSON.parse(response) : response;
-    if (!Array.isArray(listData) && listData && typeof listData.body === "string") listData = JSON.parse(listData.body);
-    if (!Array.isArray(listData) && listData && Array.isArray(listData.data)) listData = listData.data;
-    if (!Array.isArray(listData) && listData && Array.isArray(listData.items)) listData = listData.items;
-    if (!Array.isArray(listData) && listData && Array.isArray(listData.results)) listData = listData.results;
-    if (Array.isArray(listData)) return listData;
-    pvg.fail("Could not inspect " + listName + " response as a SUT list");
-  } catch (err) {
-    if (String(err).indexOf("EndOfContextException") !== -1) return null;
-    pvg.fail("Failed to read " + listName + " from the SUT: " + err);
-  }
-}
-
-function verifySutListContains(listName, url, parameters, predicate, failureMessage, stillRelevant) {
-  // Verification is executed against the SUT by fetching only the requested SUT list slice before inspecting it.
-  var listData = readSutList(listName, url, parameters);
-  if (listData === null) return;
-  var found = listData.find(predicate);
-  // stillRelevant re-checks that the entity is expected to exist at the moment of the read: a
-  // concurrent (legitimate) deletion between when this verification was offered and when the GET
-  // actually ran would otherwise read as a false failure instead of a moot check.
-  if (!found && (!stillRelevant || stillRelevant())) pvg.fail(failureMessage);
-}
-
-function verifySutListDoesNotContain(listName, url, parameters, predicate, failureMessage) {
-  // Verification is executed against the SUT by fetching only the requested SUT list slice before inspecting it.
-  var listData = readSutList(listName, url, parameters);
-  if (listData === null) return;
-  var found = listData.find(predicate);
-  if (found) pvg.fail(failureMessage + ": " + JSON.stringify(found));
-}
-
-function tryToUpdateAndExpectError(entityName, id, url, body, expectedCode) {
-  expectedCode = expectedCode === undefined || expectedCode === null ? 405 : asInteger(expectedCode);
-  var description = verifyRejectedDescription(entityName, id, "update", "this API does not expose update routes");
-  svc.put(url, { body: JSON.stringify(body || {}), expectedResponseCodes: [expectedCode], parameters: { description: description } });
-}
+// readSutList, verifySutListContains, verifySutListDoesNotContain, tryToUpdateAndExpectError,
+// and verifyMissingEntityReadIsRejected now live in lib/utils.js.
 
 // Malformed-delete and malformed-read rejection cases are covered by the dynamic valid/invalid
 // loops inside deleteBook/deleteUser/deleteLoan/deleteHold and verifyBookDetailExists, so this
 // file has no separate verifyMalformedDeleteIsRejected/verifyMalformedReadIsRejected helpers.
-
-function verifyMissingEntityReadIsRejected(entityName, id, url) {
-  var description = verifyRejectedDescription(entityName, id, "read", "the entity does not exist");
-  svc.get(url, { expectedResponseCodes: [404], parameters: { description: description } });
-}
 
 // The /books, /users, and /holds search endpoints accept any `q` value and always answer 200 (no
 // format validation), so verifyBookExists/verifyUserExists/verifyHoldExists below have no
