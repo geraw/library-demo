@@ -9,11 +9,11 @@
 //////////////////////////////////////////////////////////////////////////
 
 function bookId(id) {
-	return id;
+	return "book:" + id;
 }
 
 function userId(id) {
-	return id;
+	return "user:" + id;
 }
 
 function loanId(userIdValue, bookIdValue) {
@@ -93,7 +93,7 @@ function createBookEntity(data) {
 
 	let allusers = ctx.runQuery('User.All');
 	for (let u of allusers) {
-		createUserBook(u.id, data.id);
+		createUserBook(u.userid, data.id);
 	}
 }
 
@@ -116,7 +116,7 @@ function createUserEntity(data) {
 
 	let allbooks = ctx.runQuery('Book.All');
 	for (let b of allbooks) {
-		createUserBook(data.id, b.id);
+		createUserBook(data.id, b.bookid);
 	}
 }
 
@@ -202,11 +202,11 @@ ctx.registerQuery('Book.All', function (e) {
 });
 
 ctx.registerQuery('Book.CanDelete', function (e) {
-	return e.type === 'book' && !hasLoanForBook(e.id) && !hasHoldForBook(e.id);
+	return e.type === 'book' && !hasLoanForBook(e.bookid) && !hasHoldForBook(e.bookid);
 });
 
 ctx.registerQuery('Book.CannotDelete', function (e) {
-	return e.type === 'book' && (hasLoanForBook(e.id) || hasHoldForBook(e.id));
+	return e.type === 'book' && (hasLoanForBook(e.bookid) || hasHoldForBook(e.bookid));
 });
 
 ctx.registerQuery('User.All', function (e) {
@@ -230,11 +230,11 @@ ctx.registerQuery('UserBook.All', function (e) {
 });
 
 ctx.registerQuery('User.CanDelete', function (e) {
-	return e.type === 'user' && !hasLoanForUser(e.id) && !hasHoldForUser(e.id);
+	return e.type === 'user' && !hasLoanForUser(e.userid) && !hasHoldForUser(e.userid);
 });
 
 ctx.registerQuery('User.CannotDelete', function (e) {
-	return e.type === 'user' && (hasLoanForUser(e.id) || hasHoldForUser(e.id));
+	return e.type === 'user' && (hasLoanForUser(e.userid) || hasHoldForUser(e.userid));
 });
 
 ctx.registerQuery('UserBook.CanCreateHold', function (e) {

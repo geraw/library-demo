@@ -62,17 +62,17 @@ function generateMissingId(existingId) {
 /////////////////////////////////////////////////////////////////////////
 
 ctx.bthread("verifyUserExistsAfterCreation", "User.All", function (user) {
-  block(matchDeleteUser(user.id), function () {
+  block(matchDeleteUser(user.userid), function () {
     // stillRelevant is a defense-in-depth check for the block() guard above: block() has a
     // narrow gap where an offered "verify" event can still lose the race to a legitimate
     // concurrent deletion (see verifyBookExistsAfterCreation below for the observed case), so
     // the verify functions re-check the entity is still expected to exist before failing.
-    verifyUserExists(user.id, function () { return entityExists('User.All', userId(user.id)); });
+    verifyUserExists(user.userid, function () { return entityExists('User.All', userId(user.userid)); });
   });
 });
 
 ctx.bthread("verifyCannotDeleteUser", "User.CannotDelete", function (user) {
-  tryToDeleteUserAndExpectError(user.id);
+  tryToDeleteUserAndExpectError(user.userid);
 });
 
 ctx.bthread("verifyUserDeletion", function () {
@@ -87,7 +87,7 @@ ctx.bthread("verifyUserDeletion", function () {
 });
 
 ctx.bthread("verifyBookExistsAfterCreation", "Book.All", function (book) {
-  block(matchDeleteBook(book.id), function () {
+  block(matchDeleteBook(book.bookid), function () {
     // block(matchDeleteBook(...)) is meant to keep this book's real DELETE from actuating while
     // we verify, but the offered "verify" events themselves can sit unselected for many
     // synchronization rounds (other b-threads keep running while this one waits), and that
@@ -95,9 +95,9 @@ ctx.bthread("verifyBookExistsAfterCreation", "Book.All", function (book) {
     // verifyBookDetailExists's fuzz-retry loop was still mid-flight, turning an expected 200 into
     // an unexpected 404. stillRelevant lets the verify functions bail out quietly instead of
     // failing when the entity legitimately stopped existing while we were waiting our turn.
-    var stillExists = function () { return entityExists('Book.All', bookId(book.id)); };
-    verifyBookExists(book.id, stillExists);
-    verifyBookDetailExists(book.id, stillExists);
+    var stillExists = function () { return entityExists('Book.All', bookId(book.bookid)); };
+    verifyBookExists(book.bookid, stillExists);
+    verifyBookDetailExists(book.bookid, stillExists);
   });
 });
 
@@ -107,7 +107,7 @@ bthread("verifyBookDeletion", function () {
 
     block(matchAddBook(id), function () {
       verifyBookAbsentFromAllLists(id);
-      verifyMissingEntityReadIsRejected("Book", id, "/books/" + id);
+      verifyMissingEntityReadIsRejected("Book", id, "/books/" + realBookId(id));
       tryToDeleteDeletedBookAndExpectError(id);
     });
   });
@@ -199,9 +199,11 @@ ctx.bthread("createHold", "UserBook.CanCreateHold", function (userbook) {
   });
 });
 
-ctx.bthread("verifyCannotCreateHold", "UserBook.CannotCreateHold", function (userbook) {
-  tryToCreateHoldWithSameIdAndExpectError(userbook.bookid, generateHoldId(), userbook.userid);
-});
+// verifyCannotCreateHold was removed: the SUT now assigns the hold's id itself and silently
+// ignores any client-supplied "id" field, so there is no client-chosen id left that could
+// collide with an existing one. See the RTV helpers (realHoldId etc.) in interfaces.library.js.
+// (UserBook.CannotCreateHold has always returned false - unlike loans, nothing makes a user-book
+// pair permanently ineligible to hold - so this bthread never actually fired.)
 
 
 /////////////////////////////////////////////////////////////////////////
@@ -221,15 +223,15 @@ ctx.bthread("deleteUser", "User.CanDelete", function (user) {
   // Block new holds/loans for this user while the delete offer is pending, so a
   // concurrently-created hold/loan can't turn the expected 200 into a 400 by the
   // time this offer is finally selected. See matchAddHoldOrLoanForUser.
-  block(matchAddHoldOrLoanForUser(user.id), function () {
-    deleteUser(user.id);
+  block(matchAddHoldOrLoanForUser(user.userid), function () {
+    deleteUser(user.userid);
   });
 });
 
 ctx.bthread("deleteBook", "Book.CanDelete", function (book) {
   // Same race guard as deleteUser above, for books. See matchAddHoldOrLoanForBook.
-  block(matchAddHoldOrLoanForBook(book.id), function () {
-    deleteBook(book.id);
+  block(matchAddHoldOrLoanForBook(book.bookid), function () {
+    deleteBook(book.bookid);
   });
 });
 
@@ -253,13 +255,13 @@ ctx.bthread("deleteHold", "Hold.All", function (hold) {
 // existing one. See the RTV helpers (realBookId etc.) in interfaces.library.js.
 
 ctx.bthread("verifyCannotCreateBookWithBadParameters", "Book.All", function (book) {
-  block(matchDeleteBook(book.id), function () {
-    tryToCreateBookWithBadParametersAndExpectError(book.id);
+  block(matchDeleteBook(book.bookid), function () {
+    tryToCreateBookWithBadParametersAndExpectError(book.bookid);
   });
 });
 
 ctx.bthread("verifyCannotDeleteBook", "Book.CannotDelete", function (book) {
-  tryToDeleteBookAndExpectError(book.id);
+  tryToDeleteBookAndExpectError(book.bookid);
 });
 
 ctx.bthread("verifyHoldOnlyBlocksUserAndBookDeletion", "Hold.All", function (hold) {
@@ -283,9 +285,9 @@ ctx.bthread("verifyCannotCreateLoanWithNonexistentForeignKeys", "UserBook.All", 
 
 
   // Gera: I think trying all three is too much, enough to try one of the three nondeterministically?
-  tryToCreateLoanAndExpectError(missingUserId, userbook.bookid, generateLoanId());
-  tryToCreateLoanAndExpectError(userbook.userid, missingBookId, generateLoanId());
-  tryToCreateLoanAndExpectError(missingUserId, missingBookId, generateLoanId());
+  tryToCreateLoanWithNonexistentUserAndExpectError(missingUserId, userbook.bookid, generateLoanId());
+  tryToCreateLoanWithNonexistentBookAndExpectError(userbook.userid, missingBookId, generateLoanId());
+  tryToCreateLoanWithNonexistentUserAndBookAndExpectError(missingUserId, missingBookId, generateLoanId());
 });
 
 ctx.bthread("verifyCannotCreateHoldWithBadParameters", "Hold.All", function (hold) {
@@ -297,9 +299,9 @@ ctx.bthread("verifyCannotCreateHoldWithNonexistentForeignKeys", "UserBook.All", 
   let missingBookId = generateMissingId(userbook.bookid);
 
   // Gera: I think trying all three is too much, enough to try one of the three nondeterministically?
-  tryToCreateHoldAndExpectError(userbook.bookid, generateHoldId(), missingUserId);
-  tryToCreateHoldAndExpectError(missingBookId, generateHoldId(), userbook.userid);
-  tryToCreateHoldAndExpectError(missingBookId, generateHoldId(), missingUserId);
+  tryToCreateHoldWithNonexistentUserAndExpectError(userbook.bookid, generateHoldId(), missingUserId);
+  tryToCreateHoldWithNonexistentBookAndExpectError(missingBookId, generateHoldId(), userbook.userid);
+  tryToCreateHoldWithNonexistentUserAndBookAndExpectError(missingBookId, generateHoldId(), missingUserId);
 });
 
 //////////////////////////////////////////////////////////////////////////
@@ -313,11 +315,11 @@ ctx.bthread("verifyCannotCreateHoldWithNonexistentForeignKeys", "UserBook.All", 
 
 // Gera: I think that trying nonexisting interfaces may be too much?
 ctx.bthread("verifyCannotUpdateUser", "User.All", function (user) {
-  tryToUpdateUserAndExpectError(user.id, { id: user.id, name: "Updated user " + user.id }, 405);
+  tryToUpdateUserAndExpectError(user.userid, { id: user.userid, name: "Updated user " + user.userid }, 405);
 });
 
 ctx.bthread("verifyCannotUpdateBook", "Book.All", function (book) {
-  tryToUpdateBookAndExpectError(book.id, { id: book.id, title: "Updated book " + book.id }, 405);
+  tryToUpdateBookAndExpectError(book.bookid, { id: book.bookid, title: "Updated book " + book.bookid }, 405);
 });
 
 ctx.bthread("verifyCannotUpdateLoan", "Loan.All", function (loan) {

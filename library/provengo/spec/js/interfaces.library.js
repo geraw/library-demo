@@ -226,24 +226,44 @@ function rtvKey(entityType, logicalId) {
 
 // Returns a late-bound expression. Provengo substitutes it only when the sampled
 // scenario is executed, after the corresponding create callback has populated it.
-function realId(entityType, logicalId) {
+//
+// Pass logicalRtv = true for a logicalId that was deliberately never created (e.g. via
+// generateMissingId()): its RTV key was never set, so resolving `@{...}` for it would
+// throw a ReferenceError at actuation time. In that case the plain logical id is used
+// as-is - it already can't collide with any SUT-assigned id, so no lookup is needed.
+function realId(entityType, logicalId, logicalRtv) {
+  if (logicalRtv === true) return asInteger(logicalId);
   return "@{" + rtvKey(entityType, logicalId) + "}";
 }
 
-function realUserId(logicalId) { return realId("USER", logicalId); }
-function realBookId(logicalId) { return realId("BOOK", logicalId); }
-function realLoanId(logicalId) { return realId("LOAN", logicalId); }
-function realHoldId(logicalId) { return realId("HOLD", logicalId); }
+function realUserId(logicalId, logicalRtv) { return realId("USER", logicalId, logicalRtv); }
+function realBookId(logicalId, logicalRtv) { return realId("BOOK", logicalId, logicalRtv); }
+function realLoanId(logicalId, logicalRtv) { return realId("LOAN", logicalId, logicalRtv); }
+function realHoldId(logicalId, logicalRtv) { return realId("HOLD", logicalId, logicalRtv); }
+
+// realId()'s `@{...}` expression is only substituted by the REST layer when placed into a
+// request url/body/parameter - reading it back as a plain string in a predicate that runs after
+// the response arrives (e.g. verifyBookExists) would just compare against the literal template
+// text. rtv.__eval() runs the same expression evaluator synchronously, returning the actual value
+// stored by the create callback (as a string) for use in ordinary JS comparisons at runtime.
+function realIdValue(entityType, logicalId) {
+  return asInteger(rtv.__eval(realId(entityType, logicalId)));
+}
+
+function realUserIdValue(logicalId) { return realIdValue("USER", logicalId); }
+function realBookIdValue(logicalId) { return realIdValue("BOOK", logicalId); }
+function realLoanIdValue(logicalId) { return realIdValue("LOAN", logicalId); }
+function realHoldIdValue(logicalId) { return realIdValue("HOLD", logicalId); }
 
 // Callback functions execute later than model generation. Constructing a callback
 // with the key embedded in its source avoids closing over a generation-time local.
 function rememberCreatedId(entityType, logicalId) {
   var key = rtvKey(entityType, logicalId);
-  return new Function("response",
-    "var body = JSON.parse(response.body);" +
-    "if (body.id === undefined || body.id === null) pvg.fail('Create response did not contain id');" +
-    "pvg.rtv.set(" + JSON.stringify(key) + ", body.id);"
-  );
+  return function (response) {
+    var body = JSON.parse(response.body);
+    if (body.id === undefined || body.id === null) pvg.fail("Create response did not contain id");
+    pvg.rtv.set(key, body.id);
+  };
 }
 
 // Pulls the real id the SUT assigned out of a create response. The REST library hands the actual
@@ -510,8 +530,9 @@ function verifyBookExists(logicalId, stillRelevant) {
   // Verification is executed against the SUT dataset by reading the books list and searching for this book's real id.
   logicalId = asInteger(logicalId);
   var id = realBookId(logicalId);
+  var bookRealId = realBookIdValue(logicalId);
   verifySutListContains("books", "/books", { q: asString(id), description: verifyExistsDescription("Book", logicalId, "books") }, function (item) {
-    return item && asInteger(item.id) === id;
+    return item && asInteger(item.id) === bookRealId;
   }, "Book " + logicalId + " was not found in the SUT books list", stillRelevant);
 }
 
@@ -519,14 +540,15 @@ function verifyBookAbsentFromAllLists(logicalId) {
   // Verification is executed against SUT datasets: books directly, and loans/holds indirectly by bookId.
   logicalId = asInteger(logicalId);
   var id = realBookId(logicalId);
+  var bookRealId = realBookIdValue(logicalId);
   verifySutListDoesNotContain("books", "/books", { q: asString(id), description: verifyAbsentDescription("Book", logicalId, "books") }, function (item) {
-    return item && asInteger(item.id) === id;
+    return item && asInteger(item.id) === bookRealId;
   }, "Book " + logicalId + " still appears in books list");
   verifySutListDoesNotContain("loans", "/loans", { bookId: asString(id), description: verifyAbsentDescription("Book", logicalId, "loans") }, function (item) {
-    return item && asInteger(item.bookId) === id;
+    return item && asInteger(item.bookId) === bookRealId;
   }, "Book " + logicalId + " still appears in loans list");
   verifySutListDoesNotContain("holds", "/holds", { q: asString(id), description: verifyAbsentDescription("Book", logicalId, "holds") }, function (item) {
-    return item && asInteger(item.bookId) === id;
+    return item && asInteger(item.bookId) === bookRealId;
   }, "Book " + logicalId + " still appears in holds list");
 }
 
@@ -542,8 +564,12 @@ function tryToDeleteDeletedBookAndExpectError(id) {
   tryToDeleteBookAndExpectError(id, 404);
 }
 
+// id was never created (see generateMissingId()), so it has no RTV entry: build the request
+// directly with the plain id instead of going through tryToDeleteBookAndExpectError/realBookId.
 function tryToDeleteNonexistingBookAndExpectError(id) {
-  tryToDeleteBookAndExpectError(id, 404);
+  id = asInteger(id);
+  var description = verifyRejectedDescription("Book", id, "delete", "the operation is not allowed in this state");
+  svc.delete("/books/" + id, { expectedResponseCodes: [404], parameters: { description: description } });
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -617,12 +643,10 @@ function matchDeleteHoldOrBookOrUser(holdId, bookId, userId) {
 // delete call in block(matchAddHoldOrLoanForUser/Book(...), fn) keeps the entity
 // hold/loan-free for as long as the delete offer is outstanding.
 function matchAddHoldOrLoanForUser(userId) {
+  userId = asInteger(userId);
   return bp.EventSet("Add Hold/Loan for User " + userId, function (e) {
-    var body = getJsonBody(e);
-    if (!body) return false;
-    if (AnyHoldAdded.contains(e) && asInteger(body.userId) === asInteger(userId)) return true;
-    if (AnyLoanAdded.contains(e) && asInteger(body.userId) === asInteger(userId)) return true;
-    return false;
+    if (!(AnyHoldAdded.contains(e) || AnyLoanAdded.contains(e))) return false;
+    return extractEventData(e).userId === userId;
   });
 }
 
@@ -702,13 +726,9 @@ function tryToUpdateLoanAndExpectError(userId, bookId, body, expectedCode) {
   tryToUpdateAndExpectError("Loan", userId + "/" + bookId, "/loans/" + realUserId(userId) + "/" + realBookId(bookId), body, expectedCode);
 }
 
-function createLoan(userId, logicalBookId, loanNumber, expectedCode, description) {
+function createLoan(userId, logicalBookId, loanNumber, expectedCode, description, logicalRtvUserId, logicalRtvBookId) {
   userId = asInteger(userId);
   logicalBookId = asInteger(logicalBookId);
-  if (expectedCode === undefined && (loanNumber === 201 || loanNumber === 400 || loanNumber === 404)) {
-    expectedCode = loanNumber;
-    loanNumber = null;
-  }
   loanNumber = loanNumber === undefined || loanNumber === null ? null : asInteger(loanNumber);
 
   var reqDescription = description || (createDescription("Loan", userId + "/" + logicalBookId) + (loanNumber === null ? "" : " number " + loanNumber));
@@ -716,10 +736,13 @@ function createLoan(userId, logicalBookId, loanNumber, expectedCode, description
   var parameters = { description: reqDescription, userId: userId, bookId: logicalBookId };
   if (loanNumber !== null) parameters.loanNumber = loanNumber;
   // bookId in each valid body is a placeholder (logicalBookId), overwritten with the real id in
-  // onSelected right before actuation - see the realId doc comment above.
+  // onSelected right before actuation - see the realId doc comment above. logicalRtvUserId/logicalRtvBookId
+  // are true when the caller is deliberately exercising a nonexistent foreign key (see
+  // tryToCreateLoanWithNonexistent{User,Book,UserAndBook}AndExpectError): that id was never
+  // created and has no RTV entry.
   var variants = [
-    { name: "createLoan (valid-standard): " + userId + "/" + logicalBookId, body: { userId: realUserId(userId), bookId: realBookId(logicalBookId) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 && loanNumber !== null ? rememberCreatedId("LOAN", loanNumber) : undefined, valid: true },
-    { name: "createLoan (valid-swapped-order): " + userId + "/" + logicalBookId, body: { bookId: realBookId(logicalBookId), userId: realUserId(userId) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 && loanNumber !== null ? rememberCreatedId("LOAN", loanNumber) : undefined, valid: true }
+    { name: "createLoan (valid-standard): " + userId + "/" + logicalBookId, body: { userId: realUserId(userId, logicalRtvUserId), bookId: realBookId(logicalBookId, logicalRtvBookId) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 && loanNumber !== null ? rememberCreatedId("LOAN", loanNumber) : undefined, valid: true },
+    { name: "createLoan (valid-swapped-order): " + userId + "/" + logicalBookId, body: { bookId: realBookId(logicalBookId, logicalRtvBookId), userId: realUserId(userId, logicalRtvUserId) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 && loanNumber !== null ? rememberCreatedId("LOAN", loanNumber) : undefined, valid: true }
   ];
 
   var invalidCases = [
@@ -755,6 +778,23 @@ function createLoan(userId, logicalBookId, loanNumber, expectedCode, description
 function tryToCreateLoanAndExpectError(userId, bookId, loanNumber, expectedCode) {
   expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
   return createLoan(userId, bookId, loanNumber, expectedCode, verifyRejectedDescription("Loan", userId + "/" + bookId, "create", "the operation is not allowed in this state"));
+}
+
+// missingUserId/bookId/missingBookId were never created (see generateMissingId()), so they have no
+// RTV entry; createLoan is told which argument(s) to send as a plain id instead of resolving one.
+function tryToCreateLoanWithNonexistentUserAndExpectError(missingUserId, bookId, loanNumber, expectedCode) {
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  return createLoan(missingUserId, bookId, loanNumber, expectedCode, verifyRejectedDescription("Loan", missingUserId + "/" + bookId, "create", "the operation is not allowed in this state"), true, false);
+}
+
+function tryToCreateLoanWithNonexistentBookAndExpectError(userId, missingBookId, loanNumber, expectedCode) {
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  return createLoan(userId, missingBookId, loanNumber, expectedCode, verifyRejectedDescription("Loan", userId + "/" + missingBookId, "create", "the operation is not allowed in this state"), false, true);
+}
+
+function tryToCreateLoanWithNonexistentUserAndBookAndExpectError(missingUserId, missingBookId, loanNumber, expectedCode) {
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  return createLoan(missingUserId, missingBookId, loanNumber, expectedCode, verifyRejectedDescription("Loan", missingUserId + "/" + missingBookId, "create", "the operation is not allowed in this state"), true, true);
 }
 
 function tryToCreateLoanWithBadParametersAndExpectError(userId, expectedCode) {
@@ -818,7 +858,9 @@ function verifyLoanExists(logicalBookId, userId, stillRelevant) {
       var listData = typeof response === "string" ? JSON.parse(response) : response;
       if (!Array.isArray(listData) && listData && typeof listData.body === "string") listData = JSON.parse(listData.body);
       if (!Array.isArray(listData) && listData && Array.isArray(listData.data)) listData = listData.data;
-      var stillFound = Array.isArray(listData) && listData.some(function (item) { return item && asInteger(item.userId) === userId && asInteger(item.bookId) === bookId; });
+      var userRealId = realUserIdValue(userId);
+      var bookRealId = realBookIdValue(logicalBookId);
+      var stillFound = Array.isArray(listData) && listData.some(function (item) { return item && asInteger(item.userId) === userRealId && asInteger(item.bookId) === bookRealId; });
       if (!stillFound && (!stillRelevant || stillRelevant())) {
         pvg.fail("Loan " + userId + "/" + bookId + " was not found in the SUT loans list");
       }
@@ -830,13 +872,15 @@ function verifyLoanExists(logicalBookId, userId, stillRelevant) {
 function verifyLoanAbsentFromAllLists(logicalBookId, userId) {
   // Verification is executed against the SUT dataset by reading the loans list and confirming the loan is absent.
   var bookId = logicalBookId === undefined || logicalBookId === null ? null : realBookId(logicalBookId);
+  var bookRealId = logicalBookId === undefined || logicalBookId === null ? null : realBookIdValue(logicalBookId);
   userId = asInteger(userId);
+  var userRealId = realUserIdValue(userId);
   var loanId = userId + (bookId === null ? "" : "/" + bookId);
   var parameters = { userId: realUserId(userId), description: verifyAbsentDescription("Loan", loanId, "loans") };
   if (bookId !== null) parameters.bookId = asString(bookId);
   verifySutListDoesNotContain("loans", "/loans", parameters, function (item) {
-    if (!item || asInteger(item.userId) !== userId) return false;
-    return bookId === null || asInteger(item.bookId) === bookId;
+    if (!item || asInteger(item.userId) !== userRealId) return false;
+    return bookRealId === null || asInteger(item.bookId) === bookRealId;
   }, "Loan " + userId + (bookId === null ? "" : "/" + bookId) + " still appears in loans list");
 }
 
@@ -853,15 +897,21 @@ function tryToDeleteDeletedLoanAndExpectError(userId, bookId) {
   tryToDeleteLoanAndExpectError(userId, bookId, 404);
 }
 
+// userId/bookId were never created (see generateMissingId()), so they have no RTV entry: build the
+// request directly with the plain ids instead of going through tryToDeleteLoanAndExpectError/realId.
 function tryToDeleteNonexistingLoanAndExpectError(userId, bookId) {
-  tryToDeleteLoanAndExpectError(userId, bookId, 404);
+  userId = asInteger(userId);
+  bookId = asInteger(bookId);
+  var description = verifyRejectedDescription("Loan", userId + "/" + bookId, "delete", "the operation is not allowed in this state");
+  svc.delete("/loans/" + userId + "/" + bookId, { expectedResponseCodes: [404], parameters: { description: description } });
 }
 
 function matchAddLoan(userId) {
+  userId = asInteger(userId);
   return bp.EventSet("Add Loan " + userId, function (e) {
-    var body = getJsonBody(e);
-    if (e.name === "POST" && getRequestPath(e) === "/loans" && hasExpectedCode(e, 201) && body && asInteger(body.userId) === asInteger(userId)) return true;
-    return isValidRequestEvent(e, "createLoan") && e.data.body && asInteger(e.data.body.userId) === asInteger(userId);
+    var parameters = e && e.data && e.data.parameters;
+    if (e.name === "POST" && getRequestPath(e) === "/loans" && hasExpectedCode(e, 201) && parameters && asInteger(parameters.userId) === userId) return true;
+    return isValidRequestEvent(e, "createLoan") && parameters && asInteger(parameters.userId) === userId;
   });
 }
 
@@ -976,22 +1026,24 @@ function tryToUpdateUserAndExpectError(id, body, expectedCode) {
 function verifyUserExists(id, stillRelevant) {
   // Verification is executed against the SUT dataset by reading the users list and searching for this user id.
   id = asInteger(id);
+  var userRealId = realUserIdValue(id);
   verifySutListContains("users", "/users", { q: realUserId(id), description: verifyExistsDescription("User", id, "users") }, function (item) {
-    return item && asInteger(item.id) === id;
+    return item && asInteger(item.id) === userRealId;
   }, "User " + id + " was not found in the SUT users list", stillRelevant);
 }
 
 function verifyUserAbsentFromAllLists(id) {
   // Verification is executed against SUT datasets: users directly, and loans/holds indirectly by userId.
   id = asInteger(id);
+  var userRealId = realUserIdValue(id);
   verifySutListDoesNotContain("users", "/users", { q: realUserId(id), description: verifyAbsentDescription("User", id, "users") }, function (item) {
-    return item && asInteger(item.id) === id;
+    return item && asInteger(item.id) === userRealId;
   }, "User " + id + " still appears in users list");
   verifySutListDoesNotContain("loans", "/loans", { userId: realUserId(id), description: verifyAbsentDescription("User", id, "loans") }, function (item) {
-    return item && asInteger(item.userId) === id;
+    return item && asInteger(item.userId) === userRealId;
   }, "User " + id + " still appears in loans list");
   verifySutListDoesNotContain("holds", "/holds", { q: realUserId(id), description: verifyAbsentDescription("User", id, "holds") }, function (item) {
-    return item && asInteger(item.userId) === id;
+    return item && asInteger(item.userId) === userRealId;
   }, "User " + id + " still appears in holds list");
 }
 
@@ -1007,8 +1059,12 @@ function tryToDeleteDeletedUserAndExpectError(id) {
   tryToDeleteUserAndExpectError(id, 404);
 }
 
+// id was never created (see generateMissingId()), so it has no RTV entry: build the request
+// directly with the plain id instead of going through tryToDeleteUserAndExpectError/realUserId.
 function tryToDeleteNonexistingUserAndExpectError(id) {
-  tryToDeleteUserAndExpectError(id, 404);
+  id = asInteger(id);
+  var description = verifyRejectedDescription("User", id, "delete", "the operation is not allowed in this state");
+  svc.delete("/users/" + id, { expectedResponseCodes: [404], parameters: { description: description } });
 }
 
 function matchAddUser(id) {
@@ -1034,7 +1090,7 @@ function matchAnyUserDeleted() {
   return AnyUserDeleted;
 }
 
-function createHold(logicalBookId, id, userId, expectedCode, description) {
+function createHold(logicalBookId, id, userId, expectedCode, description, logicalRtvBookId, logicalRtvUserId) {
   logicalBookId = asInteger(logicalBookId);
   id = asInteger(id);
   userId = asInteger(userId);
@@ -1043,33 +1099,33 @@ function createHold(logicalBookId, id, userId, expectedCode, description) {
   expectedCode = expectedCode === undefined || expectedCode === null ? 201 : asInteger(expectedCode);
   var parameters = { description: reqDescription, id: id, userId: userId, bookId: logicalBookId };
   // bookId in each valid body is a placeholder (logicalBookId), overwritten with the real id in
-  // onSelected right before actuation - see the realId doc comment above.
+  // onSelected right before actuation - see the realId doc comment above. logicalRtvBookId/logicalRtvUserId
+  // are true when the caller is deliberately exercising a nonexistent foreign key (see
+  // tryToCreateHoldWithNonexistent{User,Book,UserAndBook}AndExpectError): that id was never
+  // created and has no RTV entry.
   var variants = [
-    { name: "createHold (valid-standard): " + id, body: { userId: realUserId(userId), bookId: realBookId(logicalBookId) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 ? rememberCreatedId("HOLD", id) : undefined, valid: true },
-    { name: "createHold (valid-swapped-order): " + id, body: { bookId: realBookId(logicalBookId), userId: realUserId(userId) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 ? rememberCreatedId("HOLD", id) : undefined, valid: true }
+    { name: "createHold (valid-standard): " + id, body: { userId: realUserId(userId, logicalRtvUserId), bookId: realBookId(logicalBookId, logicalRtvBookId) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 ? rememberCreatedId("HOLD", id) : undefined, valid: true },
+    { name: "createHold (valid-swapped-order): " + id, body: { bookId: realBookId(logicalBookId, logicalRtvBookId), userId: realUserId(userId, logicalRtvUserId) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 ? rememberCreatedId("HOLD", id) : undefined, valid: true }
   ];
 
+  // No id-related cases: the SUT assigns the hold's real id itself (see sut.py's POST /holds,
+  // which reads only userId/bookId from the payload) and silently ignores any client-supplied
+  // "id" field, so there is no rejectable invalid id left to fuzz - matching createBook above.
   var invalidCases = [
-    { name: "missing bookId", body: { "id": id, "userId": userId } },
-    { name: "missing userId", body: { "id": id, "bookId": logicalBookId } },
-    { name: "missing id", body: { "userId": userId, "bookId": logicalBookId } },
+    { name: "missing bookId", body: { "userId": userId } },
+    { name: "missing userId", body: { "bookId": logicalBookId } },
     { name: "missing all required fields", body: {} },
-    { name: "id has wrong type", body: { "id": "bad-hold-id", "userId": userId, "bookId": logicalBookId } },
-    { name: "userId has wrong type", body: { "id": id, "userId": "bad-user-id", "bookId": logicalBookId } },
-    { name: "bookId has wrong type", body: { "id": id, "userId": userId, "bookId": "bad-book-id" } },
-    { name: "multiple wrong types", body: { "id": true, "userId": false, "bookId": "bad-book-id" } },
-    { name: "id is null", body: { "id": null, "userId": userId, "bookId": logicalBookId } },
-    { name: "userId is null", body: { "id": id, "userId": null, "bookId": logicalBookId } },
-    { name: "bookId is null", body: { "id": id, "userId": userId, "bookId": null } },
-    { name: "id is zero", body: { "id": 0, "userId": userId, "bookId": logicalBookId } },
-    { name: "userId is zero", body: { "id": id, "userId": 0, "bookId": logicalBookId } },
-    { name: "bookId is zero", body: { "id": id, "userId": userId, "bookId": 0 } },
-    { name: "id is negative", body: { "id": -id, "userId": userId, "bookId": logicalBookId } },
-    { name: "userId is negative", body: { "id": id, "userId": -userId, "bookId": logicalBookId } },
-    { name: "bookId is negative", body: { "id": id, "userId": userId, "bookId": -logicalBookId } },
-    { name: "id is object", body: { "id": { "val": id }, "userId": userId, "bookId": logicalBookId } },
-    { name: "userId is object", body: { "id": id, "userId": { "val": userId }, "bookId": logicalBookId } },
-    { name: "bookId is object", body: { "id": id, "userId": userId, "bookId": { "val": logicalBookId } } }
+    { name: "userId has wrong type", body: { "userId": "bad-user-id", "bookId": logicalBookId } },
+    { name: "bookId has wrong type", body: { "userId": userId, "bookId": "bad-book-id" } },
+    { name: "multiple wrong types", body: { "userId": false, "bookId": "bad-book-id" } },
+    { name: "userId is null", body: { "userId": null, "bookId": logicalBookId } },
+    { name: "bookId is null", body: { "userId": userId, "bookId": null } },
+    { name: "userId is zero", body: { "userId": 0, "bookId": logicalBookId } },
+    { name: "bookId is zero", body: { "userId": userId, "bookId": 0 } },
+    { name: "userId is negative", body: { "userId": -userId, "bookId": logicalBookId } },
+    { name: "bookId is negative", body: { "userId": userId, "bookId": -logicalBookId } },
+    { name: "userId is object", body: { "userId": { "val": userId }, "bookId": logicalBookId } },
+    { name: "bookId is object", body: { "userId": userId, "bookId": { "val": logicalBookId } } }
   ];
 
   variants = variants.concat(invalidCases.map(function(c) {
@@ -1090,9 +1146,21 @@ function tryToCreateHoldAndExpectError(bookId, id, userId, expectedCode) {
   return createHold(bookId, id, userId, expectedCode, verifyRejectedDescription("Hold", id, "create", "the operation is not allowed in this state"));
 }
 
-function tryToCreateHoldWithSameIdAndExpectError(bookId, id, userId, expectedCode) {
+// missingBookId/userId/missingUserId were never created (see generateMissingId()), so they have no
+// RTV entry; createHold is told which argument(s) to send as a plain id instead of resolving one.
+function tryToCreateHoldWithNonexistentUserAndExpectError(bookId, id, missingUserId, expectedCode) {
   expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
-  return createHold(bookId, id, userId, expectedCode, verifyRejectedDescription("Hold", id, "create", "the id already exists"));
+  return createHold(bookId, id, missingUserId, expectedCode, verifyRejectedDescription("Hold", id, "create", "the operation is not allowed in this state"), false, true);
+}
+
+function tryToCreateHoldWithNonexistentBookAndExpectError(missingBookId, id, userId, expectedCode) {
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  return createHold(missingBookId, id, userId, expectedCode, verifyRejectedDescription("Hold", id, "create", "the operation is not allowed in this state"), true, false);
+}
+
+function tryToCreateHoldWithNonexistentUserAndBookAndExpectError(missingBookId, id, missingUserId, expectedCode) {
+  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  return createHold(missingBookId, id, missingUserId, expectedCode, verifyRejectedDescription("Hold", id, "create", "the operation is not allowed in this state"), true, true);
 }
 
 function tryToCreateHoldWithBadParametersAndExpectError(id, userId, expectedCode) {
@@ -1101,26 +1169,23 @@ function tryToCreateHoldWithBadParametersAndExpectError(id, userId, expectedCode
   expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
   var url = "/holds";
   var reqDescription = verifyRejectedDescription("Hold", id, "create", "required parameters are missing or invalid");
+  // No id-related cases: the SUT assigns the hold's real id itself and silently ignores any
+  // client-supplied "id" field (see createHold above), so there is no rejectable invalid id left
+  // to fuzz, and no reason to send one on the wire.
   var cases = [
-    { name: "missing bookId", body: { "id": id, "userId": userId } },
-    { name: "missing userId", body: { "id": id, "bookId": userId } },
-    { name: "missing id", body: { "userId": userId, "bookId": userId } },
+    { name: "missing bookId", body: { "userId": userId } },
+    { name: "missing userId", body: { "bookId": userId } },
     { name: "missing all required fields", body: {} },
-    { name: "id has wrong type", body: { "id": "bad-hold-id", "userId": userId, "bookId": userId } },
-    { name: "userId has wrong type", body: { "id": id, "userId": "bad-user-id", "bookId": userId } },
-    { name: "bookId has wrong type", body: { "id": id, "userId": userId, "bookId": "bad-book-id" } },
-    { name: "multiple wrong types", body: { "id": true, "userId": false, "bookId": "bad-book-id" } },
-    { name: "parameters have swapped invalid values", body: { "bookId": id, "id": "Hold " + id, "userId": "User " + userId } },
-    { name: "id is null", body: { "id": null, "userId": userId, "bookId": userId } },
-    { name: "userId is null", body: { "id": id, "userId": null, "bookId": userId } },
-    { name: "bookId is null", body: { "id": id, "userId": userId, "bookId": null } },
-    { name: "id is zero", body: { "id": 0, "userId": userId, "bookId": userId } },
-    { name: "userId is zero", body: { "id": id, "userId": 0, "bookId": userId } },
-    { name: "bookId is zero", body: { "id": id, "userId": userId, "bookId": 0 } },
-    { name: "id is negative", body: { "id": -id, "userId": userId, "bookId": userId } },
-    { name: "userId is negative", body: { "id": id, "userId": -userId, "bookId": userId } },
-    { name: "bookId is negative", body: { "id": id, "userId": userId, "bookId": -userId } },
-    { name: "unexpected field", body: { "id": id, "userId": userId, "bookId": userId, "unexpected": "value" } }
+    { name: "userId has wrong type", body: { "userId": "bad-user-id", "bookId": userId } },
+    { name: "bookId has wrong type", body: { "userId": userId, "bookId": "bad-book-id" } },
+    { name: "multiple wrong types", body: { "userId": false, "bookId": "bad-book-id" } },
+    { name: "userId is null", body: { "userId": null, "bookId": userId } },
+    { name: "bookId is null", body: { "userId": userId, "bookId": null } },
+    { name: "userId is zero", body: { "userId": 0, "bookId": userId } },
+    { name: "bookId is zero", body: { "userId": userId, "bookId": 0 } },
+    { name: "userId is negative", body: { "userId": -userId, "bookId": userId } },
+    { name: "bookId is negative", body: { "userId": userId, "bookId": -userId } },
+    { name: "unexpected field", body: { "userId": userId, "bookId": userId, "unexpected": "value" } }
   ];
   var variants = cases.map(function (c) {
     return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
@@ -1173,16 +1238,18 @@ function tryToUpdateHoldAndExpectError(id, userId, bookId, body, expectedCode) {
 function verifyHoldExists(id, stillRelevant) {
   // Verification is executed against the SUT dataset by reading the holds list and searching for this hold id.
   id = asInteger(id);
+  var holdRealId = realHoldIdValue(id);
   verifySutListContains("holds", "/holds", { q: realHoldId(id), description: verifyExistsDescription("Hold", id, "holds") }, function (item) {
-    return item && asInteger(item.id) === id;
+    return item && asInteger(item.id) === holdRealId;
   }, "Hold " + id + " was not found in the SUT holds list", stillRelevant);
 }
 
 function verifyHoldAbsentFromAllLists(id) {
   // Verification is executed against the SUT dataset by confirming this hold id is absent from the holds list.
   id = asInteger(id);
+  var holdRealId = realHoldIdValue(id);
   verifySutListDoesNotContain("holds", "/holds", { q: realHoldId(id), description: verifyAbsentDescription("Hold", id, "holds") }, function (item) {
-    return item && asInteger(item.id) === id;
+    return item && asInteger(item.id) === holdRealId;
   }, "Hold " + id + " still appears in holds list");
 }
 
@@ -1198,8 +1265,12 @@ function tryToDeleteDeletedHoldAndExpectError(id) {
   tryToDeleteHoldAndExpectError(id, 404);
 }
 
+// id was never created (see generateMissingId()), so it has no RTV entry: build the request
+// directly with the plain id instead of going through tryToDeleteHoldAndExpectError/realHoldId.
 function tryToDeleteNonexistingHoldAndExpectError(id) {
-  tryToDeleteHoldAndExpectError(id, 404);
+  id = asInteger(id);
+  var description = verifyRejectedDescription("Hold", id, "delete", "the operation is not allowed in this state");
+  svc.delete("/holds/" + id, { expectedResponseCodes: [404], parameters: { description: description } });
 }
 
 function matchAddHold(id) {
