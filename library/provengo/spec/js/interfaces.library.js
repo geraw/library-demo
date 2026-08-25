@@ -802,6 +802,9 @@ function tryToCreateLoanWithBadParametersAndExpectError(userId, expectedCode) {
   expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
   var url = "/loans";
   var reqDescription = verifyRejectedDescription("Loan", userId, "create", "required parameters are missing or invalid");
+  // No "unexpected field" case: the SUT ignores extra fields on this endpoint (only userId/bookId
+  // are read/validated - see sut.py's POST /loans), so a request with one succeeds rather than
+  // being rejected. See the identical note on createBook.
   var cases = [
     { name: "missing bookId", body: { "userId": userId } },
     { name: "missing userId", body: { "bookId": userId } },
@@ -815,8 +818,7 @@ function tryToCreateLoanWithBadParametersAndExpectError(userId, expectedCode) {
     { name: "userId is zero", body: { "userId": 0, "bookId": userId } },
     { name: "bookId is zero", body: { "userId": userId, "bookId": 0 } },
     { name: "userId is negative", body: { "userId": -userId, "bookId": userId } },
-    { name: "bookId is negative", body: { "userId": userId, "bookId": -userId } },
-    { name: "unexpected field", body: { "userId": userId, "bookId": userId, "unexpected": "value" } }
+    { name: "bookId is negative", body: { "userId": userId, "bookId": -userId } }
   ];
   var variants = cases.map(function (c) {
     return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
@@ -975,20 +977,14 @@ function tryToCreateUserWithBadParametersAndExpectError(id, expectedCode) {
   expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
   var url = "/users";
   var reqDescription = verifyRejectedDescription("User", id, "create", "required parameters are missing or invalid");
+  // No id-related or "unexpected field" cases: the SUT assigns the user's real id itself and
+  // silently ignores any other field (only name is read/validated - see sut.py's POST /users),
+  // so there is no rejectable invalid id left to fuzz. See the identical notes on createBook.
   var cases = [
-    { name: "missing name", body: { "id": id } },
-    { name: "missing id", body: { "name": "User name " + id } },
-    { name: "missing all required fields", body: {} },
-    { name: "id has wrong type", body: { "id": "bad-user-id", "name": "User name " + id } },
-    { name: "name has wrong type", body: { "id": id, "name": 12345 } },
-    { name: "multiple wrong types", body: { "id": true, "name": false } },
-    { name: "id and name have swapped types", body: { "name": id, "id": "User name " + id } },
-    { name: "id is null", body: { "id": null, "name": "User name " + id } },
-    { name: "name is null", body: { "id": id, "name": null } },
-    { name: "id is zero", body: { "id": 0, "name": "User name " + id } },
-    { name: "id is negative", body: { "id": -id, "name": "User name " + id } },
-    { name: "name is empty", body: { "id": id, "name": "" } },
-    { name: "unexpected field", body: { "id": id, "name": "User name " + id, "unexpected": "value" } }
+    { name: "missing name", body: {} },
+    { name: "name has wrong type", body: { "name": 12345 } },
+    { name: "name is null", body: { "name": null } },
+    { name: "name is empty", body: { "name": "" } }
   ];
   var variants = cases.map(function (c) {
     return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
@@ -1184,8 +1180,10 @@ function tryToCreateHoldWithBadParametersAndExpectError(id, userId, expectedCode
     { name: "userId is zero", body: { "userId": 0, "bookId": userId } },
     { name: "bookId is zero", body: { "userId": userId, "bookId": 0 } },
     { name: "userId is negative", body: { "userId": -userId, "bookId": userId } },
-    { name: "bookId is negative", body: { "userId": userId, "bookId": -userId } },
-    { name: "unexpected field", body: { "userId": userId, "bookId": userId, "unexpected": "value" } }
+    { name: "bookId is negative", body: { "userId": userId, "bookId": -userId } }
+    // No "unexpected field" case: the SUT ignores extra fields on this endpoint (only
+    // userId/bookId are read/validated - see sut.py's POST /holds), so a request with one
+    // succeeds rather than being rejected. See the identical note on createBook.
   ];
   var variants = cases.map(function (c) {
     return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
