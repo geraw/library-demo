@@ -2,13 +2,17 @@ const NUMBER_OF_USERS = 3;
 const NUMBER_OF_BOOKS = 3;
 
 const RANDOM = new java.util.Random();
+var nextUserId = 1;
+var nextBookId = 1;
+var nextLoanId = 1;
+var nextHoldId = 1;
 
 function randomInt() {
   return RANDOM.nextInt(999999);
 }
 
 function generateUserId() {
-  return randomInt();
+  return nextUserId++;
 }
 
 function generateUserName() {
@@ -16,7 +20,7 @@ function generateUserName() {
 }
 
 function generateBookId() {
-  return randomInt();
+  return nextBookId++;
 }
 
 function generateBookTitle() {
@@ -24,11 +28,11 @@ function generateBookTitle() {
 }
 
 function generateLoanId() {
-  return randomInt();
+  return nextLoanId++;
 }
 
 function generateHoldId() {
-  return randomInt();
+  return nextHoldId++;
 }
 
 function generateMissingId(existingId) {
@@ -65,10 +69,6 @@ ctx.bthread("verifyUserExistsAfterCreation", "User.All", function (user) {
     // the verify functions re-check the entity is still expected to exist before failing.
     verifyUserExists(user.id, function () { return entityExists('User.All', userId(user.id)); });
   });
-});
-
-ctx.bthread("verifyCannotCreateDuplicateUser", "User.All", function (user) {
-  tryToCreateUserWithSameIdAndExpectError(user.id);
 });
 
 ctx.bthread("verifyCannotDeleteUser", "User.CannotDelete", function (user) {
@@ -248,11 +248,9 @@ ctx.bthread("deleteHold", "Hold.All", function (hold) {
 // the interface layer and SUT but are not part of the basic CRUD flow above.
 //////////////////////////////////////////////////////////////////////////
 
-ctx.bthread("verifyCannotCreateDuplicateBook", "Book.All", function (book) {
-  block(matchDeleteBook(book.id), function () {
-    tryToCreateBookWithSameIdAndExpectError(book.id);
-  });
-});
+// verifyCannotCreateDuplicateBook was removed: the SUT now assigns book ids itself (see
+// generate_unique_id in sut.py), so there is no client-chosen id left that could collide with an
+// existing one. See the RTV helpers (realBookId etc.) in interfaces.library.js.
 
 ctx.bthread("verifyCannotCreateBookWithBadParameters", "Book.All", function (book) {
   block(matchDeleteBook(book.id), function () {
@@ -288,10 +286,6 @@ ctx.bthread("verifyCannotCreateLoanWithNonexistentForeignKeys", "UserBook.All", 
   tryToCreateLoanAndExpectError(missingUserId, userbook.bookid, generateLoanId());
   tryToCreateLoanAndExpectError(userbook.userid, missingBookId, generateLoanId());
   tryToCreateLoanAndExpectError(missingUserId, missingBookId, generateLoanId());
-});
-
-ctx.bthread("verifyCannotCreateDuplicateHoldId", "Hold.All", function (hold) {
-  tryToCreateHoldWithSameIdAndExpectError(hold.bookid, hold.holdid, hold.userid);
 });
 
 ctx.bthread("verifyCannotCreateHoldWithBadParameters", "Hold.All", function (hold) {

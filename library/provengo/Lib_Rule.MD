@@ -12,7 +12,8 @@ A user represents a library member.
 
 Rules:
 
-- A user can be created independently.
+- A user can be created independently. The story supplies a virtual id and the SUT assigns the
+  real id returned by the create response.
 - A user can be deleted only when the user has no active loans and no active holds.
 - If a user has an active loan, deleting that user is expected to fail with `400`.
 - After a successful user deletion, the user should not appear in users, loans, or holds lists.
@@ -30,10 +31,18 @@ A book represents a library item.
 
 Rules:
 
-- A book can be created independently.
+- A book can be created independently. Only `title` is client-supplied; the SUT assigns the
+  book's `id` itself, so there is no client-chosen id to duplicate or fuzz.
 - A book can be deleted only when the book has no active loans and no active holds.
 - After a successful book deletion, the book should not appear in books, loans, or holds lists.
 - Deleting a book that no longer exists is expected to fail with `404`.
+
+Story behavior:
+
+- Stories and the DAL address every entity by its virtual id. Each successful create callback
+  stores the SUT id in a Provengo run-time variable (`USERn`, `BOOKn`, `LOANn`, or `HOLDn`). The
+  interface layer uses late-bound `@{...}` expressions wherever an id is sent in a URL, body, or
+  query parameter.
 
 Context queries:
 
@@ -204,7 +213,7 @@ Story behavior:
 
 ## Parameter and Type Rules
 
-To support flexible integrations, SUT endpoints allow several valid options for entity IDs in request bodies:
+To support flexible integrations, SUT endpoints allow several valid options for entity IDs in request bodies. This section covers ids the client actually sends - it does not apply to a book's own `id`, which the SUT assigns (see the Book section above).
 - **Valid ID formats**: IDs (such as `id`, `userId`, `bookId`) can be passed as either a positive integer (e.g. `123`) or a string representing a positive integer (e.g. `"123"`).
 - **Parameter ordering**: The order of keys in JSON request bodies is flexible and does not affect validation.
 - **Invalid ID formats**: Passing IDs as non-integer/non-numeric-string types, such as objects (e.g., `{"val": 123}`), arrays, booleans, or null, is invalid and expected to fail with `400`.

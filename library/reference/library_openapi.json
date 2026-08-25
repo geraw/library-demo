@@ -360,46 +360,34 @@
       "UserCreate": {
         "type": "object",
         "required": [
-          "id",
           "name"
         ],
         "properties": {
-          "id": {
-            "type": "integer"
-          },
           "name": {
             "type": "string"
           }
         }
       },
       "User": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/UserCreate"
-          }
-        ]
+        "allOf": [{ "$ref": "#/components/schemas/UserCreate" }],
+        "required": ["id"],
+        "properties": { "id": { "type": "integer" } }
       },
       "BookCreate": {
         "type": "object",
         "required": [
-          "id",
           "title"
         ],
         "properties": {
-          "id": {
-            "type": "integer"
-          },
           "title": {
             "type": "string"
           }
         }
       },
       "Book": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/BookCreate"
-          }
-        ]
+        "allOf": [{ "$ref": "#/components/schemas/BookCreate" }],
+        "required": ["id"],
+        "properties": { "id": { "type": "integer" } }
       },
       "LoanCreate": {
         "type": "object",
@@ -418,7 +406,11 @@
       },
       "Loan": {
         "type": "object",
+        "required": ["id", "userId", "bookId"],
         "properties": {
+          "id": {
+            "type": "integer"
+          },
           "userId": {
             "type": "integer"
           },
@@ -434,14 +426,10 @@
       "HoldCreate": {
         "type": "object",
         "required": [
-          "hold_id",
           "userId",
           "bookId"
         ],
         "properties": {
-          "hold_id": {
-            "type": "integer"
-          },
           "userId": {
             "type": "integer"
           },
@@ -451,11 +439,9 @@
         }
       },
       "Hold": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/HoldCreate"
-          }
-        ]
+        "allOf": [{ "$ref": "#/components/schemas/HoldCreate" }],
+        "required": ["id"],
+        "properties": { "id": { "type": "integer" } }
       }
     }
   }

@@ -51,6 +51,11 @@ def parse_positive_int(value: Any, field_name: str) -> Tuple[bool, Optional[int]
     return True, numeric, None
 
 
+def generate_unique_id(existing_ids: set) -> int:
+    """Return a simple server-owned sequential id."""
+    return max(existing_ids, default=0) + 1
+
+
 def get_json_object() -> Tuple[Optional[Dict[str, Any]], Optional[Response]]:
     payload = request.get_json(silent=True)
     if not isinstance(payload, dict):
@@ -103,17 +108,11 @@ def add_user() -> tuple[Response, int]:
     if error is not None:
         return error
 
-    ok, user_id, user_err = parse_positive_int(payload.get("id"), "id")
-    if not ok:
-        return jsonify({"error": user_err}), 400
-
     name = payload.get("name")
     if not isinstance(name, str) or name == "":
         return jsonify({"error": "name must be a non-empty string"}), 400
 
-    if any(u.get("id") == user_id for u in users):
-        return jsonify({"error": "User already exists"}), 400
-
+    user_id = generate_unique_id({u["id"] for u in users})
     user = {"id": user_id, "name": name}
     users.append(user)
     logger.info(f"Added new user: {user}")
@@ -159,17 +158,11 @@ def add_book() -> tuple[Response, int]:
     if error is not None:
         return error
 
-    ok, book_id, book_err = parse_positive_int(payload.get("id"), "id")
-    if not ok:
-        return jsonify({"error": book_err}), 400
-
     title = payload.get("title")
     if not isinstance(title, str) or title == "":
         return jsonify({"error": "title must be a non-empty string"}), 400
 
-    if any(b.get("id") == book_id for b in books):
-        return jsonify({"error": "Book already exists"}), 400
-
+    book_id = generate_unique_id({b["id"] for b in books})
     book = {"id": book_id, "title": title}
     books.append(book)
     logger.info(f"Added new book: {book}")
@@ -246,7 +239,8 @@ def add_loan() -> tuple[Response, int]:
     if any(loan.get("userId") == user_id and loan.get("bookId") == book_id for loan in loans):
         return jsonify({"error": "Loan already exists"}), 400
 
-    loan = {"userId": user_id, "bookId": book_id}
+    loan_id = generate_unique_id({loan["id"] for loan in loans})
+    loan = {"id": loan_id, "userId": user_id, "bookId": book_id}
     loans.append(loan)
     logger.info(f"Added new loan: {loan}")
     return jsonify(loan), 201
@@ -307,10 +301,6 @@ def add_hold() -> tuple[Response, int]:
     if error is not None:
         return error
 
-    ok, hold_id, hold_err = parse_positive_int(payload.get("id"), "id")
-    if not ok:
-        return jsonify({"error": hold_err}), 400
-
     user_ok, user_id, user_err = parse_positive_int(payload.get("userId"), "userId")
     if not user_ok:
         return jsonify({"error": user_err}), 400
@@ -319,13 +309,12 @@ def add_hold() -> tuple[Response, int]:
     if not book_ok:
         return jsonify({"error": book_err}), 400
 
-    if any(h.get("id") == hold_id for h in holds):
-        return jsonify({"error": "Hold already exists"}), 400
     if not any(u.get("id") == user_id for u in users):
         return jsonify({"error": f"User {user_id} does not exist"}), 400
     if not any(b.get("id") == book_id for b in books):
         return jsonify({"error": f"Book {book_id} does not exist"}), 400
 
+    hold_id = generate_unique_id({hold["id"] for hold in holds})
     hold = {"id": hold_id, "userId": user_id, "bookId": book_id}
     holds.append(hold)
     logger.info(f"Added new hold: {hold}")
