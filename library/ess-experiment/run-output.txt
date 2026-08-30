@@ -1,0 +1,148 @@
+
+--- attempt 1/10 ---
+
+### Scenario: 3.1 User->Book->Hold->Loan (hold survives loan)
+    Steps: 4
+16:29:26.619 INFO [CONFIG] dal.js: Library 'Context' summoned automatically. Add "//@provengo summon context" to the top of the file to explicitly summon it. Set the auto-summon configuration key to false to disable this behavior
+  >>> step 1/4 reached via: createUser (valid-standard): 1   bindings={user=1.0}
+  >>> step 2/4 reached via: createBook (valid-spaced-title): 1   bindings={book=1.0, user=1.0}
+  >>> step 3/4 reached via: createHold (valid-swapped-order): 1   bindings={book=1.0, user=1.0}
+  >>> step 4/4 reached via: createLoan (valid-swapped-order): 1/1   bindings={book=1.0, user=1.0}
+  >>> full sequence reached, halting.
+### Result: REACHED (completed REST steps 4/4)
+
+--- attempt 1/10 ---
+
+### Scenario: 3.2 Hold by user A -> Loan on the SAME book by a DIFFERENT user B
+    Steps: 5
+16:29:27.929 INFO [CONFIG>CONFIG] dal.js: Library 'Context' summoned automatically. Add "//@provengo summon context" to the top of the file to explicitly summon it. Set the auto-summon configuration key to false to disable this behavior
+  >>> step 1/5 reached via: createUser (valid-standard): 1   bindings={user1=1.0}
+  >>> step 2/5 reached via: createBook (valid-spaced-title): 1   bindings={user1=1.0, book=1.0}
+  >>> step 3/5 reached via: createHold (valid-standard): 2   bindings={user1=1.0, book=1.0}
+  >>> step 4/5 reached via: createUser (valid-standard): 3   bindings={user1=1.0, user2=3.0, book=1.0}
+  >>> step 5/5 reached via: createLoan (valid-swapped-order): 3/1   bindings={user1=1.0, user2=3.0, book=1.0}
+  >>> full sequence reached, halting.
+### Result: REACHED (completed REST steps 5/5)
+
+--- attempt 1/10 ---
+
+### Scenario: 3.3 Loan->DeleteLoan(return)->DeleteBook
+    Steps: 5
+16:29:29.138 INFO [CONFIG>CONFIG>CONFIG] dal.js: Library 'Context' summoned automatically. Add "//@provengo summon context" to the top of the file to explicitly summon it. Set the auto-summon configuration key to false to disable this behavior
+  >>> step 1/5 reached via: createUser (valid-standard): 1   bindings={user=1.0}
+  >>> step 2/5 reached via: createBook (valid-spaced-title): 1   bindings={book=1.0, user=1.0}
+  >>> step 3/5 reached via: createLoan (valid-unexpected-field): 1/1   bindings={book=1.0, user=1.0}
+  >>> step 4/5 reached via: deleteLoan (valid): 1/1   bindings={book=1.0, user=1.0}
+  >>> step 5/5 reached via: deleteBook (valid): 1   bindings={book=1.0, user=1.0}
+  >>> full sequence reached, halting.
+### Result: REACHED (completed REST steps 5/5)
+
+--- attempt 1/10 ---
+
+### Scenario: 3.4 Loan->DeleteLoan->Loan again (same pair)
+    Steps: 5
+16:30:00.911 INFO [CONFIG>CONFIG>CONFIG>CONFIG] dal.js: Library 'Context' summoned automatically. Add "//@provengo summon context" to the top of the file to explicitly summon it. Set the auto-summon configuration key to false to disable this behavior
+  >>> step 1/5 reached via: createUser (valid-unexpected-field): 1   bindings={user=1.0}
+  >>> step 2/5 reached via: createBook (valid-unexpected-field): 1   bindings={book=1.0, user=1.0}
+  >>> step 3/5 reached via: createLoan (valid-standard): 1/1   bindings={book=1.0, user=1.0}
+  >>> step 4/5 reached via: deleteLoan (valid): 1/1   bindings={book=1.0, user=1.0}
+  >>> step 5/5 reached via: createLoan (valid-swapped-order): 1/1   bindings={book=1.0, user=1.0}
+  >>> full sequence reached, halting.
+### Result: REACHED (completed REST steps 5/5)
+
+--- attempt 1/10 ---
+
+### Scenario: 3.5 Two DIFFERENT users hold the SAME book (waiting queue)
+    Steps: 5
+16:30:34.903 INFO [CONFIG>CONFIG>CONFIG>CONFIG>CONFIG] dal.js: Library 'Context' summoned automatically. Add "//@provengo summon context" to the top of the file to explicitly summon it. Set the auto-summon configuration key to false to disable this behavior
+  >>> step 1/5 reached via: createUser (valid-unexpected-field): 1   bindings={user1=1.0}
+  >>> step 2/5 reached via: createUser (valid-standard): 3   bindings={user1=1.0, user2=3.0}
+  >>> step 3/5 reached via: createBook (valid-unexpected-field): 2   bindings={user1=1.0, user2=3.0, book=2.0}
+  >>> step 4/5 reached via: createHold (valid-swapped-order): 13   bindings={user1=1.0, user2=3.0, book=2.0}
+  >>> step 5/5 reached via: createHold (valid-standard): 11   bindings={user1=1.0, user2=3.0, book=2.0}
+  >>> full sequence reached, halting.
+### Result: REACHED (completed REST steps 5/5)
+
+--- attempt 1/10 ---
+
+### Scenario: 3.6 Book already loaned to A -> user B can still hold the SAME book
+    Steps: 5
+16:30:36.051 INFO [CONFIG>CONFIG>CONFIG>CONFIG>CONFIG>CONFIG] dal.js: Library 'Context' summoned automatically. Add "//@provengo summon context" to the top of the file to explicitly summon it. Set the auto-summon configuration key to false to disable this behavior
+  >>> step 1/5 reached via: createUser (valid-standard): 1   bindings={user1=1.0}
+  >>> step 2/5 reached via: createBook (valid-unexpected-field): 1   bindings={user1=1.0, book=1.0}
+  >>> step 3/5 reached via: createLoan (valid-standard): 1/1   bindings={user1=1.0, book=1.0}
+  >>> step 4/5 reached via: createUser (valid-unexpected-field): 3   bindings={user1=1.0, user2=3.0, book=1.0}
+  >>> step 5/5 reached via: createHold (valid-unexpected-field): 5   bindings={user1=1.0, user2=3.0, book=1.0}
+  >>> full sequence reached, halting.
+### Result: REACHED (completed REST steps 5/5)
+
+--- attempt 1/10 ---
+
+### Scenario: 3.10 Hold->Loan->DeleteHold (SAME hold deletable despite coexisting loan)
+    Steps: 5
+16:30:36.363 INFO [CONFIG>CONFIG>CONFIG>CONFIG>CONFIG>CONFIG>CONFIG] dal.js: Library 'Context' summoned automatically. Add "//@provengo summon context" to the top of the file to explicitly summon it. Set the auto-summon configuration key to false to disable this behavior
+  >>> step 1/5 reached via: createUser (valid-spaced-name): 1   bindings={user=1.0}
+  >>> step 2/5 reached via: createBook (valid-unexpected-field): 1   bindings={book=1.0, user=1.0}
+  >>> step 3/5 reached via: createHold (valid-unexpected-field): 3   bindings={book=1.0, user=1.0, hold=3.0}
+  >>> step 4/5 reached via: createLoan (valid-standard): 1/1   bindings={book=1.0, user=1.0, hold=3.0}
+  >>> step 5/5 reached via: deleteHold (valid): 3   bindings={book=1.0, user=1.0, hold=3.0}
+  >>> full sequence reached, halting.
+### Result: REACHED (completed REST steps 5/5)
+
+--- attempt 1/10 ---
+
+### Scenario: 3.11 Full happy path, one continuous chain, same entities throughout
+    Steps: 8
+16:30:39.978 INFO [CONFIG>CONFIG>CONFIG>CONFIG>CONFIG>CONFIG>CONFIG>CONFIG] dal.js: Library 'Context' summoned automatically. Add "//@provengo summon context" to the top of the file to explicitly summon it. Set the auto-summon configuration key to false to disable this behavior
+  >>> step 1/8 reached via: createUser (valid-standard): 1   bindings={user=1.0}
+  >>> step 2/8 reached via: createBook (valid-standard): 1   bindings={book=1.0, user=1.0}
+  >>> step 3/8 reached via: createHold (valid-swapped-order): 4   bindings={book=1.0, user=1.0, hold=4.0}
+  >>> step 4/8 reached via: createLoan (valid-swapped-order): 1/1   bindings={book=1.0, user=1.0, hold=4.0}
+  >>> step 5/8 reached via: deleteLoan (valid): 1/1   bindings={book=1.0, user=1.0, hold=4.0}
+  >>> step 6/8 reached via: deleteHold (valid): 4   bindings={book=1.0, user=1.0, hold=4.0}
+  >>> step 7/8 reached via: deleteBook (valid): 1   bindings={book=1.0, user=1.0, hold=4.0}
+  >>> step 8/8 reached via: deleteUser (valid): 1   bindings={book=1.0, user=1.0, hold=4.0}
+  >>> full sequence reached, halting.
+### Result: REACHED (completed REST steps 8/8)
+
+--- attempt 1/10 ---
+
+### Scenario: 3.16 Two users hold the SAME book, loan goes to the SECOND holder
+    Steps: 6
+16:30:50.757 INFO [CONFIG>CONFIG>CONFIG>CONFIG>CONFIG>CONFIG>CONFIG>CONFIG>CONFIG] dal.js: Library 'Context' summoned automatically. Add "//@provengo summon context" to the top of the file to explicitly summon it. Set the auto-summon configuration key to false to disable this behavior
+  >>> step 1/6 reached via: createUser (valid-spaced-name): 1   bindings={user1=1.0}
+  >>> step 2/6 reached via: createUser (valid-spaced-name): 3   bindings={user1=1.0, user2=3.0}
+  >>> step 3/6 reached via: createBook (valid-standard): 1   bindings={user1=1.0, user2=3.0, book=1.0}
+  >>> step 4/6 reached via: createHold (valid-unexpected-field): 4   bindings={user1=1.0, user2=3.0, book=1.0}
+  >>> step 5/6 reached via: createHold (valid-swapped-order): 2   bindings={user1=1.0, user2=3.0, book=1.0}
+  >>> step 6/6 reached via: createLoan (valid-swapped-order): 3/1   bindings={user1=1.0, user2=3.0, book=1.0}
+  >>> full sequence reached, halting.
+### Result: REACHED (completed REST steps 6/6)
+
+--- attempt 1/10 ---
+
+### Scenario: 3.18 Two independent User+Book+Hold+Loan chains, no cross-contamination
+    Steps: 8
+16:30:50.960 INFO [CONFIG>CONFIG>CONFIG>CONFIG>CONFIG>CONFIG>CONFIG>CONFIG>CONFIG>CONFIG] dal.js: Library 'Context' summoned automatically. Add "//@provengo summon context" to the top of the file to explicitly summon it. Set the auto-summon configuration key to false to disable this behavior
+  >>> step 1/8 reached via: createUser (valid-standard): 1   bindings={user1=1.0}
+  >>> step 2/8 reached via: createBook (valid-unexpected-field): 1   bindings={user1=1.0, book1=1.0}
+  >>> step 3/8 reached via: createHold (valid-unexpected-field): 4   bindings={user1=1.0, book1=1.0}
+  >>> step 4/8 reached via: createLoan (valid-standard): 1/1   bindings={user1=1.0, book1=1.0}
+  >>> step 5/8 reached via: createUser (valid-spaced-name): 4   bindings={user1=1.0, book1=1.0, user2=4.0}
+  >>> step 6/8 reached via: createBook (valid-spaced-title): 3   bindings={user1=1.0, book2=3.0, book1=1.0, user2=4.0}
+  >>> step 7/8 reached via: createHold (valid-standard): 18   bindings={user1=1.0, book2=3.0, book1=1.0, user2=4.0}
+  >>> step 8/8 reached via: createLoan (valid-standard): 4/3   bindings={user1=1.0, book2=3.0, book1=1.0, user2=4.0}
+  >>> full sequence reached, halting.
+### Result: REACHED (completed REST steps 8/8)
+
+=========== RESULTS ===========
+REACHED (witness found on attempt 1/10)  3.1 User->Book->Hold->Loan (hold survives loan)
+REACHED (witness found on attempt 1/10)  3.2 Hold by user A -> Loan on the SAME book by a DIFFERENT user B
+REACHED (witness found on attempt 1/10)  3.3 Loan->DeleteLoan(return)->DeleteBook
+REACHED (witness found on attempt 1/10)  3.4 Loan->DeleteLoan->Loan again (same pair)
+REACHED (witness found on attempt 1/10)  3.5 Two DIFFERENT users hold the SAME book (waiting queue)
+REACHED (witness found on attempt 1/10)  3.6 Book already loaned to A -> user B can still hold the SAME book
+REACHED (witness found on attempt 1/10)  3.10 Hold->Loan->DeleteHold (SAME hold deletable despite coexisting loan)
+REACHED (witness found on attempt 1/10)  3.11 Full happy path, one continuous chain, same entities throughout
+REACHED (witness found on attempt 1/10)  3.16 Two users hold the SAME book, loan goes to the SECOND holder
+REACHED (witness found on attempt 1/10)  3.18 Two independent User+Book+Hold+Loan chains, no cross-contamination
