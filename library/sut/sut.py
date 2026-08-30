@@ -77,6 +77,7 @@ def get_json_object() -> Tuple[Optional[Dict[str, Any]], Optional[Response]]:
 
 
 # --- Database Management ---
+@app.route("/reset", methods=["POST"])
 def reset_database() -> tuple[Response, int]:
     """Reset all data stores and optionally initialize with provided data."""
     global users, books, loans, holds
