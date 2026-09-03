@@ -63,6 +63,44 @@ svc.getOneOf = function (url, variants, onSelected, stillRelevant) { return requ
 svc.deleteOneOf = function (url, variants, onSelected, stillRelevant) { return requestOneOf("delete", url, variants, onSelected, stillRelevant); };
 svc.putOneOf = function (url, variants, onSelected, stillRelevant) { return requestOneOf("put", url, variants, onSelected, stillRelevant); };
 
+// PROTOTYPE (single-sync-deletebook-prototype branch): mirrors RESTSession's private
+// ___apiBody___ so a fully-formed, already-actuatable REST event can be built here instead of
+// only inside svc[method]. Reads session defaults (headers/parameters/expectedResponseCodes/
+// callback) off `svc` itself rather than duplicating their values.
+function buildRestEvent(session, httpMethod, url, options) {
+  options = options || {};
+  var headers = options.headers !== undefined ? options.headers : session.defaultHeaders;
+  var parameters = options.parameters !== undefined ? options.parameters : session.defaultParameters;
+  var expectedResponseCodes = options.expectedResponseCodes !== undefined ? options.expectedResponseCodes : session.defaultExpectedResponseCodes;
+  var callback = options.callback !== undefined ? options.callback : session.defaultCallback;
+  var data = {
+    lib: "REST",
+    method: httpMethod,
+    url: session.baseURL + url,
+    headers: headers,
+    parameters: parameters,
+    expectedResponseCodes: expectedResponseCodes,
+    callback: callback
+  };
+  if (options.body !== undefined) data.body = JSON.stringify(options.body);
+  return bp.Event(httpMethod, data);
+}
+
+// PROTOTYPE: single-sync counterpart to requestOneOf. Each variant already carries its real,
+// fully-resolved url/body (the realId()-embedded template is safe to bake in at construction
+// time - see the RTV doc comment above), so the variants themselves are offered as the
+// actuatable REST events - no separate "chooser" sync, no onSelected mutation step.
+function requestOneOfDirect(method, variants) {
+  if (!variants || variants.length === 0) pvg.fail("requestOneOfDirect requires at least one variant");
+  var httpMethod = method.toUpperCase();
+  var events = variants.map(function (v) {
+    var evt = buildRestEvent(svc, httpMethod, v.url, v);
+    evt.data.variant = v;
+    return evt;
+  });
+  return bp.sync({ request: events });
+}
+
 const pvg = { fail: function (msg) { bp.log.error(msg); throw new Error(msg); } };
 
 // asInteger, asString, and the *Description builders now live in lib/utils.js.
@@ -313,22 +351,19 @@ function tryToCreateBookWithBadParametersAndExpectError(logicalId, expectedCode)
 
 function deleteBook(logicalId) {
   logicalId = asInteger(logicalId);
-  // The valid variant's url is a placeholder here and gets overwritten with the real id in
-  // onSelected, right before actuation - see the realId doc comment above for why resolving it
-  // this late (rather than up front) matters.
+  // PROTOTYPE (single-sync-deletebook-prototype branch): the real id is embedded directly at
+  // construction time (safe - realBookId() is an inert "@{...}" template until actuation), and
+  // requestOneOfDirect offers these variants as the actuatable events themselves - one bp.sync
+  // per call instead of a chooser sync followed by a second, separate REST sync.
   var variants = [
-    { name: "deleteBook (valid): " + logicalId, url: "/books/" + logicalId, expectedResponseCodes: [200], parameters: { description: deleteDescription("Book", logicalId), id: logicalId }, valid: true },
+    { name: "deleteBook (valid): " + logicalId, url: "/books/" + realBookId(logicalId), expectedResponseCodes: [200], parameters: { description: deleteDescription("Book", logicalId), id: logicalId }, valid: true },
     { name: "deleteBook (invalid - bad-id): " + logicalId, url: "/books/bad-id", expectedResponseCodes: [400] },
     { name: "deleteBook (invalid - zero): " + logicalId, url: "/books/0", expectedResponseCodes: [400] },
     { name: "deleteBook (invalid - negative): " + logicalId, url: "/books/-1", expectedResponseCodes: [400] }
   ];
   while (true) {
-    var valid = false;
-    var response = svc.deleteOneOf("/books/" + logicalId, variants, function (chosen) {
-      valid = chosen.valid === true;
-      if (chosen.valid) chosen.url = "/books/" + realBookId(logicalId);
-    });
-    if (valid) return response;
+    var response = requestOneOfDirect("delete", variants);
+    if (response.data.variant.valid === true) return response;
   }
 }
 
