@@ -98,7 +98,7 @@ function requestOneOfDirect(method, variants) {
     evt.data.variant = v;
     return evt;
   });
-  return bp.sync({ request: events });
+  return sync({ request: events });
 }
 
 const pvg = { fail: function (msg) { bp.log.error(msg); throw new Error(msg); } };
