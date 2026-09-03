@@ -27,15 +27,24 @@ var path = '';
 const svc = new RESTSession(protocol + "://" + host + ":" + port + path, "provengo-client", { headers: { "Content-Type": "application/json", "api_key": "special-key" } });
 
 // Sends one of several request variants (each with its own body/expectedResponseCodes/parameters)
-// by offering them all to bp.sync at once, so the event selection mechanism (not this code) picks
+// by offering them all to sync() at once, so the event selection mechanism (not this code) picks
 // which single variant is actually sent - letting fuzzing/exploration choose the request shape
 // instead of a scripted for-loop that sends every case every time.
-// A variant's chooser event can sit offered for many synchronization rounds before it wins
-// (other b-threads keep running while this one waits its turn), so `block()`-based guards taken
-// out before offering don't cover the whole wait. `stillRelevant`, when given, is re-checked
-// right after the chooser event wins but before the real REST call fires - the request is
-// aborted (REQUEST_ABORTED) instead of actuating a stale "valid" expectation against an entity
-// that stopped existing while we were waiting. See verifyBookDetailExists/verifyLoanExists.
+//
+// Two implementations:
+// - requestOneOf/svc.getOneOf: two syncs (a "chooser" sync of lightweight named events, then a
+//   second sync that actually sends the REST request for whichever variant won). A variant's
+//   chooser event can sit offered for many synchronization rounds before it wins (other b-threads
+//   keep running while this one waits its turn), so `block()`-based guards taken out before
+//   offering don't cover the whole wait. That two-sync gap is what lets `stillRelevant`, when
+//   given, be re-checked right after the chooser wins but before the real REST call fires - the
+//   request is aborted (REQUEST_ABORTED) instead of actuating a stale "valid" expectation against
+//   an entity that stopped existing while we were waiting. verifyBookDetailExists/verifyLoanExists
+//   are the only remaining callers: they need that guarantee, which requestOneOfDirect (below)
+//   cannot provide, since it collapses the chooser and the REST call into the same event/sync -
+//   there is no return-to-JS checkpoint in between to re-check anything.
+// - requestOneOfDirect: single sync, used by every other action below. No staleness recheck, but
+//   no intermediate chooser event either - see requestOneOfDirect's own comment.
 const REQUEST_ABORTED = { aborted: true };
 
 function requestOneOf(method, url, variants, onSelected, stillRelevant) {
@@ -58,15 +67,12 @@ function requestOneOf(method, url, variants, onSelected, stillRelevant) {
   return svc[method](requestUrl, requestOptions);
 }
 
-svc.postOneOf = function (url, variants, onSelected, stillRelevant) { return requestOneOf("post", url, variants, onSelected, stillRelevant); };
 svc.getOneOf = function (url, variants, onSelected, stillRelevant) { return requestOneOf("get", url, variants, onSelected, stillRelevant); };
-svc.deleteOneOf = function (url, variants, onSelected, stillRelevant) { return requestOneOf("delete", url, variants, onSelected, stillRelevant); };
-svc.putOneOf = function (url, variants, onSelected, stillRelevant) { return requestOneOf("put", url, variants, onSelected, stillRelevant); };
 
-// PROTOTYPE (single-sync-deletebook-prototype branch): mirrors RESTSession's private
-// ___apiBody___ so a fully-formed, already-actuatable REST event can be built here instead of
-// only inside svc[method]. Reads session defaults (headers/parameters/expectedResponseCodes/
-// callback) off `svc` itself rather than duplicating their values.
+// Mirrors RESTSession's private ___apiBody___ so a fully-formed, already-actuatable REST event
+// can be built here instead of only inside svc[method]. Reads session defaults
+// (headers/parameters/expectedResponseCodes/callback) off `svc` itself rather than duplicating
+// their values.
 function buildRestEvent(session, httpMethod, url, options) {
   options = options || {};
   var headers = options.headers !== undefined ? options.headers : session.defaultHeaders;
@@ -86,15 +92,17 @@ function buildRestEvent(session, httpMethod, url, options) {
   return bp.Event(httpMethod, data);
 }
 
-// PROTOTYPE: single-sync counterpart to requestOneOf. Each variant already carries its real,
-// fully-resolved url/body (the realId()-embedded template is safe to bake in at construction
-// time - see the RTV doc comment above), so the variants themselves are offered as the
-// actuatable REST events - no separate "chooser" sync, no onSelected mutation step.
-function requestOneOfDirect(method, variants) {
+// Single-sync counterpart to requestOneOf. Each variant already carries its real, fully-resolved
+// url/body (the realId()-embedded template is safe to bake in at construction time - see the RTV
+// doc comment above), so the variants themselves are offered as the actuatable REST events - no
+// separate "chooser" sync, no onSelected mutation step. `url` is a fallback used by variants that
+// don't set their own (e.g. all POST-create variants share one url; DELETE variants each set
+// their own since the id is part of the path).
+function requestOneOfDirect(method, url, variants) {
   if (!variants || variants.length === 0) pvg.fail("requestOneOfDirect requires at least one variant");
   var httpMethod = method.toUpperCase();
   var events = variants.map(function (v) {
-    var evt = buildRestEvent(svc, httpMethod, v.url, v);
+    var evt = buildRestEvent(svc, httpMethod, v.url || url, v);
     evt.data.variant = v;
     return evt;
   });
@@ -301,12 +309,12 @@ function createBook(logicalId, title) {
   var captureResponse = rememberCreatedId("BOOK", logicalId);
   var idParameters = { description: reqDescription, id: logicalId };
   var variants = [
-    { name: "createBook (valid-standard): " + logicalId, body: { title: title }, expectedResponseCodes: [201], parameters: idParameters, callback: captureResponse },
-    { name: "createBook (valid-spaced-title): " + logicalId, body: { title: " " + title }, expectedResponseCodes: [201], parameters: idParameters, callback: captureResponse },
+    { name: "createBook (valid-standard): " + logicalId, body: { title: title }, expectedResponseCodes: [201], parameters: idParameters, callback: captureResponse, valid: true },
+    { name: "createBook (valid-spaced-title): " + logicalId, body: { title: " " + title }, expectedResponseCodes: [201], parameters: idParameters, callback: captureResponse, valid: true },
     // Positive counterpart to the "no unexpected-field case" note in
     // tryToCreateBookWithBadParametersAndExpectError below: locks in that an unrecognized field
     // is accepted (silently ignored), not merely untested.
-    { name: "createBook (valid-unexpected-field): " + logicalId, body: { title: title, unexpected: "value" }, expectedResponseCodes: [201], parameters: idParameters, callback: captureResponse }
+    { name: "createBook (valid-unexpected-field): " + logicalId, body: { title: title, unexpected: "value" }, expectedResponseCodes: [201], parameters: idParameters, callback: captureResponse, valid: true }
   ];
 
   var invalidCases = [
@@ -322,11 +330,8 @@ function createBook(logicalId, title) {
   }));
 
   while (true) {
-    var selectedIsValid = false;
-    var response = svc.postOneOf("/books", variants, function(chosen) {
-      selectedIsValid = chosen.expectedResponseCodes.indexOf(201) !== -1;
-    });
-    if (selectedIsValid) return response;
+    var response = requestOneOfDirect("post", "/books", variants);
+    if (response.data.variant.valid === true) return response;
   }
 }
 
@@ -346,15 +351,15 @@ function tryToCreateBookWithBadParametersAndExpectError(logicalId, expectedCode)
   var variants = cases.map(function (c) {
     return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
   });
-  svc.postOneOf(url, variants);
+  requestOneOfDirect("post", url, variants);
 }
 
 function deleteBook(logicalId) {
   logicalId = asInteger(logicalId);
-  // PROTOTYPE (single-sync-deletebook-prototype branch): the real id is embedded directly at
-  // construction time (safe - realBookId() is an inert "@{...}" template until actuation), and
-  // requestOneOfDirect offers these variants as the actuatable events themselves - one bp.sync
-  // per call instead of a chooser sync followed by a second, separate REST sync.
+  // The real id is embedded directly at construction time (safe - realBookId() is an inert
+  // "@{...}" template until actuation), and requestOneOfDirect offers these variants as the
+  // actuatable events themselves - a single sync per call instead of a chooser sync followed by
+  // a second, separate REST sync.
   var variants = [
     { name: "deleteBook (valid): " + logicalId, url: "/books/" + realBookId(logicalId), expectedResponseCodes: [200], parameters: { description: deleteDescription("Book", logicalId), id: logicalId }, valid: true },
     { name: "deleteBook (invalid - bad-id): " + logicalId, url: "/books/bad-id", expectedResponseCodes: [400] },
@@ -362,7 +367,7 @@ function deleteBook(logicalId) {
     { name: "deleteBook (invalid - negative): " + logicalId, url: "/books/-1", expectedResponseCodes: [400] }
   ];
   while (true) {
-    var response = requestOneOfDirect("delete", variants);
+    var response = requestOneOfDirect("delete", null, variants);
     if (response.data.variant.valid === true) return response;
   }
 }
@@ -371,6 +376,9 @@ function deleteBook(logicalId) {
 // before checking existence (valid-format-but-missing id -> 404), so it gets the same
 // dynamic valid/invalid fuzzing loop as the create/delete actions. See the Fuzzing
 // Interface Layer Contract at the bottom of lib_stories.js.
+// Stays on the two-phase svc.getOneOf/requestOneOf path (not requestOneOfDirect): this is one of
+// the two callers that pass stillRelevant, which needs the gap between chooser-win and REST-send
+// that only the two-phase design has - see the comment above requestOneOf.
 function verifyBookDetailExists(logicalId, stillRelevant) {
   logicalId = asInteger(logicalId);
 
@@ -560,20 +568,15 @@ function deleteLoan(userId, logicalBookId, loanNumber) {
   var reqDescription = deleteDescription("Loan", userId + "/" + logicalBookId, loanNumber === null ? "" : "number " + loanNumber);
   var parameters = { description: reqDescription, userId: userId, bookId: logicalBookId };
   if (loanNumber !== null) parameters.loanNumber = loanNumber;
-  // The valid variant's url is a placeholder, overwritten with the real id in onSelected right
-  // before actuation - see the realId doc comment above.
-  var variants = [{ name: "deleteLoan (valid): " + userId + "/" + logicalBookId, url: "/loans/" + userId + "/" + logicalBookId, expectedResponseCodes: [200], parameters: parameters, valid: true }];
+  // The real ids are embedded directly at construction time - see the realId doc comment above.
+  var variants = [{ name: "deleteLoan (valid): " + userId + "/" + logicalBookId, url: "/loans/" + realUserId(userId) + "/" + realBookId(logicalBookId), expectedResponseCodes: [200], parameters: parameters, valid: true }];
   variants = variants.concat(invalidCases.map(function(c) {
     return { name: "deleteLoan (invalid - " + c.label + "): " + userId + "/" + logicalBookId, url: c.url, expectedResponseCodes: [400] };
   }));
 
   while (true) {
-    var valid = false;
-    var response = svc.deleteOneOf("/loans/" + userId + "/" + logicalBookId, variants, function (chosen) {
-      valid = chosen.valid === true;
-      if (chosen.valid) chosen.url = "/loans/" + realUserId(userId) + "/" + realBookId(logicalBookId);
-    });
-    if (valid) return response;
+    var response = requestOneOfDirect("delete", null, variants);
+    if (response.data.variant.valid === true) return response;
   }
 }
 
@@ -632,11 +635,8 @@ function createLoan(userId, logicalBookId, loanNumber, expectedCode, description
   }));
 
   while (true) {
-    var valid = false;
-    var response = svc.postOneOf("/loans", variants, function (chosen) {
-      valid = chosen.valid === true;
-    });
-    if (valid) return response;
+    var response = requestOneOfDirect("post", "/loans", variants);
+    if (response.data.variant.valid === true) return response;
   }
 }
 
@@ -688,11 +688,13 @@ function tryToCreateLoanWithBadParametersAndExpectError(userId, expectedCode) {
   var variants = cases.map(function (c) {
     return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
   });
-  svc.postOneOf(url, variants);
+  requestOneOfDirect("post", url, variants);
 }
 
 // The loans search endpoint validates userId/bookId (malformed/zero/negative -> 400) before
 // filtering, so it gets the same dynamic valid/invalid fuzzing loop as the create/delete actions.
+// Stays on the two-phase svc.getOneOf/requestOneOf path (not requestOneOfDirect) for the same
+// reason as verifyBookDetailExists above: it needs the stillRelevant recheck.
 function verifyLoanExists(logicalBookId, userId, stillRelevant) {
   var bookId = realBookId(logicalBookId);
   var realUser = realUserId(userId);
@@ -813,9 +815,8 @@ function createUser(id, name) {
   }));
 
   while (true) {
-    var valid = false;
-    var response = svc.postOneOf("/users", variants, function (chosen) { valid = chosen.valid === true; });
-    if (valid) return response;
+    var response = requestOneOfDirect("post", "/users", variants);
+    if (response.data.variant.valid === true) return response;
   }
 }
 
@@ -836,7 +837,7 @@ function tryToCreateUserWithBadParametersAndExpectError(id, expectedCode) {
   var variants = cases.map(function (c) {
     return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
   });
-  svc.postOneOf(url, variants);
+  requestOneOfDirect("post", url, variants);
 }
 
 function deleteUser(id) {
@@ -849,9 +850,8 @@ function deleteUser(id) {
     { name: "deleteUser (invalid - negative): " + id, url: "/users/-1", expectedResponseCodes: [400] }
   ];
   while (true) {
-    var valid = false;
-    var response = svc.deleteOneOf("/users/" + id, variants, function (chosen) { valid = chosen.valid === true; });
-    if (valid) return response;
+    var response = requestOneOfDirect("delete", null, variants);
+    if (response.data.variant.valid === true) return response;
   }
 }
 
@@ -976,11 +976,8 @@ function createHold(logicalBookId, id, userId, expectedCode, description, logica
   }));
 
   while (true) {
-    var valid = false;
-    var response = svc.postOneOf("/holds", variants, function (chosen) {
-      valid = chosen.valid === true;
-    });
-    if (valid) return response;
+    var response = requestOneOfDirect("post", "/holds", variants);
+    if (response.data.variant.valid === true) return response;
   }
 }
 
@@ -1030,7 +1027,7 @@ function tryToCreateHoldWithBadParametersAndExpectError(id, userId, expectedCode
   var variants = cases.map(function (c) {
     return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
   });
-  svc.postOneOf(url, variants);
+  requestOneOfDirect("post", url, variants);
 }
 
 function deleteHold(id, expectedCode, userId, bookId) {
@@ -1056,9 +1053,8 @@ function deleteHold(id, expectedCode, userId, bookId) {
   ];
 
   while (true) {
-    var valid = false;
-    var response = svc.deleteOneOf("/holds/" + id, variants, function (chosen) { valid = chosen.valid === true; });
-    if (valid) return response;
+    var response = requestOneOfDirect("delete", null, variants);
+    if (response.data.variant.valid === true) return response;
   }
 }
 

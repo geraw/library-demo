@@ -38,12 +38,15 @@ import java.util.Set;
  * This replaces the earlier greedy-with-retries version (steered with PrioritizedEventsESS,
  * whose "NOT FOUND" was only inconclusive, not a real failure point). The trade-off: this
  * assumes each scenario's next action becomes selectable on the very next round after its
- * precondition is met, with no other necessary event required first. Where that assumption
- * doesn't hold yet (e.g. an action still offered the two-sync requestOneOf way, whose actual
- * REST completion event occupies the round right after its chooser is selected), this checker
- * reports a failure at that exact step instead of finding a witness. See interfaces.library.js's
- * requestOneOfDirect/buildRestEvent (the single-sync pattern, so far applied to deleteBook) --
- * once every action in a scenario uses that pattern, there is no such gap left to hit.
+ * precondition is met, with no other necessary event required first -- true now that every
+ * create/delete action in interfaces.library.js uses the single-sync requestOneOfDirect pattern
+ * (see that file's migration commit). verifyBookDetailExists/verifyLoanExists deliberately still
+ * use the older two-phase requestOneOf/getOneOf path (they need a stillRelevant recheck between
+ * chooser-win and REST-send), but no scenario here calls either.
+ *
+ * chooserName(event) reads the descriptive name from data.variant.name when present (every
+ * migrated single-sync action), falling back to the raw event name otherwise -- see its own doc
+ * comment.
  *
  * Identity tracking: steps require later actions to refer back to the SAME bound user/book/hold,
  * not just any entity of the right type -- otherwise results are unreliable once more than one
@@ -245,6 +248,25 @@ public class GuidedRun {
     }
 
     /**
+     * The event's chooser-style name. A classic two-phase action (chooser sync, then a separate
+     * REST sync) names its chooser event descriptively (e.g. "deleteBook (valid): 1"), so
+     * event.getName() is what we want. A single-sync action (every create/delete action after the
+     * requestOneOfDirect migration -- see interfaces.library.js) offers the concrete REST event
+     * itself, named after the HTTP verb ("DELETE"), with the descriptive name carried instead at
+     * data.variant.name -- same place extractParameters() already looks for parameters.
+     */
+    private static String chooserName(BEvent event) {
+        Map<String, Object> data = eventData(event);
+        if (data != null) {
+            Map<String, Object> variant = asMap(data.get("variant"));
+            if (variant != null && variant.get("name") != null) {
+                return String.valueOf(variant.get("name"));
+            }
+        }
+        return event.getName();
+    }
+
+    /**
      * Identity fields (id/userId/bookId/...) of an event -- from event.data.variant.parameters
      * for a chooser event, or event.data.parameters directly for a concrete REST event.
      */
@@ -290,29 +312,9 @@ public class GuidedRun {
         return true;
     }
 
-    /**
-     * The name to match a step's action against. Prefers the descriptive variant name
-     * ("createHold (valid-standard): 1") when present, since requestOneOfDirect-style
-     * single-sync events carry that under data.variant.name while the BEvent's own name is just
-     * the generic HTTP method ("POST"/"DELETE"). Falls back to the raw event name for anything
-     * still offered the older requestOneOf way (chooser name == event name). Keeps this checker
-     * working regardless of which of the two patterns any given action currently uses.
-     */
-    private static String effectiveEventName(BEvent event) {
-        Map<String, Object> data = eventData(event);
-        if (data != null) {
-            Map<String, Object> variant = asMap(data.get("variant"));
-            if (variant != null && variant.get("name") instanceof String) {
-                return (String) variant.get("name");
-            }
-        }
-        return event.getName();
-    }
-
-    /** Chooser match: is this event a well-formed, success-intended offer of the step's action
-     *  with matching identity? */
+    /** Is this event a well-formed, success-intended offer of the step's action with matching identity? */
     private static boolean matchesChooser(BEvent event, Step step, Map<String, Double> bindings) {
-        return chooserNameMatches(effectiveEventName(event), step.action) && matchesIdentity(event, step, bindings);
+        return chooserNameMatches(chooserName(event), step.action) && matchesIdentity(event, step, bindings);
     }
 
     /** Commits this step's binds into the bindings map, once the chooser event is confirmed selected. */
@@ -414,7 +416,7 @@ public class GuidedRun {
                 }
                 if (matches.isEmpty() && System.getenv("GUIDEDRUN_TRACE") != null) {
                     List<String> names = new ArrayList<>();
-                    for (BEvent e : offered) names.add(effectiveEventName(e));
+                    for (BEvent e : offered) names.add(chooserName(e));
                     java.util.Collections.sort(names);
                     System.out.println("      [trace] wanted " + current.action + ", offered this round ("
                             + offered.size() + "): " + names);
@@ -444,7 +446,7 @@ public class GuidedRun {
                     int reached = step[0] + 1;
                     step[0] = reached;
                     System.out.println("  >>> step " + reached + "/" + scenario.steps.size()
-                            + " reached via: " + effectiveEventName(event) + "   bindings=" + bindings);
+                            + " reached via: " + chooserName(event) + "   bindings=" + bindings);
                     if (reached >= scenario.steps.size()) {
                         System.out.println("  >>> full sequence reached, halting.");
                         runner.halt();
