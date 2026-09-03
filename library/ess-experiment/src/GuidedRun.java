@@ -2,7 +2,10 @@ import il.ac.bgu.cs.bp.bpjs.execution.BProgramRunner;
 import il.ac.bgu.cs.bp.bpjs.execution.listeners.BProgramRunnerListenerAdapter;
 import il.ac.bgu.cs.bp.bpjs.model.BEvent;
 import il.ac.bgu.cs.bp.bpjs.model.BProgram;
-import testory.bprogram.PrioritizedEventsESS;
+import il.ac.bgu.cs.bp.bpjs.model.BProgramSyncSnapshot;
+import il.ac.bgu.cs.bp.bpjs.model.eventselection.EventSelectionResult;
+import il.ac.bgu.cs.bp.bpjs.model.eventselection.EventSelectionStrategy;
+import il.ac.bgu.cs.bp.bpjs.model.eventselection.SimpleEventSelectionStrategy;
 import testory.bprogram.TestoryBProgram;
 import testory.bprogram.TestoryBProgramBuilder;
 import testory.configs.RunOptions;
@@ -14,49 +17,49 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Checks whether specific event sequences from bug_mapping_library_system.md chapter 3 are
- * reachable in the real library/provengo model, using a real Provengo EventSelectionStrategy
- * (PrioritizedEventsESS) to steer -- not force -- the model toward each target sequence. No
- * reimplementation of dal.js/lib_stories.js/interfaces.library.js.
+ * reachable in the real library/provengo model, using a real Provengo EventSelectionStrategy --
+ * not a reimplementation of dal.js/lib_stories.js/interfaces.library.js.
  *
- * Positive reachability only. REACHED is a certain witness (the model itself offered every step).
- * NOT FOUND after all attempts is inconclusive, not proof of unreachability -- the strategy is
- * greedy and doesn't backtrack, so several attempts are tried per scenario.
+ * Strict, single-pass version agreed with the advisor: no PrioritizedEventsESS, no priority
+ * scores, no destructive/re-entangling avoidance, no multi-attempt retry. At each step, this
+ * asks the real model for exactly the next action in a hand-written scenario. If that action is
+ * on offer this synchronization round, it is forced (not merely favored). If it is NOT on offer
+ * -- no waiting, no tolerance for anything happening "in between" -- the run stops right there
+ * and that step is reported as the failure point.
+ *
+ * This replaces the earlier greedy-with-retries version (steered with PrioritizedEventsESS,
+ * whose "NOT FOUND" was only inconclusive, not a real failure point). The trade-off: this
+ * assumes each scenario's next action becomes selectable on the very next round after its
+ * precondition is met, with no other necessary event required first. Where that assumption
+ * doesn't hold yet (e.g. an action still offered the two-sync requestOneOf way, whose actual
+ * REST completion event occupies the round right after its chooser is selected), this checker
+ * reports a failure at that exact step instead of finding a witness. See interfaces.library.js's
+ * requestOneOfDirect/buildRestEvent (the single-sync pattern, so far applied to deleteBook) --
+ * once every action in a scenario uses that pattern, there is no such gap left to hit.
  *
  * Identity tracking: steps require later actions to refer back to the SAME bound user/book/hold,
  * not just any entity of the right type -- otherwise results are unreliable once more than one
  * user/book exists, which is the normal case here.
  *
- * Progress is counted on the "chooser" event Provengo selects for each step (e.g.
- * "createLoan (valid-standard): 1/1"), not the later raw REST completion event. Completion-based
- * counting was tried and dropped: for some deletes it never showed up as observable even though
- * the operation genuinely succeeded (verified with curl). Chooser events checked out reliably
- * across every scenario here, so they're the progress signal.
- *
  * Requires the SUT running (python sut.py, localhost:23242) and Provengo.uber.jar on the
  * classpath.
- *
- * Note: the local sut.py has a one-line /reset route fix, uncommitted, pending review -- without
- * it this still works, just needs more retries per scenario.
  *
  * Run:
  *   javac -cp Provengo.uber.jar -d out src/GuidedRun.java
  *   java -cp "Provengo.uber.jar;out" GuidedRun <path-to-provengo-project>
+ *
+ * Set env var GUIDEDRUN_TRACE=1 to log what was actually on offer whenever a step's target
+ * action wasn't among it (diagnostic only -- does not change pass/fail behavior).
  */
 public class GuidedRun {
-
-    /** How many selected events a scenario may go through with no step progress before this
-     *  attempt is abandoned as inconclusive (see ATTEMPTS_PER_SCENARIO below). */
-    private static final int MAX_EVENTS_WITHOUT_PROGRESS = 3000;
-    /** Set env var GUIDEDRUN_TRACE=1 to log every selected event, chooser and concrete alike. */
-    private static final boolean DEBUG_TRACE = System.getenv("GUIDEDRUN_TRACE") != null;
-
-    private static final String SUT_RESET_URL = "http://localhost:23242/reset";
 
     // =========================================================================================
     // Step / Scenario model
@@ -222,7 +225,7 @@ public class GuidedRun {
     /** Matches a deliberately-nonexistent id (generateMissingId(): existingId + 1_000_000_000). */
     private static final java.util.regex.Pattern NONEXISTENT_ID = java.util.regex.Pattern.compile("\\d{9,}");
 
-    /** True if this is a well-formed, success-intended chooser event for the given action
+    /** True if this is a well-formed, success-intended chooser name for the given action
      *  (e.g. "createLoan (valid-standard): 1/1", not an "(invalid - ...)" or missing-id variant). */
     private static boolean chooserNameMatches(String eventName, String action) {
         if (eventName == null) return false;
@@ -287,127 +290,47 @@ public class GuidedRun {
         return true;
     }
 
-    /** Chooser match: used only to steer PrioritizedEventsESS toward the desired action/identity. */
-    private static boolean matchesChooser(BEvent event, Step step, Map<String, Double> bindings) {
-        return chooserNameMatches(event.getName(), step.action) && matchesIdentity(event, step, bindings);
+    /**
+     * The name to match a step's action against. Prefers the descriptive variant name
+     * ("createHold (valid-standard): 1") when present, since requestOneOfDirect-style
+     * single-sync events carry that under data.variant.name while the BEvent's own name is just
+     * the generic HTTP method ("POST"/"DELETE"). Falls back to the raw event name for anything
+     * still offered the older requestOneOf way (chooser name == event name). Keeps this checker
+     * working regardless of which of the two patterns any given action currently uses.
+     */
+    private static String effectiveEventName(BEvent event) {
+        Map<String, Object> data = eventData(event);
+        if (data != null) {
+            Map<String, Object> variant = asMap(data.get("variant"));
+            if (variant != null && variant.get("name") instanceof String) {
+                return (String) variant.get("name");
+            }
+        }
+        return event.getName();
     }
 
-    /** Normalized request path from a concrete REST event, for trace logging. */
-    private static String requestPath(BEvent event) {
-        Map<String, Object> data = eventData(event);
-        if (data == null) return "";
-        Object raw = data.get("path");
-        if (raw == null) raw = data.get("url");
-        if (raw == null) return "";
-        String path = String.valueOf(raw).replaceFirst("^https?://[^/]+", "");
-        int q = path.indexOf('?');
-        return q >= 0 ? path.substring(0, q) : path;
+    /** Chooser match: is this event a well-formed, success-intended offer of the step's action
+     *  with matching identity? */
+    private static boolean matchesChooser(BEvent event, Step step, Map<String, Double> bindings) {
+        return chooserNameMatches(effectiveEventName(event), step.action) && matchesIdentity(event, step, bindings);
     }
 
     /** Commits this step's binds into the bindings map, once the chooser event is confirmed selected. */
-    private static void applyBinds(BEvent event, Step step, Map<String, Double> bindings, Map<String, String> varType) {
+    private static void applyBinds(BEvent event, Step step, Map<String, Double> bindings) {
         if (step.binds.isEmpty()) return;
         Map<String, Object> parameters = extractParameters(event);
         if (parameters == null) return;
-        String type = entityTypeOf(step.action);
         for (String[] b : step.binds) {
             Double v = asDouble(parameters.get(b[1]));
-            if (v != null) {
-                bindings.put(b[0], v);
-                if (type != null) varType.put(b[0], type);
-            }
+            if (v != null) bindings.put(b[0], v);
         }
-    }
-
-    /** Which entity type a create/delete action's own "id" identifies: user, book, or hold  */
-    private static String entityTypeOf(String action) {
-        if (action.equals("createUser") || action.equals("deleteUser")) return "user";
-        if (action.equals("createBook") || action.equals("deleteBook")) return "book";
-        if (action.equals("createHold") || action.equals("deleteHold")) return "hold";
-        return null;
-    }
-
-    /**
-     * True if this chooser event would delete a bound entity we still need later, and isn't the
-     * deletion we actually want right now. Skips deleteLoan -- it never removes a user/book.
-     */
-    private static boolean isDestructiveToBindings(BEvent event, Step currentStep,
-                                                     Map<String, Double> bindings, Map<String, String> varType) {
-        String name = event.getName();
-        if (name == null) return false;
-        String deletedType;
-        if (name.startsWith("deleteUser")) deletedType = "user";
-        else if (name.startsWith("deleteBook")) deletedType = "book";
-        else if (name.startsWith("deleteHold")) deletedType = "hold";
-        else return false;
-        if (!chooserNameMatches(name, deletedType.equals("user") ? "deleteUser" : deletedType.equals("book") ? "deleteBook" : "deleteHold")) return false;
-        if (matchesChooser(event, currentStep, bindings)) return false; // this IS the deletion we intend right now
-
-        Map<String, Object> parameters = extractParameters(event);
-        if (parameters == null) return false;
-        Double targetId = asDouble(parameters.get("id"));
-        if (targetId == null) return false;
-
-        for (Map.Entry<String, Double> b : bindings.entrySet()) {
-            if (deletedType.equals(varType.get(b.getKey())) && targetId.equals(b.getValue())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Bound vars that a later deleteUser/deleteBook step needs loan/hold-free (dal.js requires
-     * both for CanDelete). deleteHold/deleteLoan aren't at risk here and are skipped.
-     */
-    private static java.util.Set<String> varsNeededFreeForFutureDelete(Scenario scenario, int fromStepIndex) {
-        java.util.Set<String> result = new java.util.HashSet<>();
-        for (int i = fromStepIndex; i < scenario.steps.size(); i++) {
-            Step s = scenario.steps.get(i);
-            if (s.action.equals("deleteUser") || s.action.equals("deleteBook")) {
-                for (String[] req : s.requires) {
-                    if (req[1].equals("id")) result.add(req[0]);
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * True if this chooser event would create a new loan/hold that re-entangles a bound entity a
-     * later step needs to delete -- e.g. re-loaning a book right after its loan was deleted, before
-     * we get to delete the book. Create-side counterpart to isDestructiveToBindings().
-     */
-    private static boolean isReEntanglingBindings(BEvent event, Step currentStep, int currentStepIndex,
-                                                    Scenario scenario, Map<String, Double> bindings) {
-        String name = event.getName();
-        if (name == null) return false;
-        String action;
-        if (name.startsWith("createLoan")) action = "createLoan";
-        else if (name.startsWith("createHold")) action = "createHold";
-        else return false;
-        if (!chooserNameMatches(name, action)) return false;
-        if (matchesChooser(event, currentStep, bindings)) return false; // this IS what we want right now
-
-        java.util.Set<String> needFree = varsNeededFreeForFutureDelete(scenario, currentStepIndex);
-        if (needFree.isEmpty()) return false;
-
-        Map<String, Object> parameters = extractParameters(event);
-        if (parameters == null) return false;
-        Double u = asDouble(parameters.get("userId"));
-        Double b = asDouble(parameters.get("bookId"));
-        for (String var : needFree) {
-            Double bound = bindings.get(var);
-            if (bound != null && (bound.equals(u) || bound.equals(b))) return true;
-        }
-        return false;
     }
 
     // =========================================================================================
-    // Harness: retries, SUT reset, run loop
+    // Harness: strict single-pass run, no retries
     // =========================================================================================
 
-    private static final int ATTEMPTS_PER_SCENARIO = 10;
+    private static final String SUT_RESET_URL = "http://localhost:23242/reset";
 
     public static void main(String[] args) throws Exception {
         if (args.length == 0) {
@@ -418,19 +341,12 @@ public class GuidedRun {
 
         List<String> results = new ArrayList<>();
         for (Scenario scenario : SCENARIOS) {
-            boolean reached = false;
-            int attemptsUsed = 0;
-            for (int attempt = 1; attempt <= ATTEMPTS_PER_SCENARIO; attempt++) {
-                attemptsUsed = attempt;
-                System.out.println();
-                System.out.println("--- attempt " + attempt + "/" + ATTEMPTS_PER_SCENARIO + " ---");
-                resetSut();
-                reached = runScenario(projectPath, scenario);
-                if (reached) break; // one witness is enough
-            }
-            String verdict = reached
-                    ? "REACHED (witness found on attempt " + attemptsUsed + "/" + ATTEMPTS_PER_SCENARIO + ")"
-                    : "NOT FOUND after " + ATTEMPTS_PER_SCENARIO + " attempts (inconclusive)";
+            resetSut();
+            RunResult result = runScenario(projectPath, scenario);
+            String verdict = result.reached
+                    ? "REACHED"
+                    : "FAILED at step " + (result.reachedSteps + 1) + "/" + scenario.steps.size()
+                            + " (" + result.failedAction + " was not offered this round)";
             results.add(verdict + "  " + scenario.name);
         }
 
@@ -462,7 +378,13 @@ public class GuidedRun {
         }
     }
 
-    private static boolean runScenario(String projectPath, Scenario scenario) throws Exception {
+    static class RunResult {
+        boolean reached;
+        int reachedSteps;
+        String failedAction;
+    }
+
+    private static RunResult runScenario(String projectPath, Scenario scenario) throws Exception {
         System.out.println();
         System.out.println("### Scenario: " + scenario.name);
         System.out.println("    Steps: " + scenario.steps.size());
@@ -472,67 +394,77 @@ public class GuidedRun {
         builder.setProjectDirectory(Paths.get(projectPath));
         TestoryBProgram program = builder.build();
 
-        final AtomicInteger step = new AtomicInteger(0);
-        final AtomicInteger eventsSinceProgress = new AtomicInteger(0);
+        final int[] step = {0};
         final Map<String, Double> bindings = new HashMap<>();
-        final Map<String, String> varType = new HashMap<>();
+        final SimpleEventSelectionStrategy base = new SimpleEventSelectionStrategy();
 
-        PrioritizedEventsESS ess = new PrioritizedEventsESS();
-        ess.setPrioritizer(event -> {
-            int i = step.get();
-            if (i >= scenario.steps.size()) return 0;
-            Step current = scenario.steps.get(i);
+        // The whole point of the simplification: no priority scores, no avoidance heuristics.
+        // Each round, offer ONLY the exact next action (if the model happens to offer it too).
+        // Nothing else is ever selectable -- not favored over, literally excluded.
+        EventSelectionStrategy strict = new EventSelectionStrategy() {
+            @Override
+            public Set<BEvent> selectableEvents(BProgramSyncSnapshot snapshot) {
+                int i = step[0];
+                if (i >= scenario.steps.size()) return java.util.Collections.emptySet();
+                Step current = scenario.steps.get(i);
+                Set<BEvent> offered = base.selectableEvents(snapshot);
+                Set<BEvent> matches = new HashSet<>();
+                for (BEvent e : offered) {
+                    if (matchesChooser(e, current, bindings)) matches.add(e);
+                }
+                if (matches.isEmpty() && System.getenv("GUIDEDRUN_TRACE") != null) {
+                    List<String> names = new ArrayList<>();
+                    for (BEvent e : offered) names.add(effectiveEventName(e));
+                    java.util.Collections.sort(names);
+                    System.out.println("      [trace] wanted " + current.action + ", offered this round ("
+                            + offered.size() + "): " + names);
+                }
+                return matches;
+            }
 
-            // Steer requestOneOf toward a valid variant for the desired action/identity.
-            if (matchesChooser(event, current, bindings)) return 1000;
-            // Avoid volunteering to delete an already-bound entity the scenario still needs.
-            if (isDestructiveToBindings(event, current, bindings, varType)) return -1000;
-            // Avoid volunteering to create a new loan/hold that re-entangles a bound entity a
-            // later step still needs to delete (e.g. re-loaning a book right after its loan was
-            // deleted, which would re-block Book.CanDelete before we get to delete the book).
-            if (isReEntanglingBindings(event, current, i, scenario, bindings)) return -1000;
-            return 0;
-        });
-        program.setEventSelectionStrategy(ess);
+            @Override
+            public Optional<EventSelectionResult> select(BProgramSyncSnapshot snapshot, Set<BEvent> selectableEvents) {
+                // Empty here means the target action was not on offer this round -- stop, don't
+                // wait for a future round and don't let anything else happen in between.
+                if (selectableEvents.isEmpty()) return Optional.empty();
+                return Optional.of(new EventSelectionResult(selectableEvents.iterator().next()));
+            }
+        };
+        program.setEventSelectionStrategy(strict);
 
         BProgramRunner runner = new BProgramRunner(program);
         runner.addListener(new BProgramRunnerListenerAdapter() {
             @Override
             public void eventSelected(BProgram bp, BEvent event) {
-                if (DEBUG_TRACE) {
-                    System.out.println("      [trace] " + event.getName() + " path=" + requestPath(event));
-                }
-                int i = step.get();
+                int i = step[0];
                 if (i >= scenario.steps.size()) return;
                 Step current = scenario.steps.get(i);
-
                 if (matchesChooser(event, current, bindings)) {
-                    applyBinds(event, current, bindings, varType);
-                    int reached = step.incrementAndGet();
-                    eventsSinceProgress.set(0);
+                    applyBinds(event, current, bindings);
+                    int reached = step[0] + 1;
+                    step[0] = reached;
                     System.out.println("  >>> step " + reached + "/" + scenario.steps.size()
-                            + " reached via: " + event.getName() + "   bindings=" + bindings);
+                            + " reached via: " + effectiveEventName(event) + "   bindings=" + bindings);
                     if (reached >= scenario.steps.size()) {
                         System.out.println("  >>> full sequence reached, halting.");
                         runner.halt();
                     }
-                    return;
-                }
-
-                int c = eventsSinceProgress.incrementAndGet();
-                if (c >= MAX_EVENTS_WITHOUT_PROGRESS) {
-                    System.out.println("  >>> giving up: " + c + " events with no progress past step " + i);
-                    runner.halt();
                 }
             }
         });
 
         runner.run();
 
-        int reachedSteps = step.get();
-        boolean reached = reachedSteps >= scenario.steps.size();
-        System.out.println("### Result: " + (reached ? "REACHED" : "NOT FOUND")
-                + " (completed REST steps " + reachedSteps + "/" + scenario.steps.size() + ")");
-        return reached;
+        RunResult result = new RunResult();
+        result.reachedSteps = step[0];
+        result.reached = result.reachedSteps >= scenario.steps.size();
+        if (!result.reached) {
+            result.failedAction = scenario.steps.get(result.reachedSteps).action;
+        }
+        System.out.println("### Result: " + (result.reached
+                ? "REACHED"
+                : "FAILED at step " + (result.reachedSteps + 1) + "/" + scenario.steps.size()
+                        + " (" + result.failedAction + " was not offered this round)"));
+        return result;
     }
 }
