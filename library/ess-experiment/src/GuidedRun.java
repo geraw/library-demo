@@ -242,6 +242,25 @@ public class GuidedRun {
     }
 
     /**
+     * The event's chooser-style name. A classic two-phase action (chooser sync, then a separate
+     * REST sync) names its chooser event descriptively (e.g. "deleteBook (valid): 1"), so
+     * event.getName() is what we want. A single-sync action (e.g. deleteBook after the
+     * requestOneOfDirect migration -- see interfaces.library.js) offers the concrete REST event
+     * itself, named after the HTTP verb ("DELETE"), with the descriptive name carried instead at
+     * data.variant.name -- same place extractParameters() already looks for parameters.
+     */
+    private static String chooserName(BEvent event) {
+        Map<String, Object> data = eventData(event);
+        if (data != null) {
+            Map<String, Object> variant = asMap(data.get("variant"));
+            if (variant != null && variant.get("name") != null) {
+                return String.valueOf(variant.get("name"));
+            }
+        }
+        return event.getName();
+    }
+
+    /**
      * Identity fields (id/userId/bookId/...) of an event -- from event.data.variant.parameters
      * for a chooser event, or event.data.parameters directly for a concrete REST event.
      */
@@ -289,7 +308,7 @@ public class GuidedRun {
 
     /** Chooser match: used only to steer PrioritizedEventsESS toward the desired action/identity. */
     private static boolean matchesChooser(BEvent event, Step step, Map<String, Double> bindings) {
-        return chooserNameMatches(event.getName(), step.action) && matchesIdentity(event, step, bindings);
+        return chooserNameMatches(chooserName(event), step.action) && matchesIdentity(event, step, bindings);
     }
 
     /** Normalized request path from a concrete REST event, for trace logging. */
@@ -333,7 +352,7 @@ public class GuidedRun {
      */
     private static boolean isDestructiveToBindings(BEvent event, Step currentStep,
                                                      Map<String, Double> bindings, Map<String, String> varType) {
-        String name = event.getName();
+        String name = chooserName(event);
         if (name == null) return false;
         String deletedType;
         if (name.startsWith("deleteUser")) deletedType = "user";
@@ -380,7 +399,7 @@ public class GuidedRun {
      */
     private static boolean isReEntanglingBindings(BEvent event, Step currentStep, int currentStepIndex,
                                                     Scenario scenario, Map<String, Double> bindings) {
-        String name = event.getName();
+        String name = chooserName(event);
         if (name == null) return false;
         String action;
         if (name.startsWith("createLoan")) action = "createLoan";
