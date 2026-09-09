@@ -31,16 +31,15 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Checks whether a hand-written sequence of events ("script") is a legal run of the model, by
  * literally walking it: at every synchronization point, look for a currently-selectable event
- * that matches the script's next step; if one exists, select *only* that event (forcing it);
- * if none exists yet, let the program run unconstrained (return every candidate, unprioritized)
- * so unrelated b-threads can make whatever progress the next step actually depends on, and look
- * again next round. No priorities, no scoring, no ties to break - a step either has a match
- * right now or it doesn't.
+ * that matches the script's next step. If one exists, select *only* that event (forcing it) and
+ * advance to the next step. If none exists, the script cannot proceed *right now* - stop
+ * immediately and declare that step unreachable. No priorities, no scoring, no waiting around
+ * for other b-threads to maybe make it available later: a legal next step must already be a
+ * candidate the moment we look for it.
  *
  * A script that runs to completion describes a run we confirmed the model allows. A script that
- * gets stuck (its next step's pattern never becomes a candidate, however long we wait) describes
- * a run the model does not allow to complete - which is exactly what we want for a script built
- * to describe a scenario we expect to be *illegal*.
+ * stops before its last step describes a run the model does not allow to complete - which is
+ * exactly what we want for a script built to describe a scenario we expect to be *illegal*.
  *
  * Run:
  *   javac -cp Provengo.uber.jar -d out src/ScenarioCheck.java
@@ -48,9 +47,6 @@ import static java.util.stream.Collectors.toSet;
  */
 public class ScenarioCheck {
 
-    /** How many selected events may go by with the current step still unmatched before we
-     *  conclude the script is stuck (not necessarily wrong - see Scenario.expectCompletion). */
-    private static final int MAX_EVENTS_WITHOUT_PROGRESS = 3000;
     private static final String SUT_RESET_URL = "http://localhost:23242/reset";
     private static final Pattern NONEXISTENT_ID = Pattern.compile("\\d{9,}");
     private static final Pattern SUFFIX = Pattern.compile(": (\\d+)/(\\d+)$");
@@ -152,7 +148,9 @@ public class ScenarioCheck {
                     return Collections.singleton(candidate); // the next step IS a candidate right now: force it, nothing else
                 }
             }
-            return possibleOptions; // next step not available yet: let unrelated b-threads proceed
+            // The next step is not a candidate right now: the script cannot proceed. Offering
+            // nothing brings the b-program to a stop instead of letting anything else happen.
+            return Collections.emptySet();
         }
     }
 
@@ -256,24 +254,17 @@ public class ScenarioCheck {
         program.setEventSelectionStrategy(ess);
 
         BProgramRunner runner = new BProgramRunner(program);
-        AtomicInteger eventsSinceProgress = new AtomicInteger(0);
         boolean[] completed = {false};
 
         runner.addListener(new BProgramRunnerListenerAdapter() {
             @Override
             public void eventSelected(BProgram bp, BEvent event) {
                 int i = ess.stepIndex.get();
-                if (i < scenario.script.size() && scenario.script.get(i).matches(event)) {
-                    System.out.println("  >>> step " + (i + 1) + "/" + scenario.script.size()
-                            + " (" + scenario.script.get(i).describe() + ") reached via: " + chooserName(event));
-                    eventsSinceProgress.set(0);
-                    if (ess.stepIndex.incrementAndGet() >= scenario.script.size()) {
-                        completed[0] = true;
-                        runner.halt();
-                    }
-                    return;
-                }
-                if (eventsSinceProgress.incrementAndGet() >= MAX_EVENTS_WITHOUT_PROGRESS) {
+                if (i >= scenario.script.size() || !scenario.script.get(i).matches(event)) return;
+                System.out.println("  >>> step " + (i + 1) + "/" + scenario.script.size()
+                        + " (" + scenario.script.get(i).describe() + ") reached via: " + chooserName(event));
+                if (ess.stepIndex.incrementAndGet() >= scenario.script.size()) {
+                    completed[0] = true;
                     runner.halt();
                 }
             }
@@ -281,12 +272,11 @@ public class ScenarioCheck {
         runner.run();
 
         int reachedStep = ess.stepIndex.get();
-        String stuckAt = reachedStep < scenario.script.size() ? scenario.script.get(reachedStep).describe() : null;
         boolean passed = scenario.expectCompletion == completed[0];
         String detail = completed[0]
                 ? "script completed all " + scenario.script.size() + " steps"
-                : "stuck at step " + (reachedStep + 1) + "/" + scenario.script.size() + " (" + stuckAt + ") after "
-                        + MAX_EVENTS_WITHOUT_PROGRESS + " events with no progress";
+                : "stopped at step " + (reachedStep + 1) + "/" + scenario.script.size()
+                        + " (" + scenario.script.get(reachedStep).describe() + ") - not currently a candidate";
         return new Result(scenario.name, passed, detail);
     }
 
