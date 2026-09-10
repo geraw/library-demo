@@ -62,13 +62,9 @@ function generateMissingId(existingId) {
 /////////////////////////////////////////////////////////////////////////
 
 ctx.bthread("verifyUserExistsAfterCreation", "User.All", function (user) {
-  block(matchDeleteUser(user.userid), function () {
-    // stillRelevant is a defense-in-depth check for the block() guard above: block() has a
-    // narrow gap where an offered "verify" event can still lose the race to a legitimate
-    // concurrent deletion (see verifyBookExistsAfterCreation below for the observed case), so
-    // the verify functions re-check the entity is still expected to exist before failing.
-    verifyUserExists(user.userid, function () { return entityExists('User.All', userId(user.userid)); });
-  });
+  // No block() guard: this verify can race a concurrent deletion of the same user. stillRelevant
+  // lets verifyUserExists bail out quietly instead of failing when that happens.
+  verifyUserExists(user.userid, function () { return entityExists('User.All', userId(user.userid)); });
 });
 
 ctx.bthread("verifyCannotDeleteUser", "User.CannotDelete", function (user) {
@@ -79,72 +75,56 @@ ctx.bthread("verifyUserDeletion", function () {
   on(matchAnyUserDeleted(), function (e) {
     let id = extractEventData(e).id;
 
-    block(matchAddUser(id), function () {
-      verifyUserAbsentFromAllLists(id);
-      tryToDeleteDeletedUserAndExpectError(id);
-    });
+    verifyUserAbsentFromAllLists(id);
+    tryToDeleteDeletedUserAndExpectError(id);
   });
 });
 
 ctx.bthread("verifyBookExistsAfterCreation", "Book.All", function (book) {
-  block(matchDeleteBook(book.bookid), function () {
-    // block(matchDeleteBook(...)) is meant to keep this book's real DELETE from actuating while
-    // we verify, but the offered "verify" events themselves can sit unselected for many
-    // synchronization rounds (other b-threads keep running while this one waits), and that
-    // window isn't fully covered by the block. Observed in practice: a book got deleted while
-    // verifyBookDetailExists's fuzz-retry loop was still mid-flight, turning an expected 200 into
-    // an unexpected 404. stillRelevant lets the verify functions bail out quietly instead of
-    // failing when the entity legitimately stopped existing while we were waiting our turn.
-    var stillExists = function () { return entityExists('Book.All', bookId(book.bookid)); };
-    verifyBookExists(book.bookid, stillExists);
-    verifyBookDetailExists(book.bookid, stillExists);
-  });
+  // No block() guard: this verify can race a concurrent deletion of the same book. Observed in
+  // practice: a book got deleted while verifyBookDetailExists's fuzz-retry loop was still
+  // mid-flight, turning an expected 200 into an unexpected 404. stillRelevant lets the verify
+  // functions bail out quietly instead of failing when the entity legitimately stopped existing
+  // while we were waiting our turn.
+  var stillExists = function () { return entityExists('Book.All', bookId(book.bookid)); };
+  verifyBookExists(book.bookid, stillExists);
+  verifyBookDetailExists(book.bookid, stillExists);
 });
 
 bthread("verifyBookDeletion", function () {
   on(matchAnyBookDeleted(), function (e) {
     let id = extractEventData(e).id;
 
-    block(matchAddBook(id), function () {
-      verifyBookAbsentFromAllLists(id);
-      verifyMissingEntityReadIsRejected("Book", id, "/books/" + realBookId(id));
-      tryToDeleteDeletedBookAndExpectError(id);
-    });
+    verifyBookAbsentFromAllLists(id);
+    verifyMissingEntityReadIsRejected("Book", id, "/books/" + realBookId(id));
+    tryToDeleteDeletedBookAndExpectError(id);
   });
 });
 
 ctx.bthread("verifyLoanExistsAfterCreation", "Loan.All", function (loan) {
-  block(matchDeleteLoan(loan.userid), function () {
-    verifyLoanExists(loan.bookid, loan.userid, function () { return entityExists('Loan.All', loanId(loan.userid, loan.bookid)); });
-  });
+  verifyLoanExists(loan.bookid, loan.userid, function () { return entityExists('Loan.All', loanId(loan.userid, loan.bookid)); });
 });
 
 bthread("verifyLoanDeletion", function () {
   on(matchAnyLoanDeleted(), function (e) {
     let loanData = extractEventData(e);
 
-    block(matchAddLoan(loanData.userId), function () {
-      verifyLoanAbsentFromAllLists(null, loanData.userId);
-      if (loanData.bookId !== undefined && loanData.bookId !== null)
-        tryToDeleteDeletedLoanAndExpectError(loanData.userId, loanData.bookId);
-    });
+    verifyLoanAbsentFromAllLists(null, loanData.userId);
+    if (loanData.bookId !== undefined && loanData.bookId !== null)
+      tryToDeleteDeletedLoanAndExpectError(loanData.userId, loanData.bookId);
   });
 });
 
 ctx.bthread("verifyHoldExistsAfterCreation", "Hold.All", function (hold) {
-  block(matchDeleteHold(hold.holdid), function () {
-    verifyHoldExists(hold.holdid, function () { return entityExists('Hold.All', holdId(hold.holdid)); });
-  });
+  verifyHoldExists(hold.holdid, function () { return entityExists('Hold.All', holdId(hold.holdid)); });
 });
 
 bthread("verifyHoldDeletion", function () {
   on(matchAnyHoldDeleted(), function (e) {
     let id = extractEventData(e).id;
 
-    block(matchAddHold(id), function () {
-      verifyHoldAbsentFromAllLists(id);
-      tryToDeleteDeletedHoldAndExpectError(id);
-    });
+    verifyHoldAbsentFromAllLists(id);
+    tryToDeleteDeletedHoldAndExpectError(id);
   });
 });
 
@@ -179,24 +159,16 @@ bthread("createRandomBooks", function () {
 // These bthreads are triggered by user and book creation and then create
 // loans and holds from those existing objects.
 //////////////////////////////////////////////////////////////////////////
-
 ctx.bthread("createLoan", "UserBook.CanCreateLoan", function (userbook) {
-  // Mirror image of the deleteUser/deleteBook guard: block user/book deletion
-  // while this create offer is pending, so the user/book can't disappear out
-  // from under it and turn the expected 201 into an unexpected 400.
-  block(matchDeleteBookOrUser(userbook.bookid, userbook.userid), function () {
     createLoan(userbook.userid, userbook.bookid, generateLoanId());
-  });
 });
 
 ctx.bthread("verifyCannotCreateLoan", "UserBook.CannotCreateLoan", function (userbook) {
-  tryToCreateLoanAndExpectError(userbook.userid, userbook.bookid, generateLoanId());
+    tryToCreateLoanAndExpectError(userbook.userid, userbook.bookid, generateLoanId());
 });
 
 ctx.bthread("createHold", "UserBook.CanCreateHold", function (userbook) {
-  block(matchDeleteBookOrUser(userbook.bookid, userbook.userid), function () {
     createHold(userbook.bookid, generateHoldId(), userbook.userid);
-  });
 });
 
 // verifyCannotCreateHold was removed: the SUT now assigns the hold's id itself and silently
@@ -219,20 +191,19 @@ ctx.bthread("createHold", "UserBook.CanCreateHold", function (userbook) {
 // be done by adding a random chance to the deletion bthreads.
 /////////////////////////////////////////////////////////////////////////
 
+// deleteUser/deleteBook used to wrap their call in block(matchAddHoldOrLoanForUser/Book(...), ...)
+// to guard against a concurrently-created hold/loan turning the delete's expected 200 into a 400.
+// That guard matched on candidate (not-yet-sent) createLoan/createHold events by shape, so it
+// vetoed those events' own valid-shaped variants for as long as this delete offer was merely
+// pending -- and since User.CanDelete/Book.CanDelete become eligible the moment the entity is
+// created, this permanently blocked a fresh user/book's own createLoan(...) from ever completing
+// before the entity got deleted out from under it. Removed; no replacement guard yet.
 ctx.bthread("deleteUser", "User.CanDelete", function (user) {
-  // Block new holds/loans for this user while the delete offer is pending, so a
-  // concurrently-created hold/loan can't turn the expected 200 into a 400 by the
-  // time this offer is finally selected. See matchAddHoldOrLoanForUser.
-  block(matchAddHoldOrLoanForUser(user.userid), function () {
-    deleteUser(user.userid);
-  });
+  deleteUser(user.userid);
 });
 
 ctx.bthread("deleteBook", "Book.CanDelete", function (book) {
-  // Same race guard as deleteUser above, for books. See matchAddHoldOrLoanForBook.
-  block(matchAddHoldOrLoanForBook(book.bookid), function () {
-    deleteBook(book.bookid);
-  });
+  deleteBook(book.bookid);
 });
 
 ctx.bthread("deleteLoan", "Loan.All", function (loan) {
@@ -255,9 +226,7 @@ ctx.bthread("deleteHold", "Hold.All", function (hold) {
 // existing one. See the RTV helpers (realBookId etc.) in interfaces.library.js.
 
 ctx.bthread("verifyCannotCreateBookWithBadParameters", "Book.All", function (book) {
-  block(matchDeleteBook(book.bookid), function () {
-    tryToCreateBookWithBadParametersAndExpectError(book.bookid);
-  });
+  tryToCreateBookWithBadParametersAndExpectError(book.bookid);
 });
 
 ctx.bthread("verifyCannotDeleteBook", "Book.CannotDelete", function (book) {
@@ -265,10 +234,8 @@ ctx.bthread("verifyCannotDeleteBook", "Book.CannotDelete", function (book) {
 });
 
 ctx.bthread("verifyHoldOnlyBlocksUserAndBookDeletion", "Hold.All", function (hold) {
-  block(matchAddLoanForHeldResourceOrDeleteHoldOrBookOrUser(hold.holdid, hold.bookid, hold.userid), function () {
-    tryToDeleteUserAndExpectError(hold.userid);
-    tryToDeleteBookAndExpectError(hold.bookid);
-  });
+  tryToDeleteUserAndExpectError(hold.userid);
+  tryToDeleteBookAndExpectError(hold.bookid);
 
   // The general deleteHold bthread is the single valid deletion path for this
   // hold. Doing an extra delete here creates a second valid delete on the same
@@ -359,14 +326,7 @@ bthread("tryToDeleteNonexistingUser", function () {
 //    - If a valid event is selected: The interface executes the successful REST
 //      request (expecting 200 or 201) and exits the loop.
 //
-// 3. Synchronization & Match Compliance:
-//    Because b-threads may block or wait-for events during this process, the
-//    corresponding EventSets (e.g., matchAddBook, matchDeleteUser) MUST capture:
-//    - The actual successful SUT REST completion event (e.g. POST/DELETE with 200/201).
-//    - Any valid client-side fuzzing request event (where `type === "valid"` and the
-//      target entity IDs match), ensuring stories stay synchronized with fuzzed paths.
-//
-// 4. Retrieve actions and the fuzzing loop:
+// 3. Retrieve actions and the fuzzing loop:
 //    A read only gets the fuzzing loop (points 1-2) when the SUT itself validates
 //    the read's parameters and can reject it with 400:
 //    - Book detail reads (GET /books/{id}) validate the id path segment, so

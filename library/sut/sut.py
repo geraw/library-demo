@@ -11,6 +11,7 @@ Routes:
 - /holds - Hold management
 """
 
+import random
 import re
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -51,22 +52,29 @@ def parse_positive_int(value: Any, field_name: str) -> Tuple[bool, Optional[int]
     return True, numeric, None
 
 
-# Per-entity-type monotonic counters. Unlike a max(existing_ids)+1 scheme, these never reuse an id
-# after its entity is deleted: deleting the highest-numbered entity leaves a permanent gap instead
-# of letting the next create silently reissue that id to an unrelated new entity.
-_next_ids: Dict[str, int] = {"users": 1, "books": 1, "loans": 1, "holds": 1}
+# Per-entity-type id pools. Ids are random 6-digit numbers rather than a sequential counter, to
+# make sure nothing (model or test) accidentally relies on server-assigned ids being small or
+# predictable. Like the old counter, these never reuse an id after its entity is deleted: issued
+# ids stay in the set forever, so deleting an entity leaves a permanent gap instead of letting a
+# later create silently reissue that id to an unrelated new entity.
+_ID_MIN = 100000
+_ID_MAX = 999999
+_issued_ids: Dict[str, set] = {"users": set(), "books": set(), "loans": set(), "holds": set()}
 
 
 def generate_unique_id(id_kind: str) -> int:
-    """Return the next server-owned sequential id for id_kind, never previously issued for it."""
-    next_id = _next_ids[id_kind]
-    _next_ids[id_kind] += 1
-    return next_id
+    """Return a random 6-digit id for id_kind, never previously issued for it."""
+    issued = _issued_ids[id_kind]
+    while True:
+        candidate = random.randint(_ID_MIN, _ID_MAX)
+        if candidate not in issued:
+            issued.add(candidate)
+            return candidate
 
 
 def _reset_id_counter(id_kind: str, seeded_ids: set) -> None:
-    """On a database reset, restart id_kind's counter past any explicitly seeded ids."""
-    _next_ids[id_kind] = max(seeded_ids, default=0) + 1
+    """On a database reset, restart id_kind's pool with exactly the explicitly seeded ids."""
+    _issued_ids[id_kind] = set(seeded_ids)
 
 
 def get_json_object() -> Tuple[Optional[Dict[str, Any]], Optional[Response]]:
