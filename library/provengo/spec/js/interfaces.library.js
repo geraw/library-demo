@@ -512,7 +512,7 @@ function tryToUpdateLoanAndExpectError(userId, bookId, body, expectedCode) {
   tryToUpdateAndExpectError("Loan", userId + "/" + bookId, "/loans/" + realUserId(userId) + "/" + realBookId(bookId), body, expectedCode);
 }
 
-function createLoan(userId, bookId, loanNumber, expectedCode, description, userIdMissing, bookIdMissing) {
+function createLoan(userId, bookId, loanNumber, expectedCode, description, userIdMissing, bookIdMissing, stillRelevant) {
   userId = asInteger(userId);
   bookId = asInteger(bookId);
   loanNumber = loanNumber === undefined || loanNumber === null ? null : asInteger(loanNumber);
@@ -557,8 +557,12 @@ function createLoan(userId, bookId, loanNumber, expectedCode, description, userI
   }));
 
   while (true) {
-    var response = requestOneOfDirect("post", "/loans", variants);
-    if (response.data.model.valid === true) return response;
+    var valid = false;
+    var response = requestOneOf("post", "/loans", variants, function (chosen) {
+      valid = chosen.valid === true;
+    }, stillRelevant);
+    if (response === REQUEST_ABORTED) return response;
+    if (valid) return response;
   }
 }
 

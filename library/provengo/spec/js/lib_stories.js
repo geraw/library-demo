@@ -159,8 +159,15 @@ bthread("createRandomBooks", function () {
 // These bthreads are triggered by user and book creation and then create
 // loans and holds from those existing objects.
 //////////////////////////////////////////////////////////////////////////
+// stillRelevant re-checks UserBook.CanCreateLoan for this pair right before the REST call fires,
+// since this bthread only checks it once, when spawned for a pair that just became eligible.
 ctx.bthread("createLoan", "UserBook.CanCreateLoan", function (userbook) {
-    createLoan(userbook.userid, userbook.bookid, generateLoanId());
+    createLoan(userbook.userid, userbook.bookid, generateLoanId(), undefined, undefined, undefined, undefined,
+        function () {
+            return ctx.runQuery('UserBook.CanCreateLoan').some(function (pair) {
+                return sameId(pair.userid, userbook.userid) && sameId(pair.bookid, userbook.bookid);
+            });
+        });
 });
 
 ctx.bthread("verifyCannotCreateLoan", "UserBook.CannotCreateLoan", function (userbook) {

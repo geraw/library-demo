@@ -59,6 +59,32 @@ import java.util.Set;
  *
  * Set env var GUIDEDRUN_TRACE=1 to log what was actually on offer whenever a step's target
  * action wasn't among it (diagnostic only -- does not change pass/fail behavior).
+ *
+ * 2.9.3-extreme / 2.9.4-extreme background: these used to report REACHED for a second createLoan
+ * on an already-busy user/book, even though the real SUT correctly rejects it with 400. Root
+ * cause: UserBook.CanCreateLoan (dal.js) is only consulted once, when the ctx.bthread controller
+ * first spawns the createLoan live copy for a given user-book pair (see ctx.bthread in Provengo's
+ * bundled libs/context.js -- it only reacts to a query match becoming "new", never to one becoming
+ * false again), so a pair eligible when its book/user were created could stay "offered" long after
+ * the user picked up a loan elsewhere. Fixed upstream: lib_stories.js's createLoan ctx.bthread now
+ * passes a stillRelevant recheck into createLoan() (interfaces.library.js), which stays on the
+ * two-phase requestOneOf path (chooser sync, then a separate REST-send sync) specifically so that
+ * recheck has a checkpoint to run at, right before the REST call actually fires.
+ *
+ * That two-phase shape is also why this checker needs isTwoPhaseChooser/isRawRestSend/
+ * awaitingConfirmation below: winning a two-phase action's chooser only means the action was
+ * CHOSEN, not yet sent, so this checker does NOT advance to the next scenario step at that point --
+ * it waits for the action's own separate REST-send event to confirm it first (or, if stillRelevant
+ * aborts the request before that send ever happens, the step correctly never gets reached). Every
+ * other action here stays single-sync (requestOneOfDirect) and is unaffected by this distinction.
+ *
+ * One more wrinkle surfaced once the above was in place: verifyCannotCreateLoanForBusyUserOrBook
+ * (lib_stories.js) spawns its own live copy the moment a pair becomes ineligible, calling createLoan
+ * with expectedCode 400 -- an intentional-rejection request that gets the EXACT SAME descriptive
+ * chooser name as a real attempt ("valid" only describes the request's shape, not its expected
+ * outcome), for the SAME userId/bookId this checker is targeting. Without expectsRejection() below
+ * to check the event's own expectedResponseCodes, this checker could pick up that correctly-rejected
+ * request and mistake it for the target action succeeding.
  */
 public class StrictGuidedRun {
 
@@ -394,6 +420,28 @@ public class StrictGuidedRun {
                     step("createBook").bind("book", "id"),
                     step("deleteBook").require("book", "id"),
                     step("createLoan").require("user", "userId").require("book", "bookId")
+            )),
+
+            // 2.9.3-extreme: one user cannot hold two simultaneous active loans (UserBook.CanCreateLoan
+            // requires !hasLoanForUser) -- a second loan on a DIFFERENT book for the SAME user must
+            // be blocked while the first loan is still active.
+            expectBlocked("2.9.3-extreme Second active Loan for the SAME user on a DIFFERENT book (should be BLOCKED)", List.of(
+                    step("createUser").bind("user", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bindDistinctFrom("book2", "id", "book1"),
+                    step("createLoan").require("user", "userId").require("book1", "bookId"),
+                    step("createLoan").require("user", "userId").require("book2", "bookId")
+            )),
+
+            // 2.9.4-extreme: a book cannot have two simultaneous active loans (UserBook.CanCreateLoan
+            // requires !hasLoanForBook) -- a second loan on the SAME book for a DIFFERENT user must be
+            // blocked while the first loan is still active.
+            expectBlocked("2.9.4-extreme Second active Loan for the SAME book by a DIFFERENT user (should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bindDistinctFrom("user2", "id", "user1"),
+                    step("createBook").bind("book", "id"),
+                    step("createLoan").require("user1", "userId").require("book", "bookId"),
+                    step("createLoan").require("user2", "userId").require("book", "bookId")
             ))
     );
 
@@ -443,17 +491,45 @@ public class StrictGuidedRun {
     }
 
     /**
-     * Identity fields (id/userId/bookId/...) of an event -- from event.data.variant.parameters
-     * for a chooser event, or event.data.parameters directly for a concrete REST event.
+     * Identity fields (id/userId/bookId/...) of an event -- from event.data.parameters directly
+     * for a concrete REST event, from event.data.model.parameters for a single-sync action's
+     * combined chooser+REST event, or from event.data.variant.parameters for a genuine two-phase
+     * action's lightweight chooser event (requestOneOf -- e.g. createLoan; see isTwoPhaseChooser).
      */
     private static Map<String, Object> extractParameters(BEvent event) {
         Map<String, Object> data = eventData(event);
         if (data == null) return null;
         Map<String, Object> direct = asMap(data.get("parameters"));
         if (direct != null) return direct;
-        Map<String, Object> variant = asMap(data.get("model"));
-        if (variant == null) return null;
-        return asMap(variant.get("parameters"));
+        Map<String, Object> model = asMap(data.get("model"));
+        if (model != null) return asMap(model.get("parameters"));
+        Map<String, Object> variant = asMap(data.get("variant"));
+        if (variant != null) return asMap(variant.get("parameters"));
+        return null;
+    }
+
+    /**
+     * A two-phase action's lightweight chooser event (requestOneOf: bp.Event(name, {variant: v})
+     * in interfaces.library.js). Winning this only means the action was CHOSEN, not yet actually
+     * sent -- the real REST call is a SEPARATE, later synchronization (see isRawRestSend). A
+     * single-sync action's event (requestOneOfDirect) carries data.model instead and IS already
+     * the real REST send, so it doesn't need this two-step tracking.
+     */
+    private static boolean isTwoPhaseChooser(BEvent event) {
+        Map<String, Object> data = eventData(event);
+        return data != null && data.get("model") == null && data.get("variant") != null;
+    }
+
+    /**
+     * The actual REST send of a two-phase action (RESTSession's plain ___apiBody___/svc.post path,
+     * as opposed to interfaces.library.js's buildRestEvent) -- the event whose real HTTP response
+     * is what dal.js's effects and the SUT itself react to. Named after the bare HTTP verb
+     * ("POST"/"DELETE"), not descriptively, and carries no data.model -- that's what distinguishes
+     * it from a single-sync action's own combined chooser+REST event.
+     */
+    private static boolean isRawRestSend(BEvent event) {
+        Map<String, Object> data = eventData(event);
+        return data != null && "REST".equals(data.get("lib")) && data.get("model") == null;
     }
 
     private static Double asDouble(Object o) {
@@ -488,9 +564,38 @@ public class StrictGuidedRun {
         return true;
     }
 
+    /**
+     * True if this event's own expectedResponseCodes marks it as an intentional-rejection test
+     * (expects 400), regardless of its "valid"-labeled name. A well-formed request that's supposed
+     * to fail (e.g. tryToCreateLoanAndExpectError, spawned once a pair becomes ineligible) gets the
+     * SAME descriptive chooser name as a well-formed request that's supposed to succeed ("valid"
+     * only ever describes the request's SHAPE, not its expected outcome) -- so name matching alone
+     * can't tell them apart. Both live copies can be pending at once for the very same
+     * userId/bookId once a pair goes from eligible to ineligible mid-scenario, so this check is
+     * what keeps this checker from mistaking a correctly-rejected request for the target action
+     * actually succeeding.
+     */
+    private static boolean expectsRejection(BEvent event) {
+        Map<String, Object> data = eventData(event);
+        if (data == null) return false;
+        Object codes = data.get("expectedResponseCodes");
+        if (codes == null) {
+            Map<String, Object> variant = asMap(data.get("variant"));
+            if (variant != null) codes = variant.get("expectedResponseCodes");
+        }
+        if (codes instanceof List) {
+            for (Object c : (List<?>) codes) {
+                if (c instanceof Number && ((Number) c).intValue() == 400) return true;
+            }
+        }
+        return false;
+    }
+
     /** Is this event a well-formed, success-intended offer of the step's action with matching identity? */
     private static boolean matchesChooser(BEvent event, Step step, Map<String, Double> bindings) {
-        return chooserNameMatches(chooserName(event), step.action) && matchesIdentity(event, step, bindings);
+        return chooserNameMatches(chooserName(event), step.action)
+                && !expectsRejection(event)
+                && matchesIdentity(event, step, bindings);
     }
 
     /** Commits this step's binds into the bindings map, once the chooser event is confirmed selected. */
@@ -600,6 +705,10 @@ public class StrictGuidedRun {
         final Map<String, Double> bindings = new HashMap<>();
         final SimpleEventSelectionStrategy base = new SimpleEventSelectionStrategy();
         final java.util.Random rng = new java.util.Random();
+        // True between a two-phase action's chooser winning and its actual REST send being
+        // confirmed (see isTwoPhaseChooser/isRawRestSend) -- the current step isn't reached yet,
+        // even though its chooser already won, until the real send happens too.
+        final boolean[] awaitingConfirmation = {false};
 
         AbstractEventSelectionStrategy strict = new AbstractEventSelectionStrategy() {
             @Override
@@ -616,15 +725,25 @@ public class StrictGuidedRun {
                 // upstream, the target is expected to become selectable on its own, without
                 // needing any other event to happen first.
                 Set<BEvent> matches = new HashSet<>();
-                for (BEvent e : offered) {
-                    if (matchesChooser(e, current, bindings)) matches.add(e);
+                if (awaitingConfirmation[0]) {
+                    // The current step's chooser already won (isTwoPhaseChooser); now only its own
+                    // real REST send counts -- same identity check as the step itself, since the
+                    // step hasn't advanced and bindings haven't changed since the chooser won.
+                    for (BEvent e : offered) {
+                        if (isRawRestSend(e) && !expectsRejection(e) && matchesIdentity(e, current, bindings)) matches.add(e);
+                    }
+                } else {
+                    for (BEvent e : offered) {
+                        if (matchesChooser(e, current, bindings)) matches.add(e);
+                    }
                 }
                 if (matches.isEmpty() && System.getenv("GUIDEDRUN_TRACE") != null) {
                     List<String> names = new ArrayList<>();
                     for (BEvent e : offered) names.add(chooserName(e));
                     java.util.Collections.sort(names);
-                    System.out.println("      [trace] wanted " + current.action + ", offered this round ("
-                            + offered.size() + " total): " + names);
+                    System.out.println("      [trace] wanted " + current.action
+                            + (awaitingConfirmation[0] ? " (awaiting REST confirmation)" : "")
+                            + ", offered this round (" + offered.size() + " total): " + names);
                 }
                 return matches;
             }
@@ -664,8 +783,36 @@ public class StrictGuidedRun {
                 int i = step[0];
                 if (i >= scenario.steps.size()) return;
                 Step current = scenario.steps.get(i);
-                if (matchesChooser(event, current, bindings)) {
+
+                if (awaitingConfirmation[0]) {
+                    if (isRawRestSend(event) && !expectsRejection(event) && matchesIdentity(event, current, bindings)) {
+                        awaitingConfirmation[0] = false;
+                        int reached = step[0] + 1;
+                        step[0] = reached;
+                        eventsSinceProgress[0] = 0;
+                        System.out.println("  >>> step " + reached + "/" + scenario.steps.size()
+                                + " reached via: " + current.action + " (two-phase, REST send confirmed)"
+                                + "   bindings=" + bindings);
+                        if (reached >= scenario.steps.size()) {
+                            System.out.println("  >>> full sequence reached, halting.");
+                            runner.halt();
+                        }
+                        return;
+                    }
+                } else if (matchesChooser(event, current, bindings)) {
                     applyBinds(event, current, bindings);
+                    if (isTwoPhaseChooser(event)) {
+                        // Chooser won, but the action isn't complete yet -- wait for its actual
+                        // REST send (see selectableEvents' awaitingConfirmation branch) before
+                        // counting this step as reached. A stillRelevant recheck inside the story
+                        // (e.g. createLoan's) can still abort it before that send ever happens.
+                        awaitingConfirmation[0] = true;
+                        eventsSinceProgress[0] = 0;
+                        System.out.println("  >>> step " + (step[0] + 1) + "/" + scenario.steps.size()
+                                + " chooser won: " + chooserName(event) + "   bindings=" + bindings
+                                + "  (awaiting REST confirmation)");
+                        return;
+                    }
                     int reached = step[0] + 1;
                     step[0] = reached;
                     eventsSinceProgress[0] = 0;
