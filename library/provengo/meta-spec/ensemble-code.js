@@ -1,13 +1,68 @@
 // @provengo summon ctrl
 
 /**
+ * createLoan goes through interfaces.library.js's two-phase requestOneOf, which puts the
+ * descriptive variant name (e.g. "createLoan (valid-standard): 3/7") directly on event.name, so
+ * any(regex) matches it. createHold/deleteUser/deleteBook go through the single-sync
+ * requestOneOfDirect instead, which names the raw BEvent after the bare HTTP verb ("POST"/
+ * "DELETE") and buries the descriptive name in event.data.model.name -- any(regex) alone can
+ * never match those. nameMatches checks both places so one goal definition works for either path.
+ */
+function nameMatches(regex) {
+    return { contains: function (event) {
+        if (regex.test(event.name)) return true;
+        var model = event.data && event.data.model;
+        return !!(model && model.name && regex.test(model.name));
+    }};
+}
+
+/**
+ * createLoan's chooser winning is NOT the same as the loan actually being created: stillRelevant
+ * is rechecked right before the real REST call fires, and a stale attempt (the user/book got
+ * reassigned elsewhere while this chooser was pending) is silently aborted with no further event at
+ * all -- see StrictGuidedRun.java's isTwoPhaseChooser/isRawRestSend comments, and
+ * scenarios_from_ensemble.py's loan_actually_completed, which hit this exact gap empirically (0/7
+ * "valid" chooser wins in one ensemble run actually completed). So instead of matching the chooser's
+ * descriptive name (which fires regardless of whether the request is later aborted), this matches
+ * the actual fired REST call to /loans directly -- the one event that only exists if the request
+ * genuinely went out -- keyed off its parameters.description (a plain string -- see below for why
+ * expectedResponseCodes itself isn't used) since every other action here is single-sync, so
+ * winning the chooser IS completing; only createLoan needs this.
+ *
+ * Not keyed off expectedResponseCodes: that field deserializes as a Java List once read back from
+ * samples.json/ensemble.json, and Rhino's Array.prototype.some/indexOf over it throws "Cannot find
+ * default value for object" -- description is a plain string (like model.name above), so regex
+ * matching it is safe. interfaces.library.js's requestOneOf falls back to
+ * `chosen.description || selectedEvent.name` for a completed REST event's own description when the
+ * variant set neither: a genuine valid completion's variant sets `description: "Create: Loan ..."`
+ * (see lib_stories.js/dal.js's createDescription), while createLoan's invalid-shape variants set no
+ * parameters at all, so their completions fall through to the chooser's own name, still prefixed
+ * "createLoan (invalid ...)" -- distinguishable without ever touching expectedResponseCodes.
+ */
+function loanCompletion(descriptionPattern) {
+    return { contains: function (event) {
+        var d = event.data;
+        if (!d || d.lib !== "REST" || d.model || d.method !== "POST") return false;
+        if (!d.url || d.url.indexOf("/loans") === -1) return false;
+        var params = d.parameters;
+        var description = params && params.description;
+        return !!(description && descriptionPattern.test(description));
+    }};
+}
+
+/**
  * List of events "of interest" that we want test suites to cover.
- * TODO: Change this list to match the project
+ * A goal is met once any sampled scenario actually exercises that gate's accept or reject path.
  */
 const GOALS = [
-    any(/Howdy/),
-    any(/Mars/),
-    Ctrl.markEvent("Classic!")
+    loanCompletion(/^Create: Loan/),
+    loanCompletion(/^createLoan \(invalid/),
+    nameMatches(/createHold \(valid/),
+    nameMatches(/createHold \(invalid/),
+    nameMatches(/deleteUser \(valid/),
+    nameMatches(/deleteUser \(invalid/),
+    nameMatches(/deleteBook \(valid/),
+    nameMatches(/deleteBook \(invalid/)
 ];
 
 const makeGoals = function(){
