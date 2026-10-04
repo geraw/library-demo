@@ -1,5 +1,5 @@
-const NUMBER_OF_USERS = 3;
-const NUMBER_OF_BOOKS = 3;
+const NUMBER_OF_USERS = 4;
+const NUMBER_OF_BOOKS = 4;
 
 const RANDOM = new java.util.Random();
 var nextUserId = 1;
@@ -307,6 +307,18 @@ ctx.bthread("verifyCannotUpdateHold", "Hold.All", function (hold) {
 // Gera: Why only users? Why not also books, loans and holds?
 bthread("tryToDeleteNonexistingUser", function () {
   tryToDeleteNonexistingUserAndExpectError(generateMissingId(generateUserId()));
+});
+
+bthread("tryToDeleteNonexistingBook", function () {
+  tryToDeleteNonexistingBookAndExpectError(generateMissingId(generateBookId()));
+});
+
+bthread("tryToDeleteNonexistingLoan", function () {
+  tryToDeleteNonexistingLoanAndExpectError(generateMissingId(generateUserId()), generateMissingId(generateBookId()));
+});
+
+bthread("tryToDeleteNonexistingHold", function () {
+  tryToDeleteNonexistingHoldAndExpectError(generateMissingId(generateHoldId()));
 });
 
 // =========================================================================

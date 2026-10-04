@@ -442,6 +442,179 @@ public class StrictGuidedRun {
                     step("createBook").bind("book", "id"),
                     step("createLoan").require("user1", "userId").require("book", "bookId"),
                     step("createLoan").require("user2", "userId").require("book", "bookId")
+            )),
+
+            // 3.17-hold: the Hold-side mirror of 3.17 -- once a book is fully deleted, no hold
+            // should ever be creatable for that bookId either (its userbook pair is gone).
+            expectBlocked("3.17-hold Hold attempt for a bookId that was already deleted (should be BLOCKED)", List.of(
+                    step("createUser").bind("user", "id"),
+                    step("createBook").bind("book", "id"),
+                    step("deleteBook").require("book", "id"),
+                    step("createHold").require("user", "userId").require("book", "bookId")
+            )),
+
+            // Hold attempt for a userId that was already deleted -- same idea, from the user side:
+            // deleting a fresh (loan/hold-free) user removes its userbook pairs, so no hold should
+            // ever be creatable for that userId again.
+            expectBlocked("Hold attempt for a userId that was already deleted (should be BLOCKED)", List.of(
+                    step("createUser").bind("user", "id"),
+                    step("createBook").bind("book", "id"),
+                    step("deleteUser").require("user", "id"),
+                    step("createHold").require("user", "userId").require("book", "bookId")
+            )),
+
+            // 2.9.3-extreme-triple: extends 2.9.3-extreme to a THIRD book, skipping the second --
+            // confirms the stillRelevant fix isn't accidentally scoped to just the very next pair
+            // created after the busy one.
+            expectBlocked("2.9.3-extreme-triple A third book's stale Loan offer is also correctly BLOCKED", List.of(
+                    step("createUser").bind("user", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bindDistinctFrom("book2", "id", "book1"),
+                    step("createBook").bindDistinctFrom("book3", "id", "book1", "book2"),
+                    step("createLoan").require("user", "userId").require("book1", "bookId"),
+                    step("createLoan").require("user", "userId").require("book3", "bookId")
+            )),
+
+            // Combined-gate-cross-book: a user with a Hold on one book AND an active Loan on a
+            // COMPLETELY DIFFERENT book must still be blocked from deletion -- the hasLoanForUser/
+            // hasHoldForUser OR-gate must trigger regardless of which book each comes from.
+            expectBlocked("Combined-gate-cross-book Delete a user with a Hold on one book and a Loan on another (should be BLOCKED)", List.of(
+                    step("createUser").bind("user", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bindDistinctFrom("book2", "id", "book1"),
+                    step("createHold").require("user", "userId").require("book1", "bookId"),
+                    step("createLoan").require("user", "userId").require("book2", "bookId"),
+                    step("deleteUser").require("user", "id")
+            )),
+
+            // UserBook.CanCreateHold has no gate at all (unlike CanCreateLoan) -- a user must be
+            // able to hold two DIFFERENT books at once.
+            new Scenario("One user holds TWO different books simultaneously", List.of(
+                    step("createUser").bind("user", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bindDistinctFrom("book2", "id", "book1"),
+                    step("createHold").require("user", "userId").require("book1", "bookId"),
+                    step("createHold").require("user", "userId").require("book2", "bookId")
+            )),
+
+            // Positive counterpart to the negative version below: once BOTH of a user's holds are
+            // gone, deletion succeeds normally.
+            new Scenario("User with two Holds deletes both, then is deletable", List.of(
+                    step("createUser").bind("user", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bindDistinctFrom("book2", "id", "book1"),
+                    step("createHold").require("user", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteHold").require("hold2", "id"),
+                    step("deleteUser").require("user", "id")
+            )),
+
+            // User.CanDelete requires NO active holds, not just fewer than before -- deleting only
+            // ONE of a user's two holds must still leave them blocked from deletion.
+            expectBlocked("User with two Holds is still blocked after deleting only ONE of them", List.of(
+                    step("createUser").bind("user", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bindDistinctFrom("book2", "id", "book1"),
+                    step("createHold").require("user", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user", "userId").require("book2", "bookId"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteUser").require("user", "id")
+            )),
+
+            // Same idea as above, from the book side: a book held by TWO different users is still
+            // blocked from deletion after only ONE of those holds is removed.
+            expectBlocked("Book held by two users is still blocked after deleting only ONE of their Holds", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bindDistinctFrom("user2", "id", "user1"),
+                    step("createBook").bind("book", "id"),
+                    step("createHold").require("user1", "userId").require("book", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book", "bookId"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteBook").require("book", "id")
+            )),
+
+            // A second, IDENTICAL request for the exact same pair (not merely the same user or the
+            // same book) must also be blocked while the first loan on it is still active.
+            expectBlocked("A second Loan for the EXACT SAME pair is blocked while the first is still active", List.of(
+                    step("createUser").bind("user", "id"),
+                    step("createBook").bind("book", "id"),
+                    step("createLoan").require("user", "userId").require("book", "bookId"),
+                    step("createLoan").require("user", "userId").require("book", "bookId")
+            )),
+
+            // Sanity check on the stillRelevant fix's precision: two INDEPENDENT busy pairs (each
+            // its own user and book) must not interfere with each other -- the recheck must be
+            // scoped to the exact pair, not something broader that could false-block unrelated ones.
+            new Scenario("Two independent busy Loan pairs don't interfere with each other", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bindDistinctFrom("user2", "id", "user1"),
+                    step("createBook").bindDistinctFrom("book2", "id", "book1"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createLoan").require("user2", "userId").require("book2", "bookId")
+            )),
+
+            // Exhaustive gate coverage, derived directly from dal.js rather than the bug-mapping
+            // doc: UserBook.CanCreateLoan = !hasLoanForUser(userid) && !hasLoanForBook(bookid), a
+            // 2x2 matrix. Every existing (T,T) test here used the SAME pair twice (trivially true
+            // both ways at once) -- none exercised hasLoanForUser and hasLoanForBook becoming true
+            // from two INDEPENDENT pre-existing loans on unrelated pairs, which is the only genuinely
+            // distinct case left in the matrix.
+            expectBlocked("Loan blocked when BOTH user and book are busy via DIFFERENT independent loans", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bindDistinctFrom("user2", "id", "user1"),
+                    step("createBook").bindDistinctFrom("book2", "id", "book1"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createLoan").require("user2", "userId").require("book2", "bookId"),
+                    step("createLoan").require("user1", "userId").require("book2", "bookId")
+            )),
+
+            // NOT testable here, and deliberately left out rather than added as an always-STUCK
+            // scenario: dal.js's UserBook.CanCreateHold has no gate at all, and Hold uniqueness is
+            // keyed only by the hold's own id, never by the user-book pair -- so nothing in the DATA
+            // LAYER stops a second, independent Hold for the exact same pair. But
+            // ctx.bthread("createHold", "UserBook.CanCreateHold", ...) (lib_stories.js) fires
+            // createHold exactly ONCE per pair, the moment that pair's query match first becomes
+            // "new" -- it never re-offers once a pair has already had its one createHold. So a
+            // second Hold for the identical pair is a genuine, permanent coverage gap in the model's
+            // own story-generation layer (a Scenario for it here just gets STUCK), not a bug and not
+            // something an additional Scenario here can close.
+
+            // 3.9, precise (previous "3.9-variant" only covered the positive case after a return):
+            // two users each hold their OWN independent active loan -- deleting user1 must be
+            // blocked by user1's OWN loan, not user2's, confirming User.CanDelete's hasLoanForUser
+            // check isn't accidentally keyed off the wrong user (bug_mapping 2.4.1/3.9's concern).
+            expectBlocked("3.9 Delete user with an active Loan is blocked by their OWN loan, not an unrelated user's", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bindDistinctFrom("user2", "id", "user1"),
+                    step("createBook").bindDistinctFrom("book2", "id", "book1"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createLoan").require("user2", "userId").require("book2", "bookId"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            // 3.12, full scale (previous "3.12-variant" only had ONE loan pair in play at return
+            // time). NUMBER_OF_USERS/NUMBER_OF_BOOKS in lib_stories.js cap how many the model ever
+            // creates, so this reuses the 3 users/books it needs rather than requiring a fresh one:
+            // user1 returns book1, user2 returns book2 to become eligible, then user2 takes book1,
+            // all while user3/book3's own unrelated active loan stays open throughout and must not
+            // interfere.
+            new Scenario("3.12 Book changes hands after return, with a third unrelated active loan throughout", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bindDistinctFrom("user2", "id", "user1"),
+                    step("createBook").bindDistinctFrom("book2", "id", "book1"),
+                    step("createUser").bindDistinctFrom("user3", "id", "user1", "user2"),
+                    step("createBook").bindDistinctFrom("book3", "id", "book1", "book2"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createLoan").require("user2", "userId").require("book2", "bookId"),
+                    step("createLoan").require("user3", "userId").require("book3", "bookId"),
+                    step("deleteLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("deleteLoan").require("user2", "userId").require("book2", "bookId"),
+                    step("createLoan").require("user2", "userId").require("book1", "bookId")
             ))
     );
 
