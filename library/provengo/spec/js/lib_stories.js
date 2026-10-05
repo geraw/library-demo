@@ -18,6 +18,9 @@ function generateUserId() {
   return nextUserId.getAndIncrement();
 }
 
+// Gera: random names/titles make the events differ from run to run (and between samples), though
+// they never affect behavior. Does that hurt reproducing a failing run or computing coverage? A
+// deterministic "User name " + id would do.
 function generateUserName() {
   return "User name " + randomInt();
 }
@@ -91,6 +94,9 @@ ctx.bthread("verifyBookExistsAfterCreation", "Book.All", function (book) {
   verifyBookDetailExists(book.bookid);
 });
 
+// Gera: on() only waits for the next deletion between handler runs - while a handler is busy with
+// its own syncs, a second deletion of the same kind is not waited for and never gets verified
+// (here and in the other on(matchAny*Deleted(), ...) verifies). Spawn a b-thread per deletion?
 bthread("verifyBookDeletion", function () {
   on(matchAnyBookDeleted(), function (e) {
     let id = extractEventData(e).id;
@@ -340,6 +346,8 @@ bthread("tryToDeleteNonexistingHold", function () {
 // the interface layer executes a pre-flight fuzzing and verification sequence
 // IF the SUT actually defines rejection semantics for that action. Some reads
 // (see point 4) have no invalid variant to fuzz and skip straight to the request.
+// Gera: there is no point 4, and the "Point 3's synchronization rule" mentioned in point 3 itself
+// doesn't exist either - stale references?
 //
 // 1. Event Generation & Fuzzing:
 //    The interface defines and requests a set of fuzzed request events:

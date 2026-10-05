@@ -314,6 +314,9 @@ function tryToCreateBookWithBadParametersAndExpectError(id, expectedCode) {
   id = asInteger(id);
   expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
   var url = "/books";
+  // Gera: buildRestEvent reads `parameters`, not `description`, so the description these variants
+  // carry is silently dropped (the event goes out with parameters:{} and model.name null) - same in
+  // the loan, user and hold variants. And since `id` only fed that description, is it needed?
   var reqDescription = verifyRejectedDescription("Book", id, "create", "required parameters are missing or invalid");
   // No "unexpected field" case: the SUT ignores extra fields on this endpoint (only title is
   // read/validated), so a request with one succeeds rather than being rejected.
@@ -383,6 +386,8 @@ function tryToUpdateBookAndExpectError(id, body, expectedCode) {
 
 // The verify*Exists/verify*AbsentFromAllLists reads below only check that the SUT answers 200 -
 // see readSutList. Checking the list's contents would need a REST callback.
+// Gera: yet their descriptions ("Verify: Book 3 is absent from loans list") claim a content check
+// that never happens. Should the descriptions say what is actually tested?
 function verifyBookExists(id) {
   id = asInteger(id);
   return readSutList("/books", { q: asString(sutBookIdRef(id)), description: verifyExistsDescription("Book", id, "books") });
@@ -588,6 +593,10 @@ function tryToCreateLoanWithBadParametersAndExpectError(userId, expectedCode) {
 
 // The loans search endpoint validates userId/bookId (malformed/zero/negative -> 400) before
 // filtering, so it gets the same dynamic valid/invalid fuzzing loop as the create/delete actions.
+// Gera: (bookId, userId) here and in verifyLoanAbsentFromAllLists, but (userId, bookId) in
+// createLoan/deleteLoan, and (bookId, id, userId) in createHold. Mixed argument orders already
+// caused one swapped-ids bug (d242a26) - one order everywhere? Also, the event names below embed
+// the "@{BOOK<n>}" reference (and a stray "Req: " prefix) where every other action uses logical ids.
 function verifyLoanExists(bookId, userId) {
   var bookIdRef = sutBookIdRef(bookId);
   var userIdRef = sutUserIdRef(userId);
@@ -616,6 +625,8 @@ function verifyLoanExists(bookId, userId) {
   }
 }
 
+// Gera: reads one list, not "all lists", and its only caller always passes bookId, so the
+// bookId === null branch is dead. Rename to verifyLoanAbsent and drop the branch?
 function verifyLoanAbsentFromAllLists(bookId, userId) {
   var bookIdRef = bookId === undefined || bookId === null ? null : sutBookIdRef(bookId);
   userId = asInteger(userId);
@@ -919,6 +930,7 @@ function verifyHoldExists(id) {
   return readSutList("/holds", { q: sutHoldIdRef(id), description: verifyExistsDescription("Hold", id, "holds") });
 }
 
+// Gera: one list, not "all lists" - rename?
 function verifyHoldAbsentFromAllLists(id) {
   id = asInteger(id);
   return readSutList("/holds", { q: sutHoldIdRef(id), description: verifyAbsentDescription("Hold", id, "holds") });
