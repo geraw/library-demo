@@ -2,17 +2,20 @@ const NUMBER_OF_USERS = 4;
 const NUMBER_OF_BOOKS = 4;
 
 const RANDOM = new java.util.Random();
-var nextUserId = 1;
-var nextBookId = 1;
-var nextLoanId = 1;
-var nextHoldId = 1;
+// AtomicInteger, not a plain JS `var n = 1; n++`: BPjs runs b-thread steps concurrently on a
+// thread pool, and a JS ++ on a shared global is not atomic, so two ctx.bthreads (e.g. two
+// createHold instances) could be handed the same id.
+const nextUserId = new java.util.concurrent.atomic.AtomicInteger(1);
+const nextBookId = new java.util.concurrent.atomic.AtomicInteger(1);
+const nextLoanId = new java.util.concurrent.atomic.AtomicInteger(1);
+const nextHoldId = new java.util.concurrent.atomic.AtomicInteger(1);
 
 function randomInt() {
   return RANDOM.nextInt(999999);
 }
 
 function generateUserId() {
-  return nextUserId++;
+  return nextUserId.getAndIncrement();
 }
 
 function generateUserName() {
@@ -20,7 +23,7 @@ function generateUserName() {
 }
 
 function generateBookId() {
-  return nextBookId++;
+  return nextBookId.getAndIncrement();
 }
 
 function generateBookTitle() {
@@ -28,11 +31,11 @@ function generateBookTitle() {
 }
 
 function generateLoanId() {
-  return nextLoanId++;
+  return nextLoanId.getAndIncrement();
 }
 
 function generateHoldId() {
-  return nextHoldId++;
+  return nextHoldId.getAndIncrement();
 }
 
 function generateMissingId(existingId) {
@@ -61,10 +64,11 @@ function generateMissingId(existingId) {
 // that the system behaves correctly based on that state.
 /////////////////////////////////////////////////////////////////////////
 
+// The verify*Exists b-threads below need no guard against a concurrent deletion of their entity:
+// COBP ends a ctx.bthread at the very event that removes its entity from the query it was spawned
+// for, so none of them can ever run against an entity that no longer exists.
 ctx.bthread("verifyUserExistsAfterCreation", "User.All", function (user) {
-  // No block() guard: this verify can race a concurrent deletion of the same user. stillRelevant
-  // lets verifyUserExists bail out quietly instead of failing when that happens.
-  verifyUserExists(user.userid, function () { return entityExists('User.All', userId(user.userid)); });
+  verifyUserExists(user.userid);
 });
 
 ctx.bthread("verifyCannotDeleteUser", "User.CannotDelete", function (user) {
@@ -81,14 +85,8 @@ ctx.bthread("verifyUserDeletion", function () {
 });
 
 ctx.bthread("verifyBookExistsAfterCreation", "Book.All", function (book) {
-  // No block() guard: this verify can race a concurrent deletion of the same book. Observed in
-  // practice: a book got deleted while verifyBookDetailExists's fuzz-retry loop was still
-  // mid-flight, turning an expected 200 into an unexpected 404. stillRelevant lets the verify
-  // functions bail out quietly instead of failing when the entity legitimately stopped existing
-  // while we were waiting our turn.
-  var stillExists = function () { return entityExists('Book.All', bookId(book.bookid)); };
-  verifyBookExists(book.bookid, stillExists);
-  verifyBookDetailExists(book.bookid, stillExists);
+  verifyBookExists(book.bookid);
+  verifyBookDetailExists(book.bookid);
 });
 
 bthread("verifyBookDeletion", function () {
@@ -101,22 +99,27 @@ bthread("verifyBookDeletion", function () {
   });
 });
 
-ctx.bthread("verifyLoanExistsAfterCreation", "Loan.All", function (loan) {
-  verifyLoanExists(loan.bookid, loan.userid, function () { return entityExists('Loan.All', loanId(loan.userid, loan.bookid)); });
+ctx.bthread("verifyLoanExists", "Loan.All", function (loan) {
+  verifyLoanExists(loan.bookid, loan.userid);
 });
 
+// Unlike users/books/holds, a loan's identity is its userId/bookId pair, so the same loan can be
+// re-created while these checks wait their turn. Wait for that too: once it happens the loan
+// exists again, so the absence checks no longer apply (verifyLoanExists covers the new loan).
 bthread("verifyLoanDeletion", function () {
   on(matchAnyLoanDeleted(), function (e) {
-    let loanData = extractEventData(e);
+    let loan = extractEventData(e);
+    let reloaned = function () { return entityExists('Loan.All', loanId(loan.userId, loan.bookId)); };
 
-    verifyLoanAbsentFromAllLists(null, loanData.userId);
-    if (loanData.bookId !== undefined && loanData.bookId !== null)
-      tryToDeleteDeletedLoanAndExpectError(loanData.userId, loanData.bookId);
+    waitFor(matchLoanAdded(loan.userId, loan.bookId), function () {
+      verifyLoanAbsentFromAllLists(loan.bookId, loan.userId);
+      if (!reloaned()) tryToDeleteDeletedLoanAndExpectError(loan.userId, loan.bookId);
+    });
   });
 });
 
 ctx.bthread("verifyHoldExistsAfterCreation", "Hold.All", function (hold) {
-  verifyHoldExists(hold.holdid, function () { return entityExists('Hold.All', holdId(hold.holdid)); });
+  verifyHoldExists(hold.holdid);
 });
 
 bthread("verifyHoldDeletion", function () {
@@ -159,15 +162,8 @@ bthread("createRandomBooks", function () {
 // These bthreads are triggered by user and book creation and then create
 // loans and holds from those existing objects.
 //////////////////////////////////////////////////////////////////////////
-// stillRelevant re-checks UserBook.CanCreateLoan for this pair right before the REST call fires,
-// since this bthread only checks it once, when spawned for a pair that just became eligible.
 ctx.bthread("createLoan", "UserBook.CanCreateLoan", function (userbook) {
-    createLoan(userbook.userid, userbook.bookid, generateLoanId(), undefined, undefined, undefined, undefined,
-        function () {
-            return ctx.runQuery('UserBook.CanCreateLoan').some(function (pair) {
-                return sameId(pair.userid, userbook.userid) && sameId(pair.bookid, userbook.bookid);
-            });
-        });
+  createLoan(userbook.userid, userbook.bookid, generateLoanId());
 });
 
 ctx.bthread("verifyCannotCreateLoan", "UserBook.CannotCreateLoan", function (userbook) {
@@ -322,7 +318,7 @@ bthread("tryToDeleteNonexistingHold", function () {
 });
 
 // =========================================================================
-// The Fuzzing Interface Layer Contract
+// Step 1: The Fuzzing Interface Layer Contract
 // =========================================================================
 // Whenever a story requests an action (create, delete, or retrieve an object),
 // the interface layer executes a pre-flight fuzzing and verification sequence
@@ -358,3 +354,20 @@ bthread("tryToDeleteNonexistingHold", function () {
 //      of running the fuzzing loop. Point 3's synchronization rule does not apply
 //      to these EventSets either, since nothing blocks or waits on a plain read.
 //
+
+
+// =========================================================================
+// Step two: Coverage
+// =========================================================================
+// Once we have a full tested model for all possible tetsts, we can add coverage 
+// criteria to chose a small set of tests that cover all the possible scenarios. 
+//
+// We see three different types of coverage criteria that we can use to select a small set of tests from the full set of tests:
+//
+// 1) Parameter Coverage: We can select a small set of tests that cover all the possible parameters to an endpoint.
+//
+// 2) State Coverage: We can select a small set of tests that cover all the possible states of the system.
+//
+// 3) Sequence Coverage: We can select a small set of tests that cover all the possible sequences of events that lead to the same styate.
+//
+// For CRUD, we believe that state + parameter coverage is sufficient, since the sequence of events does not matter as much as the state and parameters.

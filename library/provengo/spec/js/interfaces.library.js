@@ -27,48 +27,16 @@ var path = '';
 
 const svc = new RESTSession(protocol + "://" + host + ":" + port + path, "provengo-client", { headers: { "Content-Type": "application/json", "api_key": "special-key" } });
 
-// Sends one of several request variants (each with its own body/expectedResponseCodes/parameters)
-// by offering them all to sync() at once, so the event selection mechanism (not this code) picks
-// which single variant is actually sent - letting fuzzing/exploration choose the request shape
-// instead of a scripted for-loop that sends every case every time.
+// Every action below sends one of several request variants (each with its own
+// body/expectedResponseCodes/parameters) by offering them all to sync() at once via
+// requestOneOfDirect, so the event selection mechanism (not this code) picks which single variant
+// is actually sent - letting fuzzing/exploration choose the request shape instead of a scripted
+// for-loop that sends every case every time.
 //
-// Two implementations:
-// - requestOneOf/svc.getOneOf: two syncs (a "chooser" sync of lightweight named events, then a
-//   second sync that actually sends the REST request for whichever variant won). A variant's
-//   chooser event can sit offered for many synchronization rounds before it wins (other b-threads
-//   keep running while this one waits its turn), so `block()`-based guards taken out before
-//   offering don't cover the whole wait. That two-sync gap is what lets `stillRelevant`, when
-//   given, be re-checked right after the chooser wins but before the real REST call fires - the
-//   request is aborted (REQUEST_ABORTED) instead of actuating a stale "valid" expectation against
-//   an entity that stopped existing while we were waiting. verifyBookDetailExists/verifyLoanExists
-//   are the only remaining callers: they need that guarantee, which requestOneOfDirect (below)
-//   cannot provide, since it collapses the chooser and the REST call into the same event/sync -
-//   there is no return-to-JS checkpoint in between to re-check anything.
-// - requestOneOfDirect: single sync, used by every other action below. No staleness recheck, but
-//   no intermediate chooser event either - see requestOneOfDirect's own comment.
-const REQUEST_ABORTED = { aborted: true };
-
-function requestOneOf(method, url, variants, onSelected, stillRelevant) {
-  if (!variants || variants.length === 0) pvg.fail("requestOneOf requires at least one variant");
-  var events = variants.map(function (v, i) {
-    var eventName = v.name || v.description || (method.toUpperCase() + " " + (v.url || url) + " (variant " + i + ")");
-    return bp.Event(eventName, { variant: v });
-  });
-  var selectedEvent = bp.sync({ request: events });
-  if (stillRelevant && !stillRelevant()) return REQUEST_ABORTED;
-  var chosen = selectedEvent.data.variant;
-  if (onSelected) onSelected(chosen);
-  var requestUrl = chosen.url || url;
-  var requestOptions = {
-    expectedResponseCodes: chosen.expectedResponseCodes,
-    parameters: chosen.parameters || { description: chosen.description || selectedEvent.name }
-  };
-  if (chosen.body !== undefined) requestOptions.body = JSON.stringify(chosen.body);
-  if (chosen.callback !== undefined) requestOptions.callback = chosen.callback;
-  return svc[method](requestUrl, requestOptions);
-}
-
-svc.getOneOf = function (url, variants, onSelected, stillRelevant) { return requestOneOf("get", url, variants, onSelected, stillRelevant); };
+// No staleness recheck is needed between offering and sending: a story's ctx.bthread is ended
+// by COBP at the very event that removes its entity from the query it was spawned for (the REST
+// event itself is the DAL effect - see dal.js), so it can never actuate against an entity that
+// stopped existing while its variants were waiting to be selected.
 
 // Mirrors RESTSession's private ___apiBody___ so a fully-formed, already-actuatable REST event
 // can be built here instead of only inside svc[method]. Reads session defaults
@@ -93,12 +61,12 @@ function buildRestEvent(session, httpMethod, url, options) {
   return bp.Event(httpMethod, data);
 }
 
-// Single-sync counterpart to requestOneOf. Each variant already carries its real, fully-resolved
-// url/body (the realId()-embedded template is safe to bake in at construction time - see the RTV
-// doc comment above), so the variants themselves are offered as the actuatable REST events - no
-// separate "chooser" sync, no onSelected mutation step. `url` is a fallback used by variants that
-// don't set their own (e.g. all POST-create variants share one url; DELETE variants each set
-// their own since the id is part of the path).
+// Each variant already carries its real, fully-resolved url/body (the realId()-embedded template
+// is safe to bake in at construction time - see the RTV doc comment below), so the variants
+// themselves are offered as the actuatable REST events - a single sync, with no separate
+// "chooser" event. `url` is a fallback used by variants that don't set their own (e.g. all
+// POST-create variants share one url; DELETE variants each set their own since the id is part of
+// the path).
 function requestOneOfDirect(method, url, variants) {
   if (!variants || variants.length === 0) pvg.fail("requestOneOfDirect requires at least one variant");
   var httpMethod = method.toUpperCase();
@@ -381,30 +349,21 @@ function deleteBook(id) {
 // before checking existence (valid-format-but-missing id -> 404), so it gets the same
 // dynamic valid/invalid fuzzing loop as the create/delete actions. See the Fuzzing
 // Interface Layer Contract at the bottom of lib_stories.js.
-// Stays on the two-phase svc.getOneOf/requestOneOf path (not requestOneOfDirect): this is one of
-// the two callers that pass stillRelevant, which needs the gap between chooser-win and REST-send
-// that only the two-phase design has - see the comment above requestOneOf.
-function verifyBookDetailExists(id, stillRelevant) {
+function verifyBookDetailExists(id) {
   id = asInteger(id);
 
   var description = verifyExistsDescription("Book", id, "book detail");
-  // Placeholder urls, overwritten with the real id in onSelected right before actuation - see the
-  // realId doc comment above.
+  // The real id is embedded directly at construction time - see the realId doc comment above.
   var variants = [
-    { name: "readBookDetail (valid-standard): " + id, url: "/books/" + id, expectedResponseCodes: [200], parameters: { description: description, id: id }, valid: true, padded: false },
-    { name: "readBookDetail (valid-padded-id): " + id, url: "/books/00" + id, expectedResponseCodes: [200], parameters: { description: description, id: id }, valid: true, padded: true },
+    { name: "readBookDetail (valid-standard): " + id, url: "/books/" + realBookId(id), expectedResponseCodes: [200], parameters: { description: description, id: id }, valid: true },
+    { name: "readBookDetail (valid-padded-id): " + id, url: "/books/00" + realBookId(id), expectedResponseCodes: [200], parameters: { description: description, id: id }, valid: true },
     { name: "readBookDetail (invalid - bad-id): " + id, url: "/books/bad-id", expectedResponseCodes: [400] },
     { name: "readBookDetail (invalid - zero): " + id, url: "/books/0", expectedResponseCodes: [400] },
     { name: "readBookDetail (invalid - negative): " + id, url: "/books/-1", expectedResponseCodes: [400] }
   ];
   while (true) {
-    var valid = false;
-    var response = svc.getOneOf("/books/" + id, variants, function (chosen) {
-      valid = chosen.valid === true;
-      if (chosen.valid) chosen.url = "/books/" + (chosen.padded ? "00" : "") + realBookId(id);
-    }, stillRelevant);
-    if (response === REQUEST_ABORTED) return;
-    if (valid) {
+    var response = requestOneOfDirect("get", null, variants);
+    if (response.data.model.valid === true) {
       var bookData = extractResponseBody(response);
       if (bookData === null) return;
       if (!bookData || bookData.id === undefined) pvg.fail("Book " + id + " detail response did not contain an id");
@@ -422,14 +381,14 @@ function tryToUpdateBookAndExpectError(id, body, expectedCode) {
   tryToUpdateAndExpectError("Book", id, "/books/" + realBookId(id), body, expectedCode);
 }
 
-function verifyBookExists(id, stillRelevant) {
+function verifyBookExists(id) {
   // Verification is executed against the SUT dataset by reading the books list and searching for this book's real id.
   id = asInteger(id);
   var bookIdRef = realBookId(id);
   var bookRealId = realBookIdValue(id);
   verifySutListContains("books", "/books", { q: asString(bookIdRef), description: verifyExistsDescription("Book", id, "books") }, function (item) {
     return item && asInteger(item.id) === bookRealId;
-  }, "Book " + id + " was not found in the SUT books list", stillRelevant);
+  }, "Book " + id + " was not found in the SUT books list");
 }
 
 function verifyBookAbsentFromAllLists(id) {
@@ -481,6 +440,18 @@ function matchAnyBookDeleted() {
   return AnyBookDeleted;
 }
 
+// A successful creation of the loan for this userId/bookId pair (logical ids, as createLoan
+// carries them in its parameters).
+function matchLoanAdded(userId, bookId) {
+  userId = asInteger(userId);
+  bookId = asInteger(bookId);
+  return bp.EventSet("Loan Added " + userId + "/" + bookId, function (e) {
+    if (!AnyLoanAdded.contains(e)) return false;
+    var loanData = extractEventData(e);
+    return asInteger(loanData.userId) === userId && asInteger(loanData.bookId) === bookId;
+  });
+}
+
 function deleteLoan(userId, bookId, loanNumber) {
   userId = asInteger(userId);
   bookId = asInteger(bookId);
@@ -520,7 +491,7 @@ function tryToUpdateLoanAndExpectError(userId, bookId, body, expectedCode) {
   tryToUpdateAndExpectError("Loan", userId + "/" + bookId, "/loans/" + realUserId(userId) + "/" + realBookId(bookId), body, expectedCode);
 }
 
-function createLoan(userId, bookId, loanNumber, expectedCode, description, userIdMissing, bookIdMissing, stillRelevant) {
+function createLoan(userId, bookId, loanNumber, expectedCode, description, userIdMissing, bookIdMissing) {
   userId = asInteger(userId);
   bookId = asInteger(bookId);
   loanNumber = loanNumber === undefined || loanNumber === null ? null : asInteger(loanNumber);
@@ -565,12 +536,8 @@ function createLoan(userId, bookId, loanNumber, expectedCode, description, userI
   }));
 
   while (true) {
-    var valid = false;
-    var response = requestOneOf("post", "/loans", variants, function (chosen) {
-      valid = chosen.valid === true;
-    }, stillRelevant);
-    if (response === REQUEST_ABORTED) return response;
-    if (valid) return response;
+    var response = requestOneOfDirect("post", "/loans", variants);
+    if (response.data.model.valid === true) return response;
   }
 }
 
@@ -627,9 +594,7 @@ function tryToCreateLoanWithBadParametersAndExpectError(userId, expectedCode) {
 
 // The loans search endpoint validates userId/bookId (malformed/zero/negative -> 400) before
 // filtering, so it gets the same dynamic valid/invalid fuzzing loop as the create/delete actions.
-// Stays on the two-phase svc.getOneOf/requestOneOf path (not requestOneOfDirect) for the same
-// reason as verifyBookDetailExists above: it needs the stillRelevant recheck.
-function verifyLoanExists(bookId, userId, stillRelevant) {
+function verifyLoanExists(bookId, userId) {
   var bookIdRef = realBookId(bookId);
   var realUser = realUserId(userId);
   userId = asInteger(userId);
@@ -652,10 +617,8 @@ function verifyLoanExists(bookId, userId, stillRelevant) {
   }));
 
   while (true) {
-    var valid = false;
-    var response = svc.getOneOf("/loans", variants, function (chosen) { valid = chosen.valid === true; }, stillRelevant);
-    if (response === REQUEST_ABORTED) return;
-    if (valid) {
+    var response = requestOneOfDirect("get", "/loans", variants);
+    if (response.data.model.valid === true) {
       if (response === undefined || response === null || response.lib === "REST" || response.method !== undefined) return;
       if (response.data && (response.data.lib === "REST" || response.data.method !== undefined)) return;
       var listData = typeof response === "string" ? JSON.parse(response) : response;
@@ -664,9 +627,7 @@ function verifyLoanExists(bookId, userId, stillRelevant) {
       var userRealId = realUserIdValue(userId);
       var bookRealId = realBookIdValue(bookId);
       var stillFound = Array.isArray(listData) && listData.some(function (item) { return item && asInteger(item.userId) === userRealId && asInteger(item.bookId) === bookRealId; });
-      if (!stillFound && (!stillRelevant || stillRelevant())) {
-        pvg.fail("Loan " + userId + "/" + bookIdRef + " was not found in the SUT loans list");
-      }
+      if (!stillFound) pvg.fail("Loan " + userId + "/" + bookIdRef + " was not found in the SUT loans list");
       return;
     }
   }
@@ -794,13 +755,13 @@ function tryToUpdateUserAndExpectError(id, body, expectedCode) {
   tryToUpdateAndExpectError("User", id, "/users/" + realUserId(id), body, expectedCode);
 }
 
-function verifyUserExists(id, stillRelevant) {
+function verifyUserExists(id) {
   // Verification is executed against the SUT dataset by reading the users list and searching for this user id.
   id = asInteger(id);
   var userRealId = realUserIdValue(id);
   verifySutListContains("users", "/users", { q: realUserId(id), description: verifyExistsDescription("User", id, "users") }, function (item) {
     return item && asInteger(item.id) === userRealId;
-  }, "User " + id + " was not found in the SUT users list", stillRelevant);
+  }, "User " + id + " was not found in the SUT users list");
 }
 
 function verifyUserAbsentFromAllLists(id) {
@@ -984,13 +945,13 @@ function tryToUpdateHoldAndExpectError(id, userId, bookId, body, expectedCode) {
   tryToUpdateAndExpectError("Hold", id, "/holds/" + realHoldId(id), body, expectedCode);
 }
 
-function verifyHoldExists(id, stillRelevant) {
+function verifyHoldExists(id) {
   // Verification is executed against the SUT dataset by reading the holds list and searching for this hold id.
   id = asInteger(id);
   var holdRealId = realHoldIdValue(id);
   verifySutListContains("holds", "/holds", { q: realHoldId(id), description: verifyExistsDescription("Hold", id, "holds") }, function (item) {
     return item && asInteger(item.id) === holdRealId;
-  }, "Hold " + id + " was not found in the SUT holds list", stillRelevant);
+  }, "Hold " + id + " was not found in the SUT holds list");
 }
 
 function verifyHoldAbsentFromAllLists(id) {

@@ -113,20 +113,20 @@ function readSutList(listName, url, parameters) {
     if (Array.isArray(listData)) return listData;
     pvg.fail("Could not inspect " + listName + " response as a SUT list");
   } catch (err) {
-    if (String(err).indexOf("EndOfContextException") !== -1) return null;
+    // EndOfContextException is how COBP ends a ctx.bthread whose entity just left its query - it
+    // must propagate. Swallowing it here would keep the b-thread running for an entity that no
+    // longer exists.
+    if (String(err).indexOf("EndOfContextException") !== -1) throw err;
     pvg.fail("Failed to read " + listName + " from the SUT: " + err);
   }
 }
 
-function verifySutListContains(listName, url, parameters, predicate, failureMessage, stillRelevant) {
+function verifySutListContains(listName, url, parameters, predicate, failureMessage) {
   // Verification is executed against the SUT by fetching only the requested SUT list slice before inspecting it.
   var listData = readSutList(listName, url, parameters);
   if (listData === null) return;
   var found = listData.find(predicate);
-  // stillRelevant re-checks that the entity is expected to exist at the moment of the read: a
-  // concurrent (legitimate) deletion between when this verification was offered and when the GET
-  // actually ran would otherwise read as a false failure instead of a moot check.
-  if (!found && (!stillRelevant || stillRelevant())) pvg.fail(failureMessage);
+  if (!found) pvg.fail(failureMessage);
 }
 
 function verifySutListDoesNotContain(listName, url, parameters, predicate, failureMessage) {
