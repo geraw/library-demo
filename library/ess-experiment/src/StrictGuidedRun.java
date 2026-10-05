@@ -158,8 +158,8 @@ public class StrictGuidedRun {
      * are expected to be REACHABLE; a few (built with expectBlocked) are expected to be BLOCKED,
      * so REACHED is the bug for those instead.
      */
-    private static final List<Scenario> SCENARIOS = List.of(
-
+        private static List<Scenario> scenarios1() {
+        return List.of(
             new Scenario("3.1 User->Book->Hold->Loan (hold survives loan)", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book", "id"),
@@ -167,8 +167,6 @@ public class StrictGuidedRun {
                     step("createLoan").require("user", "userId").require("book", "bookId")
             )),
 
-            // Hold by user A, then a loan on the SAME book by a DIFFERENT user B -- there is no
-            // real logical connection between hold and loan today, so this should succeed.
             new Scenario("3.2 Hold by user A -> Loan on the SAME book by a DIFFERENT user B", List.of(
                     step("createUser").bind("user1", "id"),
                     step("createBook").bind("book", "id"),
@@ -201,8 +199,6 @@ public class StrictGuidedRun {
                     step("createHold").require("user2", "userId").require("book", "bookId")
             )),
 
-            // Book already loaned to user A, then a DIFFERENT user B successfully places a hold on
-            // the SAME book -- an existing loan must not block a new hold (legitimate queueing).
             new Scenario("3.6 Book already loaned to A -> user B can still hold the SAME book", List.of(
                     step("createUser").bind("user1", "id"),
                     step("createBook").bind("book", "id"),
@@ -211,8 +207,6 @@ public class StrictGuidedRun {
                     step("createHold").require("user2", "userId").require("book", "bookId")
             )),
 
-            // deleteHold has no CanDelete-style gate in dal.js -- deleting THIS hold should succeed
-            // even while the SAME user/book also has an active loan.
             new Scenario("3.10 Hold->Loan->DeleteHold (SAME hold deletable despite coexisting loan)", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book", "id"),
@@ -232,8 +226,6 @@ public class StrictGuidedRun {
                     step("deleteUser").require("user", "id")
             )),
 
-            // Now precise (previously "approximated" by action name only): User1 holds book X,
-            // User2 holds the SAME book X, then the loan specifically goes to User2.
             new Scenario("3.16 Two users hold the SAME book, loan goes to the SECOND holder", List.of(
                     step("createUser").bind("user1", "id"),
                     step("createUser").bindDistinctFrom("user2", "id", "user1"),
@@ -243,7 +235,6 @@ public class StrictGuidedRun {
                     step("createLoan").require("user2", "userId").require("book", "bookId")
             )),
 
-            // Two independent chains that must NOT reuse each other's user/book.
             new Scenario("3.18 Two independent User+Book+Hold+Loan chains, no cross-contamination", List.of(
                     step("createUser").bind("user1", "id"),
                     step("createBook").bind("book1", "id"),
@@ -255,9 +246,6 @@ public class StrictGuidedRun {
                     step("createLoan").require("user2", "userId").require("book2", "bookId")
             )),
 
-            // Inspired by 3.9: delete user1 after they return their own loan, while a completely
-            // separate user2/book2 loan stays active throughout -- the delete-eligibility check
-            // must key off user1's own loan status, not get confused by user2's still-active one.
             new Scenario("3.9-variant Delete user after return, unrelated second loan stays active", List.of(
                     step("createUser").bind("user1", "id"),
                     step("createBook").bind("book1", "id"),
@@ -269,8 +257,6 @@ public class StrictGuidedRun {
                     step("deleteUser").require("user1", "id")
             )),
 
-            // Inspired by 3.12: a book changes hands after being returned -- user1 borrows and
-            // returns it, then a DIFFERENT user2 successfully borrows the SAME book.
             new Scenario("3.12-variant Book changes hands after return (different borrower)", List.of(
                     step("createUser").bind("user1", "id"),
                     step("createBook").bind("book", "id"),
@@ -280,9 +266,6 @@ public class StrictGuidedRun {
                     step("createLoan").require("user2", "userId").require("book", "bookId")
             )),
 
-            // Inspired by 4.9: delete a hold, then create a completely fresh hold for a DIFFERENT
-            // user/book pair -- the new hold must reflect the new pair, not leftover data from the
-            // deleted one.
             new Scenario("4.9-variant New hold for a different pair after deleting an old one", List.of(
                     step("createUser").bind("user1", "id"),
                     step("createBook").bind("book1", "id"),
@@ -293,8 +276,6 @@ public class StrictGuidedRun {
                     step("createHold").require("user2", "userId").require("book2", "bookId")
             )),
 
-            // Inspired by 4.11: create and delete a user, then create and delete a completely
-            // separate second user -- no contamination between the two cycles.
             new Scenario("4.11-variant Create/delete a user, then create/delete a different user", List.of(
                     step("createUser").bind("user1", "id"),
                     step("deleteUser").require("user1", "id"),
@@ -302,14 +283,6 @@ public class StrictGuidedRun {
                     step("deleteUser").require("user2", "id")
             )),
 
-            // Extreme/edge cases below, added to stress the model beyond the original chapter-3
-            // rows: deeper queues, repeated cycles, and every CanDelete gate combo dal.js actually
-            // enforces (or deliberately does NOT enforce, per hold/loan being logically
-            // unconnected today).
-
-            // 3.1-extreme: hold and loan are logically unconnected in dal.js today (Hold has no
-            // CanDelete-style gate at all), so a user must be able to place a hold on a book they
-            // ALREADY have on loan.
             new Scenario("3.1-extreme User places a Hold on a book they already have on Loan", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book", "id"),
@@ -317,8 +290,6 @@ public class StrictGuidedRun {
                     step("createHold").require("user", "userId").require("book", "bookId")
             )),
 
-            // 3.16-extreme: extend the two-deep queue to three holders, then the loan still goes
-            // to whichever holder is requested -- no FIFO enforcement anywhere in dal.js.
             new Scenario("3.16-extreme Three-deep hold queue on the same book, loan goes to the THIRD holder", List.of(
                     step("createUser").bind("user1", "id"),
                     step("createUser").bindDistinctFrom("user2", "id", "user1"),
@@ -330,8 +301,6 @@ public class StrictGuidedRun {
                     step("createLoan").require("user3", "userId").require("book", "bookId")
             )),
 
-            // 4.5-variant: three holds on the same book by different users, deleted in REVERSE
-            // (LIFO) order -- deleteHold has no ordering assumption in dal.js, so every order works.
             new Scenario("4.5-variant Three holds on the same book, deleted in LIFO order", List.of(
                     step("createUser").bind("user1", "id"),
                     step("createUser").bindDistinctFrom("user2", "id", "user1"),
@@ -345,8 +314,6 @@ public class StrictGuidedRun {
                     step("deleteHold").require("hold1", "id")
             )),
 
-            // 4.11-extreme: three sequential create/delete cycles, each on a distinct user, no
-            // cross-contamination across any pair of them.
             new Scenario("4.11-extreme Three sequential create/delete user cycles, no cross-contamination", List.of(
                     step("createUser").bind("user1", "id"),
                     step("deleteUser").require("user1", "id"),
@@ -356,8 +323,6 @@ public class StrictGuidedRun {
                     step("deleteUser").require("user3", "id")
             )),
 
-            // 3.7: a user who only has a hold (no loan) must still be blocked from deletion --
-            // User.CanDelete in dal.js requires no active loan AND no active hold.
             expectBlocked("3.7 Delete a user who only has a Hold (should be BLOCKED)", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book", "id"),
@@ -365,8 +330,6 @@ public class StrictGuidedRun {
                     step("deleteUser").require("user", "id")
             )),
 
-            // 2.4.3-extreme: a user with an active LOAN (no hold) must also be blocked from
-            // deletion -- User.CanDelete requires no loan too, not just no hold.
             expectBlocked("2.4.3-extreme Delete a user who has an active Loan (should be BLOCKED)", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book", "id"),
@@ -374,8 +337,6 @@ public class StrictGuidedRun {
                     step("deleteUser").require("user", "id")
             )),
 
-            // 2.7.3-extreme: the book-side mirror of 3.7 -- a book that only has a Hold (no loan)
-            // must still be blocked from deletion, since Book.CanDelete also checks !hasHoldForBook.
             expectBlocked("2.7.3-extreme Delete a book that only has a Hold (should be BLOCKED)", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book", "id"),
@@ -383,8 +344,6 @@ public class StrictGuidedRun {
                     step("deleteBook").require("book", "id")
             )),
 
-            // 2.7.4-extreme: the book-side mirror of 2.4.3-extreme -- a book with an active Loan
-            // must be blocked from deletion.
             expectBlocked("2.7.4-extreme Delete a book that has an active Loan (should be BLOCKED)", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book", "id"),
@@ -392,8 +351,6 @@ public class StrictGuidedRun {
                     step("deleteBook").require("book", "id")
             )),
 
-            // Combined-gate extreme: a user with BOTH an active loan AND an active hold must still
-            // be blocked from deletion (either condition alone is already enough).
             expectBlocked("Combined-gate Delete a user who has BOTH an active Loan and a Hold (should be BLOCKED)", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book", "id"),
@@ -402,8 +359,6 @@ public class StrictGuidedRun {
                     step("deleteUser").require("user", "id")
             )),
 
-            // Combined-gate extreme: the book-side mirror -- a book with BOTH an active loan AND
-            // an active hold must still be blocked from deletion.
             expectBlocked("Combined-gate Delete a book that has BOTH an active Loan and a Hold (should be BLOCKED)", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book", "id"),
@@ -412,9 +367,6 @@ public class StrictGuidedRun {
                     step("deleteBook").require("book", "id")
             )),
 
-            // 3.17: once a book is fully deleted, no loan should ever be creatable for that bookId
-            // again -- dal.js removes the UserBook pair on deleteBookEntity, so no "ghost" loan for
-            // a deleted book should ever become reachable.
             expectBlocked("3.17 Loan attempt for a bookId that was already deleted (should be BLOCKED)", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book", "id"),
@@ -422,9 +374,6 @@ public class StrictGuidedRun {
                     step("createLoan").require("user", "userId").require("book", "bookId")
             )),
 
-            // 2.9.3-extreme: one user cannot hold two simultaneous active loans (UserBook.CanCreateLoan
-            // requires !hasLoanForUser) -- a second loan on a DIFFERENT book for the SAME user must
-            // be blocked while the first loan is still active.
             expectBlocked("2.9.3-extreme Second active Loan for the SAME user on a DIFFERENT book (should be BLOCKED)", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book1", "id"),
@@ -433,9 +382,6 @@ public class StrictGuidedRun {
                     step("createLoan").require("user", "userId").require("book2", "bookId")
             )),
 
-            // 2.9.4-extreme: a book cannot have two simultaneous active loans (UserBook.CanCreateLoan
-            // requires !hasLoanForBook) -- a second loan on the SAME book for a DIFFERENT user must be
-            // blocked while the first loan is still active.
             expectBlocked("2.9.4-extreme Second active Loan for the SAME book by a DIFFERENT user (should be BLOCKED)", List.of(
                     step("createUser").bind("user1", "id"),
                     step("createUser").bindDistinctFrom("user2", "id", "user1"),
@@ -444,8 +390,6 @@ public class StrictGuidedRun {
                     step("createLoan").require("user2", "userId").require("book", "bookId")
             )),
 
-            // 3.17-hold: the Hold-side mirror of 3.17 -- once a book is fully deleted, no hold
-            // should ever be creatable for that bookId either (its userbook pair is gone).
             expectBlocked("3.17-hold Hold attempt for a bookId that was already deleted (should be BLOCKED)", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book", "id"),
@@ -453,9 +397,6 @@ public class StrictGuidedRun {
                     step("createHold").require("user", "userId").require("book", "bookId")
             )),
 
-            // Hold attempt for a userId that was already deleted -- same idea, from the user side:
-            // deleting a fresh (loan/hold-free) user removes its userbook pairs, so no hold should
-            // ever be creatable for that userId again.
             expectBlocked("Hold attempt for a userId that was already deleted (should be BLOCKED)", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book", "id"),
@@ -463,9 +404,6 @@ public class StrictGuidedRun {
                     step("createHold").require("user", "userId").require("book", "bookId")
             )),
 
-            // 2.9.3-extreme-triple: extends 2.9.3-extreme to a THIRD book, skipping the second --
-            // confirms the stillRelevant fix isn't accidentally scoped to just the very next pair
-            // created after the busy one.
             expectBlocked("2.9.3-extreme-triple A third book's stale Loan offer is also correctly BLOCKED", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book1", "id"),
@@ -473,11 +411,12 @@ public class StrictGuidedRun {
                     step("createBook").bindDistinctFrom("book3", "id", "book1", "book2"),
                     step("createLoan").require("user", "userId").require("book1", "bookId"),
                     step("createLoan").require("user", "userId").require("book3", "bookId")
-            )),
+            ))
+        );
+    }
 
-            // Combined-gate-cross-book: a user with a Hold on one book AND an active Loan on a
-            // COMPLETELY DIFFERENT book must still be blocked from deletion -- the hasLoanForUser/
-            // hasHoldForUser OR-gate must trigger regardless of which book each comes from.
+    private static List<Scenario> scenarios2() {
+        return List.of(
             expectBlocked("Combined-gate-cross-book Delete a user with a Hold on one book and a Loan on another (should be BLOCKED)", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book1", "id"),
@@ -487,8 +426,6 @@ public class StrictGuidedRun {
                     step("deleteUser").require("user", "id")
             )),
 
-            // UserBook.CanCreateHold has no gate at all (unlike CanCreateLoan) -- a user must be
-            // able to hold two DIFFERENT books at once.
             new Scenario("One user holds TWO different books simultaneously", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book1", "id"),
@@ -497,8 +434,6 @@ public class StrictGuidedRun {
                     step("createHold").require("user", "userId").require("book2", "bookId")
             )),
 
-            // Positive counterpart to the negative version below: once BOTH of a user's holds are
-            // gone, deletion succeeds normally.
             new Scenario("User with two Holds deletes both, then is deletable", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book1", "id"),
@@ -510,8 +445,6 @@ public class StrictGuidedRun {
                     step("deleteUser").require("user", "id")
             )),
 
-            // User.CanDelete requires NO active holds, not just fewer than before -- deleting only
-            // ONE of a user's two holds must still leave them blocked from deletion.
             expectBlocked("User with two Holds is still blocked after deleting only ONE of them", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book1", "id"),
@@ -522,8 +455,6 @@ public class StrictGuidedRun {
                     step("deleteUser").require("user", "id")
             )),
 
-            // Same idea as above, from the book side: a book held by TWO different users is still
-            // blocked from deletion after only ONE of those holds is removed.
             expectBlocked("Book held by two users is still blocked after deleting only ONE of their Holds", List.of(
                     step("createUser").bind("user1", "id"),
                     step("createUser").bindDistinctFrom("user2", "id", "user1"),
@@ -534,8 +465,6 @@ public class StrictGuidedRun {
                     step("deleteBook").require("book", "id")
             )),
 
-            // A second, IDENTICAL request for the exact same pair (not merely the same user or the
-            // same book) must also be blocked while the first loan on it is still active.
             expectBlocked("A second Loan for the EXACT SAME pair is blocked while the first is still active", List.of(
                     step("createUser").bind("user", "id"),
                     step("createBook").bind("book", "id"),
@@ -543,9 +472,6 @@ public class StrictGuidedRun {
                     step("createLoan").require("user", "userId").require("book", "bookId")
             )),
 
-            // Sanity check on the stillRelevant fix's precision: two INDEPENDENT busy pairs (each
-            // its own user and book) must not interfere with each other -- the recheck must be
-            // scoped to the exact pair, not something broader that could false-block unrelated ones.
             new Scenario("Two independent busy Loan pairs don't interfere with each other", List.of(
                     step("createUser").bind("user1", "id"),
                     step("createBook").bind("book1", "id"),
@@ -555,12 +481,6 @@ public class StrictGuidedRun {
                     step("createLoan").require("user2", "userId").require("book2", "bookId")
             )),
 
-            // Exhaustive gate coverage, derived directly from dal.js rather than the bug-mapping
-            // doc: UserBook.CanCreateLoan = !hasLoanForUser(userid) && !hasLoanForBook(bookid), a
-            // 2x2 matrix. Every existing (T,T) test here used the SAME pair twice (trivially true
-            // both ways at once) -- none exercised hasLoanForUser and hasLoanForBook becoming true
-            // from two INDEPENDENT pre-existing loans on unrelated pairs, which is the only genuinely
-            // distinct case left in the matrix.
             expectBlocked("Loan blocked when BOTH user and book are busy via DIFFERENT independent loans", List.of(
                     step("createUser").bind("user1", "id"),
                     step("createBook").bind("book1", "id"),
@@ -571,21 +491,6 @@ public class StrictGuidedRun {
                     step("createLoan").require("user1", "userId").require("book2", "bookId")
             )),
 
-            // NOT testable here, and deliberately left out rather than added as an always-STUCK
-            // scenario: dal.js's UserBook.CanCreateHold has no gate at all, and Hold uniqueness is
-            // keyed only by the hold's own id, never by the user-book pair -- so nothing in the DATA
-            // LAYER stops a second, independent Hold for the exact same pair. But
-            // ctx.bthread("createHold", "UserBook.CanCreateHold", ...) (lib_stories.js) fires
-            // createHold exactly ONCE per pair, the moment that pair's query match first becomes
-            // "new" -- it never re-offers once a pair has already had its one createHold. So a
-            // second Hold for the identical pair is a genuine, permanent coverage gap in the model's
-            // own story-generation layer (a Scenario for it here just gets STUCK), not a bug and not
-            // something an additional Scenario here can close.
-
-            // 3.9, precise (previous "3.9-variant" only covered the positive case after a return):
-            // two users each hold their OWN independent active loan -- deleting user1 must be
-            // blocked by user1's OWN loan, not user2's, confirming User.CanDelete's hasLoanForUser
-            // check isn't accidentally keyed off the wrong user (bug_mapping 2.4.1/3.9's concern).
             expectBlocked("3.9 Delete user with an active Loan is blocked by their OWN loan, not an unrelated user's", List.of(
                     step("createUser").bind("user1", "id"),
                     step("createBook").bind("book1", "id"),
@@ -596,12 +501,6 @@ public class StrictGuidedRun {
                     step("deleteUser").require("user1", "id")
             )),
 
-            // 3.12, full scale (previous "3.12-variant" only had ONE loan pair in play at return
-            // time). NUMBER_OF_USERS/NUMBER_OF_BOOKS in lib_stories.js cap how many the model ever
-            // creates, so this reuses the 3 users/books it needs rather than requiring a fresh one:
-            // user1 returns book1, user2 returns book2 to become eligible, then user2 takes book1,
-            // all while user3/book3's own unrelated active loan stays open throughout and must not
-            // interfere.
             new Scenario("3.12 Book changes hands after return, with a third unrelated active loan throughout", List.of(
                     step("createUser").bind("user1", "id"),
                     step("createBook").bind("book1", "id"),
@@ -615,8 +514,5291 @@ public class StrictGuidedRun {
                     step("deleteLoan").require("user1", "userId").require("book1", "bookId"),
                     step("deleteLoan").require("user2", "userId").require("book2", "bookId"),
                     step("createLoan").require("user2", "userId").require("book1", "bookId")
+            )),
+
+            new Scenario("Book created before any user exists -- the pair still works", List.of(
+                    step("createBook").bind("book", "id"),
+                    step("createUser").bind("user", "id"),
+                    step("createLoan").require("user", "userId").require("book", "bookId")
+            )),
+
+            new Scenario("sample-derived-1 (3 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-2 (4 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-3 (4 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-4 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-5 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-6 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-7 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            new Scenario("sample-derived-8 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user4", "id")
+            )),
+
+            new Scenario("sample-derived-9 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-10 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-11 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            new Scenario("sample-derived-12 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            new Scenario("sample-derived-13 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-14 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-15 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-16 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createBook").bind("book1", "id")
+            )),
+
+            new Scenario("sample-derived-17 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-18 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-19 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold2", "id")
             ))
-    );
+        );
+    }
+
+    private static List<Scenario> scenarios3() {
+        return List.of(
+            new Scenario("sample-derived-20 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user3", "id")
+            )),
+
+            new Scenario("sample-derived-21 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-22 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createUser").bind("user4", "id")
+            )),
+
+            new Scenario("sample-derived-23 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            new Scenario("sample-derived-24 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-25 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-26 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-27 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user1", "id")
+            )),
+
+            new Scenario("sample-derived-28 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-29 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-30 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteHold").require("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-31 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createLoan").require("user2", "userId").require("book2", "bookId"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-32 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-33 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-34 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book4", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-35 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-36 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-37 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createHold").require("user1", "userId").require("book4", "bookId").bind("hold3", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-38 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-39 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-40 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            new Scenario("sample-derived-41 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-42 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createLoan").require("user1", "userId").require("book2", "bookId"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-43 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            new Scenario("sample-derived-44 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-45 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createHold").require("user4", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            new Scenario("sample-derived-46 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-47 (10 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            new Scenario("sample-derived-48 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user2", "userId").require("book3", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-49 (11 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createBook").bind("book2", "id")
+            ))
+        );
+    }
+
+    private static List<Scenario> scenarios4() {
+        return List.of(
+            new Scenario("sample-derived-50 (12 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createHold").require("user1", "userId").require("book4", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-51 (3 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id")
+            )),
+
+            new Scenario("sample-derived-52 (4 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-53 (4 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-54 (4 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-55 (4 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-56 (4 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-57 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-58 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createUser").bind("user1", "id")
+            )),
+
+            new Scenario("sample-derived-59 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-60 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-61 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-62 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-63 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book1", "id")
+            )),
+
+            new Scenario("sample-derived-64 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-65 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-66 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-67 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            new Scenario("sample-derived-68 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-69 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-70 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-71 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-72 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-73 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-74 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-75 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book3", "id")
+            )),
+
+            new Scenario("sample-derived-76 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-77 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-78 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-79 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book2", "id")
+            ))
+        );
+    }
+
+    private static List<Scenario> scenarios5() {
+        return List.of(
+            new Scenario("sample-derived-80 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-81 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-82 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-83 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-84 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createUser").bind("user1", "id")
+            )),
+
+            new Scenario("sample-derived-85 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-86 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-87 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-88 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            new Scenario("sample-derived-89 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-90 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-91 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user3", "id")
+            )),
+
+            new Scenario("sample-derived-92 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-93 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            new Scenario("sample-derived-94 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-95 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            new Scenario("sample-derived-96 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book3", "id")
+            )),
+
+            new Scenario("sample-derived-97 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-98 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-99 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-100 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-101 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-102 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-103 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-104 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-105 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-106 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-107 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user4", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-108 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-109 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book2", "id")
+            ))
+        );
+    }
+
+    private static List<Scenario> scenarios6() {
+        return List.of(
+            new Scenario("sample-derived-110 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-111 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-112 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-113 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            new Scenario("sample-derived-114 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-115 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-116 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-117 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-118 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-119 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-120 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-121 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book3", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-122 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createHold").require("user1", "userId").require("book4", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-123 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user4", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-124 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-125 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-126 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createLoan").require("user1", "userId").require("book2", "bookId"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-127 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-128 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book4", "id")
+            )),
+
+            new Scenario("sample-derived-129 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-130 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user4", "id")
+            )),
+
+            new Scenario("sample-derived-131 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-132 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-133 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-134 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user4", "id")
+            )),
+
+            new Scenario("sample-derived-135 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-136 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createLoan").require("user1", "userId").require("book3", "bookId"),
+                    step("createBook").bind("book4", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-137 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user4", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-138 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-139 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteUser").require("user2", "id")
+            ))
+        );
+    }
+
+    private static List<Scenario> scenarios7() {
+        return List.of(
+            new Scenario("sample-derived-140 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteBook").require("book3", "id")
+            )),
+
+            new Scenario("sample-derived-141 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-142 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-143 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-144 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-145 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createHold").require("user4", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-146 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("deleteHold").require("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-147 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-148 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-149 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createHold").require("user4", "userId").require("book1", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-150 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user2", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-151 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user3", "id")
+            )),
+
+            new Scenario("sample-derived-152 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-153 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            new Scenario("sample-derived-154 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-155 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-156 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user4", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-157 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-158 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+            new Scenario("sample-derived-159 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-160 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createLoan").require("user2", "userId").require("book1", "bookId"),
+                    step("deleteLoan").require("user2", "userId").require("book1", "bookId")
+            )),
+
+            new Scenario("sample-derived-161 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user4", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-162 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+            new Scenario("sample-derived-163 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-164 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user4", "id")
+            )),
+
+            new Scenario("sample-derived-165 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            new Scenario("sample-derived-166 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book3", "bookId").bind("hold3", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-167 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-168 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book4", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-169 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold3", "id"),
+                    step("deleteHold").require("hold2", "id")
+            ))
+        );
+    }
+
+    private static List<Scenario> scenarios8() {
+        return List.of(
+            new Scenario("sample-derived-170 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createLoan").require("user1", "userId").require("book3", "bookId"),
+                    step("deleteBook").require("book4", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-171 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-172 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteHold").require("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-173 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            new Scenario("sample-derived-174 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user2", "userId").require("book3", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-175 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold3", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-176 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createLoan").require("user2", "userId").require("book1", "bookId"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user4", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-177 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-178 (10 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold3", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-179 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-180 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("deleteUser").require("user4", "id")
+            )),
+
+            new Scenario("sample-derived-181 (10 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-182 (10 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteBook").require("book4", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-183 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-184 (10 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book4", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-185 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user2", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            new Scenario("sample-derived-186 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            new Scenario("sample-derived-187 (11 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-188 (11 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createHold").require("user4", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createHold").require("user4", "userId").require("book2", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-189 (11 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book4", "id"),
+                    step("deleteLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-190 (12 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteUser").require("user4", "id")
+            )),
+
+            new Scenario("sample-derived-191 (12 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold2", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold3", "id"),
+                    step("createHold").require("user3", "userId").require("book3", "bookId").bind("hold4", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold5", "id")
+            )),
+
+            new Scenario("sample-derived-192 (12 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book4", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-193 (13 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user4", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-194 (14 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+            new Scenario("sample-derived-195 (14 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteBook").require("book4", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-1 (4 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-2 (5 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-3 (3 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-4 (5 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteBook").require("book1", "id")
+            ))
+        );
+    }
+
+    private static List<Scenario> scenarios9() {
+        return List.of(
+            expectBlocked("sample-derived-blocked-5 (5 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-6 (4 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-7 (3 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-8 (7 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-9 (4 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-10 (7 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-11 (7 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-12 (5 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-13 (5 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-14 (5 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-15 (7 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-16 (4 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-17 (5 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-18 (4 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-19 (7 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user3", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-20 (10 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user2", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-21 (9 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book4", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-22 (7 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-23 (7 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-24 (5 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-25 (5 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createLoan").require("user1", "userId").require("book2", "bookId"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-26 (6 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-27 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-28 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-29 (4 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-30 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-31 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-32 (4 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-33 (5 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-34 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user3", "id")
+            ))
+        );
+    }
+
+    private static List<Scenario> scenarios10() {
+        return List.of(
+            expectBlocked("sample-derived-blocked-35 (7 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-36 (5 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-37 (6 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-38 (10 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-39 (7 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-40 (9 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createHold").require("user1", "userId").require("book4", "bookId").bind("hold3", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold4", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-41 (9 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createHold").require("user1", "userId").require("book4", "bookId").bind("hold3", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold4", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-42 (3 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-43 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-44 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-45 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-46 (5 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createLoan").require("user2", "userId").require("book1", "bookId"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-47 (5 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createLoan").require("user2", "userId").require("book1", "bookId"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            new Scenario("sample-derived-196 (4 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id")
+            )),
+
+            new Scenario("sample-derived-197 (4 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-198 (4 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-199 (4 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-200 (4 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-201 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+            new Scenario("sample-derived-202 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-203 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-204 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-205 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-206 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-207 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createLoan").require("user1", "userId").require("book2", "bookId"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-208 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            new Scenario("sample-derived-209 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            new Scenario("sample-derived-210 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-211 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-212 (5 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id")
+            ))
+        );
+    }
+
+    private static List<Scenario> scenarios11() {
+        return List.of(
+            new Scenario("sample-derived-213 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            new Scenario("sample-derived-214 (5 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-215 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-216 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-217 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user1", "id")
+            )),
+
+            new Scenario("sample-derived-218 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-219 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-220 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-221 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-222 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-223 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-224 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-225 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-226 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-227 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-228 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-229 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-230 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-231 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            new Scenario("sample-derived-232 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-233 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-234 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-235 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            new Scenario("sample-derived-236 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-237 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-238 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            new Scenario("sample-derived-239 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-240 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-241 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-242 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold1", "id")
+            ))
+        );
+    }
+
+    private static List<Scenario> scenarios12() {
+        return List.of(
+            new Scenario("sample-derived-243 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            new Scenario("sample-derived-244 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user4", "id")
+            )),
+
+            new Scenario("sample-derived-245 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-246 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-247 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-248 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-249 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-250 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            new Scenario("sample-derived-251 (6 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-252 (6 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-253 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-254 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-255 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteBook").require("book3", "id")
+            )),
+
+            new Scenario("sample-derived-256 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book3", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-257 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-258 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            new Scenario("sample-derived-259 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-260 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user3", "id")
+            )),
+
+            new Scenario("sample-derived-261 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-262 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book4", "id")
+            )),
+
+            new Scenario("sample-derived-263 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user4", "id")
+            )),
+
+            new Scenario("sample-derived-264 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createLoan").require("user2", "userId").require("book1", "bookId"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            new Scenario("sample-derived-265 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            new Scenario("sample-derived-266 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id")
+            )),
+
+            new Scenario("sample-derived-267 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-268 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-269 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-270 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            new Scenario("sample-derived-271 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-272 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user3", "id")
+            ))
+        );
+    }
+
+    private static List<Scenario> scenarios13() {
+        return List.of(
+            new Scenario("sample-derived-273 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-274 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book3", "id")
+            )),
+
+            new Scenario("sample-derived-275 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book4", "id")
+            )),
+
+            new Scenario("sample-derived-276 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-277 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-278 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-279 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-280 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book4", "id")
+            )),
+
+            new Scenario("sample-derived-281 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-282 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-283 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            new Scenario("sample-derived-284 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-285 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-286 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user4", "id")
+            )),
+
+            new Scenario("sample-derived-287 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user4", "id")
+            )),
+
+            new Scenario("sample-derived-288 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-289 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            new Scenario("sample-derived-290 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-291 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            new Scenario("sample-derived-292 (7 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-293 (7 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user3", "id")
+            )),
+
+            new Scenario("sample-derived-294 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user4", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-295 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-296 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user2", "userId").require("book3", "bookId").bind("hold2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-297 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-298 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-299 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-300 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-301 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-302 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user3", "id")
+            ))
+        );
+    }
+
+    private static List<Scenario> scenarios14() {
+        return List.of(
+            new Scenario("sample-derived-303 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-304 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createLoan").require("user1", "userId").require("book3", "bookId"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-305 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-306 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            new Scenario("sample-derived-307 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-308 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-309 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-310 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user4", "id")
+            )),
+
+            new Scenario("sample-derived-311 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book4", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-312 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-313 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book4", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createUser").bind("user1", "id")
+            )),
+
+            new Scenario("sample-derived-314 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-315 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-316 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-317 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold2", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-318 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-319 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-320 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-321 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id")
+            )),
+
+            new Scenario("sample-derived-322 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-323 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold3", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-324 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-325 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-326 (8 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user4", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-327 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-328 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-329 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            new Scenario("sample-derived-330 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold3", "id"),
+                    step("deleteHold").require("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-331 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-332 (8 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book4", "id")
+            ))
+        );
+    }
+
+    private static List<Scenario> scenarios15() {
+        return List.of(
+            new Scenario("sample-derived-333 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-334 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold3", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold4", "id")
+            )),
+
+            new Scenario("sample-derived-335 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            new Scenario("sample-derived-336 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-337 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user4", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createLoan").require("user1", "userId").require("book2", "bookId")
+            )),
+
+            new Scenario("sample-derived-338 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user4", "id")
+            )),
+
+            new Scenario("sample-derived-339 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book4", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-340 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-341 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("deleteBook").require("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-342 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user4", "userId").require("book2", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-343 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-344 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            new Scenario("sample-derived-345 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book4", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-346 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-347 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+            new Scenario("sample-derived-348 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createHold").require("user4", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-349 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold3", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold4", "id")
+            )),
+
+            new Scenario("sample-derived-350 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book3", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-351 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book4", "id")
+            )),
+
+            new Scenario("sample-derived-352 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-353 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-354 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+            new Scenario("sample-derived-355 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createLoan").require("user2", "userId").require("book1", "bookId"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-356 (9 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-357 (9 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-358 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user4", "userId").require("book2", "bookId").bind("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-359 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user4", "id")
+            )),
+
+            new Scenario("sample-derived-360 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createLoan").require("user3", "userId").require("book1", "bookId"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user4", "id")
+            )),
+
+            new Scenario("sample-derived-361 (10 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-362 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createHold").require("user4", "userId").require("book1", "bookId").bind("hold2", "id")
+            ))
+        );
+    }
+
+    private static List<Scenario> scenarios16() {
+        return List.of(
+            new Scenario("sample-derived-363 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createHold").require("user1", "userId").require("book4", "bookId").bind("hold3", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold4", "id"),
+                    step("deleteHold").require("hold4", "id")
+            )),
+
+            new Scenario("sample-derived-364 (10 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-365 (10 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteHold").require("hold2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book4", "bookId").bind("hold3", "id")
+            )),
+
+            new Scenario("sample-derived-366 (10 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("deleteBook").require("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-367 (10 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createHold").require("user1", "userId").require("book4", "bookId").bind("hold3", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-368 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user2", "id")
+            )),
+
+            new Scenario("sample-derived-369 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createHold").require("user4", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold3", "id"),
+                    step("createBook").bind("book2", "id")
+            )),
+
+            new Scenario("sample-derived-370 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createHold").require("user4", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-371 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createLoan").require("user2", "userId").require("book1", "bookId"),
+                    step("deleteLoan").require("user2", "userId").require("book1", "bookId"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createUser").bind("user4", "id")
+            )),
+
+            new Scenario("sample-derived-372 (10 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold3", "id"),
+                    step("deleteHold").require("hold3", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-373 (10 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteUser").require("user3", "id")
+            )),
+
+            new Scenario("sample-derived-374 (11 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold4", "id")
+            )),
+
+            new Scenario("sample-derived-375 (11 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createHold").require("user4", "userId").require("book2", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-376 (11 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book4", "id")
+            )),
+
+            new Scenario("sample-derived-377 (11 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-378 (11 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user4", "id")
+            )),
+
+            new Scenario("sample-derived-379 (12 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createHold").require("user3", "userId").require("book3", "bookId").bind("hold2", "id")
+            )),
+
+            new Scenario("sample-derived-380 (12 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user4", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-381 (12 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("deleteUser").require("user4", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id")
+            )),
+
+            new Scenario("sample-derived-382 (12 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("deleteUser").require("user4", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            new Scenario("sample-derived-383 (13 steps)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("deleteBook").require("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book3", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createUser").bind("user3", "id")
+            )),
+
+            new Scenario("sample-derived-384 (13 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("deleteUser").require("user4", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            new Scenario("sample-derived-385 (14 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createHold").require("user4", "userId").require("book4", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id")
+            )),
+
+            new Scenario("sample-derived-386 (14 steps)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("deleteUser").require("user4", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-48 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-49 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-50 (4 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-51 (10 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createHold").require("user3", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user3", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-52 (9 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("deleteUser").require("user3", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-53 (5 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteBook").require("book1", "id")
+            ))
+        );
+    }
+
+    private static List<Scenario> scenarios17() {
+        return List.of(
+            expectBlocked("sample-derived-blocked-54 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-55 (5 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-56 (6 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-57 (6 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-58 (5 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-59 (9 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("deleteBook").require("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-60 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-61 (5 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-62 (7 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-63 (4 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-64 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-65 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-66 (7 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-67 (8 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold3", "id"),
+                    step("deleteHold").require("hold3", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+            expectBlocked("sample-derived-blocked-68 (5 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book1", "id")
+            ))
+        );
+    }
+
+    private static List<Scenario> scenarios18() {
+        return List.of(
+            expectBlocked("sample-derived-blocked-69 (4 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-70 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-71 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-72 (6 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-73 (7 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createLoan").require("user2", "userId").require("book1", "bookId"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-74 (7 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createLoan").require("user2", "userId").require("book1", "bookId"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-75 (5 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createLoan").require("user2", "userId").require("book1", "bookId"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-76 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createLoan").require("user2", "userId").require("book1", "bookId"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-77 (5 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-78 (7 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-79 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user3", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-80 (5 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-81 (4 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-82 (5 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-83 (5 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-84 (6 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-85 (4 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-86 (6 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteHold").require("hold1", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-87 (5 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-88 (7 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-89 (5 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-90 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-92 (9 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("deleteUser").require("user3", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user4", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-93 (5 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-94 (5 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-95 (4 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-96 (4 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-97 (4 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createLoan").require("user1", "userId").require("book1", "bookId"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-98 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-99 (7 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-100 (8 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("deleteBook").require("book4", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-101 (8 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book4", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createLoan").require("user1", "userId").require("book2", "bookId"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book3", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-102 (4 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-103 (5 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-104 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book3", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-105 (5 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-106 (6 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("deleteBook").require("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-107 (8 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user4", "id"),
+                    step("createHold").require("user4", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user4", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-108 (7 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("deleteBook").require("book1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book3", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-109 (6 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteBook").require("book2", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-110 (8 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createBook").bind("book3", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-111 (5 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("createHold").require("user1", "userId").require("book2", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("deleteUser").require("user1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-112 (4 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-113 (5 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteBook").require("book1", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-114 (7 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createUser").bind("user3", "id"),
+                    step("deleteUser").require("user2", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createHold").require("user1", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user3", "userId").require("book1", "bookId").bind("hold2", "id"),
+                    step("deleteUser").require("user3", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-115 (5 prefix steps, deleteUser should be BLOCKED)", List.of(
+                    step("createUser").bind("user1", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createLoan").require("user2", "userId").require("book1", "bookId"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("deleteUser").require("user2", "id")
+            )),
+
+expectBlocked("sample-derived-blocked-116 (7 prefix steps, deleteBook should be BLOCKED)", List.of(
+                    step("createBook").bind("book1", "id"),
+                    step("createUser").bind("user1", "id"),
+                    step("deleteUser").require("user1", "id"),
+                    step("createBook").bind("book2", "id"),
+                    step("createUser").bind("user2", "id"),
+                    step("createHold").require("user2", "userId").require("book1", "bookId").bind("hold1", "id"),
+                    step("createHold").require("user2", "userId").require("book2", "bookId").bind("hold2", "id"),
+                    step("deleteBook").require("book1", "id")
+            ))
+        );
+    }
+
+    private static final List<Scenario> SCENARIOS = java.util.stream.Stream.of(
+            scenarios18(),
+            scenarios1(),
+            scenarios2(),
+            scenarios3(),
+            scenarios4(),
+            scenarios5(),
+            scenarios6(),
+            scenarios7(),
+            scenarios8(),
+            scenarios9(),
+            scenarios10(),
+            scenarios11(),
+            scenarios12(),
+            scenarios13(),
+            scenarios14(),
+            scenarios15(),
+            scenarios16(),
+            scenarios17()
+    ).flatMap(List::stream).collect(java.util.stream.Collectors.toList());
+
 
     // =========================================================================================
     // Matching
