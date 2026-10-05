@@ -460,6 +460,14 @@ function tryToDeleteDeletedBookAndExpectError(id) {
   tryToDeleteBookAndExpectError(id, 404);
 }
 
+// id was never created (see generateMissingId()), so it has no RTV entry: build the request
+// directly with the plain id instead of going through tryToDeleteBookAndExpectError/realBookId.
+function tryToDeleteNonexistingBookAndExpectError(id) {
+  id = asInteger(id);
+  var description = verifyRejectedDescription("Book", id, "delete", "the operation is not allowed in this state");
+  svc.delete("/books/" + id, { expectedResponseCodes: [404], parameters: { description: description } });
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Broad-deletion reaction wrappers.
 //
@@ -690,6 +698,16 @@ function tryToDeleteLoanAndExpectError(userId, bookId, expectedCode) {
 
 function tryToDeleteDeletedLoanAndExpectError(userId, bookId) {
   tryToDeleteLoanAndExpectError(userId, bookId, 404);
+}
+
+// userId/bookId were never created (see generateMissingId()), so neither has an RTV entry: build
+// the request directly with the plain ids instead of going through
+// tryToDeleteLoanAndExpectError/realUserId/realBookId.
+function tryToDeleteNonexistingLoanAndExpectError(userId, bookId) {
+  userId = asInteger(userId);
+  bookId = asInteger(bookId);
+  var description = verifyRejectedDescription("Loan", userId + "/" + bookId, "delete", "the operation is not allowed in this state");
+  svc.delete("/loans/" + userId + "/" + bookId, { expectedResponseCodes: [404], parameters: { description: description } });
 }
 
 function matchAnyLoanDeleted() {
@@ -994,6 +1012,14 @@ function tryToDeleteHoldAndExpectError(id, expectedCode) {
 
 function tryToDeleteDeletedHoldAndExpectError(id) {
   tryToDeleteHoldAndExpectError(id, 404);
+}
+
+// id was never created (see generateMissingId()), so it has no RTV entry: build the request
+// directly with the plain id instead of going through tryToDeleteHoldAndExpectError/realHoldId.
+function tryToDeleteNonexistingHoldAndExpectError(id) {
+  id = asInteger(id);
+  var description = verifyRejectedDescription("Hold", id, "delete", "the operation is not allowed in this state");
+  svc.delete("/holds/" + id, { expectedResponseCodes: [404], parameters: { description: description } });
 }
 
 function matchAnyHoldDeleted() {
