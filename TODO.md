@@ -13,7 +13,7 @@ refer to those values with `@{...}` expressions.
 - Standardized RTV keys as `USER<n>`, `BOOK<n>`, `LOAN<n>`, and `HOLD<n>`.
 - Added `rememberCreatedId(...)`; successful create callbacks parse `response.body.id` and call
   `pvg.rtv.set(key, id)`.
-- Added late-bound helpers `realUserId`, `realBookId`, `realLoanId`, and `realHoldId`.
+- Added late-bound helpers `sutUserIdRef`, `sutBookIdRef`, `realLoanId`, and `sutHoldIdRef`.
 - Changed ID-bearing REST bodies, paths, and query parameters to use late-bound expressions.
 - Kept virtual IDs in REST-event `parameters` so event matching and the DAL see model identities,
   not SUT identities.

@@ -42,6 +42,8 @@ const svc = new RESTSession(protocol + "://" + host + ":" + port + path, "proven
 // can be built here instead of only inside svc[method]. Reads session defaults
 // (headers/parameters/expectedResponseCodes/callback) off `svc` itself rather than duplicating
 // their values.
+// Claude: this copies a private RESTSession internal. Is there a public Provengo way to build an
+// unsent REST event? If not, should we ask for one, rather than track private internals?
 function buildRestEvent(session, httpMethod, url, options) {
   options = options || {};
   var headers = options.headers !== undefined ? options.headers : session.defaultHeaders;
@@ -61,12 +63,13 @@ function buildRestEvent(session, httpMethod, url, options) {
   return bp.Event(httpMethod, data);
 }
 
-// Each variant already carries its real, fully-resolved url/body (the realId()-embedded template
+// Each variant already carries its real, fully-resolved url/body (the sutIdRef()-embedded template
 // is safe to bake in at construction time - see the RTV doc comment below), so the variants
 // themselves are offered as the actuatable REST events - a single sync, with no separate
 // "chooser" event. `url` is a fallback used by variants that don't set their own (e.g. all
 // POST-create variants share one url; DELETE variants each set their own since the id is part of
 // the path).
+// Claude: "Direct" only contrasted with the two-sync requestOneOf, which is gone. Rename to requestOneOf?
 function requestOneOfDirect(method, url, variants) {
   if (!variants || variants.length === 0) pvg.fail("requestOneOfDirect requires at least one variant");
   var httpMethod = method.toUpperCase();
@@ -84,6 +87,9 @@ function requestOneOfDirect(method, url, variants) {
   return sync({ request: events });
 }
 
+// Claude: this shadows Provengo's own pvg. The REST callbacks (rememberCreatedId) call pvg.rtv.set,
+// which this object doesn't have - that only works because callbacks run in a different scope.
+// Rename this one (e.g. modelFail)?
 const pvg = { fail: function (msg) { bp.log.error(msg); throw new Error(msg); } };
 
 // asInteger, asString, and the *Description builders now live in lib/utils.js.
@@ -99,13 +105,17 @@ function extractEventData(e) {
   var data = e && e.data ? e.data : e;
   var parameters = data && data.parameters ? data.parameters : {};
   
-  // parameters win over body: actions that address a real-id-mapped entity (see the RTV helpers
-  // below) attach the logical id as a parameter, while the body/URL they actually send carries
-  // the real id. For every other field, parameters were never set before, so this is a no-op.
+  // parameters win over body: actions that address an RTV-mapped entity (see the RTV helpers below)
+  // attach the logical id as a parameter, while their body/URL carries a sutIdRef "@{...}"
+  // reference. For every other field, parameters were never set before, so this is a no-op.
   var id = parameters.id !== undefined && parameters.id !== null ? parameters.id : body.id;
   var userId = parameters.userId !== undefined && parameters.userId !== null ? parameters.userId : body.userId;
   var bookId = parameters.bookId !== undefined && parameters.bookId !== null ? parameters.bookId : body.bookId;
 
+  // Claude: every event that reaches this function (the Any*Added/Any*Deleted effects and handlers,
+  // matchLoanAdded) already carries id/userId/bookId in parameters, and a valid request's URL holds
+  // an "@{...}" template that parseInt skips. So isn't this path fallback dead? (Also: title falls
+  // back to body.name below - why?)
   // Try extracting from path if they are not in body/parameters
   var pathValue = data.path || data.url || "";
   if (pathValue) {
@@ -144,13 +154,13 @@ function extractEventData(e) {
 }
 
 //////////////////////////////////////////////////////////////////////////
-// Real-id mapping (RTV).
+// SUT-id mapping (RTV).
 //
 // The SUT assigns entity ids instead of accepting a client choice. Stories,
 // EventSets, and the DAL keep addressing each entity by the small id the
 // story picked when it asked for creation, so traces and context stay
-// readable; only the REST calls in this file need the real id the SUT
-// actually assigned. The mapping is written once, right after a successful
+// readable; only the REST calls in this file need the id the SUT
+// actually assigned (the "SUT id"). The mapping is written once, right after a successful
 // create response into Provengo's runtime-variable store under a per-entity
 // key ("USER1", "BOOK1", "LOAN1", "HOLD1", ...). Every wire-level use is a
 // late-bound `@{...}` expression; parameters retain that id for the DAL.
@@ -160,32 +170,20 @@ function rtvKey(entityType, id) {
   return entityType + asInteger(id);
 }
 
-// Returns a late-bound "@{...}" expression, substituted with the real id by Provengo's
+// Returns a late-bound "@{...}" expression, substituted with the SUT id by Provengo's
 // runtime only once the sampled scenario actually executes the request that carries it.
 //
 // Pass missing = true for an id that was deliberately never created (e.g. via
 // generateMissingId()): its RTV key was never set, so resolving `@{...}` for it would
 // throw a ReferenceError at actuation time. In that case the plain id is used as-is - it
 // already can't collide with any SUT-assigned id, so no lookup is needed.
-function realId(entityType, id, missing) {
+function sutIdRef(entityType, id, missing) {
   return missing === true ? asInteger(id) : "@{" + rtvKey(entityType, id) + "}";
 }
 
-function realUserId(id, missing) { return realId("USER", id, missing); }
-function realBookId(id, missing) { return realId("BOOK", id, missing); }
-function realHoldId(id, missing) { return realId("HOLD", id, missing); }
-
-// Synchronously resolves an already-created entity's real (SUT-assigned) id as a number,
-// for use in ordinary comparisons at runtime. rtv.__eval() runs the same expression
-// evaluator that resolves realId()'s "@{...}" strings at actuation time, returning the
-// value the create callback stored.
-function realIdValue(entityType, id) {
-  return asInteger(rtv.__eval("@{" + rtvKey(entityType, id) + "}"));
-}
-
-function realUserIdValue(id) { return realIdValue("USER", id); }
-function realBookIdValue(id) { return realIdValue("BOOK", id); }
-function realHoldIdValue(id) { return realIdValue("HOLD", id); }
+function sutUserIdRef(id, missing) { return sutIdRef("USER", id, missing); }
+function sutBookIdRef(id, missing) { return sutIdRef("BOOK", id, missing); }
+function sutHoldIdRef(id, missing) { return sutIdRef("HOLD", id, missing); }
 
 // Callback functions execute later than model generation. Constructing a callback
 // with the key embedded in its source avoids closing over a generation-time local.
@@ -197,8 +195,6 @@ function rememberCreatedId(entityType, id) {
     pvg.rtv.set(key, body.id);
   };
 }
-
-// extractResponseBody now lives in lib/utils.js.
 
 //////////////////////////////////////////////////////////////////////////
 // Broad event classifiers.
@@ -248,8 +244,11 @@ var AnyHoldDeleted = bp.EventSet("Any Holds Deleted", function (e) {
 });
 
 
-// readSutList, verifySutListContains, verifySutListDoesNotContain, tryToUpdateAndExpectError,
-// and verifyMissingEntityReadIsRejected now live in lib/utils.js.
+// Claude: this block, and the other "now live in lib/utils.js" / "were replaced by" notes in this
+// file, describe code that isn't here. The last line below points at
+// verifyListQueryFuzzIsAccepted/verifyLoanQueryFuzzIsRejected, which don't exist. Drop them?
+// readSutList, tryToUpdateAndExpectError, and verifyMissingEntityReadIsRejected now live in
+// lib/utils.js.
 
 // Malformed-delete and malformed-read rejection cases are covered by the dynamic valid/invalid
 // loops inside deleteBook/deleteUser/deleteLoan/deleteHold and verifyBookDetailExists, so this
@@ -270,10 +269,10 @@ var AnyHoldDeleted = bp.EventSet("Any Holds Deleted", function (e) {
 // that extractEventData() can later expose to other layers.
 //////////////////////////////////////////////////////////////////////////
 
-// The SUT assigns the book's real id itself (title is the only client-supplied field), so there
+// The SUT assigns the book's id itself (title is the only client-supplied field), so there
 // is no client-chosen id left to fuzz or to duplicate. The id parameter below is this story's
 // own bookkeeping handle: it never goes on the wire, only into `parameters` for the DAL/matchers, and into
-// the BOOK<n> RTV once the real id comes back.
+// the BOOK<n> RTV once the SUT id comes back.
 function createBook(id, title) {
   id = asInteger(id);
   title = asString(title);
@@ -308,6 +307,9 @@ function createBook(id, title) {
   }
 }
 
+// Claude: same four cases as createBook's invalidCases above (and likewise for the user, loan and
+// hold variants) - two copies of each list to keep in sync. The *WithBadParameters b-threads in
+// lib_stories.js send requests the create* fuzz loops already send.
 function tryToCreateBookWithBadParametersAndExpectError(id, expectedCode) {
   id = asInteger(id);
   expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
@@ -327,14 +329,17 @@ function tryToCreateBookWithBadParametersAndExpectError(id, expectedCode) {
   requestOneOfDirect("post", url, variants);
 }
 
+// Claude: the invalid variants here (/books/bad-id, /books/0, /books/-1) don't mention the book,
+// yet every delete of every book re-offers them, as do deleteUser/deleteLoan/deleteHold. Would
+// testing each entity-independent rejection once be enough?
 function deleteBook(id) {
   id = asInteger(id);
-  // The real id is embedded directly at construction time (safe - realBookId() is an inert
+  // The SUT id reference is embedded directly at construction time (safe - sutBookIdRef() is an inert
   // "@{...}" template until actuation), and requestOneOfDirect offers these variants as the
   // actuatable events themselves - a single sync per call instead of a chooser sync followed by
   // a second, separate REST sync.
   var variants = [
-    { name: "deleteBook (valid): " + id, url: "/books/" + realBookId(id), expectedResponseCodes: [200], parameters: { description: deleteDescription("Book", id), id: id }, valid: true },
+    { name: "deleteBook (valid): " + id, url: "/books/" + sutBookIdRef(id), expectedResponseCodes: [200], parameters: { description: deleteDescription("Book", id), id: id }, valid: true },
     { name: "deleteBook (invalid - bad-id): " + id, url: "/books/bad-id", expectedResponseCodes: [400] },
     { name: "deleteBook (invalid - zero): " + id, url: "/books/0", expectedResponseCodes: [400] },
     { name: "deleteBook (invalid - negative): " + id, url: "/books/-1", expectedResponseCodes: [400] }
@@ -353,22 +358,17 @@ function verifyBookDetailExists(id) {
   id = asInteger(id);
 
   var description = verifyExistsDescription("Book", id, "book detail");
-  // The real id is embedded directly at construction time - see the realId doc comment above.
+  // The SUT id reference is embedded directly at construction time - see the sutIdRef doc comment above.
   var variants = [
-    { name: "readBookDetail (valid-standard): " + id, url: "/books/" + realBookId(id), expectedResponseCodes: [200], parameters: { description: description, id: id }, valid: true },
-    { name: "readBookDetail (valid-padded-id): " + id, url: "/books/00" + realBookId(id), expectedResponseCodes: [200], parameters: { description: description, id: id }, valid: true },
+    { name: "readBookDetail (valid-standard): " + id, url: "/books/" + sutBookIdRef(id), expectedResponseCodes: [200], parameters: { description: description, id: id }, valid: true },
+    { name: "readBookDetail (valid-padded-id): " + id, url: "/books/00" + sutBookIdRef(id), expectedResponseCodes: [200], parameters: { description: description, id: id }, valid: true },
     { name: "readBookDetail (invalid - bad-id): " + id, url: "/books/bad-id", expectedResponseCodes: [400] },
     { name: "readBookDetail (invalid - zero): " + id, url: "/books/0", expectedResponseCodes: [400] },
     { name: "readBookDetail (invalid - negative): " + id, url: "/books/-1", expectedResponseCodes: [400] }
   ];
   while (true) {
     var response = requestOneOfDirect("get", null, variants);
-    if (response.data.model.valid === true) {
-      var bookData = extractResponseBody(response);
-      if (bookData === null) return;
-      if (!bookData || bookData.id === undefined) pvg.fail("Book " + id + " detail response did not contain an id");
-      return;
-    }
+    if (response.data.model.valid === true) return response;
   }
 }
 
@@ -378,39 +378,28 @@ function verifyBookDetailExists(id) {
 function tryToUpdateBookAndExpectError(id, body, expectedCode) {
   id = asInteger(id);
   expectedCode = expectedCode === undefined || expectedCode === null ? 405 : asInteger(expectedCode);
-  tryToUpdateAndExpectError("Book", id, "/books/" + realBookId(id), body, expectedCode);
+  tryToUpdateAndExpectError("Book", id, "/books/" + sutBookIdRef(id), body, expectedCode);
 }
 
+// The verify*Exists/verify*AbsentFromAllLists reads below only check that the SUT answers 200 -
+// see readSutList. Checking the list's contents would need a REST callback.
 function verifyBookExists(id) {
-  // Verification is executed against the SUT dataset by reading the books list and searching for this book's real id.
   id = asInteger(id);
-  var bookIdRef = realBookId(id);
-  var bookRealId = realBookIdValue(id);
-  verifySutListContains("books", "/books", { q: asString(bookIdRef), description: verifyExistsDescription("Book", id, "books") }, function (item) {
-    return item && asInteger(item.id) === bookRealId;
-  }, "Book " + id + " was not found in the SUT books list");
+  return readSutList("/books", { q: asString(sutBookIdRef(id)), description: verifyExistsDescription("Book", id, "books") });
 }
 
 function verifyBookAbsentFromAllLists(id) {
-  // Verification is executed against SUT datasets: books directly, and loans/holds indirectly by bookId.
   id = asInteger(id);
-  var bookIdRef = realBookId(id);
-  var bookRealId = realBookIdValue(id);
-  verifySutListDoesNotContain("books", "/books", { q: asString(bookIdRef), description: verifyAbsentDescription("Book", id, "books") }, function (item) {
-    return item && asInteger(item.id) === bookRealId;
-  }, "Book " + id + " still appears in books list");
-  verifySutListDoesNotContain("loans", "/loans", { bookId: asString(bookIdRef), description: verifyAbsentDescription("Book", id, "loans") }, function (item) {
-    return item && asInteger(item.bookId) === bookRealId;
-  }, "Book " + id + " still appears in loans list");
-  verifySutListDoesNotContain("holds", "/holds", { q: asString(bookIdRef), description: verifyAbsentDescription("Book", id, "holds") }, function (item) {
-    return item && asInteger(item.bookId) === bookRealId;
-  }, "Book " + id + " still appears in holds list");
+  var bookIdRef = asString(sutBookIdRef(id));
+  readSutList("/books", { q: bookIdRef, description: verifyAbsentDescription("Book", id, "books") });
+  readSutList("/loans", { bookId: bookIdRef, description: verifyAbsentDescription("Book", id, "loans") });
+  return readSutList("/holds", { q: bookIdRef, description: verifyAbsentDescription("Book", id, "holds") });
 }
 
 function tryToDeleteBookAndExpectError(id, expectedCode) {
   id = asInteger(id);
   expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
-  var url = "/books/" + realBookId(id);
+  var url = "/books/" + sutBookIdRef(id);
   var description = verifyRejectedDescription("Book", id, "delete", "the operation is not allowed in this state");
   svc.delete(url, { expectedResponseCodes: [expectedCode], parameters: { description: description } });
 }
@@ -420,7 +409,7 @@ function tryToDeleteDeletedBookAndExpectError(id) {
 }
 
 // id was never created (see generateMissingId()), so it has no RTV entry: build the request
-// directly with the plain id instead of going through tryToDeleteBookAndExpectError/realBookId.
+// directly with the plain id instead of going through tryToDeleteBookAndExpectError/sutBookIdRef.
 function tryToDeleteNonexistingBookAndExpectError(id) {
   id = asInteger(id);
   var description = verifyRejectedDescription("Book", id, "delete", "the operation is not allowed in this state");
@@ -436,6 +425,7 @@ function tryToDeleteNonexistingBookAndExpectError(id) {
 // block() guards they existed for - see lib_stories.js).
 //////////////////////////////////////////////////////////////////////////
 
+// Claude: do we need these pass-throughs, or can the stories use AnyBookDeleted etc. directly?
 function matchAnyBookDeleted() {
   return AnyBookDeleted;
 }
@@ -469,8 +459,8 @@ function deleteLoan(userId, bookId, loanNumber) {
   var reqDescription = deleteDescription("Loan", userId + "/" + bookId, loanNumber === null ? "" : "number " + loanNumber);
   var parameters = { description: reqDescription, userId: userId, bookId: bookId };
   if (loanNumber !== null) parameters.loanNumber = loanNumber;
-  // The real ids are embedded directly at construction time - see the realId doc comment above.
-  var variants = [{ name: "deleteLoan (valid): " + userId + "/" + bookId, url: "/loans/" + realUserId(userId) + "/" + realBookId(bookId), expectedResponseCodes: [200], parameters: parameters, valid: true }];
+  // The SUT id references are embedded directly at construction time - see the sutIdRef doc comment above.
+  var variants = [{ name: "deleteLoan (valid): " + userId + "/" + bookId, url: "/loans/" + sutUserIdRef(userId) + "/" + sutBookIdRef(bookId), expectedResponseCodes: [200], parameters: parameters, valid: true }];
   variants = variants.concat(invalidCases.map(function(c) {
     return { name: "deleteLoan (invalid - " + c.label + "): " + userId + "/" + bookId, url: c.url, expectedResponseCodes: [400] };
   }));
@@ -488,9 +478,13 @@ function tryToUpdateLoanAndExpectError(userId, bookId, body, expectedCode) {
   userId = asInteger(userId);
   bookId = asInteger(bookId);
   expectedCode = expectedCode === undefined || expectedCode === null ? 405 : asInteger(expectedCode);
-  tryToUpdateAndExpectError("Loan", userId + "/" + bookId, "/loans/" + realUserId(userId) + "/" + realBookId(bookId), body, expectedCode);
+  tryToUpdateAndExpectError("Loan", userId + "/" + bookId, "/loans/" + sutUserIdRef(userId) + "/" + sutBookIdRef(bookId), body, expectedCode);
 }
 
+// Claude: rememberCreatedId("LOAN", ...) stores a LOAN<n> RTV that nothing ever reads (loans are
+// addressed by their user/book pair), so loanNumber only feeds descriptions. Needed? Also, when
+// tryToCreateLoanAndExpectError passes expectedCode 400, the "valid" variants are still named
+// "createLoan (valid-...)", which already confused StrictGuidedRun.
 function createLoan(userId, bookId, loanNumber, expectedCode, description, userIdMissing, bookIdMissing) {
   userId = asInteger(userId);
   bookId = asInteger(bookId);
@@ -500,18 +494,18 @@ function createLoan(userId, bookId, loanNumber, expectedCode, description, userI
   expectedCode = expectedCode === undefined || expectedCode === null ? 201 : asInteger(expectedCode);
   var parameters = { description: reqDescription, userId: userId, bookId: bookId };
   if (loanNumber !== null) parameters.loanNumber = loanNumber;
-  // bookId in each valid body is a late-bound "@{...}" placeholder (see the realId doc comment
-  // above), substituted with the real id by Provengo's runtime only once the request actually
+  // bookId in each valid body is a late-bound "@{...}" placeholder (see the sutIdRef doc comment
+  // above), substituted with the SUT id by Provengo's runtime only once the request actually
   // fires. userIdMissing/bookIdMissing are true when the caller is deliberately exercising a
   // nonexistent foreign key (see tryToCreateLoanWithNonexistent{User,Book,UserAndBook}AndExpectError):
   // that id was never created and has no RTV entry.
   var variants = [
-    { name: "createLoan (valid-standard): " + userId + "/" + bookId, body: { userId: realUserId(userId, userIdMissing), bookId: realBookId(bookId, bookIdMissing) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 && loanNumber !== null ? rememberCreatedId("LOAN", loanNumber) : undefined, valid: true },
-    { name: "createLoan (valid-swapped-order): " + userId + "/" + bookId, body: { bookId: realBookId(bookId, bookIdMissing), userId: realUserId(userId, userIdMissing) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 && loanNumber !== null ? rememberCreatedId("LOAN", loanNumber) : undefined, valid: true },
+    { name: "createLoan (valid-standard): " + userId + "/" + bookId, body: { userId: sutUserIdRef(userId, userIdMissing), bookId: sutBookIdRef(bookId, bookIdMissing) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 && loanNumber !== null ? rememberCreatedId("LOAN", loanNumber) : undefined, valid: true },
+    { name: "createLoan (valid-swapped-order): " + userId + "/" + bookId, body: { bookId: sutBookIdRef(bookId, bookIdMissing), userId: sutUserIdRef(userId, userIdMissing) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 && loanNumber !== null ? rememberCreatedId("LOAN", loanNumber) : undefined, valid: true },
     // Positive counterpart to the "no unexpected-field case" note in
     // tryToCreateLoanWithBadParametersAndExpectError below: locks in that an unrecognized field
     // is accepted (silently ignored), not merely untested.
-    { name: "createLoan (valid-unexpected-field): " + userId + "/" + bookId, body: { userId: realUserId(userId, userIdMissing), bookId: realBookId(bookId, bookIdMissing), unexpected: "value" }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 && loanNumber !== null ? rememberCreatedId("LOAN", loanNumber) : undefined, valid: true }
+    { name: "createLoan (valid-unexpected-field): " + userId + "/" + bookId, body: { userId: sutUserIdRef(userId, userIdMissing), bookId: sutBookIdRef(bookId, bookIdMissing), unexpected: "value" }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 && loanNumber !== null ? rememberCreatedId("LOAN", loanNumber) : undefined, valid: true }
   ];
 
   var invalidCases = [
@@ -595,8 +589,8 @@ function tryToCreateLoanWithBadParametersAndExpectError(userId, expectedCode) {
 // The loans search endpoint validates userId/bookId (malformed/zero/negative -> 400) before
 // filtering, so it gets the same dynamic valid/invalid fuzzing loop as the create/delete actions.
 function verifyLoanExists(bookId, userId) {
-  var bookIdRef = realBookId(bookId);
-  var realUser = realUserId(userId);
+  var bookIdRef = sutBookIdRef(bookId);
+  var userIdRef = sutUserIdRef(userId);
   userId = asInteger(userId);
 
   var invalidCases = [
@@ -608,7 +602,7 @@ function verifyLoanExists(bookId, userId) {
     { label: "negative bookId", parameters: { userId: asString(userId), bookId: "-1" } }
   ];
 
-  var validParameters = { userId: realUser, bookId: bookIdRef, description: verifyExistsDescription("Loan", userId + "/" + bookId, "loans") };
+  var validParameters = { userId: userIdRef, bookId: bookIdRef, description: verifyExistsDescription("Loan", userId + "/" + bookId, "loans") };
   var variants = [{ name: "readLoans (valid): " + userId + "/" + bookIdRef, parameters: validParameters, expectedResponseCodes: [200], valid: true }];
   variants = variants.concat(invalidCases.map(function (c) {
     var eventName = "Req: readLoans (invalid - " + c.label + "): " + userId + "/" + bookIdRef;
@@ -618,41 +612,24 @@ function verifyLoanExists(bookId, userId) {
 
   while (true) {
     var response = requestOneOfDirect("get", "/loans", variants);
-    if (response.data.model.valid === true) {
-      if (response === undefined || response === null || response.lib === "REST" || response.method !== undefined) return;
-      if (response.data && (response.data.lib === "REST" || response.data.method !== undefined)) return;
-      var listData = typeof response === "string" ? JSON.parse(response) : response;
-      if (!Array.isArray(listData) && listData && typeof listData.body === "string") listData = JSON.parse(listData.body);
-      if (!Array.isArray(listData) && listData && Array.isArray(listData.data)) listData = listData.data;
-      var userRealId = realUserIdValue(userId);
-      var bookRealId = realBookIdValue(bookId);
-      var stillFound = Array.isArray(listData) && listData.some(function (item) { return item && asInteger(item.userId) === userRealId && asInteger(item.bookId) === bookRealId; });
-      if (!stillFound) pvg.fail("Loan " + userId + "/" + bookIdRef + " was not found in the SUT loans list");
-      return;
-    }
+    if (response.data.model.valid === true) return response;
   }
 }
 
 function verifyLoanAbsentFromAllLists(bookId, userId) {
-  // Verification is executed against the SUT dataset by reading the loans list and confirming the loan is absent.
-  var bookIdRef = bookId === undefined || bookId === null ? null : realBookId(bookId);
-  var bookRealId = bookId === undefined || bookId === null ? null : realBookIdValue(bookId);
+  var bookIdRef = bookId === undefined || bookId === null ? null : sutBookIdRef(bookId);
   userId = asInteger(userId);
-  var userRealId = realUserIdValue(userId);
   var loanId = userId + (bookIdRef === null ? "" : "/" + bookIdRef);
-  var parameters = { userId: realUserId(userId), description: verifyAbsentDescription("Loan", loanId, "loans") };
+  var parameters = { userId: sutUserIdRef(userId), description: verifyAbsentDescription("Loan", loanId, "loans") };
   if (bookIdRef !== null) parameters.bookId = asString(bookIdRef);
-  verifySutListDoesNotContain("loans", "/loans", parameters, function (item) {
-    if (!item || asInteger(item.userId) !== userRealId) return false;
-    return bookRealId === null || asInteger(item.bookId) === bookRealId;
-  }, "Loan " + userId + (bookIdRef === null ? "" : "/" + bookIdRef) + " still appears in loans list");
+  return readSutList("/loans", parameters);
 }
 
 function tryToDeleteLoanAndExpectError(userId, bookId, expectedCode) {
   userId = asInteger(userId);
-  var bookIdRef = realBookId(bookId);
+  var bookIdRef = sutBookIdRef(bookId);
   expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
-  var url = "/loans/" + realUserId(userId) + "/" + bookIdRef;
+  var url = "/loans/" + sutUserIdRef(userId) + "/" + bookIdRef;
   var description = verifyRejectedDescription("Loan", userId + "/" + bookId, "delete", "the operation is not allowed in this state");
   svc.delete(url, { expectedResponseCodes: [expectedCode], parameters: { description: description } });
 }
@@ -663,7 +640,7 @@ function tryToDeleteDeletedLoanAndExpectError(userId, bookId) {
 
 // userId/bookId were never created (see generateMissingId()), so neither has an RTV entry: build
 // the request directly with the plain ids instead of going through
-// tryToDeleteLoanAndExpectError/realUserId/realBookId.
+// tryToDeleteLoanAndExpectError/sutUserIdRef/sutBookIdRef.
 function tryToDeleteNonexistingLoanAndExpectError(userId, bookId) {
   userId = asInteger(userId);
   bookId = asInteger(bookId);
@@ -692,6 +669,7 @@ function createUser(id, name) {
   ];
 
   var invalidCases = [
+    // Claude: "missing name" and "missing all required fields" are the same request ({}).
     { label: "missing name", body: {} },
     { label: "missing all required fields", body: {} },
     { label: "name has wrong type", body: { "name": 12345 } },
@@ -714,7 +692,7 @@ function tryToCreateUserWithBadParametersAndExpectError(id, expectedCode) {
   expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
   var url = "/users";
   var reqDescription = verifyRejectedDescription("User", id, "create", "required parameters are missing or invalid");
-  // No id-related or "unexpected field" cases: the SUT assigns the user's real id itself and
+  // No id-related or "unexpected field" cases: the SUT assigns the user's id itself and
   // silently ignores any other field (only name is read/validated - see sut.py's POST /users),
   // so there is no rejectable invalid id left to fuzz. See the identical notes on createBook.
   var cases = [
@@ -733,7 +711,7 @@ function deleteUser(id) {
   id = asInteger(id);
 
   var variants = [
-    { name: "deleteUser (valid): " + id, url: "/users/" + realUserId(id), expectedResponseCodes: [200], parameters: { description: deleteDescription("User", id), id: id }, valid: true },
+    { name: "deleteUser (valid): " + id, url: "/users/" + sutUserIdRef(id), expectedResponseCodes: [200], parameters: { description: deleteDescription("User", id), id: id }, valid: true },
     { name: "deleteUser (invalid - bad-id): " + id, url: "/users/bad-id", expectedResponseCodes: [400] },
     { name: "deleteUser (invalid - zero): " + id, url: "/users/0", expectedResponseCodes: [400] },
     { name: "deleteUser (invalid - negative): " + id, url: "/users/-1", expectedResponseCodes: [400] }
@@ -752,37 +730,25 @@ function deleteUser(id) {
 function tryToUpdateUserAndExpectError(id, body, expectedCode) {
   id = asInteger(id);
   expectedCode = expectedCode === undefined || expectedCode === null ? 405 : asInteger(expectedCode);
-  tryToUpdateAndExpectError("User", id, "/users/" + realUserId(id), body, expectedCode);
+  tryToUpdateAndExpectError("User", id, "/users/" + sutUserIdRef(id), body, expectedCode);
 }
 
 function verifyUserExists(id) {
-  // Verification is executed against the SUT dataset by reading the users list and searching for this user id.
   id = asInteger(id);
-  var userRealId = realUserIdValue(id);
-  verifySutListContains("users", "/users", { q: realUserId(id), description: verifyExistsDescription("User", id, "users") }, function (item) {
-    return item && asInteger(item.id) === userRealId;
-  }, "User " + id + " was not found in the SUT users list");
+  return readSutList("/users", { q: sutUserIdRef(id), description: verifyExistsDescription("User", id, "users") });
 }
 
 function verifyUserAbsentFromAllLists(id) {
-  // Verification is executed against SUT datasets: users directly, and loans/holds indirectly by userId.
   id = asInteger(id);
-  var userRealId = realUserIdValue(id);
-  verifySutListDoesNotContain("users", "/users", { q: realUserId(id), description: verifyAbsentDescription("User", id, "users") }, function (item) {
-    return item && asInteger(item.id) === userRealId;
-  }, "User " + id + " still appears in users list");
-  verifySutListDoesNotContain("loans", "/loans", { userId: realUserId(id), description: verifyAbsentDescription("User", id, "loans") }, function (item) {
-    return item && asInteger(item.userId) === userRealId;
-  }, "User " + id + " still appears in loans list");
-  verifySutListDoesNotContain("holds", "/holds", { q: realUserId(id), description: verifyAbsentDescription("User", id, "holds") }, function (item) {
-    return item && asInteger(item.userId) === userRealId;
-  }, "User " + id + " still appears in holds list");
+  readSutList("/users", { q: sutUserIdRef(id), description: verifyAbsentDescription("User", id, "users") });
+  readSutList("/loans", { userId: sutUserIdRef(id), description: verifyAbsentDescription("User", id, "loans") });
+  return readSutList("/holds", { q: sutUserIdRef(id), description: verifyAbsentDescription("User", id, "holds") });
 }
 
 function tryToDeleteUserAndExpectError(id, expectedCode) {
   id = asInteger(id);
   expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
-  var url = "/users/" + realUserId(id);
+  var url = "/users/" + sutUserIdRef(id);
   var description = verifyRejectedDescription("User", id, "delete", "the operation is not allowed in this state");
   svc.delete(url, { expectedResponseCodes: [expectedCode], parameters: { description: description } });
 }
@@ -792,7 +758,7 @@ function tryToDeleteDeletedUserAndExpectError(id) {
 }
 
 // id was never created (see generateMissingId()), so it has no RTV entry: build the request
-// directly with the plain id instead of going through tryToDeleteUserAndExpectError/realUserId.
+// directly with the plain id instead of going through tryToDeleteUserAndExpectError/sutUserIdRef.
 function tryToDeleteNonexistingUserAndExpectError(id) {
   id = asInteger(id);
   var description = verifyRejectedDescription("User", id, "delete", "the operation is not allowed in this state");
@@ -811,21 +777,21 @@ function createHold(bookId, id, userId, expectedCode, description, bookIdMissing
   var reqDescription = description || (createDescription("Hold", id) + " for User " + userId + " and Book " + bookId);
   expectedCode = expectedCode === undefined || expectedCode === null ? 201 : asInteger(expectedCode);
   var parameters = { description: reqDescription, id: id, userId: userId, bookId: bookId };
-  // bookId in each valid body is a late-bound "@{...}" placeholder (see the realId doc comment
-  // above), substituted with the real id by Provengo's runtime only once the request actually
+  // bookId in each valid body is a late-bound "@{...}" placeholder (see the sutIdRef doc comment
+  // above), substituted with the SUT id by Provengo's runtime only once the request actually
   // fires. bookIdMissing/userIdMissing are true when the caller is deliberately exercising a
   // nonexistent foreign key (see tryToCreateHoldWithNonexistent{User,Book,UserAndBook}AndExpectError):
   // that id was never created and has no RTV entry.
   var variants = [
-    { name: "createHold (valid-standard): " + id, body: { userId: realUserId(userId, userIdMissing), bookId: realBookId(bookId, bookIdMissing) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 ? rememberCreatedId("HOLD", id) : undefined, valid: true },
-    { name: "createHold (valid-swapped-order): " + id, body: { bookId: realBookId(bookId, bookIdMissing), userId: realUserId(userId, userIdMissing) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 ? rememberCreatedId("HOLD", id) : undefined, valid: true },
+    { name: "createHold (valid-standard): " + id, body: { userId: sutUserIdRef(userId, userIdMissing), bookId: sutBookIdRef(bookId, bookIdMissing) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 ? rememberCreatedId("HOLD", id) : undefined, valid: true },
+    { name: "createHold (valid-swapped-order): " + id, body: { bookId: sutBookIdRef(bookId, bookIdMissing), userId: sutUserIdRef(userId, userIdMissing) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 ? rememberCreatedId("HOLD", id) : undefined, valid: true },
     // Positive counterpart to the "no unexpected-field case" note in
     // tryToCreateHoldWithBadParametersAndExpectError below: locks in that an unrecognized field
     // is accepted (silently ignored), not merely untested.
-    { name: "createHold (valid-unexpected-field): " + id, body: { userId: realUserId(userId, userIdMissing), bookId: realBookId(bookId, bookIdMissing), unexpected: "value" }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 ? rememberCreatedId("HOLD", id) : undefined, valid: true }
+    { name: "createHold (valid-unexpected-field): " + id, body: { userId: sutUserIdRef(userId, userIdMissing), bookId: sutBookIdRef(bookId, bookIdMissing), unexpected: "value" }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 ? rememberCreatedId("HOLD", id) : undefined, valid: true }
   ];
 
-  // No id-related cases: the SUT assigns the hold's real id itself (see sut.py's POST /holds,
+  // No id-related cases: the SUT assigns the hold's id itself (see sut.py's POST /holds,
   // which reads only userId/bookId from the payload) and silently ignores any client-supplied
   // "id" field, so there is no rejectable invalid id left to fuzz - matching createBook above.
   var invalidCases = [
@@ -878,7 +844,7 @@ function tryToCreateHoldWithBadParametersAndExpectError(id, userId, expectedCode
   expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
   var url = "/holds";
   var reqDescription = verifyRejectedDescription("Hold", id, "create", "required parameters are missing or invalid");
-  // No id-related cases: the SUT assigns the hold's real id itself and silently ignores any
+  // No id-related cases: the SUT assigns the hold's id itself and silently ignores any
   // client-supplied "id" field (see createHold above), so there is no rejectable invalid id left
   // to fuzz, and no reason to send one on the wire.
   var cases = [
@@ -906,6 +872,8 @@ function tryToCreateHoldWithBadParametersAndExpectError(id, userId, expectedCode
 
 function deleteHold(id, expectedCode, userId, bookId) {
   id = asInteger(id);
+  // Claude: the one caller passes (id, userId, bookId), and this shuffles the arguments to fit an
+  // (id, expectedCode, userId, bookId) signature. Just make the signature (id, userId, bookId)?
   if (bookId === undefined && userId !== undefined && userId !== null) {
     bookId = userId;
     userId = expectedCode;
@@ -920,7 +888,7 @@ function deleteHold(id, expectedCode, userId, bookId) {
   if (userId !== null) parameters.userId = userId;
   if (bookId !== null) parameters.bookId = bookId;
   var variants = [
-    { name: "deleteHold (valid): " + id, url: "/holds/" + realHoldId(id), expectedResponseCodes: [expectedCode], parameters: parameters, valid: true },
+    { name: "deleteHold (valid): " + id, url: "/holds/" + sutHoldIdRef(id), expectedResponseCodes: [expectedCode], parameters: parameters, valid: true },
     { name: "deleteHold (invalid - bad-id): " + id, url: "/holds/bad-id", expectedResponseCodes: [400] },
     { name: "deleteHold (invalid - zero): " + id, url: "/holds/0", expectedResponseCodes: [400] },
     { name: "deleteHold (invalid - negative): " + id, url: "/holds/-1", expectedResponseCodes: [400] }
@@ -937,36 +905,29 @@ function deleteHold(id, expectedCode, userId, bookId) {
 // /holds search endpoint accepts any `q` value and always answers 200, so there is no rejectable
 // invalid variant to fuzz for hold reads (see the note above verifyMissingEntityReadIsRejected).
 
+// Claude: userId/bookId are normalized and then never used.
 function tryToUpdateHoldAndExpectError(id, userId, bookId, body, expectedCode) {
   id = asInteger(id);
   userId = asInteger(userId);
   bookId = asInteger(bookId);
   expectedCode = expectedCode === undefined || expectedCode === null ? 405 : asInteger(expectedCode);
-  tryToUpdateAndExpectError("Hold", id, "/holds/" + realHoldId(id), body, expectedCode);
+  tryToUpdateAndExpectError("Hold", id, "/holds/" + sutHoldIdRef(id), body, expectedCode);
 }
 
 function verifyHoldExists(id) {
-  // Verification is executed against the SUT dataset by reading the holds list and searching for this hold id.
   id = asInteger(id);
-  var holdRealId = realHoldIdValue(id);
-  verifySutListContains("holds", "/holds", { q: realHoldId(id), description: verifyExistsDescription("Hold", id, "holds") }, function (item) {
-    return item && asInteger(item.id) === holdRealId;
-  }, "Hold " + id + " was not found in the SUT holds list");
+  return readSutList("/holds", { q: sutHoldIdRef(id), description: verifyExistsDescription("Hold", id, "holds") });
 }
 
 function verifyHoldAbsentFromAllLists(id) {
-  // Verification is executed against the SUT dataset by confirming this hold id is absent from the holds list.
   id = asInteger(id);
-  var holdRealId = realHoldIdValue(id);
-  verifySutListDoesNotContain("holds", "/holds", { q: realHoldId(id), description: verifyAbsentDescription("Hold", id, "holds") }, function (item) {
-    return item && asInteger(item.id) === holdRealId;
-  }, "Hold " + id + " still appears in holds list");
+  return readSutList("/holds", { q: sutHoldIdRef(id), description: verifyAbsentDescription("Hold", id, "holds") });
 }
 
 function tryToDeleteHoldAndExpectError(id, expectedCode) {
   id = asInteger(id);
   expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
-  var url = "/holds/" + realHoldId(id);
+  var url = "/holds/" + sutHoldIdRef(id);
   var description = verifyRejectedDescription("Hold", id, "delete", "the operation is not allowed in this state");
   svc.delete(url, { expectedResponseCodes: [expectedCode], parameters: { description: description } });
 }
@@ -976,7 +937,7 @@ function tryToDeleteDeletedHoldAndExpectError(id) {
 }
 
 // id was never created (see generateMissingId()), so it has no RTV entry: build the request
-// directly with the plain id instead of going through tryToDeleteHoldAndExpectError/realHoldId.
+// directly with the plain id instead of going through tryToDeleteHoldAndExpectError/sutHoldIdRef.
 function tryToDeleteNonexistingHoldAndExpectError(id) {
   id = asInteger(id);
   var description = verifyRejectedDescription("Hold", id, "delete", "the operation is not allowed in this state");

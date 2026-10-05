@@ -75,6 +75,8 @@ ctx.bthread("verifyCannotDeleteUser", "User.CannotDelete", function (user) {
   tryToDeleteUserAndExpectError(user.userid);
 });
 
+// Claude: ctx.bthread with no query - the function lands in the query slot. It happens to work,
+// but shouldn't this be a plain bthread, like verifyBookDeletion/verifyHoldDeletion below?
 ctx.bthread("verifyUserDeletion", function () {
   on(matchAnyUserDeleted(), function (e) {
     let id = extractEventData(e).id;
@@ -94,7 +96,7 @@ bthread("verifyBookDeletion", function () {
     let id = extractEventData(e).id;
 
     verifyBookAbsentFromAllLists(id);
-    verifyMissingEntityReadIsRejected("Book", id, "/books/" + realBookId(id));
+    verifyMissingEntityReadIsRejected("Book", id, "/books/" + sutBookIdRef(id));
     tryToDeleteDeletedBookAndExpectError(id);
   });
 });
@@ -109,11 +111,11 @@ ctx.bthread("verifyLoanExists", "Loan.All", function (loan) {
 bthread("verifyLoanDeletion", function () {
   on(matchAnyLoanDeleted(), function (e) {
     let loan = extractEventData(e);
-    let reloaned = function () { return entityExists('Loan.All', loanId(loan.userId, loan.bookId)); };
+    let reloaned = matchLoanAdded(loan.userId, loan.bookId);
 
-    waitFor(matchLoanAdded(loan.userId, loan.bookId), function () {
-      verifyLoanAbsentFromAllLists(loan.bookId, loan.userId);
-      if (!reloaned()) tryToDeleteDeletedLoanAndExpectError(loan.userId, loan.bookId);
+    waitFor(reloaned, function () {
+      if (!reloaned.contains(verifyLoanAbsentFromAllLists(loan.bookId, loan.userId)))
+        tryToDeleteDeletedLoanAndExpectError(loan.userId, loan.bookId);
     });
   });
 });
@@ -132,6 +134,8 @@ bthread("verifyHoldDeletion", function () {
 });
 
   
+// Claude: this is the same b-thread as verifyCannotCreateLoan below (same query, same call), so
+// every busy pair gets the rejection test twice. Drop one?
 ctx.bthread("verifyCannotCreateLoanForBusyUserOrBook", "UserBook.CannotCreateLoan", function (userbook) {
   tryToCreateLoanAndExpectError(userbook.userid, userbook.bookid, generateLoanId());
 });
@@ -174,9 +178,11 @@ ctx.bthread("createHold", "UserBook.CanCreateHold", function (userbook) {
     createHold(userbook.bookid, generateHoldId(), userbook.userid);
 });
 
+// Claude: here, above deleteUser, and above verifyCannotCreateBookWithBadParameters - do we need
+// obituaries for removed code? git log keeps that history.
 // verifyCannotCreateHold was removed: the SUT now assigns the hold's id itself and silently
 // ignores any client-supplied "id" field, so there is no client-chosen id left that could
-// collide with an existing one. See the RTV helpers (realHoldId etc.) in interfaces.library.js.
+// collide with an existing one. See the RTV helpers (sutHoldIdRef etc.) in interfaces.library.js.
 // (UserBook.CannotCreateHold has always returned false - unlike loans, nothing makes a user-book
 // pair permanently ineligible to hold - so this bthread never actually fired.)
 
@@ -226,8 +232,11 @@ ctx.bthread("deleteHold", "Hold.All", function (hold) {
 
 // verifyCannotCreateDuplicateBook was removed: the SUT now assigns book ids itself (see
 // generate_unique_id in sut.py), so there is no client-chosen id left that could collide with an
-// existing one. See the RTV helpers (realBookId etc.) in interfaces.library.js.
+// existing one. See the RTV helpers (sutBookIdRef etc.) in interfaces.library.js.
 
+// Claude: the *WithBadParameters b-threads (book, loan, hold) send the same invalid bodies that
+// createBook/createLoan/createHold already fuzz in their own loops. They're also spawned once per
+// book/pair/hold, though a rejected create doesn't depend on which entity exists. Needed at all?
 ctx.bthread("verifyCannotCreateBookWithBadParameters", "Book.All", function (book) {
   tryToCreateBookWithBadParametersAndExpectError(book.bookid);
 });
@@ -236,6 +245,8 @@ ctx.bthread("verifyCannotDeleteBook", "Book.CannotDelete", function (book) {
   tryToDeleteBookAndExpectError(book.bookid);
 });
 
+// Claude: User.CannotDelete/Book.CannotDelete already include "has a hold", so
+// verifyCannotDeleteUser/verifyCannotDeleteBook send these same rejected deletes. Redundant?
 ctx.bthread("verifyHoldOnlyBlocksUserAndBookDeletion", "Hold.All", function (hold) {
   tryToDeleteUserAndExpectError(hold.userid);
   tryToDeleteBookAndExpectError(hold.bookid);
@@ -245,6 +256,7 @@ ctx.bthread("verifyHoldOnlyBlocksUserAndBookDeletion", "Hold.All", function (hol
   // resource, which can race and turn a valid 200 into an unexpected 404.
 });
 
+// Claude: only userId is passed, and the helper reuses it as the bookId value in its bodies.
 ctx.bthread("verifyCannotCreateLoanWithBadParameters", "UserBook.All", function (userbook) {
   tryToCreateLoanWithBadParametersAndExpectError(userbook.userid);
 });
@@ -255,6 +267,8 @@ ctx.bthread("verifyCannotCreateLoanWithNonexistentForeignKeys", "UserBook.All", 
 
 
   // Gera: I think trying all three is too much, enough to try one of the three nondeterministically?
+  // Claude: also, this runs once per user-book pair (N*M copies), but a nonexistent-foreign-key
+  // check only needs some existing user and some existing book. Same for holds below.
   tryToCreateLoanWithNonexistentUserAndExpectError(missingUserId, userbook.bookid, generateLoanId());
   tryToCreateLoanWithNonexistentBookAndExpectError(userbook.userid, missingBookId, generateLoanId());
   tryToCreateLoanWithNonexistentUserAndBookAndExpectError(missingUserId, missingBookId, generateLoanId());
@@ -301,6 +315,8 @@ ctx.bthread("verifyCannotUpdateHold", "Hold.All", function (hold) {
 });
 
 // Gera: Why only users? Why not also books, loans and holds?
+// Claude: generateMissingId(generateUserId()) burns a real id from the counter just to add 1e9 to
+// it. SUT ids are random 6-digit numbers, so a fixed out-of-range id would do.
 bthread("tryToDeleteNonexistingUser", function () {
   tryToDeleteNonexistingUserAndExpectError(generateMissingId(generateUserId()));
 });
@@ -370,4 +386,4 @@ bthread("tryToDeleteNonexistingHold", function () {
 //
 // 3) Sequence Coverage: We can select a small set of tests that cover all the possible sequences of events that lead to the same styate.
 //
-// For CRUD, we believe that state + parameter coverage is sufficient, since the sequence of events does not matter as much as the state and parameters.
+// For CRUD, we believe that state + (or \times)  parameter coverage is sufficient, since the sequence of events does not matter as much as the state and parameters.
