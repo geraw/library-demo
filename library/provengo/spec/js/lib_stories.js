@@ -339,6 +339,89 @@ bthread("tryToDeleteNonexistingHold", function () {
   tryToDeleteNonexistingHoldAndExpectError(generateMissingId(generateHoldId()));
 });
 
+//////////////////////////////////////////////////////////////////////////
+// Coverage markers for ensemble ranking (state+parameter coverage).
+//
+// These bthreads don't drive any behavior - they just emit a lightweight
+// "StateFeature" event whenever one of six hand-picked domain states becomes
+// true, by reusing the DAL's own queries so the detection logic isn't
+// duplicated here (feature list and rationale per Gera's 2026-10-15 review).
+// meta-spec/ensemble-code.js's stateParamRankingFunction reads these events
+// back out of sampled traces to score ensembles by how many distinct features
+// (not raw occurrences) they exercise - see STATE_FEATURES there, which must
+// stay in sync with the names marked here.
+//////////////////////////////////////////////////////////////////////////
+
+function markStateFeature(name) {
+  bp.sync({ request: bp.Event("StateFeature", { feature: name }) });
+}
+
+ctx.bthread("markBookDeleteEligible", "Book.CanDelete", function (book) {
+  markStateFeature("BOOK_DELETE_ELIGIBLE");
+});
+
+ctx.bthread("markUserDeleteEligible", "User.CanDelete", function (user) {
+  markStateFeature("USER_DELETE_ELIGIBLE");
+});
+
+ctx.bthread("markLoanCreatable", "UserBook.CanCreateLoan", function (userbook) {
+  markStateFeature("LOAN_CREATABLE");
+});
+
+ctx.bthread("markHoldCreatable", "UserBook.CanCreateHold", function (userbook) {
+  markStateFeature("HOLD_CREATABLE");
+});
+
+// Hold.WithoutLoan was previously dead code (defined, never consumed) - this is its first use.
+ctx.bthread("markHoldWithoutLoan", "Hold.WithoutLoan", function (hold) {
+  markStateFeature("HOLD_WITHOUT_LOAN");
+});
+
+// At least two users each tied to a different book through a loan or a hold - the one feature
+// here with no existing single-entity DAL query, so it's computed directly over Loan.All +
+// Hold.All rather than added as a new registerQuery (nothing else needs this combined view).
+function hasMultiUserBookRelations() {
+  var relations = ctx.runQuery('Loan.All').concat(ctx.runQuery('Hold.All'));
+  for (var i = 0; i < relations.length; i++) {
+    for (var j = i + 1; j < relations.length; j++) {
+      if (!sameId(relations[i].userid, relations[j].userid) && !sameId(relations[i].bookid, relations[j].bookid)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+ctx.bthread("markMultiUserBookRelationsViaLoan", "Loan.All", function (loan) {
+  if (hasMultiUserBookRelations()) markStateFeature("MULTI_USER_BOOK_RELATIONS");
+});
+
+ctx.bthread("markMultiUserBookRelationsViaHold", "Hold.All", function (hold) {
+  if (hasMultiUserBookRelations()) markStateFeature("MULTI_USER_BOOK_RELATIONS");
+});
+
+// Mirror of hasMultiUserBookRelations: one user tied to two different books through a loan or a
+// hold, instead of two different users each tied to a different book.
+function hasUserWithTwoBooks() {
+  var relations = ctx.runQuery('Loan.All').concat(ctx.runQuery('Hold.All'));
+  for (var i = 0; i < relations.length; i++) {
+    for (var j = i + 1; j < relations.length; j++) {
+      if (sameId(relations[i].userid, relations[j].userid) && !sameId(relations[i].bookid, relations[j].bookid)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+ctx.bthread("markUserWithTwoBooksViaLoan", "Loan.All", function (loan) {
+  if (hasUserWithTwoBooks()) markStateFeature("USER_WITH_TWO_BOOKS");
+});
+
+ctx.bthread("markUserWithTwoBooksViaHold", "Hold.All", function (hold) {
+  if (hasUserWithTwoBooks()) markStateFeature("USER_WITH_TWO_BOOKS");
+});
+
 // =========================================================================
 // Step 1: The Fuzzing Interface Layer Contract
 // =========================================================================
