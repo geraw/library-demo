@@ -26,10 +26,25 @@ The REVIEW_ZIP includes all results, so its size depends on generated tool traff
   -CampaignPath 'D:\Yeshayahu\Temp\library-demo\library\ess-experiment\runs\issta-business-v004-20261019-225558'
 ```
 
-Binaries are discovered in the repository, its parent, Downloads, common tools
-folders and C:\work\temp (bounded depth). If missing or ambiguous, specify
--EvoMasterJar and -RestlerPath (Restler.exe or Restler.dll). Environment overrides:
-EVOMASTER_JAR, RESTLER_EXE, RESTLER_DLL. No binary is downloaded or installed.
-Both binaries and EvoMaster flags are checked before the first search. Compilation
-or search failure in RESTler is recorded and EvoMaster is still attempted.
-Windows execution with the installed tool versions remains to be validated locally.
+Binaries are discovered in PATH, the managed cache, common folders and local fixed disks.
+If a tool is missing, v006 installs it locally under `%LOCALAPPDATA%\ISSTA-tools-v006`.
+No administrator rights or persistent PATH changes are used. Internet access is needed
+for downloads, NuGet restore and Python packages. Installation time is outside search.
+
+Use `-InstallLocalTools` to bypass old installations and prepare/reuse the pinned managed
+tool distribution. Missing Java also triggers a portable JDK 21 installation.
+EvoMaster is pinned to 6.2.0, with the release SHA256 verified. RESTler is built
+from official commit 6d984deedbc54aad957fa3da0c7e9e5df23a2aee using the official
+build-restler.py and a private .NET 8 SDK (Microsoft release SHA512 verified).
+The engine gets its own Python venv based on the repository Python; dependencies
+and resolved package versions are logged. RESTler upstream recommends Python 3.12.8;
+compatibility with the machine's Python is checked by the build and pilot execution.
+RESTler source ZIP is fetched by immutable commit over HTTPS; no independent signed
+checksum is provided for that source archive. A manifest captures exact installed paths,
+versions and binary hashes. The .NET SDK patch and portable JDK are resolved at first
+installation and then cached. Installation failures retain logs and do not start search.
+
+Explicit overrides: -EvoMasterJar and -RestlerPath (binary or installation folder).
+Environment overrides: EVOMASTER_JAR, RESTLER_EXE, RESTLER_DLL.
+`-InstallLocalTools` takes precedence over those existing-installation overrides.
+Windows installation and execution with real binaries still require local validation.
