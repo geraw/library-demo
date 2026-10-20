@@ -44,51 +44,96 @@ def run(command, folder, name, timeout):
     return result
 
 
+def fixed_drives():
+    """Local fixed disks only; do not probe network shares or removable media."""
+    if os.name != 'nt':
+        return []
+    import ctypes
+    api = ctypes.windll.kernel32
+    mask = api.GetLogicalDrives()
+    return [Path(chr(65 + i) + ':/') for i in range(26)
+            if mask & (1 << i) and api.GetDriveTypeW(chr(65 + i) + ':\\') == 3]
+
+
+def scan_tools(root, missing, deep=False):
+    found = {'evo': [], 'restler': []}
+    skip = {'.git', '.venv', 'venv', 'node_modules', '__pycache__', '$recycle.bin',
+            'system volume information', 'windows', 'winsxs', 'state', 'volumes'}
+    if not root.is_dir():
+        return found
+    print('DISCOVERY_SCAN ' + str(root), flush=True)
+    last = time.monotonic()
+    for directory, dirs, files in os.walk(root, followlinks=False):
+        path = Path(directory)
+        dirs[:] = sorted(d for d in dirs if d.lower() not in skip
+                         and not (path / d).is_symlink()
+                         and not (hasattr(os.path, 'isjunction') and os.path.isjunction(path / d)))
+        if not deep and len(path.relative_to(root).parts) >= 12:
+            dirs[:] = []
+        for name in files:
+            low = name.lower()
+            if 'evo' in missing and low.endswith('.jar') and 'evomaster' in low and not any(x in low for x in ('sources', 'javadoc')):
+                found['evo'].append(path / name)
+            if 'restler' in missing and low in ('restler.exe', 'restler.dll'):
+                found['restler'].append(path / name)
+        if all(found[key] for key in missing):
+            break
+        if time.monotonic() - last > 5:
+            print('DISCOVERY_PROGRESS ' + str(path), flush=True)
+            last = time.monotonic()
+    return found
+
+
 def find_tools(repo, evo, restler):
     explicit = {'evo': evo or os.environ.get('EVOMASTER_JAR'),
                 'restler': restler or os.environ.get('RESTLER_EXE') or os.environ.get('RESTLER_DLL')}
+    found = {'evo': [], 'restler': []}
     for key, value in explicit.items():
-        if value and not Path(value).is_file():
-            raise RuntimeError(key + ' path does not exist: ' + str(value))
-    found = {key: [Path(value).resolve()] if value else [] for key, value in explicit.items()}
-    roots = [repo, repo.parent, Path.home() / 'Downloads', Path.home() / 'tools']
+        if not value:
+            continue
+        path = Path(value).expanduser().resolve()
+        if path.is_dir():
+            found[key] = scan_tools(path, {key}, deep=True)[key]
+        elif path.is_file():
+            found[key] = [path]
+        if not found[key]:
+            raise RuntimeError('No tool found at explicit ' + key + ' path: ' + str(path))
+    for name in ('Restler.exe', 'restler.exe', 'Restler.dll'):
+        if not found['restler']:
+            hit = shutil.which(name)
+            if hit:
+                found['restler'] = [Path(hit).resolve()]
+    roots = [repo, repo.parent, Path.home() / 'Downloads', Path.home() / 'tools',
+             Path.home() / 'AppData/Local/Programs']
     if os.name == 'nt':
         roots += [Path(p) for p in ('C:/tools', 'D:/tools', 'C:/RESTler', 'D:/RESTler',
-                                   'C:/work/temp', 'C:/Program Files/EvoMaster')]
-    seen = set()
-    skip = {'.git', '.venv', 'node_modules', '__pycache__', 'runs', 'state', 'data', 'postgres', 'volumes'}
-    for root in roots:
-        if all(found.values()):
+                                   'C:/work', 'D:/work', 'C:/Program Files', 'C:/Program Files (x86)')]
+    checked = []
+    disks = fixed_drives()
+    for root in roots + disks:
+        missing = {key for key in found if not found[key]}
+        if not missing:
             break
-        if not root.is_dir():
+        if str(root).lower() in checked:
             continue
-        count = 0
-        for directory, dirs, files in os.walk(root):
-            path = Path(directory)
-            depth = len(path.relative_to(root).parts)
-            dirs[:] = sorted(d for d in dirs if d.lower() not in skip) if depth < 6 else []
-            if str(path).lower() in seen:
-                dirs[:] = []
-                continue
-            seen.add(str(path).lower())
-            count += 1
-            if count > 15000:
-                break
-            for name in files:
-                low = name.lower()
-                if not explicit['evo'] and low.endswith('.jar') and 'evomaster' in low and 'source' not in low and 'javadoc' not in low:
-                    found['evo'].append(path / name)
-                if not explicit['restler'] and low in ('restler.exe', 'restler.dll'):
-                    found['restler'].append(path / name)
+        checked.append(str(root).lower())
+        hits = scan_tools(root, missing, deep=root in disks)
+        for key in missing:
+            found[key].extend(hits[key])
     for key in found:
-        # The exe and dll from the same RESTler build count as one installation.
-        choices = sorted(set(p.resolve() for p in found[key]), key=lambda p: (p.suffix != '.exe', str(p)))
+        choices = sorted(set(p.resolve() for p in found[key]), key=lambda p: (p.suffix.lower() != '.exe', str(p)))
         if key == 'restler':
-            choices = [p for p in choices if p.suffix.lower() != '.dll' or not p.with_suffix('.exe').exists()]
+            exe_dirs = {str(p.parent).lower() for p in choices if p.suffix.lower() == '.exe'}
+            choices = [p for p in choices if p.suffix.lower() != '.dll' or str(p.parent).lower() not in exe_dirs]
+        option = '-EvoMasterJar' if key == 'evo' else '-RestlerPath'
         if len(choices) != 1:
-            raise RuntimeError('Specify --' + ('evomaster-jar' if key == 'evo' else 'restler') +
-                               '; found: ' + ', '.join(map(str, choices)))
+            raise RuntimeError('Tool discovery: ' + key + '. Candidates: ' +
+                               (', '.join(map(str, choices)) or 'NONE') +
+                               '. Use PowerShell parameter ' + option + ' with the installed binary or folder. '
+                               'Searched: ' + ', '.join(checked) +
+                               '. No search was started; no runtime budget was used.')
         found[key] = choices[0]
+        print('DISCOVERY_FOUND ' + key.upper() + ' ' + str(choices[0]), flush=True)
     return found['evo'], found['restler']
 
 
