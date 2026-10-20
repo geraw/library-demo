@@ -48,3 +48,19 @@ Explicit overrides: -EvoMasterJar and -RestlerPath (binary or installation folde
 Environment overrides: EVOMASTER_JAR, RESTLER_EXE, RESTLER_DLL.
 `-InstallLocalTools` takes precedence over those existing-installation overrides.
 Windows installation and execution with real binaries still require local validation.
+
+## HTTP transport repair and selective rerun
+
+The v006 observer now decodes HTTP chunked request bodies as well as Content-Length,
+preserves the incoming content type, and records transport metadata. Backend and
+oracle dispatch uses the unmodified Flask app via its WSGI test client, avoiding a
+new local TCP connection for every tool request/readback. The tool still sends real
+HTTP to the same localhost proxy. This transport revision is recorded in provenance;
+old evidence remains untouched. Observer exceptions are recorded separately and
+mark the pilot incomplete rather than being counted as SUT bugs.
+
+Use `-Tools evomaster -PreviousPilot <previous results folder>` to rerun only EvoMaster
+for a new 600-second budget. Previous tool paths are reused and the frozen contract
+and SUT hashes must match. The previous RESTler results are not rerun or overwritten.
+All-five mutation selection remains unchanged. Treat earlier RESTler evidence as a
+pilot with the previous transport revision, not an equal-transport final comparison.
