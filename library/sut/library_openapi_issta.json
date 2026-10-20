@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Library ISSTA Mutation Experiment",
-    "version": "1.0.0",
-    "description": "Normative contract for sut_buggy_issta.py with all mutations disabled. No per-user active-loan quota. A book may have at most one active loan; duplicate active user/book loans are rejected. Returning a loan permits unlimited future loan/return cycles for that pair. Deletion targets only the identified record. These rules clarify the experiment; the original repository contract is unchanged."
+    "title": "Library API",
+    "version": "1.1.0",
+    "description": "HTTP API for users, books, loans and holds."
   },
   "paths": {
     "/users": {
@@ -32,7 +32,14 @@
             }
           },
           "400": {
-            "description": "Invalid payload or unknown referenced user/book; for loans also an active loan already exists for this book"
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -47,7 +54,7 @@
               "type": "string"
             },
             "required": false,
-            "description": "Free-text search query (e.g., name or id fragment)"
+            "description": "Search query."
           }
         ],
         "responses": {
@@ -77,19 +84,41 @@
             "name": "user_id",
             "required": true,
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "minimum": 1
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Deleted successfully"
+            "description": "Resource deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Invalid identifier or deletion blocked by an active loan/hold"
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Target not found"
+            "description": "Resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -120,7 +149,14 @@
             }
           },
           "400": {
-            "description": "Invalid payload or unknown referenced user/book; for loans also an active loan already exists for this book"
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -135,7 +171,7 @@
               "type": "string"
             },
             "required": false,
-            "description": "Free-text search query"
+            "description": "Search query."
           }
         ],
         "responses": {
@@ -165,7 +201,8 @@
             "name": "book_id",
             "required": true,
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "minimum": 1
             }
           }
         ],
@@ -181,10 +218,26 @@
             }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
-        },
-        "description": "For an existing book created by this API and not deleted, return 200 with that exact book. Reading does not change state. Return 404 only if no book with the parsed ID exists."
+        }
       },
       "delete": {
         "summary": "Delete a book",
@@ -195,19 +248,41 @@
             "name": "book_id",
             "required": true,
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "minimum": 1
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Deleted successfully"
+            "description": "Resource deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Invalid identifier or deletion blocked by an active loan/hold"
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Target not found"
+            "description": "Resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -238,10 +313,16 @@
             }
           },
           "400": {
-            "description": "Invalid payload or unknown referenced user/book; for loans also an active loan already exists for this book"
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
-        },
-        "description": "Create a loan for existing user and book IDs. No per-user quota: four or more distinct available books may be loaned to one user. Reject an already-loaned book. Returned loans do not count as active and do not limit subsequent borrowing, including the third loan of the same book by the same user."
+        }
       },
       "get": {
         "summary": "List/search loans",
@@ -251,7 +332,8 @@
             "in": "query",
             "name": "userId",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "minimum": 1
             },
             "required": false
           },
@@ -259,7 +341,8 @@
             "in": "query",
             "name": "bookId",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "minimum": 1
             },
             "required": false
           }
@@ -277,6 +360,16 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -291,7 +384,8 @@
             "name": "user_id",
             "required": true,
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "minimum": 1
             }
           },
           {
@@ -299,22 +393,43 @@
             "name": "book_id",
             "required": true,
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "minimum": 1
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Deleted successfully"
+            "description": "Resource deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Invalid identifier or deletion blocked by an active loan/hold"
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Target not found"
+            "description": "Resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
-        },
-        "description": "Return exactly the active loan identified by BOTH user_id and book_id. Other loans are unchanged."
+        }
       }
     },
     "/holds": {
@@ -343,7 +458,14 @@
             }
           },
           "400": {
-            "description": "Invalid payload or unknown referenced user/book; for loans also an active loan already exists for this book"
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       },
@@ -377,22 +499,43 @@
             "name": "hold_id",
             "required": true,
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "minimum": 1
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Deleted successfully"
+            "description": "Resource deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Invalid identifier or deletion blocked by an active loan/hold"
+            "description": "Invalid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Target not found"
+            "description": "Resource not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
-        },
-        "description": "Delete exactly the hold identified by hold_id. All other holds, including those belonging to the same user, remain unchanged."
+        }
       }
     }
   },
@@ -411,17 +554,19 @@
         }
       },
       "User": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/UserCreate"
-          }
-        ],
+        "type": "object",
         "required": [
+          "name",
           "id"
         ],
         "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
           "id": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1
           }
         }
       },
@@ -438,17 +583,19 @@
         }
       },
       "Book": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/BookCreate"
-          }
-        ],
+        "type": "object",
         "required": [
+          "title",
           "id"
         ],
         "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
           "id": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1
           }
         }
       },
@@ -460,10 +607,12 @@
         ],
         "properties": {
           "userId": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1
           },
           "bookId": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1
           }
         }
       },
@@ -476,13 +625,16 @@
         ],
         "properties": {
           "id": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1
           },
           "userId": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1
           },
           "bookId": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1
           },
           "loanedAt": {
             "type": "string",
@@ -498,25 +650,56 @@
         ],
         "properties": {
           "userId": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1
           },
           "bookId": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1
           }
         }
       },
       "Hold": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/HoldCreate"
-          }
-        ],
+        "type": "object",
         "required": [
+          "userId",
+          "bookId",
           "id"
         ],
         "properties": {
+          "userId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "bookId": {
+            "type": "integer",
+            "minimum": 1
+          },
           "id": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
           }
         }
       }

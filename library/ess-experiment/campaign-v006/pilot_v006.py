@@ -163,7 +163,7 @@ def evo_command(java, jar, help_text, schema, output):
     if not schema_flag or not base_flag or '--maxTime' not in help_text:
         raise RuntimeError('Unsupported EvoMaster options; inspect preflight/help.log')
     return [java, '-jar', jar, '--blackBox', 'true', schema_flag, schema,
-            base_flag, 'http://127.0.0.1:23243', '--maxTime', '600s',
+            base_flag, 'http://127.0.0.1:23243', '--maxTime', str(SECONDS) + 's',
             '--seed', '1', '--outputFolder', output]
 
 
@@ -281,11 +281,11 @@ def main(args):
             scope='Pilot; campaign-global observer diagnostics, not sequence-local official scores',
             native_detection='Inspect native reports separately; observer findings are not native tool findings',
             stopping='Observer never stops tools on a semantic finding; tools retain their native behavior',
-            preparation='Compilation, startup and output finalization are outside the 600-second engine budget'))
+            preparation='Compilation, startup and output finalization are outside the engine budget'))
         for tool in selected:
             folder = output / tool
             folder.mkdir()
-            print('START ' + tool.upper() + ' ALL_BUGS SEARCH_SECONDS=600', flush=True)
+            print('START ' + tool.upper() + ' BUGS=' + BUGS + ' SEARCH_SECONDS=' + str(SECONDS), flush=True)
             try:
                 if tool == 'restler':
                     compiled = run(driver + ['compile', '--api_spec', root / 'openapi.json'], folder, 'compile', 180)
@@ -303,7 +303,7 @@ def main(args):
                     command = evocommand
                 with Service(root, folder, BUGS):
                     core.call('http://127.0.0.1:23243/__campaign__/case', {'case': tool + '-pilot-global'})
-                    result = run(command, folder, 'search', 690)
+                    result = run(command, folder, 'search', SECONDS + 90)
                 summary = core.evaluate(folder)
                 summary.pop('semantic_candidates', None)
                 with (folder / 'http.jsonl').open(encoding='utf-8') as log:
@@ -340,3 +340,4 @@ if __name__ == '__main__':
     parser.add_argument('--tools', choices=['both', 'restler', 'evomaster'], default='both')
     parser.add_argument('--previous-pilot', type=Path)
     main(parser.parse_args())
+
