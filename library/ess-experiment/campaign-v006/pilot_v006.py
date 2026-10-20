@@ -11,6 +11,9 @@ import time
 import traceback
 import zipfile
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import bootstrap_v006 as bootstrap
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'campaign-v004'))
 import campaign_v004 as core
 
@@ -84,11 +87,21 @@ def scan_tools(root, missing, deep=False):
     return found
 
 
+def managed_home():
+    return Path(os.environ.get('LOCALAPPDATA', str(Path.home()))) / 'ISSTA-tools-v006'
+
+
 def find_tools(repo, evo, restler):
     explicit = {'evo': evo or os.environ.get('EVOMASTER_JAR'),
                 'restler': restler or os.environ.get('RESTLER_EXE') or os.environ.get('RESTLER_DLL')}
+    home = managed_home()
+    bootstrap.activate(home)
+    manifest = home / 'manifest.json'
+    managed = json.loads(manifest.read_text()) if manifest.is_file() else {}
     found = {'evo': [], 'restler': []}
     for key, value in explicit.items():
+        if not value and managed.get(key) and Path(managed[key]).is_file():
+            value = managed[key]
         if not value:
             continue
         path = Path(value).expanduser().resolve()
@@ -120,6 +133,11 @@ def find_tools(repo, evo, restler):
         hits = scan_tools(root, missing, deep=root in disks)
         for key in missing:
             found[key].extend(hits[key])
+    missing = {key for key in found if not found[key]}
+    if missing:
+        installed = bootstrap.install(home, missing)
+        for key in missing:
+            found[key] = [Path(installed[key])]
     for key in found:
         choices = sorted(set(p.resolve() for p in found[key]), key=lambda p: (p.suffix.lower() != '.exe', str(p)))
         if key == 'restler':
@@ -160,10 +178,16 @@ def main(args):
     for name in ('openapi.json', 'sut_buggy_issta.py'):
         if not (root / name).is_file():
             raise RuntimeError('Missing campaign input: ' + str(root / name))
+    if getattr(args, 'install_local_tools', False):
+        installed = bootstrap.install(managed_home(), {'evo', 'restler'})
+        args.evomaster_jar, args.restler = Path(installed['evo']), Path(installed['restler'])
     evo, restler = find_tools(repo, args.evomaster_jar, args.restler)
     java = shutil.which('java')
     if not java:
-        raise RuntimeError('Java is not on PATH')
+        bootstrap.install(managed_home(), set())
+        java = shutil.which('java')
+    if not java:
+        raise RuntimeError('Local Java installation did not produce an executable')
     driver = [restler] if restler.suffix.lower() == '.exe' else [shutil.which('dotnet'), restler]
     if not driver[0]:
         raise RuntimeError('dotnet is required for Restler.dll')
@@ -173,6 +197,9 @@ def main(args):
     try:
         preflight = output / 'preflight'
         preflight.mkdir()
+        install_manifest = managed_home() / 'manifest.json'
+        if install_manifest.is_file():
+            shutil.copy2(install_manifest, preflight / 'installation-manifest.json')
         help_result = run([java, '-jar', evo, '--help'], preflight, 'help', 60)
         if help_result['exit_code'] or help_result['watchdog_timeout']:
             raise RuntimeError('EvoMaster help failed: ' + str(preflight / 'help.log'))
@@ -235,4 +262,5 @@ if __name__ == '__main__':
     parser.add_argument('--campaign', type=Path, required=True)
     parser.add_argument('--evomaster-jar', type=Path)
     parser.add_argument('--restler', type=Path)
+    parser.add_argument('--install-local-tools', action='store_true')
     main(parser.parse_args())
