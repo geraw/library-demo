@@ -5,6 +5,8 @@ import os
 from pathlib import Path
 import re
 import shutil
+import socket
+import secrets
 import subprocess
 import sys
 import time
@@ -172,12 +174,78 @@ def restler_settings():
                 max_request_execution_time=10, max_async_resource_creation_time=1)
 
 
+class Service:
+    def __init__(self, root, folder, bugs):
+        self.root, self.folder, self.bugs = root, folder, bugs
+    def __enter__(self):
+        for port in (23243, 23244):
+            with socket.socket() as sock:
+                if sock.connect_ex(('127.0.0.1', port)) == 0:
+                    raise RuntimeError(f'Port {port} is occupied; no existing process will be stopped')
+        self.output = open(self.folder / 'server.log', 'w', encoding='utf-8')
+        self.token = secrets.token_hex(32)
+        environment = dict(os.environ, ISSTA_SERVICE_TOKEN=self.token)
+        self.proc = subprocess.Popen([sys.executable, str(Path(__file__).resolve().parent / 'observed_server_v006.py'),
+            '--sut', str(self.root / 'sut_buggy_issta.py'), '--bugs', self.bugs,
+            '--log', str(self.folder / 'http.jsonl')], stdout=self.output, stderr=subprocess.STDOUT,
+            env=environment)
+        try:
+            for _ in range(100):
+                if self.proc.poll() is not None:
+                    raise RuntimeError('Managed server failed: inspect server.log')
+                try:
+                    health = core.call('http://127.0.0.1:23243/__campaign__/health')
+                    # Windows venv python.exe can be a redirector process: the HTTP
+                    # worker's PID is not necessarily Popen.pid. Authenticate ownership.
+                    if health.get('service_token') != self.token:
+                        raise RuntimeError('Unexpected listening process')
+                    health.pop('service_token', None)
+                    health['launcher_pid'] = self.proc.pid
+                    core.write(self.folder / 'server_identity.json', health)
+                    return self
+                except OSError:
+                    time.sleep(.1)
+            raise RuntimeError('Server startup timed out')
+        except BaseException:
+            self.__exit__(None, None, None)
+            raise
+    def __exit__(self, *_):
+        try:
+            try:
+                core.call('http://127.0.0.1:23243/__campaign__/shutdown', {'token': self.token})
+            except OSError:
+                pass
+            try:
+                self.proc.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                if os.name == 'nt':
+                    subprocess.run(['taskkill', '/PID', str(self.proc.pid), '/T', '/F'],
+                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                else:
+                    self.proc.terminate()
+                self.proc.wait(timeout=10)
+        finally:
+            self.output.close()
+
+
+
 def main(args):
     root = args.campaign.resolve()
     repo = Path(__file__).resolve().parents[3]
     for name in ('openapi.json', 'sut_buggy_issta.py'):
         if not (root / name).is_file():
             raise RuntimeError('Missing campaign input: ' + str(root / name))
+    previous = getattr(args, 'previous_pilot', None)
+    if previous:
+        provenance = json.loads((previous / 'provenance.json').read_text())
+        for name, key in [('openapi.json', 'contract_sha256'), ('sut_buggy_issta.py', 'sut_sha256')]:
+            if core.sha(root / name) != provenance[key]:
+                raise RuntimeError('Campaign input differs from previous pilot: ' + name)
+        if not args.evomaster_jar:
+            args.evomaster_jar = Path(provenance['evomaster_jar'])
+        if not args.restler:
+            args.restler = Path(provenance['restler'])
+    selected = ['restler', 'evomaster'] if getattr(args, 'tools', 'both') == 'both' else [args.tools]
     if getattr(args, 'install_local_tools', False):
         installed = bootstrap.install(managed_home(), {'evo', 'restler'})
         args.evomaster_jar, args.restler = Path(installed['evo']), Path(installed['restler'])
@@ -206,14 +274,15 @@ def main(args):
         evocommand = evo_command(java, evo, (preflight / 'help.log').read_text(errors='replace'),
                                 root / 'openapi.json', output / 'evomaster/generated-tests')
         core.write(output / 'provenance.json', dict(bugs=BUGS, search_seconds_per_tool=SECONDS,
-            order=['restler', 'evomaster'], evomaster_jar=str(evo), restler=str(restler),
+            order=selected, observer_version='v006-fixed-http-body',
+            internal_transport='Flask WSGI client; external tool HTTP unchanged', previous_pilot=str(previous) if previous else None, evomaster_jar=str(evo), restler=str(restler),
             evomaster_sha256=core.sha(evo), restler_sha256=core.sha(restler),
             contract_sha256=core.sha(root / 'openapi.json'), sut_sha256=core.sha(root / 'sut_buggy_issta.py'),
             scope='Pilot; campaign-global observer diagnostics, not sequence-local official scores',
             native_detection='Inspect native reports separately; observer findings are not native tool findings',
             stopping='Observer never stops tools on a semantic finding; tools retain their native behavior',
             preparation='Compilation, startup and output finalization are outside the 600-second engine budget'))
-        for tool in ('restler', 'evomaster'):
+        for tool in selected:
             folder = output / tool
             folder.mkdir()
             print('START ' + tool.upper() + ' ALL_BUGS SEARCH_SECONDS=600', flush=True)
@@ -232,13 +301,18 @@ def main(args):
                                         '--settings', folder / 'settings.json', '--no_ssl']
                 else:
                     command = evocommand
-                with core.Service(root, folder, BUGS):
+                with Service(root, folder, BUGS):
                     core.call('http://127.0.0.1:23243/__campaign__/case', {'case': tool + '-pilot-global'})
                     result = run(command, folder, 'search', 690)
                 summary = core.evaluate(folder)
                 summary.pop('semantic_candidates', None)
+                with (folder / 'http.jsonl').open(encoding='utf-8') as log:
+                    observer_errors = sum(json.loads(line).get('role') == 'observer_error' for line in log)
+                summary['observer_error_count'] = observer_errors
                 result['observation'] = summary
                 result['status'] = 'WATCHDOG_TIMEOUT' if result['watchdog_timeout'] else 'TOOL_EXIT_NONZERO' if result['exit_code'] else 'FINISHED'
+                if observer_errors:
+                    result['status'] = 'OBSERVER_ERROR'
                 results[tool] = result
             except Exception as exc:
                 results[tool] = dict(status='HARNESS_ERROR', error=str(exc))
@@ -252,7 +326,7 @@ def main(args):
                 if path.is_file() and '__pycache__' not in path.parts:
                     z.write(path, path.relative_to(output))
         print('REVIEW_ZIP ' + str(archive), flush=True)
-    if len(results) != 2 or any(v['status'] != 'FINISHED' for v in results.values()):
+    if len(results) != len(selected) or any(v['status'] != 'FINISHED' for v in results.values()):
         raise RuntimeError('Pilot incomplete or tool returned nonzero; results preserved in REVIEW_ZIP')
     print('PILOT_V006_COMPLETE', flush=True)
 
@@ -263,4 +337,6 @@ if __name__ == '__main__':
     parser.add_argument('--evomaster-jar', type=Path)
     parser.add_argument('--restler', type=Path)
     parser.add_argument('--install-local-tools', action='store_true')
+    parser.add_argument('--tools', choices=['both', 'restler', 'evomaster'], default='both')
+    parser.add_argument('--previous-pilot', type=Path)
     main(parser.parse_args())
