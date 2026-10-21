@@ -1,0 +1,460 @@
+{
+  "schema_version": "natchan-family-audit/1",
+  "totals": {
+    "CASCADE-1:same-target-delete-readback": 171,
+    "CASCADE-1:unresolved-relationship": 171,
+    "ATOM-1-2:retained-summary": 60,
+    "IDEM:identical-write-pair": 64,
+    "EDGE-U:ambiguous-pair": 531,
+    "EDGE-U:unqualified-pair": 35,
+    "EDGE-U:same-field-value-status-comparison": 126,
+    "KNOWN:retained-attempt": 17,
+    "ADJ:probe-and-readback": 518,
+    "REF-1:recomputed-from-projected-ids": 72,
+    "LINK-2:recomputed-from-projected-ids": 212,
+    "LINK-2:incomplete-projection": 19,
+    "REF-1:incomplete-projection": 19,
+    "DIV-1:retained-summary": 196
+  },
+  "new_sut_requests": 0,
+  "journals": [
+    {
+      "source": [
+        {
+          "file": "natchan-history/family-coverage/results/gitea-g005-home-20261020/review_g005_s8.zip",
+          "sha256": "a8f2ebc62a073a6e3420e17f49ea01c8e65629f9c2d796d6e376387b709cfe9e"
+        },
+        {
+          "member": "gateway-journal.jsonl",
+          "sha256": "d6890a90fb528463bc3da17c18e9bad4f928650422576ac2a2f49f433fbfcaec"
+        }
+      ],
+      "row_count": 632,
+      "counts": {
+        "CASCADE-1:same-target-delete-readback": 9,
+        "CASCADE-1:unresolved-relationship": 9,
+        "ATOM-1-2:retained-summary": 3,
+        "IDEM:identical-write-pair": 16,
+        "EDGE-U:ambiguous-pair": 31,
+        "EDGE-U:unqualified-pair": 2,
+        "EDGE-U:same-field-value-status-comparison": 8
+      }
+    },
+    {
+      "source": [
+        {
+          "file": "natchan-history/family-coverage/results/gitea-g005-home-20261020/review_g005_s7.zip",
+          "sha256": "b83d44ac63fea4f580e2f7d58c14d971e1f2059269ec8265ee0ab487696d93bb"
+        },
+        {
+          "member": "gateway-journal.jsonl",
+          "sha256": "8d7ed5e0a69ef913529cfcc59df707e009c5c4785f6967214f608e538af27dae"
+        }
+      ],
+      "row_count": 682,
+      "counts": {
+        "CASCADE-1:same-target-delete-readback": 10,
+        "CASCADE-1:unresolved-relationship": 10,
+        "ATOM-1-2:retained-summary": 1,
+        "IDEM:identical-write-pair": 16,
+        "EDGE-U:ambiguous-pair": 44,
+        "EDGE-U:unqualified-pair": 1,
+        "EDGE-U:same-field-value-status-comparison": 7
+      }
+    },
+    {
+      "source": [
+        {
+          "file": "natchan-history/family-coverage/results/gitea-g005-home-20261020/review_g005_s6.zip",
+          "sha256": "27c6ed00bc72d4d2708e7f97ddb6f7dafb63a5ba8cd1529265e78a4edfeb1097"
+        },
+        {
+          "member": "gateway-journal.jsonl",
+          "sha256": "faba89f927249d47c11d2ad9e018c1386de33ea5797fb86b172dd06f977f3b0e"
+        }
+      ],
+      "row_count": 670,
+      "counts": {
+        "CASCADE-1:same-target-delete-readback": 9,
+        "CASCADE-1:unresolved-relationship": 9,
+        "ATOM-1-2:retained-summary": 2,
+        "IDEM:identical-write-pair": 16,
+        "EDGE-U:ambiguous-pair": 39,
+        "EDGE-U:unqualified-pair": 1,
+        "EDGE-U:same-field-value-status-comparison": 9
+      }
+    },
+    {
+      "source": [
+        {
+          "file": "natchan-history/family-coverage/results/gitea-g005-home-20261020/review_g005_s5.zip",
+          "sha256": "e9b22ac663d6142c4d59167992207a1e26f870a189b2045b015648f73ecc13d4"
+        },
+        {
+          "member": "gateway-journal.jsonl",
+          "sha256": "ff8c1ed11e794b453e0e93bfbc403d661c9d1cce98f486283c0b64a16e6e46dd"
+        }
+      ],
+      "row_count": 671,
+      "counts": {
+        "CASCADE-1:same-target-delete-readback": 9,
+        "CASCADE-1:unresolved-relationship": 9,
+        "ATOM-1-2:retained-summary": 3,
+        "IDEM:identical-write-pair": 16,
+        "EDGE-U:ambiguous-pair": 39,
+        "EDGE-U:unqualified-pair": 2,
+        "EDGE-U:same-field-value-status-comparison": 9
+      }
+    },
+    {
+      "source": [
+        {
+          "file": "natchan-history/family-coverage/results/check-v164-work-20261018/evidence/v164-triggers-20261018-153232-redacted.zip",
+          "sha256": "a76fa16735830a838ac8720fcf4db8c8e826b7e6626e942814ba615a890de502"
+        },
+        {
+          "member": "v164-comment-create-20261018-153234.zip",
+          "sha256": "3c0f0f7c74913943c5445c9c4c249ab808a95e7d7081d2a30c6e3e757ffa6dd8"
+        },
+        {
+          "member": "review_seed1_run1.zip",
+          "sha256": "2748ba026917e807c0405fb1493e6a37f95101b47479074ed1733d6999c85f8c"
+        },
+        {
+          "member": "gateway-journal.jsonl",
+          "sha256": "c1e8273705ee43803117f2bbffc13ab08c75dd2d49bcb2818253d3b16f4ad535"
+        }
+      ],
+      "row_count": 77,
+      "counts": {
+        "KNOWN:retained-attempt": 2,
+        "ADJ:probe-and-readback": 1
+      }
+    },
+    {
+      "source": [
+        {
+          "file": "natchan-history/family-coverage/results/check-v164-work-20261018/evidence/v164-triggers-20261018-153232-redacted.zip",
+          "sha256": "a76fa16735830a838ac8720fcf4db8c8e826b7e6626e942814ba615a890de502"
+        },
+        {
+          "member": "v164-comment-create-20261018-153234.zip",
+          "sha256": "3c0f0f7c74913943c5445c9c4c249ab808a95e7d7081d2a30c6e3e757ffa6dd8"
+        },
+        {
+          "member": "review_seed2_run2.zip",
+          "sha256": "789a59ffa36ad654536489a893aaf3b2dd598faac80ad44f012774a72180889d"
+        },
+        {
+          "member": "gateway-journal.jsonl",
+          "sha256": "cf5ea125a9da349ea81a86b3174e5bea63a12fbcef9b3c7c68b2b24c1c501933"
+        }
+      ],
+      "row_count": 1178,
+      "counts": {
+        "ADJ:probe-and-readback": 14,
+        "KNOWN:retained-attempt": 15
+      }
+    },
+    {
+      "source": [
+        {
+          "file": "natchan-history/coverage/results/gitea-g007-work-20261021/review_g007_s2.zip",
+          "sha256": "cfb1bb1db9b0336a07885a0297cbb8d29002288f6d4e128824ef4660086831f6"
+        },
+        {
+          "member": "gateway-journal.jsonl",
+          "sha256": "4baba8386134b541f26f0c9a115403b6bf42bae08d4e29e5186477cd0b7ee5bd"
+        }
+      ],
+      "row_count": 1015,
+      "counts": {
+        "ADJ:probe-and-readback": 125,
+        "CASCADE-1:same-target-delete-readback": 9,
+        "CASCADE-1:unresolved-relationship": 9,
+        "ATOM-1-2:retained-summary": 2,
+        "EDGE-U:ambiguous-pair": 39,
+        "EDGE-U:unqualified-pair": 1,
+        "EDGE-U:same-field-value-status-comparison": 9
+      }
+    },
+    {
+      "source": [
+        {
+          "file": "natchan-history/coverage/results/gitea-g007-work-20261021/review_g007_s3.zip",
+          "sha256": "6e68b0f4737cf14832d53991136c5a2588dd9644ffa1b8e37ff4ef0364badef6"
+        },
+        {
+          "member": "gateway-journal.jsonl",
+          "sha256": "057d2340e1a422af40110bb525635dfadb1c454ee8a1dcfff41c335d735d71cf"
+        }
+      ],
+      "row_count": 1031,
+      "counts": {
+        "ADJ:probe-and-readback": 129,
+        "CASCADE-1:same-target-delete-readback": 9,
+        "CASCADE-1:unresolved-relationship": 9,
+        "ATOM-1-2:retained-summary": 1,
+        "EDGE-U:ambiguous-pair": 44,
+        "EDGE-U:unqualified-pair": 1,
+        "EDGE-U:same-field-value-status-comparison": 7
+      }
+    },
+    {
+      "source": [
+        {
+          "file": "natchan-history/coverage/results/gitea-g007-work-20261021/review_g007_s4.zip",
+          "sha256": "c9ddf2695d08b9c2c93d2e05c101c78265058e5b92222b055a96beb9c57fc40f"
+        },
+        {
+          "member": "gateway-journal.jsonl",
+          "sha256": "277cf96c2b60821a9798b4d322fd57668665c1921b7e646d5098cab8c0ff36ba"
+        }
+      ],
+      "row_count": 1020,
+      "counts": {
+        "ADJ:probe-and-readback": 125,
+        "CASCADE-1:same-target-delete-readback": 10,
+        "CASCADE-1:unresolved-relationship": 10,
+        "ATOM-1-2:retained-summary": 3,
+        "EDGE-U:ambiguous-pair": 37,
+        "EDGE-U:unqualified-pair": 2,
+        "EDGE-U:same-field-value-status-comparison": 11
+      }
+    },
+    {
+      "source": [
+        {
+          "file": "natchan-history/coverage/results/gitea-g007-work-20261021/review_g007_s1.zip",
+          "sha256": "742322d699eceb3dae8ccfce3c263616a825cf2fa142ed8e146b4d4ff4644f76"
+        },
+        {
+          "member": "gateway-journal.jsonl",
+          "sha256": "25f01c6e4b9902ef6fdc439eccd0caad50c10e451a0419e040a34d4201da4cd2"
+        }
+      ],
+      "row_count": 1015,
+      "counts": {
+        "ADJ:probe-and-readback": 124,
+        "CASCADE-1:same-target-delete-readback": 9,
+        "CASCADE-1:unresolved-relationship": 9,
+        "ATOM-1-2:retained-summary": 3,
+        "EDGE-U:ambiguous-pair": 39,
+        "EDGE-U:unqualified-pair": 2,
+        "EDGE-U:same-field-value-status-comparison": 9
+      }
+    },
+    {
+      "source": [
+        {
+          "file": "natchan-history/coverage/results/gitea-g009-work-20261021/review_g009_s2.zip",
+          "sha256": "3c8ddc113fbf40a1f76c6a114cad754978669c1a0d03fafbf8847ff7fa7e6090"
+        },
+        {
+          "member": "gateway-journal.jsonl",
+          "sha256": "b9d36d6e6b544908c95b4225e8bfd20753f7263352c9a39ecf40586256fe21ce"
+        }
+      ],
+      "row_count": 570,
+      "counts": {
+        "REF-1:recomputed-from-projected-ids": 9,
+        "CASCADE-1:same-target-delete-readback": 9,
+        "CASCADE-1:unresolved-relationship": 9,
+        "LINK-2:recomputed-from-projected-ids": 20,
+        "ATOM-1-2:retained-summary": 4,
+        "LINK-2:incomplete-projection": 1,
+        "REF-1:incomplete-projection": 2,
+        "DIV-1:retained-summary": 10,
+        "EDGE-U:ambiguous-pair": 10,
+        "EDGE-U:unqualified-pair": 1,
+        "EDGE-U:same-field-value-status-comparison": 2
+      }
+    },
+    {
+      "source": [
+        {
+          "file": "natchan-history/coverage/results/gitea-g009-work-20261021/review_g009_s1.zip",
+          "sha256": "1a36911e21705ac0d4db634cf6e9e330e2c17de834f4c7ab55224b92bca91974"
+        },
+        {
+          "member": "gateway-journal.jsonl",
+          "sha256": "456ec2b58fbd9be914ca2d5f5eb42a1380ff36a27b729587ff54688c4a00ddf3"
+        }
+      ],
+      "row_count": 610,
+      "counts": {
+        "CASCADE-1:same-target-delete-readback": 7,
+        "CASCADE-1:unresolved-relationship": 7,
+        "LINK-2:recomputed-from-projected-ids": 25,
+        "REF-1:recomputed-from-projected-ids": 9,
+        "ATOM-1-2:retained-summary": 3,
+        "LINK-2:incomplete-projection": 2,
+        "REF-1:incomplete-projection": 1,
+        "DIV-1:retained-summary": 8,
+        "EDGE-U:ambiguous-pair": 8,
+        "EDGE-U:unqualified-pair": 1,
+        "EDGE-U:same-field-value-status-comparison": 2
+      }
+    },
+    {
+      "source": [
+        {
+          "file": "natchan-history/coverage/results/gitea-g009-work-20261021/review_g009_s4.zip",
+          "sha256": "29a4524d54febb76a1dd7d96e43671731bbe7ed7614dd97d5d26b7b8d9179910"
+        },
+        {
+          "member": "gateway-journal.jsonl",
+          "sha256": "edc1fa681809fed98e2e50d945461b2848f954d0d7e0dc36f8b11c905eb78dfa"
+        }
+      ],
+      "row_count": 667,
+      "counts": {
+        "CASCADE-1:same-target-delete-readback": 10,
+        "CASCADE-1:unresolved-relationship": 10,
+        "REF-1:recomputed-from-projected-ids": 9,
+        "LINK-2:recomputed-from-projected-ids": 25,
+        "ATOM-1-2:retained-summary": 5,
+        "LINK-2:incomplete-projection": 2,
+        "REF-1:incomplete-projection": 3,
+        "DIV-1:retained-summary": 12,
+        "EDGE-U:ambiguous-pair": 12,
+        "EDGE-U:unqualified-pair": 1,
+        "EDGE-U:same-field-value-status-comparison": 2
+      }
+    },
+    {
+      "source": [
+        {
+          "file": "natchan-history/coverage/results/gitea-g009-work-20261021/review_g009_s3.zip",
+          "sha256": "a641d932fea7b8bf03fae942a1a87f0a817f957a7ec2d50aa216a046d0b71bde"
+        },
+        {
+          "member": "gateway-journal.jsonl",
+          "sha256": "8edc39f3a8e0718ac16adc56998f788567000a162683ad911e39dfd76dc76bbe"
+        }
+      ],
+      "row_count": 567,
+      "counts": {
+        "CASCADE-1:same-target-delete-readback": 7,
+        "LINK-2:recomputed-from-projected-ids": 22,
+        "REF-1:recomputed-from-projected-ids": 9,
+        "CASCADE-1:unresolved-relationship": 7,
+        "ATOM-1-2:retained-summary": 3,
+        "LINK-2:incomplete-projection": 2,
+        "REF-1:incomplete-projection": 1,
+        "DIV-1:retained-summary": 8,
+        "EDGE-U:ambiguous-pair": 8,
+        "EDGE-U:unqualified-pair": 1,
+        "EDGE-U:same-field-value-status-comparison": 2
+      }
+    },
+    {
+      "source": [
+        {
+          "file": "natchan-history/coverage-new/results/gitea-g009-cloud-20261021/run_s4/gateway-journal.jsonl",
+          "sha256": "19110034a1139bef0b18f149b074ca8ca37d167218e25b73e14d29d026f273e9"
+        }
+      ],
+      "row_count": 612,
+      "counts": {
+        "CASCADE-1:same-target-delete-readback": 16,
+        "CASCADE-1:unresolved-relationship": 16,
+        "ATOM-1-2:retained-summary": 7,
+        "REF-1:recomputed-from-projected-ids": 9,
+        "REF-1:incomplete-projection": 3,
+        "LINK-2:recomputed-from-projected-ids": 30,
+        "LINK-2:incomplete-projection": 3,
+        "DIV-1:retained-summary": 40,
+        "EDGE-U:ambiguous-pair": 43,
+        "EDGE-U:unqualified-pair": 5,
+        "EDGE-U:same-field-value-status-comparison": 14
+      }
+    },
+    {
+      "source": [
+        {
+          "file": "natchan-history/coverage-new/results/gitea-g009-cloud-20261021/run_s3/gateway-journal.jsonl",
+          "sha256": "751e902b9f2c02dfacfd96d8be4631d30bea36ec61bf9a715e6ab7be17647992"
+        }
+      ],
+      "row_count": 618,
+      "counts": {
+        "CASCADE-1:same-target-delete-readback": 16,
+        "CASCADE-1:unresolved-relationship": 16,
+        "ATOM-1-2:retained-summary": 5,
+        "REF-1:recomputed-from-projected-ids": 9,
+        "REF-1:incomplete-projection": 3,
+        "LINK-2:recomputed-from-projected-ids": 30,
+        "LINK-2:incomplete-projection": 3,
+        "DIV-1:retained-summary": 40,
+        "EDGE-U:ambiguous-pair": 50,
+        "EDGE-U:unqualified-pair": 4,
+        "EDGE-U:same-field-value-status-comparison": 10
+      }
+    },
+    {
+      "source": [
+        {
+          "file": "natchan-history/coverage-new/results/gitea-g009-cloud-20261021/run_s2/gateway-journal.jsonl",
+          "sha256": "61bb816ac3d747862b9b666db479885cc8eeb5067f2b392b5428eb15f3cd24d6"
+        }
+      ],
+      "row_count": 607,
+      "counts": {
+        "CASCADE-1:same-target-delete-readback": 16,
+        "CASCADE-1:unresolved-relationship": 16,
+        "ATOM-1-2:retained-summary": 7,
+        "REF-1:recomputed-from-projected-ids": 9,
+        "REF-1:incomplete-projection": 3,
+        "LINK-2:recomputed-from-projected-ids": 30,
+        "LINK-2:incomplete-projection": 3,
+        "DIV-1:retained-summary": 39,
+        "EDGE-U:ambiguous-pair": 43,
+        "EDGE-U:unqualified-pair": 5,
+        "EDGE-U:same-field-value-status-comparison": 13
+      }
+    },
+    {
+      "source": [
+        {
+          "file": "natchan-history/coverage-new/results/gitea-g009-cloud-20261021/run_s1/gateway-journal.jsonl",
+          "sha256": "4d6ca224a1da579869c8ea6734c73dd1501f61ac7d86cfb1d8578d34572d473f"
+        }
+      ],
+      "row_count": 609,
+      "counts": {
+        "CASCADE-1:same-target-delete-readback": 16,
+        "CASCADE-1:unresolved-relationship": 16,
+        "ATOM-1-2:retained-summary": 8,
+        "REF-1:recomputed-from-projected-ids": 9,
+        "REF-1:incomplete-projection": 3,
+        "LINK-2:recomputed-from-projected-ids": 30,
+        "LINK-2:incomplete-projection": 3,
+        "DIV-1:retained-summary": 39,
+        "EDGE-U:ambiguous-pair": 45,
+        "EDGE-U:unqualified-pair": 5,
+        "EDGE-U:same-field-value-status-comparison": 12
+      }
+    }
+  ],
+  "mechanical_observations": {
+    "CASCADE-1": {
+      "same_target_still_readable": 0
+    },
+    "IDEM": {
+      "pairs_with_5xx": 0
+    },
+    "EDGE-U": {
+      "response_class_differs": 28
+    },
+    "ADJ": {
+      "probes_with_5xx": 6
+    },
+    "REF-1": {
+      "id_projection_differs": 48
+    },
+    "LINK-2": {
+      "id_projection_differs": 126
+    }
+  }
+}
