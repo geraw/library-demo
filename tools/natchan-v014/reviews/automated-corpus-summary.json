@@ -1,0 +1,280 @@
+{
+  "schema_version": "natchan-unified-analysis/1",
+  "evidence_summary": {
+    "normalized_observations": 25016,
+    "http_records": 24349,
+    "http_5xx_records": 236,
+    "native_evidence_records": 9,
+    "measurements": 658,
+    "unclassified": 24050,
+    "unknown_evidence_records": 544
+  },
+  "rule_occurrences": {
+    "GEN-SERVER_ERROR": 239,
+    "GEN-SILENT-NORMALIZATION": 24,
+    "GEN-SILENT-TRUNCATION": 42,
+    "GEN-SILENT_CHANGE": 202,
+    "GEN-STATUS-PAIR-DIFFERENCE": 54,
+    "GEN-UNDOCUMENTED_RESTRICTION": 12,
+    "GEN-UPDATE-SERVER-ERROR": 141,
+    "GIT-C1": 47,
+    "GIT-C10": 8,
+    "GIT-C2": 52,
+    "GIT-C3": 10,
+    "GIT-C4": 10,
+    "GIT-C5": 2,
+    "GIT-C6": 3,
+    "GIT-C7": 13,
+    "GIT-C8": 12,
+    "GIT-C9": 27,
+    "GIT-O1": 11,
+    "GIT-O2": 15,
+    "GIT-O3": 12,
+    "GIT-O4": 12,
+    "GIT-PG-LENGTH-ERROR": 8,
+    "GIT-PG-NUL-ERROR": 27,
+    "GITEA-SERVER_ERROR": 161,
+    "GITEA-SILENT_CHANGE": 106,
+    "GITEA-UNDOCUMENTED_RESTRICTION": 12,
+    "MEASURED-PARTIAL-FIELDS": 73,
+    "MEASURED-REFERENCE-DIFFERENCE": 348,
+    "MEASURED-UNCHANGED-FIELDS": 18,
+    "NATIVE-COUNTER-MISMATCH": 3,
+    "NATIVE-EMPTY-LABEL-RESPONSE": 3,
+    "NATIVE-REPLAY-STATUS-DRIFT": 3,
+    "OBS-ADJ-LOCK-CLASS": 6,
+    "OBS-LOCK-CLASS-500": 9,
+    "OBS-STORED-REF-RENAME-ERROR": 12,
+    "VIK-F01": 14,
+    "VIK-F02": 8,
+    "VIK-F03": 6,
+    "VIK-F04": 6,
+    "VIK-F05": 28,
+    "VIK-F06": 60,
+    "VIK-O04": 8,
+    "VIK-O05": 2,
+    "VIK-O06": 12,
+    "VIK-O07": 3,
+    "VIK-O08": 1,
+    "VIKUNJA-SERVER_ERROR": 78,
+    "VIKUNJA-SILENT_CHANGE": 96
+  },
+  "report_occurrences": {
+    "GEN-SERVER_ERROR": 239,
+    "GEN-SILENT-NORMALIZATION": 24,
+    "GEN-SILENT-TRUNCATION": 42,
+    "GEN-SILENT_CHANGE": 202,
+    "GEN-STATUS-PAIR-DIFFERENCE": 54,
+    "GEN-UNDOCUMENTED_RESTRICTION": 12,
+    "GEN-UPDATE-SERVER-ERROR": 141,
+    "GIT-C1": 47,
+    "GIT-C10": 8,
+    "GIT-C2": 52,
+    "GIT-C3": 10,
+    "GIT-C4": 10,
+    "GIT-C5": 2,
+    "GIT-C6": 3,
+    "GIT-C7": 13,
+    "GIT-C8": 12,
+    "GIT-C9": 27,
+    "GIT-O1": 11,
+    "GIT-O2": 15,
+    "GIT-O3": 12,
+    "GIT-O4": 12,
+    "GITEA-SERVER_ERROR": 161,
+    "GITEA-SILENT_CHANGE": 106,
+    "GITEA-UNDOCUMENTED_RESTRICTION": 12,
+    "MEASURED-PARTIAL-FIELDS": 73,
+    "MEASURED-REFERENCE-DIFFERENCE": 348,
+    "MEASURED-UNCHANGED-FIELDS": 18,
+    "NATIVE-COUNTER-MISMATCH": 3,
+    "NATIVE-EMPTY-LABEL-RESPONSE": 3,
+    "NATIVE-REPLAY-STATUS-DRIFT": 3,
+    "OBS-ADJ-LOCK-CLASS": 6,
+    "OBS-LOCK-CLASS-500": 9,
+    "OBS-STORED-REF-RENAME-ERROR": 12,
+    "VIK-F01": 14,
+    "VIK-F02": 8,
+    "VIK-F03": 6,
+    "VIK-F04": 6,
+    "VIK-F05": 28,
+    "VIK-F06": 60,
+    "VIK-O04": 8,
+    "VIK-O05": 2,
+    "VIK-O06": 12,
+    "VIK-O07": 3,
+    "VIK-O08": 1,
+    "VIKUNJA-SERVER_ERROR": 78,
+    "VIKUNJA-SILENT_CHANGE": 96
+  },
+  "descriptive_family_coverage": {
+    "ADJ:probe-and-readback": 503,
+    "CASCADE-1:same-target-delete-readback": 249,
+    "CASCADE-1:unresolved-relationship": 249,
+    "ATOM-1-2:retained-summary": 91,
+    "EDGE-U:ambiguous-pair": 1034,
+    "EDGE-U:unqualified-pair": 43,
+    "EDGE-U:same-field-value-status-comparison": 267,
+    "LINK-2:recomputed-from-projected-ids": 425,
+    "REF-1:recomputed-from-projected-ids": 142,
+    "LINK-2:incomplete-projection": 39,
+    "REF-1:incomplete-projection": 34,
+    "DIV-1:retained-summary": 268,
+    "IDEM:identical-write-pair": 64
+  },
+  "excluded_measurement_counts": {
+    "updated": 492
+  },
+  "corpus_sha256": "f7c1de6ed8e2302be072c6e6748e8fbf7421f3846a421938b0a8e349f2c49d40",
+  "profile_sha256": "7d3179e46693d44bb8ea9b85d34646707dd2ca5d8c195c955ffbf96b390e543b",
+  "catalogs": [
+    {
+      "name": "generic.json",
+      "sha256": "850717f60686c23bacdc67b0cd4a37199c0453d30682588512d2b25a91dcf01a"
+    },
+    {
+      "name": "gitea.json",
+      "sha256": "8387cda04ebbfad72827f0b2d72b621f08586fd074ff8db48a9eca247199f470"
+    },
+    {
+      "name": "library.json",
+      "sha256": "788acf5053ba855a2cdaeddf4c8bc6a15ee9224e17caf0284a1186bf507f4ccf"
+    },
+    {
+      "name": "tse-known.json",
+      "sha256": "c260da18543f153dd845f73ed19d8697cae155f8864c7baabfe85418a051b4ef"
+    },
+    {
+      "name": "unified.json",
+      "sha256": "593677def50f97c0c29a79dc3d3374d5dfae5970b476712ff9ef00eb8d12c81b"
+    },
+    {
+      "name": "vikunja.json",
+      "sha256": "a7108c548aa441ca898f2c9f1112a07fb644501a4bea4ee01ce2bd2a1947de49"
+    }
+  ],
+  "new_sut_requests": 0,
+  "analyst_narrative_used": false,
+  "rule_coverage": [
+    {
+      "catalog_id": "VIK-O09",
+      "eligible_requests": 0,
+      "status": "not_evaluable_no_registration_request"
+    }
+  ],
+  "repository_resolution": {
+    "repository": "weissye/vikunja_study",
+    "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+    "exact_blob_matches": 64,
+    "unresolved_containers": 7,
+    "resolution_sha256": "5e1f2e7ad233f310df4482ee425aa53eafd6f5d405d6d4bd28891276f4d4223b"
+  },
+  "analysis_sha256": "e3fb8e6f0f42840ba159faaa14a62aae87c2c2844be5d0f25610703d0b224080",
+  "pdf_sha256": "176ea1ae1e1f60965489b733eb18d7798bb87db581a5197f9d76d7b3a4288bfc",
+  "pdf_pages": 32,
+  "input_file_count": 89,
+  "tests": {
+    "v014": 31
+  },
+  "raw_rule_occurrences": 2059,
+  "canonical_report_occurrences": 2024,
+  "supporting_label_occurrences": 35,
+  "share_delete_comparison": [
+    {
+      "version": "2.6.0",
+      "identifier": 0,
+      "status": 200,
+      "occurrences": 3
+    },
+    {
+      "version": "2.6.0",
+      "identifier": 999999999,
+      "status": 200,
+      "occurrences": 3
+    },
+    {
+      "version": "2.6.0",
+      "identifier": 6,
+      "status": 200,
+      "occurrences": 1
+    },
+    {
+      "version": "2.6.0",
+      "identifier": 5,
+      "status": 200,
+      "occurrences": 1
+    },
+    {
+      "version": "2.6.0",
+      "identifier": 4,
+      "status": 200,
+      "occurrences": 1
+    },
+    {
+      "version": "2.6.0",
+      "identifier": 3,
+      "status": 200,
+      "occurrences": 1
+    },
+    {
+      "version": "2.6.0",
+      "identifier": 2,
+      "status": 200,
+      "occurrences": 1
+    },
+    {
+      "version": "2.6.0",
+      "identifier": 1,
+      "status": 200,
+      "occurrences": 1
+    },
+    {
+      "version": "2.7.0",
+      "identifier": 0,
+      "status": 404,
+      "occurrences": 3
+    },
+    {
+      "version": "2.7.0",
+      "identifier": 999999999,
+      "status": 404,
+      "occurrences": 3
+    },
+    {
+      "version": "2.7.0",
+      "identifier": 6,
+      "status": 200,
+      "occurrences": 1
+    },
+    {
+      "version": "2.7.0",
+      "identifier": 5,
+      "status": 200,
+      "occurrences": 1
+    },
+    {
+      "version": "2.7.0",
+      "identifier": 4,
+      "status": 200,
+      "occurrences": 1
+    },
+    {
+      "version": "2.7.0",
+      "identifier": 3,
+      "status": 200,
+      "occurrences": 1
+    },
+    {
+      "version": "2.7.0",
+      "identifier": 2,
+      "status": 200,
+      "occurrences": 1
+    },
+    {
+      "version": "2.7.0",
+      "identifier": 1,
+      "status": 200,
+      "occurrences": 1
+    }
+  ]
+}
