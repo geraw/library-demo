@@ -1,0 +1,518 @@
+{
+  "schema_version": "natchan-catalog/1",
+  "entries": [
+    {
+      "id": "GIT-O3",
+      "kind": "pattern",
+      "title": "עדכון ללא שינוי מקדם גרסת תוכן; חזרה עם הגרסה הישנה נדחית",
+      "status": "active",
+      "product": "gitea",
+      "versions": [
+        "28.1.0"
+      ],
+      "all": [
+        {
+          "fact": "noop_content_version_advance",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "repeated_stale_version_rejected",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "raw preimage, identical request pair, version and response checks"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Natchan v013 raw gateways and rule definitions",
+          "verification": "Executable predicates, original byte sources; no analyst findings input"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "עדכון ללא שינוי מקדם גרסת תוכן; חזרה עם הגרסה הישנה נדחית",
+      "report_detail": true
+    },
+    {
+      "id": "GIT-O4",
+      "kind": "pattern",
+      "title": "מגבלת אורך נצפית ללא maxLength בסכמת הבקשה",
+      "status": "active",
+      "product": "gitea",
+      "versions": [
+        "28.1.0"
+      ],
+      "all": [
+        {
+          "fact": "restriction_observed",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "restriction_documented",
+          "op": "eq",
+          "value": false
+        }
+      ],
+      "evidence_requirements": [
+        "raw request/response and source schema"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Natchan v013 raw gateways and rule definitions",
+          "verification": "Executable predicates, original byte sources; no analyst findings input"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "מגבלת אורך נצפית ללא maxLength בסכמת הבקשה",
+      "report_detail": true
+    },
+    {
+      "id": "GIT-PG-NUL-ERROR",
+      "kind": "pattern",
+      "title": "שגיאת PostgreSQL בקלט המכיל NUL",
+      "status": "active",
+      "product": "gitea",
+      "versions": [],
+      "all": [
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "nul_request_verified",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "postgres_nul_error_correlated",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "actual NUL payload and uniquely correlated PostgreSQL error"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Natchan v013 raw gateways and rule definitions",
+          "verification": "Executable predicates, original byte sources; no analyst findings input"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "שגיאת PostgreSQL בקלט המכיל NUL",
+      "report_detail": true
+    },
+    {
+      "id": "GIT-PG-LENGTH-ERROR",
+      "kind": "pattern",
+      "title": "שגיאת PostgreSQL על אורך מחרוזת",
+      "status": "active",
+      "product": "gitea",
+      "versions": [],
+      "all": [
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "long_string_request_verified",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "postgres_length_error_correlated",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "actual payload length and uniquely correlated varchar error"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Natchan v013 raw gateways and rule definitions",
+          "verification": "Executable predicates, original byte sources; no analyst findings input"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "שגיאת PostgreSQL על אורך מחרוזת",
+      "report_detail": true
+    },
+    {
+      "id": "OBS-STORED-REF-RENAME-ERROR",
+      "kind": "pattern",
+      "title": "ערך ref שנשמר מקדים כשל בשינוי תג",
+      "status": "active",
+      "product": "gitea",
+      "versions": [],
+      "all": [
+        {
+          "fact": "stored_ref_rename_error_observed",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "accepted prior write, stored preimage and correlated error; not a version-qualified C8 assertion"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Natchan v013 raw gateways and rule definitions",
+          "verification": "Executable predicates, original byte sources; no analyst findings input"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "ערך ref שנשמר מקדים כשל בשינוי תג",
+      "report_detail": true
+    },
+    {
+      "id": "OBS-ADJ-LOCK-CLASS",
+      "kind": "pattern",
+      "title": "תגובת ADJ נכללת בקבוצת שגיאות נעילה תואמת",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "adjacency_probe_observed",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "lock_class_evidence",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "unique match or explicitly marked repeated-key class evidence; no causality claim"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Natchan v013 raw gateways and rule definitions",
+          "verification": "Executable predicates, original byte sources; no analyst findings input"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "תגובת ADJ נכללת בקבוצת שגיאות נעילה תואמת",
+      "report_detail": true
+    },
+    {
+      "id": "OBS-LOCK-CLASS-500",
+      "kind": "pattern",
+      "title": "לוג שרת שמור מתעד תגובת 500 עם נעילה",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "lock_class_evidence",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "retained server context or paired journal/log evidence"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Natchan v013 raw gateways and rule definitions",
+          "verification": "Executable predicates, original byte sources; no analyst findings input"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "לוג שרת שמור מתעד תגובת 500 עם נעילה",
+      "report_detail": true
+    },
+    {
+      "id": "NATIVE-REPLAY-STATUS-DRIFT",
+      "kind": "pattern",
+      "title": "בשחזור המזער התקבל 401 במקום 500 המקורי",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "native_replay_status_drift",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "original tool console"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Natchan v013 raw gateways and rule definitions",
+          "verification": "Executable predicates, original byte sources; no analyst findings input"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "בשחזור המזער התקבל 401 במקום 500 המקורי",
+      "report_detail": true
+    },
+    {
+      "id": "NATIVE-COUNTER-MISMATCH",
+      "kind": "pattern",
+      "title": "שני מוני תקלות בדוח הכלי אינם זהים",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "native_counter_mismatch",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "native totalNumber versus actual foundFaults entry count"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Natchan v013 raw gateways and rule definitions",
+          "verification": "Executable predicates, original byte sources; no analyst findings input"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "שני מוני תקלות בדוח הכלי אינם זהים",
+      "report_detail": true
+    },
+    {
+      "id": "NATIVE-EMPTY-LABEL-RESPONSE",
+      "kind": "pattern",
+      "title": "כלי מדווח על label שנוצר עם כותרת ריקה מול minLength 1",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "native_response_empty_label",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "native_minlength_one",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "native testcase response and embedded schema excerpt; no follow-up GET"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Natchan v013 raw gateways and rule definitions",
+          "verification": "Executable predicates, original byte sources; no analyst findings input"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "כלי מדווח על label שנוצר עם כותרת ריקה מול minLength 1",
+      "report_detail": true
+    },
+    {
+      "id": "MEASURED-PARTIAL-FIELDS",
+      "kind": "pattern",
+      "title": "מדידת שדות שמורה מכילה applied וגם kept",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "measured_field_outcome",
+          "op": "eq",
+          "value": "partial"
+        }
+      ],
+      "evidence_requirements": [
+        "saved field measurements, not full independent snapshots"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Natchan v013 raw gateways and rule definitions",
+          "verification": "Executable predicates, original byte sources; no analyst findings input"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "מדידת שדות שמורה מכילה applied וגם kept",
+      "report_detail": true
+    },
+    {
+      "id": "MEASURED-UNCHANGED-FIELDS",
+      "kind": "pattern",
+      "title": "מדידת השדות השמורה אחרי הכשל מציגה kept בלבד",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "measured_field_outcome",
+          "op": "eq",
+          "value": "unchanged"
+        }
+      ],
+      "evidence_requirements": [
+        "saved field measurements, not full independent snapshots"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Natchan v013 raw gateways and rule definitions",
+          "verification": "Executable predicates, original byte sources; no analyst findings input"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "מדידת השדות השמורה אחרי הכשל מציגה kept בלבד",
+      "report_detail": true
+    },
+    {
+      "id": "MEASURED-REFERENCE-DIFFERENCE",
+      "kind": "pattern",
+      "title": "מזהים שנמדדו שונים מהמזהים שנשלחו",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "measured_reference_difference",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "saved ID projections; no inferred relationship policy"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Natchan v013 raw gateways and rule definitions",
+          "verification": "Executable predicates, original byte sources; no analyst findings input"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "מזהים שנמדדו שונים מהמזהים שנשלחו",
+      "report_detail": true
+    },
+    {
+      "id": "GIT-C9",
+      "kind": "known_bug",
+      "title": "שגיאת PostgreSQL בקלט המכיל NUL",
+      "status": "active",
+      "product": "gitea",
+      "versions": [
+        "28.1.0"
+      ],
+      "all": [
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "nul_request_verified",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "postgres_nul_error_correlated",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "actual NUL payload and uniquely correlated PostgreSQL error"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Natchan v013 raw gateways and rule definitions",
+          "verification": "Executable predicates, original byte sources; no analyst findings input"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "GIT-C9 | שגיאת PostgreSQL בקלט המכיל NUL",
+      "report_detail": true
+    },
+    {
+      "id": "GIT-C10",
+      "kind": "known_bug",
+      "title": "שגיאת PostgreSQL על אורך מחרוזת",
+      "status": "active",
+      "product": "gitea",
+      "versions": [
+        "28.1.0"
+      ],
+      "all": [
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "long_string_request_verified",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "postgres_length_error_correlated",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "actual payload length and uniquely correlated varchar error"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Natchan v013 raw gateways and rule definitions",
+          "verification": "Executable predicates, original byte sources; no analyst findings input"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "GIT-C10 | שגיאת PostgreSQL על אורך מחרוזת",
+      "report_detail": true
+    }
+  ]
+}

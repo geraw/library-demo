@@ -1,0 +1,15 @@
+{
+  "schema_version": "natchan-product-policy/1",
+  "readback_exclusions": {
+    "vikunja": [
+      "created",
+      "updated",
+      "created_by"
+    ],
+    "gitea": [
+      "created_at",
+      "updated_at"
+    ]
+  },
+  "interpretation": "Configured server metadata fields are retained as excluded measurements; not scored as client-value roundtrip violations. background_blur_hash is not excluded."
+}
