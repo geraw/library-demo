@@ -1,0 +1,130 @@
+{
+  "schema_version": "natchan-classification/1",
+  "distinct_journals": 18,
+  "archive_count": 17,
+  "family_evidence_counts": {
+    "RESPONSE": {
+      "no_measurements": true
+    },
+    "EDGE-1": {
+      "no_measurements": true
+    },
+    "RT-1": {
+      "no_measurements": true
+    },
+    "ATOM-1-2": {
+      "retained-summary": 60
+    },
+    "EDGE-U": {
+      "ambiguous-pair": 531,
+      "unqualified-pair": 35,
+      "same-field-value-status-comparison": 126
+    },
+    "KNOWN": {
+      "retained-attempt": 17
+    },
+    "CASCADE-1": {
+      "same-target-delete-readback": 171,
+      "unresolved-relationship": 171
+    },
+    "ADJ": {
+      "probe-and-readback": 518
+    },
+    "IDEM": {
+      "identical-write-pair": 64
+    },
+    "VIEW": {
+      "no_measurements": true
+    },
+    "LINK": {
+      "no_measurements": true
+    },
+    "REF-1": {
+      "recomputed-from-projected-ids": 72,
+      "incomplete-projection": 19
+    },
+    "LINK-2": {
+      "recomputed-from-projected-ids": 212,
+      "incomplete-projection": 19
+    },
+    "DIV-1": {
+      "retained-summary": 196
+    }
+  },
+  "pattern_occurrences": {
+    "GEN-REFERENCE-PROJECTION-DIFFERENCE": 174,
+    "GEN-STATUS-PAIR-DIFFERENCE": 28,
+    "GEN-SERVER_ERROR": 23
+  },
+  "new_sut_requests": 0,
+  "inputs": [
+    {
+      "path": "natchan-history/family-coverage/results/gitea-g005-home-20261020/review_g005_s8.zip",
+      "sha256": "a8f2ebc62a073a6e3420e17f49ea01c8e65629f9c2d796d6e376387b709cfe9e"
+    },
+    {
+      "path": "natchan-history/family-coverage/results/gitea-g005-home-20261020/review_g005_s7.zip",
+      "sha256": "b83d44ac63fea4f580e2f7d58c14d971e1f2059269ec8265ee0ab487696d93bb"
+    },
+    {
+      "path": "natchan-history/family-coverage/results/gitea-g005-home-20261020/review_g005_s6.zip",
+      "sha256": "27c6ed00bc72d4d2708e7f97ddb6f7dafb63a5ba8cd1529265e78a4edfeb1097"
+    },
+    {
+      "path": "natchan-history/family-coverage/results/gitea-g005-home-20261020/review_g005_s5.zip",
+      "sha256": "e9b22ac663d6142c4d59167992207a1e26f870a189b2045b015648f73ecc13d4"
+    },
+    {
+      "path": "natchan-history/family-coverage/results/check-v164-work-20261018/evidence/v164-triggers-20261018-153232-redacted.zip",
+      "sha256": "a76fa16735830a838ac8720fcf4db8c8e826b7e6626e942814ba615a890de502"
+    },
+    {
+      "path": "natchan-history/coverage/results/gitea-g007-work-20261021/review_g007_s2.zip",
+      "sha256": "cfb1bb1db9b0336a07885a0297cbb8d29002288f6d4e128824ef4660086831f6"
+    },
+    {
+      "path": "natchan-history/coverage/results/gitea-g007-work-20261021/review_g007_s3.zip",
+      "sha256": "6e68b0f4737cf14832d53991136c5a2588dd9644ffa1b8e37ff4ef0364badef6"
+    },
+    {
+      "path": "natchan-history/coverage/results/gitea-g007-work-20261021/review_g007_s4.zip",
+      "sha256": "c9ddf2695d08b9c2c93d2e05c101c78265058e5b92222b055a96beb9c57fc40f"
+    },
+    {
+      "path": "natchan-history/coverage/results/gitea-g007-work-20261021/review_g007_s1.zip",
+      "sha256": "742322d699eceb3dae8ccfce3c263616a825cf2fa142ed8e146b4d4ff4644f76"
+    },
+    {
+      "path": "natchan-history/coverage/results/gitea-g009-work-20261021/review_g009_s2.zip",
+      "sha256": "3c8ddc113fbf40a1f76c6a114cad754978669c1a0d03fafbf8847ff7fa7e6090"
+    },
+    {
+      "path": "natchan-history/coverage/results/gitea-g009-work-20261021/review_g009_s1.zip",
+      "sha256": "1a36911e21705ac0d4db634cf6e9e330e2c17de834f4c7ab55224b92bca91974"
+    },
+    {
+      "path": "natchan-history/coverage/results/gitea-g009-work-20261021/review_g009_s4.zip",
+      "sha256": "29a4524d54febb76a1dd7d96e43671731bbe7ed7614dd97d5d26b7b8d9179910"
+    },
+    {
+      "path": "natchan-history/coverage/results/gitea-g009-work-20261021/review_g009_s3.zip",
+      "sha256": "a641d932fea7b8bf03fae942a1a87f0a817f957a7ec2d50aa216a046d0b71bde"
+    },
+    {
+      "path": "natchan-history/coverage-new/results/gitea-g009-cloud-20261021/run_s4/gateway-journal.jsonl",
+      "sha256": "19110034a1139bef0b18f149b074ca8ca37d167218e25b73e14d29d026f273e9"
+    },
+    {
+      "path": "natchan-history/coverage-new/results/gitea-g009-cloud-20261021/run_s3/gateway-journal.jsonl",
+      "sha256": "751e902b9f2c02dfacfd96d8be4631d30bea36ec61bf9a715e6ab7be17647992"
+    },
+    {
+      "path": "natchan-history/coverage-new/results/gitea-g009-cloud-20261021/run_s2/gateway-journal.jsonl",
+      "sha256": "61bb816ac3d747862b9b666db479885cc8eeb5067f2b392b5428eb15f3cd24d6"
+    },
+    {
+      "path": "natchan-history/coverage-new/results/gitea-g009-cloud-20261021/run_s1/gateway-journal.jsonl",
+      "sha256": "4d6ca224a1da579869c8ea6734c73dd1501f61ac7d86cfb1d8578d34572d473f"
+    }
+  ]
+}
