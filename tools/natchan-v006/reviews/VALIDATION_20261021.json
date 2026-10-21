@@ -1,0 +1,51 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "GIT-C4",
+      "actual": 10,
+      "expected": 10,
+      "passed": true
+    },
+    {
+      "name": "GIT-C5",
+      "actual": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "name": "GIT-C6",
+      "actual": 3,
+      "expected": 3,
+      "passed": true
+    },
+    {
+      "name": "GIT-C7",
+      "actual": 5,
+      "expected": 5,
+      "passed": true
+    },
+    {
+      "name": "all_500_correlated",
+      "actual": 36,
+      "expected": 36,
+      "passed": true
+    },
+    {
+      "name": "cloud_attribution",
+      "passed": true
+    }
+  ],
+  "unit_tests_v006": 6,
+  "original_input_files": 21,
+  "no_new_sut_calls": true,
+  "powershell_execution": "source-reviewed; not executed",
+  "unit_tests_total": 87,
+  "unit_suites": {
+    "v002": 26,
+    "v003": 25,
+    "v004": 13,
+    "v005": 17,
+    "v006": 6
+  }
+}

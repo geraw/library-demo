@@ -1,0 +1,229 @@
+{
+  "schema_version": "natchan-cloud-manifest/1",
+  "repository": "weissye/vikunja_study",
+  "commit": "e8314ed30534b0e24581f8c84700eada02b51253",
+  "ir_archive": "results/gitea-g009-work-20261021/review_g009_s1.zip",
+  "ir_archive_sha256": "1a36911e21705ac0d4db634cf6e9e330e2c17de834f4c7ab55224b92bca91974",
+  "IR_scope": "Frozen Gitea 28.1.0 g009 IR from retained work archive; used for schema/route projection only",
+  "runs": [
+    {
+      "id": "gitea-g009-cloud-s1",
+      "seed": 1,
+      "version": "28.1.0",
+      "folder": "results/gitea-g009-cloud-20261021/run_s1",
+      "tool": "route-harness",
+      "complete_sequential": true,
+      "result_summary": "results/gitea-g009-cloud-20261021/result_s1.json",
+      "result_summary_sha256": "56fdedc30a256d6f0c4e50f8d8bedf0ef38deebbe2f7652eb90ab19345849358",
+      "files": {
+        "gateway-journal.jsonl": {
+          "sha256": "4d6ca224a1da579869c8ea6734c73dd1501f61ac7d86cfb1d8578d34572d473f",
+          "git_blob_sha": "65ed79ae75e17f5bac152d3e6bde08c693ba0a8b"
+        },
+        "sut.log": {
+          "sha256": "3ef8ec90f05207766b5a572beea1bcb78ce71f00eabd23338656a4f4800e3fac",
+          "git_blob_sha": "e49ecf7c3ca5827678bfa07663ef300b78f38974"
+        },
+        "native.log": {
+          "sha256": "0824c5ad077565f0b75c9aa07d3ccd60dbff60b3ad2e597b9ee26e3a9bde70da",
+          "git_blob_sha": "0feb1704536fcf38efd5c2608a2e5e8aab77e69e"
+        },
+        "research-launch.json": {
+          "sha256": "1dc60442c19e0e3c497c5d0279496adcda1912864397a248cf09f119ccae5c1e",
+          "git_blob_sha": "55acf8edeae08d6f89354edcfc51263607a5412e"
+        }
+      }
+    },
+    {
+      "id": "gitea-g009-cloud-s2",
+      "seed": 2,
+      "version": "28.1.0",
+      "folder": "results/gitea-g009-cloud-20261021/run_s2",
+      "tool": "route-harness",
+      "complete_sequential": true,
+      "result_summary": "results/gitea-g009-cloud-20261021/result_s2.json",
+      "result_summary_sha256": "308d25d7b9149730adfa56fccac5a753d4472e553b9be92b176ab98547244bfb",
+      "files": {
+        "gateway-journal.jsonl": {
+          "sha256": "61bb816ac3d747862b9b666db479885cc8eeb5067f2b392b5428eb15f3cd24d6",
+          "git_blob_sha": "aac4209f7aa6ac215c5c4db1d5bbef4967f57592"
+        },
+        "sut.log": {
+          "sha256": "20f3289b6af1803a43e42f05491e573eb55f0f6099e27314b84a4cc4d02d8746",
+          "git_blob_sha": "cb08fe7c086c5a4bc4b287406cdf5f8fe822e2b6"
+        },
+        "native.log": {
+          "sha256": "e524e214fdc90c87fbaeda124081d460e477248e081453942f612fcd7fc4592e",
+          "git_blob_sha": "7dc7008e9a21f409572349c07bd41b4f596b5c93"
+        },
+        "research-launch.json": {
+          "sha256": "5176766d285be396d8166d259bdd8173043f14ad31400597f3f8cd7eb72d86d9",
+          "git_blob_sha": "3e4fb724b6540ed26dfa428211a8524e7a423868"
+        }
+      }
+    },
+    {
+      "id": "gitea-g009-cloud-s3",
+      "seed": 3,
+      "version": "28.1.0",
+      "folder": "results/gitea-g009-cloud-20261021/run_s3",
+      "tool": "route-harness",
+      "complete_sequential": true,
+      "result_summary": "results/gitea-g009-cloud-20261021/result_s3.json",
+      "result_summary_sha256": "ba0d8187c21e51709762bdd9aa41c371f57e10a26f288e527ac5560ba36c1c70",
+      "files": {
+        "gateway-journal.jsonl": {
+          "sha256": "751e902b9f2c02dfacfd96d8be4631d30bea36ec61bf9a715e6ab7be17647992",
+          "git_blob_sha": "c62b9a7e1da7059ec1d60c446962cc03d08e8869"
+        },
+        "sut.log": {
+          "sha256": "29fa9f6a2dbf6107789ba6ec152aa9eec5e8a952dcc284a8d47caa6ebb303df4",
+          "git_blob_sha": "5f1b19c70d4f12f20b4b537ee250a5baee38d2cb"
+        },
+        "native.log": {
+          "sha256": "4eb54d620899ddc8e541bbc58bfbf0c3263fe6730ee297fb46e9d16027fbb2ab",
+          "git_blob_sha": "d9b9dd1a2a24c1ef69c388ae3eb0d2221da3b216"
+        },
+        "research-launch.json": {
+          "sha256": "6cbe0ade37da61775efb6508639f87be1c7e7da18d30ad35941602a61d105aed",
+          "git_blob_sha": "e0feb84e78926cc0e2aaa3ce1029d207990b601f"
+        }
+      }
+    },
+    {
+      "id": "gitea-g009-cloud-s4",
+      "seed": 4,
+      "version": "28.1.0",
+      "folder": "results/gitea-g009-cloud-20261021/run_s4",
+      "tool": "route-harness",
+      "complete_sequential": true,
+      "result_summary": "results/gitea-g009-cloud-20261021/result_s4.json",
+      "result_summary_sha256": "94f3ab51991676c45671bcf83a989256644d98dbd65a11e7febb38e0e48d42a9",
+      "files": {
+        "gateway-journal.jsonl": {
+          "sha256": "19110034a1139bef0b18f149b074ca8ca37d167218e25b73e14d29d026f273e9",
+          "git_blob_sha": "2727107181443eb7d173367334c3631be06565e1"
+        },
+        "sut.log": {
+          "sha256": "c59f505e785e3a54ec82682916deb4ca6d74ec32a28e2cb53bc0d206a54327b5",
+          "git_blob_sha": "865b0df2b8ffa1f972316dcf42d069b2fac0c1be"
+        },
+        "native.log": {
+          "sha256": "615553a61f7763902daef9752f38ea224bea8c7aa9429f5e7261a865631cb7ed",
+          "git_blob_sha": "219c04f69099af22a7ecafa7e55fc95fa6174a36"
+        },
+        "research-launch.json": {
+          "sha256": "42fb49d37c46010ea8daf2843f45a86dca5c1b8cc90cef1864bf5c3ff72c587c",
+          "git_blob_sha": "d9cac1fa9bd97d99b5a1d40db18d51859ee6f817"
+        }
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "path": "results/gitea-g009-work-20261021/review_g009_s1.zip",
+      "sha256": "1a36911e21705ac0d4db634cf6e9e330e2c17de834f4c7ab55224b92bca91974",
+      "git_blob_sha": "cfb464c7d4bb8ae6080dace05b9eeccd948e3639"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/run_s1/gateway-journal.jsonl",
+      "sha256": "4d6ca224a1da579869c8ea6734c73dd1501f61ac7d86cfb1d8578d34572d473f",
+      "git_blob_sha": "65ed79ae75e17f5bac152d3e6bde08c693ba0a8b"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/run_s1/sut.log",
+      "sha256": "3ef8ec90f05207766b5a572beea1bcb78ce71f00eabd23338656a4f4800e3fac",
+      "git_blob_sha": "e49ecf7c3ca5827678bfa07663ef300b78f38974"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/run_s1/native.log",
+      "sha256": "0824c5ad077565f0b75c9aa07d3ccd60dbff60b3ad2e597b9ee26e3a9bde70da",
+      "git_blob_sha": "0feb1704536fcf38efd5c2608a2e5e8aab77e69e"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/run_s1/research-launch.json",
+      "sha256": "1dc60442c19e0e3c497c5d0279496adcda1912864397a248cf09f119ccae5c1e",
+      "git_blob_sha": "55acf8edeae08d6f89354edcfc51263607a5412e"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/run_s2/gateway-journal.jsonl",
+      "sha256": "61bb816ac3d747862b9b666db479885cc8eeb5067f2b392b5428eb15f3cd24d6",
+      "git_blob_sha": "aac4209f7aa6ac215c5c4db1d5bbef4967f57592"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/run_s2/sut.log",
+      "sha256": "20f3289b6af1803a43e42f05491e573eb55f0f6099e27314b84a4cc4d02d8746",
+      "git_blob_sha": "cb08fe7c086c5a4bc4b287406cdf5f8fe822e2b6"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/run_s2/native.log",
+      "sha256": "e524e214fdc90c87fbaeda124081d460e477248e081453942f612fcd7fc4592e",
+      "git_blob_sha": "7dc7008e9a21f409572349c07bd41b4f596b5c93"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/run_s2/research-launch.json",
+      "sha256": "5176766d285be396d8166d259bdd8173043f14ad31400597f3f8cd7eb72d86d9",
+      "git_blob_sha": "3e4fb724b6540ed26dfa428211a8524e7a423868"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/run_s3/gateway-journal.jsonl",
+      "sha256": "751e902b9f2c02dfacfd96d8be4631d30bea36ec61bf9a715e6ab7be17647992",
+      "git_blob_sha": "c62b9a7e1da7059ec1d60c446962cc03d08e8869"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/run_s3/sut.log",
+      "sha256": "29fa9f6a2dbf6107789ba6ec152aa9eec5e8a952dcc284a8d47caa6ebb303df4",
+      "git_blob_sha": "5f1b19c70d4f12f20b4b537ee250a5baee38d2cb"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/run_s3/native.log",
+      "sha256": "4eb54d620899ddc8e541bbc58bfbf0c3263fe6730ee297fb46e9d16027fbb2ab",
+      "git_blob_sha": "d9b9dd1a2a24c1ef69c388ae3eb0d2221da3b216"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/run_s3/research-launch.json",
+      "sha256": "6cbe0ade37da61775efb6508639f87be1c7e7da18d30ad35941602a61d105aed",
+      "git_blob_sha": "e0feb84e78926cc0e2aaa3ce1029d207990b601f"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/run_s4/gateway-journal.jsonl",
+      "sha256": "19110034a1139bef0b18f149b074ca8ca37d167218e25b73e14d29d026f273e9",
+      "git_blob_sha": "2727107181443eb7d173367334c3631be06565e1"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/run_s4/sut.log",
+      "sha256": "c59f505e785e3a54ec82682916deb4ca6d74ec32a28e2cb53bc0d206a54327b5",
+      "git_blob_sha": "865b0df2b8ffa1f972316dcf42d069b2fac0c1be"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/run_s4/native.log",
+      "sha256": "615553a61f7763902daef9752f38ea224bea8c7aa9429f5e7261a865631cb7ed",
+      "git_blob_sha": "219c04f69099af22a7ecafa7e55fc95fa6174a36"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/run_s4/research-launch.json",
+      "sha256": "42fb49d37c46010ea8daf2843f45a86dca5c1b8cc90cef1864bf5c3ff72c587c",
+      "git_blob_sha": "d9cac1fa9bd97d99b5a1d40db18d51859ee6f817"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/result_s1.json",
+      "sha256": "56fdedc30a256d6f0c4e50f8d8bedf0ef38deebbe2f7652eb90ab19345849358",
+      "git_blob_sha": "ca2e1440a99d158d7ee03dc77f2a1d4c7f43828f"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/result_s2.json",
+      "sha256": "308d25d7b9149730adfa56fccac5a753d4472e553b9be92b176ab98547244bfb",
+      "git_blob_sha": "5bf41cd08944d090f3f2b84dfad85c0dfc1b1489"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/result_s3.json",
+      "sha256": "ba0d8187c21e51709762bdd9aa41c371f57e10a26f288e527ac5560ba36c1c70",
+      "git_blob_sha": "232449c728a076c40ed2851caf28f35a18945b3b"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/result_s4.json",
+      "sha256": "94f3ab51991676c45671bcf83a989256644d98dbd65a11e7febb38e0e48d42a9",
+      "git_blob_sha": "12f41c36edb667515bbbf7e64c3fb0664a62eaa9"
+    }
+  ]
+}
