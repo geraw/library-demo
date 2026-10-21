@@ -87,6 +87,17 @@ The Markdown companion lists groups and source references. The JSON retains comp
 
 ## Validation
 
-See VALIDATION_20261021.json. Twenty-one v003 unit tests and the existing twenty-six v002 tests pass. Synthetic Vikunja paired evidence exercises the compound classification, not a live product finding. Real work Library evidence yields 22 collateral-deletion observations associated with LIB-ISSTA-BUG-5 and later 404 consequences in exactly cases 80, 257, 260, 266 and 433. No other known Library bug is inferred.
+See VALIDATION_20261021.json. Twenty-three v003 unit tests and the existing twenty-six v002 tests pass. Synthetic Vikunja paired evidence exercises the compound classification, not a live product finding. Real work Library evidence yields 22 collateral-deletion observations associated with LIB-ISSTA-BUG-5 and later 404 consequences in exactly cases 80, 257, 260, 266 and 433. No other known Library bug is inferred.
 
 A regression test covers an important historical artifact: a legacy emitted expected-state array can share mutable Ledger storage and contain later appends. The classifier therefore uses time-local recorded readbacks, not that mutable expected list, to establish collateral loss. Historical evaluator rules and original scores were not changed.
+
+
+## First historical TSE reanalysis: Mealie
+
+`review_mealie.py` reads original historical identity-program receipts from Mealie_Supervisor_Artifact_v003.zip, reuses the preserved compare_owner_readbacks implementation with source hashes, and submits computed observations to the classifier. It never serializes login/credential receipt bodies.
+
+```text
+python tools/natchan-v003/review_mealie.py --archive Mealie_Supervisor_Artifact_v003.zip --output NEW_MEALIE_REVIEW.json
+```
+
+Selected original data: eight runs, 392 recorded responses, sixteen 5xx observations, four qualified owner-readback state changes after 500. It uses the nearest owner preimage, yielding 2 to 3 items, instead of attributing earlier successful cross-add changes to the failed write. The fixed household-controls protocol declares other_list_add_a targets list_b and vice versa; this explicit routing allows excluding a proven different-list intervening write. Unknown routing remains unresolved, never silently clean. Generic state-change-after-error is reported alongside server error; neither implies complete transaction commitment, authorization-policy violation or root cause. Named Mealie bug identity is not automatically asserted. See reviews/tse-first-pass/MEALIE_20261021.json.

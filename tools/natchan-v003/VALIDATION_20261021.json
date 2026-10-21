@@ -1,7 +1,7 @@
 {
   "date": "2026-10-21",
   "unit_tests": {
-    "v003_passed": 21,
+    "v003_passed": 23,
     "v002_passed": 26,
     "commands": [
       "python -m unittest discover -s tools/natchan-v003/tests -q",
@@ -64,5 +64,13 @@
     "Named Vikunja known bugs remain draft pending exact versions and evidence",
     "No live replay or new SUT execution",
     "PowerShell wrapper source-reviewed only"
-  ]
+  ],
+  "mealie_reanalysis": {
+    "runs": 8,
+    "recorded_responses": 392,
+    "server_errors": 16,
+    "qualified_state_changes_after_error": 4,
+    "report": "reviews/tse-first-pass/MEALIE_20261021.json",
+    "new_sut_executions": 0
+  }
 }

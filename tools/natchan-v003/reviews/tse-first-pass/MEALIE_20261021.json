@@ -1,0 +1,1530 @@
+{
+  "schema_version": "natchan-classification/1",
+  "catalog_coverage": {
+    "active_known_bugs": [
+      "LIB-ISSTA-BUG-1",
+      "LIB-ISSTA-BUG-2",
+      "LIB-ISSTA-BUG-3",
+      "LIB-ISSTA-BUG-4",
+      "LIB-ISSTA-BUG-5"
+    ],
+    "draft_entries": [
+      "VIK-F01",
+      "VIK-F04",
+      "VIK-C1",
+      "VIK-C2"
+    ]
+  },
+  "catalogs": [
+    {
+      "name": "generic.json",
+      "sha256": "6d49bb5d5464ee43ef9c6d96092d54d4c2fa4855ac3f46b84f520ac68c70193b"
+    },
+    {
+      "name": "gitea.json",
+      "sha256": "8387cda04ebbfad72827f0b2d72b621f08586fd074ff8db48a9eca247199f470"
+    },
+    {
+      "name": "library.json",
+      "sha256": "788acf5053ba855a2cdaeddf4c8bc6a15ee9224e17caf0284a1186bf507f4ccf"
+    },
+    {
+      "name": "vikunja.json",
+      "sha256": "76f59058785d7a708dcb8188775467b23992eadaf2a6c0cf15290d2495f6f2df"
+    }
+  ],
+  "observations": [
+    {
+      "id": "household-controls-1:other_list_add_a",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "household-controls-1",
+      "tool": "provengo",
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "status": 500,
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/household-controls/result-1.json",
+        "member_sha256": "7a056f26ebf2fc2ce1d516722ccffb8cb00c88d118a7c6faa322dc3cefa14f4e",
+        "observation": "other_list_add_a"
+      },
+      "facts": {
+        "state_changed_after_error": true
+      },
+      "fact_basis": "recomputed",
+      "comparison": {
+        "run_id": "household-controls-1",
+        "action": "other_list_add_a",
+        "preimage": "cross_list_b",
+        "readback": "owner_list_after_a",
+        "qualified": true,
+        "intervening_unresolved_writes": [],
+        "complete": true,
+        "reasons": [],
+        "response_code": 500,
+        "different_actor": true,
+        "state_changed": true,
+        "before_item_count": 2,
+        "after_item_count": 3
+      }
+    },
+    {
+      "id": "household-controls-1:other_list_add_b",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "household-controls-1",
+      "tool": "provengo",
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "status": 500,
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/household-controls/result-1.json",
+        "member_sha256": "7a056f26ebf2fc2ce1d516722ccffb8cb00c88d118a7c6faa322dc3cefa14f4e",
+        "observation": "other_list_add_b"
+      },
+      "facts": {
+        "state_changed_after_error": true
+      },
+      "fact_basis": "recomputed",
+      "comparison": {
+        "run_id": "household-controls-1",
+        "action": "other_list_add_b",
+        "preimage": "cross_list_a",
+        "readback": "owner_list_after_b",
+        "qualified": true,
+        "intervening_unresolved_writes": [],
+        "complete": true,
+        "reasons": [],
+        "response_code": 500,
+        "different_actor": true,
+        "state_changed": true,
+        "before_item_count": 2,
+        "after_item_count": 3
+      }
+    },
+    {
+      "id": "household-controls-2:other_list_add_a",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "household-controls-2",
+      "tool": "provengo",
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "status": 500,
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/household-controls/result-2.json",
+        "member_sha256": "a90a844e425c420e8845cbb4c08860080852c3c797d7cf28d41ccc698688214f",
+        "observation": "other_list_add_a"
+      },
+      "facts": {
+        "state_changed_after_error": true
+      },
+      "fact_basis": "recomputed",
+      "comparison": {
+        "run_id": "household-controls-2",
+        "action": "other_list_add_a",
+        "preimage": "cross_list_b",
+        "readback": "owner_list_after_a",
+        "qualified": true,
+        "intervening_unresolved_writes": [],
+        "complete": true,
+        "reasons": [],
+        "response_code": 500,
+        "different_actor": true,
+        "state_changed": true,
+        "before_item_count": 2,
+        "after_item_count": 3
+      }
+    },
+    {
+      "id": "household-controls-2:other_list_add_b",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "household-controls-2",
+      "tool": "provengo",
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "status": 500,
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/household-controls/result-2.json",
+        "member_sha256": "a90a844e425c420e8845cbb4c08860080852c3c797d7cf28d41ccc698688214f",
+        "observation": "other_list_add_b"
+      },
+      "facts": {
+        "state_changed_after_error": true
+      },
+      "fact_basis": "recomputed",
+      "comparison": {
+        "run_id": "household-controls-2",
+        "action": "other_list_add_b",
+        "preimage": "cross_list_a",
+        "readback": "owner_list_after_b",
+        "qualified": true,
+        "intervening_unresolved_writes": [],
+        "complete": true,
+        "reasons": [],
+        "response_code": 500,
+        "different_actor": true,
+        "state_changed": true,
+        "before_item_count": 2,
+        "after_item_count": 3
+      }
+    },
+    {
+      "id": "reference-controls-1:cross_add_b",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "reference-controls-1",
+      "tool": "provengo",
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "status": 500,
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-1.json",
+        "member_sha256": "b779b410ae74ecb21a6bc3bd16a2de0881952565ee7c6f845008014731b0ea8a",
+        "observation": "cross_add_b"
+      },
+      "facts": {},
+      "fact_basis": "recomputed"
+    },
+    {
+      "id": "reference-controls-1:missing_add_b",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "reference-controls-1",
+      "tool": "provengo",
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "status": 500,
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-1.json",
+        "member_sha256": "b779b410ae74ecb21a6bc3bd16a2de0881952565ee7c6f845008014731b0ea8a",
+        "observation": "missing_add_b"
+      },
+      "facts": {},
+      "fact_basis": "recomputed"
+    },
+    {
+      "id": "reference-controls-1:cross_add_a",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "reference-controls-1",
+      "tool": "provengo",
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "status": 500,
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-1.json",
+        "member_sha256": "b779b410ae74ecb21a6bc3bd16a2de0881952565ee7c6f845008014731b0ea8a",
+        "observation": "cross_add_a"
+      },
+      "facts": {},
+      "fact_basis": "recomputed"
+    },
+    {
+      "id": "reference-controls-1:missing_add_a",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "reference-controls-1",
+      "tool": "provengo",
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "status": 500,
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-1.json",
+        "member_sha256": "b779b410ae74ecb21a6bc3bd16a2de0881952565ee7c6f845008014731b0ea8a",
+        "observation": "missing_add_a"
+      },
+      "facts": {},
+      "fact_basis": "recomputed"
+    },
+    {
+      "id": "reference-controls-2:cross_add_a",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "reference-controls-2",
+      "tool": "provengo",
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "status": 500,
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-2.json",
+        "member_sha256": "268289b48dde644ce4d733be07c6190ca0e6b343de20b8915e9c6d8d14c45930",
+        "observation": "cross_add_a"
+      },
+      "facts": {},
+      "fact_basis": "recomputed"
+    },
+    {
+      "id": "reference-controls-2:cross_add_b",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "reference-controls-2",
+      "tool": "provengo",
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "status": 500,
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-2.json",
+        "member_sha256": "268289b48dde644ce4d733be07c6190ca0e6b343de20b8915e9c6d8d14c45930",
+        "observation": "cross_add_b"
+      },
+      "facts": {},
+      "fact_basis": "recomputed"
+    },
+    {
+      "id": "reference-controls-2:missing_add_a",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "reference-controls-2",
+      "tool": "provengo",
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "status": 500,
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-2.json",
+        "member_sha256": "268289b48dde644ce4d733be07c6190ca0e6b343de20b8915e9c6d8d14c45930",
+        "observation": "missing_add_a"
+      },
+      "facts": {},
+      "fact_basis": "recomputed"
+    },
+    {
+      "id": "reference-controls-2:missing_add_b",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "reference-controls-2",
+      "tool": "provengo",
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "status": 500,
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-2.json",
+        "member_sha256": "268289b48dde644ce4d733be07c6190ca0e6b343de20b8915e9c6d8d14c45930",
+        "observation": "missing_add_b"
+      },
+      "facts": {},
+      "fact_basis": "recomputed"
+    },
+    {
+      "id": "separate-1:foreign_add_a",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "separate-1",
+      "tool": "provengo",
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "status": 500,
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_multi_identity_findings_delta/evidence/multi-identity-20261005-065704/campaign-original/separate/result-1.json",
+        "member_sha256": "a2193018a051c7341806bfb5d5db782732c0aad01dbbd641f80ea4b394960e3b",
+        "observation": "foreign_add_a"
+      },
+      "facts": {},
+      "fact_basis": "recomputed"
+    },
+    {
+      "id": "separate-1:foreign_add_b",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "separate-1",
+      "tool": "provengo",
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "status": 500,
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_multi_identity_findings_delta/evidence/multi-identity-20261005-065704/campaign-original/separate/result-1.json",
+        "member_sha256": "a2193018a051c7341806bfb5d5db782732c0aad01dbbd641f80ea4b394960e3b",
+        "observation": "foreign_add_b"
+      },
+      "facts": {},
+      "fact_basis": "recomputed"
+    },
+    {
+      "id": "separate-2:foreign_add_a",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "separate-2",
+      "tool": "provengo",
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "status": 500,
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_multi_identity_findings_delta/evidence/multi-identity-20261005-065704/campaign-original/separate/result-2.json",
+        "member_sha256": "56d5cd28420b7b203a72a12b6ebd6a915c3a07fc362520f19b70b2092beafe68",
+        "observation": "foreign_add_a"
+      },
+      "facts": {},
+      "fact_basis": "recomputed"
+    },
+    {
+      "id": "separate-2:foreign_add_b",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "separate-2",
+      "tool": "provengo",
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "status": 500,
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_multi_identity_findings_delta/evidence/multi-identity-20261005-065704/campaign-original/separate/result-2.json",
+        "member_sha256": "56d5cd28420b7b203a72a12b6ebd6a915c3a07fc362520f19b70b2092beafe68",
+        "observation": "foreign_add_b"
+      },
+      "facts": {},
+      "fact_basis": "recomputed"
+    }
+  ],
+  "assessments": [
+    {
+      "observation_id": "household-controls-1:other_list_add_a",
+      "status": "matched",
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "household-controls-1",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR",
+        "GEN-STATE-CHANGE-AFTER-ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/household-controls/result-1.json",
+        "member_sha256": "7a056f26ebf2fc2ce1d516722ccffb8cb00c88d118a7c6faa322dc3cefa14f4e",
+        "observation": "other_list_add_a"
+      },
+      "facts": {
+        "state_changed_after_error": true,
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "household-controls-1:other_list_add_a",
+      "status": "matched",
+      "catalog_id": "GEN-STATE-CHANGE-AFTER-ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "household-controls-1",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR",
+        "GEN-STATE-CHANGE-AFTER-ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        },
+        {
+          "condition": {
+            "fact": "state_changed_after_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/household-controls/result-1.json",
+        "member_sha256": "7a056f26ebf2fc2ce1d516722ccffb8cb00c88d118a7c6faa322dc3cefa14f4e",
+        "observation": "other_list_add_a"
+      },
+      "facts": {
+        "state_changed_after_error": true,
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "household-controls-1:other_list_add_b",
+      "status": "matched",
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "household-controls-1",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR",
+        "GEN-STATE-CHANGE-AFTER-ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/household-controls/result-1.json",
+        "member_sha256": "7a056f26ebf2fc2ce1d516722ccffb8cb00c88d118a7c6faa322dc3cefa14f4e",
+        "observation": "other_list_add_b"
+      },
+      "facts": {
+        "state_changed_after_error": true,
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "household-controls-1:other_list_add_b",
+      "status": "matched",
+      "catalog_id": "GEN-STATE-CHANGE-AFTER-ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "household-controls-1",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR",
+        "GEN-STATE-CHANGE-AFTER-ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        },
+        {
+          "condition": {
+            "fact": "state_changed_after_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/household-controls/result-1.json",
+        "member_sha256": "7a056f26ebf2fc2ce1d516722ccffb8cb00c88d118a7c6faa322dc3cefa14f4e",
+        "observation": "other_list_add_b"
+      },
+      "facts": {
+        "state_changed_after_error": true,
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "household-controls-2:other_list_add_a",
+      "status": "matched",
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "household-controls-2",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR",
+        "GEN-STATE-CHANGE-AFTER-ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/household-controls/result-2.json",
+        "member_sha256": "a90a844e425c420e8845cbb4c08860080852c3c797d7cf28d41ccc698688214f",
+        "observation": "other_list_add_a"
+      },
+      "facts": {
+        "state_changed_after_error": true,
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "household-controls-2:other_list_add_a",
+      "status": "matched",
+      "catalog_id": "GEN-STATE-CHANGE-AFTER-ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "household-controls-2",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR",
+        "GEN-STATE-CHANGE-AFTER-ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        },
+        {
+          "condition": {
+            "fact": "state_changed_after_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/household-controls/result-2.json",
+        "member_sha256": "a90a844e425c420e8845cbb4c08860080852c3c797d7cf28d41ccc698688214f",
+        "observation": "other_list_add_a"
+      },
+      "facts": {
+        "state_changed_after_error": true,
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "household-controls-2:other_list_add_b",
+      "status": "matched",
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "household-controls-2",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR",
+        "GEN-STATE-CHANGE-AFTER-ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/household-controls/result-2.json",
+        "member_sha256": "a90a844e425c420e8845cbb4c08860080852c3c797d7cf28d41ccc698688214f",
+        "observation": "other_list_add_b"
+      },
+      "facts": {
+        "state_changed_after_error": true,
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "household-controls-2:other_list_add_b",
+      "status": "matched",
+      "catalog_id": "GEN-STATE-CHANGE-AFTER-ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "household-controls-2",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR",
+        "GEN-STATE-CHANGE-AFTER-ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        },
+        {
+          "condition": {
+            "fact": "state_changed_after_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/household-controls/result-2.json",
+        "member_sha256": "a90a844e425c420e8845cbb4c08860080852c3c797d7cf28d41ccc698688214f",
+        "observation": "other_list_add_b"
+      },
+      "facts": {
+        "state_changed_after_error": true,
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "reference-controls-1:cross_add_b",
+      "status": "matched",
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "reference-controls-1",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-1.json",
+        "member_sha256": "b779b410ae74ecb21a6bc3bd16a2de0881952565ee7c6f845008014731b0ea8a",
+        "observation": "cross_add_b"
+      },
+      "facts": {
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "reference-controls-1:missing_add_b",
+      "status": "matched",
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "reference-controls-1",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-1.json",
+        "member_sha256": "b779b410ae74ecb21a6bc3bd16a2de0881952565ee7c6f845008014731b0ea8a",
+        "observation": "missing_add_b"
+      },
+      "facts": {
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "reference-controls-1:cross_add_a",
+      "status": "matched",
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "reference-controls-1",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-1.json",
+        "member_sha256": "b779b410ae74ecb21a6bc3bd16a2de0881952565ee7c6f845008014731b0ea8a",
+        "observation": "cross_add_a"
+      },
+      "facts": {
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "reference-controls-1:missing_add_a",
+      "status": "matched",
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "reference-controls-1",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-1.json",
+        "member_sha256": "b779b410ae74ecb21a6bc3bd16a2de0881952565ee7c6f845008014731b0ea8a",
+        "observation": "missing_add_a"
+      },
+      "facts": {
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "reference-controls-2:cross_add_a",
+      "status": "matched",
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "reference-controls-2",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-2.json",
+        "member_sha256": "268289b48dde644ce4d733be07c6190ca0e6b343de20b8915e9c6d8d14c45930",
+        "observation": "cross_add_a"
+      },
+      "facts": {
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "reference-controls-2:cross_add_b",
+      "status": "matched",
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "reference-controls-2",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-2.json",
+        "member_sha256": "268289b48dde644ce4d733be07c6190ca0e6b343de20b8915e9c6d8d14c45930",
+        "observation": "cross_add_b"
+      },
+      "facts": {
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "reference-controls-2:missing_add_a",
+      "status": "matched",
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "reference-controls-2",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-2.json",
+        "member_sha256": "268289b48dde644ce4d733be07c6190ca0e6b343de20b8915e9c6d8d14c45930",
+        "observation": "missing_add_a"
+      },
+      "facts": {
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "reference-controls-2:missing_add_b",
+      "status": "matched",
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "reference-controls-2",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-2.json",
+        "member_sha256": "268289b48dde644ce4d733be07c6190ca0e6b343de20b8915e9c6d8d14c45930",
+        "observation": "missing_add_b"
+      },
+      "facts": {
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "separate-1:foreign_add_a",
+      "status": "matched",
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "separate-1",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_multi_identity_findings_delta/evidence/multi-identity-20261005-065704/campaign-original/separate/result-1.json",
+        "member_sha256": "a2193018a051c7341806bfb5d5db782732c0aad01dbbd641f80ea4b394960e3b",
+        "observation": "foreign_add_a"
+      },
+      "facts": {
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "separate-1:foreign_add_b",
+      "status": "matched",
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "separate-1",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_multi_identity_findings_delta/evidence/multi-identity-20261005-065704/campaign-original/separate/result-1.json",
+        "member_sha256": "a2193018a051c7341806bfb5d5db782732c0aad01dbbd641f80ea4b394960e3b",
+        "observation": "foreign_add_b"
+      },
+      "facts": {
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "separate-2:foreign_add_a",
+      "status": "matched",
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "separate-2",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_multi_identity_findings_delta/evidence/multi-identity-20261005-065704/campaign-original/separate/result-2.json",
+        "member_sha256": "56d5cd28420b7b203a72a12b6ebd6a915c3a07fc362520f19b70b2092beafe68",
+        "observation": "foreign_add_a"
+      },
+      "facts": {
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    },
+    {
+      "observation_id": "separate-2:foreign_add_b",
+      "status": "matched",
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "product": "mealie",
+      "product_version": "historical-unqualified-version",
+      "run_id": "separate-2",
+      "tool": "provengo",
+      "seed": null,
+      "entity": null,
+      "operation": "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "field": null,
+      "patterns": [
+        "GEN-SERVER_ERROR"
+      ],
+      "known_bugs": [],
+      "checks": [
+        {
+          "condition": {
+            "fact": "server_error",
+            "op": "eq",
+            "value": true
+          },
+          "satisfied": true
+        }
+      ],
+      "source": {
+        "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+        "member": "evidence/historical/generic_generator_multi_identity_findings_delta/evidence/multi-identity-20261005-065704/campaign-original/separate/result-2.json",
+        "member_sha256": "56d5cd28420b7b203a72a12b6ebd6a915c3a07fc362520f19b70b2092beafe68",
+        "observation": "foreign_add_b"
+      },
+      "facts": {
+        "server_error": true
+      },
+      "primary_event": null,
+      "consequence_events": [],
+      "qualification": "pattern_observation",
+      "suggested_severity": "requires_context",
+      "human_review": true,
+      "log_fingerprint": "",
+      "possible_known_bugs": []
+    }
+  ],
+  "groups": [
+    {
+      "id": "g-bcf3e20b92479726",
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "signature": [
+        "mealie",
+        "historical-unqualified-version",
+        "GEN-SERVER_ERROR",
+        null,
+        "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+        null,
+        ""
+      ],
+      "occurrences": [
+        "household-controls-1:other_list_add_a",
+        "household-controls-1:other_list_add_b",
+        "household-controls-2:other_list_add_a",
+        "household-controls-2:other_list_add_b",
+        "reference-controls-1:cross_add_b",
+        "reference-controls-1:missing_add_b",
+        "reference-controls-1:cross_add_a",
+        "reference-controls-1:missing_add_a",
+        "reference-controls-2:cross_add_a",
+        "reference-controls-2:cross_add_b",
+        "reference-controls-2:missing_add_a",
+        "reference-controls-2:missing_add_b",
+        "separate-1:foreign_add_a",
+        "separate-1:foreign_add_b",
+        "separate-2:foreign_add_a",
+        "separate-2:foreign_add_b"
+      ],
+      "runs": [
+        "household-controls-1",
+        "household-controls-2",
+        "reference-controls-1",
+        "reference-controls-2",
+        "separate-1",
+        "separate-2"
+      ],
+      "tools": [
+        "provengo"
+      ],
+      "seeds": [],
+      "occurrence_count": 16,
+      "reproducibility": "not_measured; occurrence counts have no eligible-trial denominator"
+    },
+    {
+      "id": "g-2bf6d4c9d80bd284",
+      "catalog_id": "GEN-STATE-CHANGE-AFTER-ERROR",
+      "kind": "pattern",
+      "signature": [
+        "mealie",
+        "historical-unqualified-version",
+        "GEN-STATE-CHANGE-AFTER-ERROR",
+        null,
+        "POST /api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+        null,
+        ""
+      ],
+      "occurrences": [
+        "household-controls-1:other_list_add_a",
+        "household-controls-1:other_list_add_b",
+        "household-controls-2:other_list_add_a",
+        "household-controls-2:other_list_add_b"
+      ],
+      "runs": [
+        "household-controls-1",
+        "household-controls-2"
+      ],
+      "tools": [
+        "provengo"
+      ],
+      "seeds": [],
+      "occurrence_count": 4,
+      "reproducibility": "not_measured; occurrence counts have no eligible-trial denominator"
+    }
+  ],
+  "summary": {
+    "observation_count": 16,
+    "unclassified_count": 0,
+    "known_bug_ids": []
+  },
+  "policy": {
+    "no_llm_required": true,
+    "no_replay": true,
+    "no_known_bug_suppression": true,
+    "imported_oracle_claims_not_verified": true
+  },
+  "source_archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+  "historical_audit_source_sha256": "1876d8da5463f2e14d7b43d78db5695fac3dc3c68e811975ab5e309a2e1fbff9",
+  "review": {
+    "runs": [
+      {
+        "id": "household-controls-1",
+        "case": "household-controls",
+        "sample": 1,
+        "receipt_response_count": 46,
+        "source": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/household-controls/result-1.json"
+      },
+      {
+        "id": "household-controls-2",
+        "case": "household-controls",
+        "sample": 2,
+        "receipt_response_count": 46,
+        "source": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/household-controls/result-2.json"
+      },
+      {
+        "id": "reference-controls-1",
+        "case": "reference-controls",
+        "sample": 1,
+        "receipt_response_count": 47,
+        "source": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-1.json"
+      },
+      {
+        "id": "reference-controls-2",
+        "case": "reference-controls",
+        "sample": 2,
+        "receipt_response_count": 47,
+        "source": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-2.json"
+      },
+      {
+        "id": "separate-1",
+        "case": "separate",
+        "sample": 1,
+        "receipt_response_count": 57,
+        "source": "evidence/historical/generic_generator_multi_identity_findings_delta/evidence/multi-identity-20261005-065704/campaign-original/separate/result-1.json"
+      },
+      {
+        "id": "separate-2",
+        "case": "separate",
+        "sample": 2,
+        "receipt_response_count": 57,
+        "source": "evidence/historical/generic_generator_multi_identity_findings_delta/evidence/multi-identity-20261005-065704/campaign-original/separate/result-2.json"
+      },
+      {
+        "id": "shared-1",
+        "case": "shared",
+        "sample": 1,
+        "receipt_response_count": 46,
+        "source": "evidence/historical/generic_generator_multi_identity_findings_delta/evidence/multi-identity-20261005-065704/campaign-original/shared/result-1.json"
+      },
+      {
+        "id": "shared-2",
+        "case": "shared",
+        "sample": 2,
+        "receipt_response_count": 46,
+        "source": "evidence/historical/generic_generator_multi_identity_findings_delta/evidence/multi-identity-20261005-065704/campaign-original/shared/result-2.json"
+      }
+    ],
+    "owner_comparisons": [
+      {
+        "run_id": "household-controls-1",
+        "action": "other_list_add_a",
+        "preimage": "cross_list_b",
+        "readback": "owner_list_after_a",
+        "qualified": true,
+        "intervening_unresolved_writes": [],
+        "complete": true,
+        "reasons": [],
+        "response_code": 500,
+        "different_actor": true,
+        "state_changed": true,
+        "before_item_count": 2,
+        "after_item_count": 3
+      },
+      {
+        "run_id": "household-controls-1",
+        "action": "other_list_add_b",
+        "preimage": "cross_list_a",
+        "readback": "owner_list_after_b",
+        "qualified": true,
+        "intervening_unresolved_writes": [],
+        "complete": true,
+        "reasons": [],
+        "response_code": 500,
+        "different_actor": true,
+        "state_changed": true,
+        "before_item_count": 2,
+        "after_item_count": 3
+      },
+      {
+        "run_id": "household-controls-2",
+        "action": "other_list_add_a",
+        "preimage": "cross_list_b",
+        "readback": "owner_list_after_a",
+        "qualified": true,
+        "intervening_unresolved_writes": [],
+        "complete": true,
+        "reasons": [],
+        "response_code": 500,
+        "different_actor": true,
+        "state_changed": true,
+        "before_item_count": 2,
+        "after_item_count": 3
+      },
+      {
+        "run_id": "household-controls-2",
+        "action": "other_list_add_b",
+        "preimage": "cross_list_a",
+        "readback": "owner_list_after_b",
+        "qualified": true,
+        "intervening_unresolved_writes": [],
+        "complete": true,
+        "reasons": [],
+        "response_code": 500,
+        "different_actor": true,
+        "state_changed": true,
+        "before_item_count": 2,
+        "after_item_count": 3
+      }
+    ],
+    "changed_after_error": 4,
+    "server_error_count": 16,
+    "new_sut_executions": 0,
+    "limits": [
+      "Original receipt reanalysis only; no new tool execution",
+      "Nearest owner preimage is used to avoid attributing earlier successful cross-add changes to the later failure",
+      "No root cause or permission-policy confirmation from the 500 alone",
+      "No automatic named F04/F05 assignment; product known-bug definitions remain to be qualified"
+    ]
+  }
+}

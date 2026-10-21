@@ -568,6 +568,38 @@
       ],
       "severity": "requires_context",
       "human_review": true
+    },
+    {
+      "id": "GEN-STATE-CHANGE-AFTER-ERROR",
+      "kind": "pattern",
+      "title": "Identity-bound state differs after a failed write",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "state_changed_after_error",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Same-owner, same-resource ordered before/after readbacks with no unresolved intervening write"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
     }
   ]
 }
