@@ -1,0 +1,102 @@
+{
+  "schema_version": "natchan-taxonomy/1",
+  "source": "User specification; 2026-10-21",
+  "families": [
+    {
+      "id": "RESPONSE",
+      "title": "Server error / infrastructure / harness",
+      "catalog_ids": [
+        "GEN-SERVER_ERROR",
+        "GEN-TRANSPORT_FAILURE",
+        "GEN-HARNESS_EXPECTATION_MISMATCH",
+        "GEN-STALE_TEST_INPUT"
+      ]
+    },
+    {
+      "id": "EDGE-1",
+      "title": "Edge value and contract boundaries",
+      "catalog_ids": [
+        "GEN-BOUND_NOT_ENFORCED",
+        "GEN-UNDOCUMENTED_RESTRICTION"
+      ]
+    },
+    {
+      "id": "RT-1",
+      "title": "Readback and silent change",
+      "catalog_ids": [
+        "GEN-SILENT_CHANGE",
+        "GEN-SILENT-TRUNCATION",
+        "GEN-SILENT-NORMALIZATION",
+        "GEN-SILENT-DROP",
+        "GEN-SILENT-TIME-CHANGE"
+      ]
+    },
+    {
+      "id": "ATOM-1-2",
+      "title": "Atomicity and failed writes",
+      "catalog_ids": [
+        "GEN-PARTIAL_WRITE",
+        "GEN-COMMITTED_DESPITE_ERROR",
+        "GEN-STATE-CHANGE-AFTER-ERROR",
+        "GEN-DELETE-COMMITTED-AFTER-ERROR",
+        "GEN-CREATE-DUPLICATE"
+      ]
+    },
+    {
+      "id": "EDGE-U",
+      "title": "Create/update paired comparisons",
+      "catalog_ids": [
+        "GEN-CREATE_UPDATE_DIVERGENCE",
+        "GEN-CREATE-UPDATE-PARTIAL-COMPOUND",
+        "GEN-UPDATE-ACCEPTS-CREATE-REJECTED",
+        "GEN-UPDATE-REJECTS-CREATE-ACCEPTED",
+        "GEN-UPDATE-SERVER-ERROR"
+      ]
+    },
+    {
+      "id": "KNOWN",
+      "title": "Known failures and log evidence",
+      "catalog_ids": [
+        "GEN-KNOWN-TRANSIENT-SIGNATURE",
+        "GEN-SERVER_LOCK_EVIDENCE"
+      ]
+    },
+    {
+      "id": "CASCADE-1",
+      "title": "Required cascade and collateral deletion",
+      "catalog_ids": [
+        "GEN-ORPHAN_AFTER_DELETE",
+        "GEN-COLLATERAL_DELETE"
+      ]
+    },
+    {
+      "id": "ADJ",
+      "title": "Trigger adjacency; association is not causation",
+      "catalog_ids": [
+        "GEN-TRIGGER-ADJACENCY"
+      ]
+    },
+    {
+      "id": "IDEM",
+      "title": "Repeated-write errors; not automatically a race",
+      "catalog_ids": [
+        "GEN-DUPLICATE_WRITE_ERROR"
+      ]
+    },
+    {
+      "id": "VIEW",
+      "title": "Required view membership",
+      "catalog_ids": [
+        "GEN-VIEW_MISMATCH"
+      ]
+    },
+    {
+      "id": "LINK",
+      "title": "Link missing, duplicate or left behind",
+      "catalog_ids": [
+        "GEN-LINK_MISMATCH"
+      ]
+    }
+  ],
+  "policy": "Taxonomy coverage is not detector completeness. Draft entries cannot match; active predicates can still require product evidence providers."
+}

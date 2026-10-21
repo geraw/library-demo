@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "required_files_checked": [
+    "classifier.py",
+    "normalize.py",
+    "review_mealie.py",
+    "catalog.schema.json",
+    "observations.schema.json",
+    "BUG_FORMAT.md",
+    "TAXONOMY.json",
+    "HANDOFF_PROMPT_HE.md",
+    "Invoke-Natchan-Classify-v003.ps1",
+    "examples/bug-template.json",
+    "examples/jsonl-gateway-mapping.json",
+    "examples/synthetic-vikunja-pair.json"
+  ],
+  "taxonomy_family_count": 11,
+  "catalog_entry_count": 69,
+  "draft_ids": [
+    "GEN-SILENT-TRUNCATION",
+    "GEN-SILENT-NORMALIZATION",
+    "GEN-SILENT-DROP",
+    "GEN-SILENT-TIME-CHANGE",
+    "GEN-CREATE-DUPLICATE",
+    "GEN-DELETE-COMMITTED-AFTER-ERROR",
+    "GEN-KNOWN-TRANSIENT-SIGNATURE",
+    "GEN-TRIGGER-ADJACENCY",
+    "GEN-UPDATE-ACCEPTS-CREATE-REJECTED",
+    "GEN-UPDATE-REJECTS-CREATE-ACCEPTED",
+    "GEN-UPDATE-SERVER-ERROR",
+    "VIK-F01",
+    "VIK-F04",
+    "VIK-C1",
+    "VIK-C2"
+  ],
+  "powershell": "not_executed: pwsh unavailable; run wrapper on target Windows machine",
+  "commands": [
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/natchan-v002/tests",
+        "-q"
+      ],
+      "exit_code": 0,
+      "output": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/zipfile/__init__.py:1625: UserWarning: Duplicate name: 'trace.jsonl'\n  return self._open_to_write(zinfo, force_zip64=force_zip64)\n----------------------------------------------------------------------\nRan 26 tests in 0.041s\n\nOK\n"
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/natchan-v003/tests",
+        "-q"
+      ],
+      "exit_code": 0,
+      "output": "----------------------------------------------------------------------\nRan 25 tests in 0.022s\n\nOK\n"
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/3b7d6a0cbaaa/tools/natchan-v003/classifier.py",
+        "--help"
+      ],
+      "exit_code": 0,
+      "output": "usage: classifier.py [-h] --input INPUT --output OUTPUT [--catalogs CATALOGS]\n\nDeterministic offline finding classification and conservative known-bug\nmatching.\n\noptions:\n  -h, --help           show this help message and exit\n  --input INPUT\n  --output OUTPUT\n  --catalogs CATALOGS\n"
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/3b7d6a0cbaaa/tools/natchan-v003/normalize.py",
+        "--help"
+      ],
+      "exit_code": 0,
+      "output": "usage: normalize.py [-h] --input INPUT --mapping MAPPING --output OUTPUT\n\nDeclarative offline gateway for previously unseen JSON/JSONL layouts.\n\noptions:\n  -h, --help         show this help message and exit\n  --input INPUT\n  --mapping MAPPING\n  --output OUTPUT\n"
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/3b7d6a0cbaaa/tools/natchan-v003/review_mealie.py",
+        "--help"
+      ],
+      "exit_code": 0,
+      "output": "usage: review_mealie.py [-h] --archive ARCHIVE --output OUTPUT\n\nReclassify selected original Mealie TSE receipts; never replay or emit\ncredentials.\n\noptions:\n  -h, --help         show this help message and exit\n  --archive ARCHIVE\n  --output OUTPUT\n"
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/3b7d6a0cbaaa/tools/natchan-v003/classifier.py",
+        "--input",
+        "/workspace/scratch/3b7d6a0cbaaa/tools/natchan-v003/examples/synthetic-vikunja-pair.json",
+        "--output",
+        "/tmp/tmp_avu1nv4/classification.json"
+      ],
+      "exit_code": 0,
+      "output": "NATCHAN_CLASSIFICATION /tmp/tmp_avu1nv4/classification.json\n"
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/3b7d6a0cbaaa/tools/natchan-v003/normalize.py",
+        "--input",
+        "/tmp/tmp_avu1nv4/raw.jsonl",
+        "--mapping",
+        "/workspace/scratch/3b7d6a0cbaaa/tools/natchan-v003/examples/jsonl-gateway-mapping.json",
+        "--output",
+        "/tmp/tmp_avu1nv4/normalized.json"
+      ],
+      "exit_code": 0,
+      "output": "NATCHAN_OBSERVATIONS /tmp/tmp_avu1nv4/normalized.json\n"
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/3b7d6a0cbaaa/tools/natchan-v003/classifier.py",
+        "--input",
+        "/tmp/tmp_avu1nv4/normalized.json",
+        "--output",
+        "/tmp/tmp_avu1nv4/normalized-classification.json"
+      ],
+      "exit_code": 0,
+      "output": "NATCHAN_CLASSIFICATION /tmp/tmp_avu1nv4/normalized-classification.json\n"
+    }
+  ],
+  "note": "Synthetic CLI verification and unit tests; no real Vikunja/Gitea execution"
+}

@@ -600,6 +600,303 @@
       ],
       "severity": "requires_context",
       "human_review": true
+    },
+    {
+      "id": "GEN-SILENT-TRUNCATION",
+      "kind": "pattern",
+      "title": "Silent truncation subtype",
+      "status": "draft",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "silent_truncation_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-SILENT-NORMALIZATION",
+      "kind": "pattern",
+      "title": "Silent normalization subtype; intentional behavior requires review",
+      "status": "draft",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "silent_normalization_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-SILENT-DROP",
+      "kind": "pattern",
+      "title": "Dropped requested field subtype",
+      "status": "draft",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "silent_drop_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-SILENT-TIME-CHANGE",
+      "kind": "pattern",
+      "title": "Changed timestamp instant subtype",
+      "status": "draft",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "silent_time_change_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-CREATE-DUPLICATE",
+      "kind": "pattern",
+      "title": "Duplicate creation after error/retry",
+      "status": "draft",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "duplicate_creation_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-DELETE-COMMITTED-AFTER-ERROR",
+      "kind": "pattern",
+      "title": "Deletion committed despite error; 403 alone insufficient",
+      "status": "draft",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "delete_committed_after_error_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-KNOWN-TRANSIENT-SIGNATURE",
+      "kind": "pattern",
+      "title": "Known transient failure with verified signature/context",
+      "status": "draft",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "known_transient_signature_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-TRIGGER-ADJACENCY",
+      "kind": "pattern",
+      "title": "Trigger-adjacent failure with confounding assessment",
+      "status": "draft",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "trigger_adjacency_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-UPDATE-ACCEPTS-CREATE-REJECTED",
+      "kind": "pattern",
+      "title": "Paired update accepts a value rejected on create",
+      "status": "draft",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "update_accepts_create_rejected_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-UPDATE-REJECTS-CREATE-ACCEPTED",
+      "kind": "pattern",
+      "title": "Paired update rejects a value accepted on create",
+      "status": "draft",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "update_rejects_create_accepted_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-UPDATE-SERVER-ERROR",
+      "kind": "pattern",
+      "title": "Server error in update role",
+      "status": "draft",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "update_server_error_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
     }
   ]
 }

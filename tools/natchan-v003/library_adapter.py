@@ -5,9 +5,14 @@ from urllib.parse import urlsplit
 
 
 def observations_from_analysis(document):
+    supplied_runs=document.get('evidence',{}).get('runs',[])
+    if not supplied_runs or any(r.get('product_gateway')!='library-issta-v006' for r in supplied_runs):
+        raise ValueError('natchan-analysis/1 bridge supports only Library runs; normalize other products through their own gateway')
     sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'natchan-v002'))
     from analyze import analyze_envelope
     fresh=analyze_envelope(document['evidence'])
+    if fresh.get('status')!='complete':
+        raise ValueError('Library evidence is not fully evaluable; do not report missing observations as zero findings')
     events={e['id']:e for e in fresh['evidence']['events']}
     runs={r['id']:r for r in fresh['evidence']['runs']}
     observations=[]

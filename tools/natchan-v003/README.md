@@ -87,7 +87,7 @@ The Markdown companion lists groups and source references. The JSON retains comp
 
 ## Validation
 
-See VALIDATION_20261021.json. Twenty-three v003 unit tests and the existing twenty-six v002 tests pass. Synthetic Vikunja paired evidence exercises the compound classification, not a live product finding. Real work Library evidence yields 22 collateral-deletion observations associated with LIB-ISSTA-BUG-5 and later 404 consequences in exactly cases 80, 257, 260, 266 and 433. No other known Library bug is inferred.
+See VALIDATION_20261021.json. Twenty-five v003 unit tests and the existing twenty-six v002 tests pass. Synthetic Vikunja paired evidence exercises the compound classification, not a live product finding. Real work Library evidence yields 22 collateral-deletion observations associated with LIB-ISSTA-BUG-5 and later 404 consequences in exactly cases 80, 257, 260, 266 and 433. No other known Library bug is inferred.
 
 A regression test covers an important historical artifact: a legacy emitted expected-state array can share mutable Ledger storage and contain later appends. The classifier therefore uses time-local recorded readbacks, not that mutable expected list, to establish collateral loss. Historical evaluator rules and original scores were not changed.
 
@@ -101,3 +101,10 @@ python tools/natchan-v003/review_mealie.py --archive Mealie_Supervisor_Artifact_
 ```
 
 Selected original data: eight runs, 392 recorded responses, sixteen 5xx observations, four qualified owner-readback state changes after 500. It uses the nearest owner preimage, yielding 2 to 3 items, instead of attributing earlier successful cross-add changes to the failed write. The fixed household-controls protocol declares other_list_add_a targets list_b and vice versa; this explicit routing allows excluding a proven different-list intervening write. Unknown routing remains unresolved, never silently clean. Generic state-change-after-error is reported alongside server error; neither implies complete transaction commitment, authorization-policy violation or root cause. Named Mealie bug identity is not automatically asserted. See reviews/tse-first-pass/MEALIE_20261021.json.
+
+
+## Verified handoff to the original Gitea/Vikunja agent
+
+Read HANDOFF_PROMPT_HE.md for the complete Hebrew work prompt, including actual PowerShell/Python commands, artifact discovery, catalog completion, gateway requirements and manual-result parity. TAXONOMY.json enumerates all eleven requested families. Eleven additional subtype rules are explicit drafts; they cannot match until evidence extraction and tests are implemented. Active predicates still do not imply complete raw-product adapters.
+
+Run `python tools/natchan-v003/verify_handoff.py --output NEW_PREFLIGHT.json` before editing. It checks files, catalog references, both unit-test suites, CLI help, a synthetic paired-classification command and a raw-JSONL normalization/classification command. If pwsh is installed it also executes the wrapper; otherwise the report explicitly records that target Windows verification remains required. See HANDOFF_VALIDATION_20261021.json. The Library analysis bridge now rejects unsupported/mixed products or incomplete evidence instead of returning a misleading empty classification.

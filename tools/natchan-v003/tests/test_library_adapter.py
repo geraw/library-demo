@@ -17,9 +17,14 @@ class LibraryAdapterTests(unittest.TestCase):
                 event('after',3,'oracle',dict(path='/holds',status=200,response=[]))]
         finding=dict(id='f1',run_id='r',source_event_id='delete',case='1',case_ordinal=1,context_event_ids=['before','delete','after'],
                      evidence=dict(violation=dict(rule='STATE_MISMATCH',entity='holds',expected=[right,dict(id=99,userId=2)],actual=[])))
-        document=dict(evidence=dict(source={'sha256':'fixture'},artifacts=[dict(id='a',locator='http.jsonl')],
+        document=dict(status='complete',evidence=dict(source={'sha256':'fixture'},artifacts=[dict(id='a',locator='http.jsonl')],
             events=events,runs=[dict(id='r',tool='provengo',product_gateway='library-issta-v006')]),findings=[finding])
         fake=types.ModuleType('analyze');fake.analyze_envelope=lambda evidence:document
         with patch.dict(sys.modules,{'analyze':fake}):observations=observations_from_analysis(document)
         self.assertEqual([right],observations[0]['state_witnesses']['non_targets_removed'])
         self.assertEqual(['LIB-ISSTA-BUG-5'],classify(observations)['summary']['known_bug_ids'])
+
+
+    def test_nonlibrary_analysis_is_rejected_not_silently_empty(self):
+        with self.assertRaisesRegex(ValueError,'supports only Library'):
+            observations_from_analysis({'evidence':{'runs':[{'product_gateway':'vikunja'}]}})
