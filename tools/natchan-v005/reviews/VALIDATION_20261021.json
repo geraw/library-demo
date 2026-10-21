@@ -1,0 +1,232 @@
+{
+  "status": "PASS_FOR_RECORDED_COVERAGE",
+  "checks": [
+    {
+      "name": "VIK-F01 has original-evidence match",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "VIK-F02 has original-evidence match",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "VIK-F03 has original-evidence match",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "VIK-F04 has original-evidence match",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "VIK-F05 has original-evidence match",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "VIK-F06 has original-evidence match",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "GIT-C1 has original-evidence match",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "GIT-C2 has original-evidence match",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "GIT-C3 has original-evidence match",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "GIT-C8 has original-evidence match",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "F03 original 2.6.0 overlength/readback occurrences",
+      "actual": 6,
+      "expected": 6,
+      "passed": true
+    },
+    {
+      "name": "F01 uniquely linked lock responses",
+      "actual": 8,
+      "expected": 8,
+      "passed": true
+    },
+    {
+      "name": "Cloud symptom-only occurrences",
+      "actual": {
+        "GIT-C4": 10,
+        "GIT-C5": 2,
+        "GIT-C6": 3,
+        "GIT-C7": 5
+      },
+      "expected": {
+        "GIT-C4": 10,
+        "GIT-C5": 2,
+        "GIT-C6": 3,
+        "GIT-C7": 5
+      },
+      "passed": true
+    },
+    {
+      "name": "Partial cloud evidence never becomes a full signature",
+      "actual": false,
+      "expected": false,
+      "passed": true
+    },
+    {
+      "name": "All trap provider families registered",
+      "actual": 11,
+      "expected": 11,
+      "passed": true
+    },
+    {
+      "name": "v004 scoped historical parity retained",
+      "actual": "PASS_FOR_SCOPED_EXPECTATIONS",
+      "expected": "PASS_FOR_SCOPED_EXPECTATIONS",
+      "passed": true
+    }
+  ],
+  "baseline_checks": [
+    {
+      "name": "gitea-g007-work http_5xx",
+      "actual": 9,
+      "expected": 9,
+      "passed": true
+    },
+    {
+      "name": "gitea-g007-work original_partial_oracles",
+      "actual": 9,
+      "expected": 9,
+      "passed": true
+    },
+    {
+      "name": "gitea-g007-work eligible adjacency probes",
+      "actual": 503,
+      "expected": 503,
+      "passed": true
+    },
+    {
+      "name": "gitea-g007-work adjacency_5xx",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "name": "gitea-g009-work GIT-C8_runs",
+      "actual": 4,
+      "expected": 4,
+      "passed": true
+    },
+    {
+      "name": "vikunja-2.6.0 VIK-F06_occurrences",
+      "actual": 30,
+      "expected": 30,
+      "passed": true
+    },
+    {
+      "name": "vikunja-2.7.0 VIK-F06_occurrences",
+      "actual": 30,
+      "expected": 30,
+      "passed": true
+    },
+    {
+      "name": "vikunja 2.6.0 VIK-F02",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "vikunja 2.6.0 VIK-F04",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "vikunja 2.6.0 VIK-F05",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "vikunja 2.6.0 VIK-F06",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "vikunja 2.7.0 VIK-F02",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "vikunja 2.7.0 VIK-F04",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "vikunja 2.7.0 VIK-F05",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "vikunja 2.7.0 VIK-F06",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "gitea 28.1.0 GIT-C1",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "gitea 28.1.0 GIT-C2",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "gitea 28.1.0 GIT-C8",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "gitea 28.1.0 GIT-C3",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    }
+  ],
+  "not_claimed": [
+    "Complete C4-C7 confirmation without raw bodies/logs",
+    "Independent ATOM snapshots where only field labels were retained",
+    "Causal timing/handler inference from a scoped lock join"
+  ]
+}

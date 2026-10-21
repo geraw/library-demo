@@ -1,0 +1,39 @@
+{
+  "schema_version": "natchan-measurements/1",
+  "notice": "SYNTHETIC INTERFACE EXAMPLE; NOT HISTORICAL EVIDENCE",
+  "measurements": [
+    {
+      "id": "synthetic-atom",
+      "product": "example-product",
+      "product_version": "example-version",
+      "run_id": "synthetic-only",
+      "source": {
+        "file": "synthetic-example",
+        "record": 0
+      },
+      "family": "ATOM-1-2",
+      "status": 500,
+      "operation": "update",
+      "before": {
+        "title": "old",
+        "owner": 1
+      },
+      "after": {
+        "title": "new",
+        "owner": 1
+      },
+      "request": {
+        "title": "new",
+        "owner": 2
+      },
+      "context": {
+        "same_run": true,
+        "ordered": true,
+        "complete": true,
+        "same_resource": true,
+        "same_actor": true,
+        "no_intervening_write": true
+      }
+    }
+  ]
+}

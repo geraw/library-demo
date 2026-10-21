@@ -1,0 +1,303 @@
+{
+  "schema_version": "natchan-coverage-manifest/1",
+  "repository": "weissye/vikunja_study",
+  "commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+  "archives": [
+    {
+      "id": "vikunja-v146-s1-aging-01",
+      "path": "results/bnd-readback-v146-20261017/evidence/reviews/trap-v146-s1-20261017-181321-654979.zip",
+      "version": "2.6.0",
+      "seed": 1,
+      "sha256": "1e8ef64511f78d5b60535245c1b4b3eefaff3a9837cc54a8943ca14c308f5724",
+      "journal_members": [
+        "aging-01/gateway-journal.jsonl"
+      ],
+      "ir_members": [
+        "aging-01/generated/contract-ir.json"
+      ]
+    },
+    {
+      "id": "vikunja-v146-s1-aging-02",
+      "path": "results/bnd-readback-v146-20261017/evidence/reviews/trap-v146-s1-20261017-181321-654979.zip",
+      "version": "2.6.0",
+      "seed": 1,
+      "sha256": "1e8ef64511f78d5b60535245c1b4b3eefaff3a9837cc54a8943ca14c308f5724",
+      "journal_members": [
+        "aging-02/gateway-journal.jsonl"
+      ],
+      "ir_members": [
+        "aging-02/generated/contract-ir.json"
+      ]
+    },
+    {
+      "id": "vikunja-v146-s1-final-A",
+      "path": "results/bnd-readback-v146-20261017/evidence/reviews/trap-v146-s1-20261017-181321-654979.zip",
+      "version": "2.6.0",
+      "seed": 1,
+      "sha256": "1e8ef64511f78d5b60535245c1b4b3eefaff3a9837cc54a8943ca14c308f5724",
+      "journal_members": [
+        "final-A/gateway-journal.jsonl"
+      ],
+      "ir_members": [
+        "final-A/generated/contract-ir.json"
+      ]
+    },
+    {
+      "id": "vikunja-v146-s1-final-B",
+      "path": "results/bnd-readback-v146-20261017/evidence/reviews/trap-v146-s1-20261017-181321-654979.zip",
+      "version": "2.6.0",
+      "seed": 1,
+      "sha256": "1e8ef64511f78d5b60535245c1b4b3eefaff3a9837cc54a8943ca14c308f5724",
+      "journal_members": [
+        "final-B/gateway-journal.jsonl"
+      ],
+      "ir_members": [
+        "final-B/generated/contract-ir.json"
+      ]
+    },
+    {
+      "id": "vikunja-v146-s2-aging-01",
+      "path": "results/bnd-readback-v146-20261017/evidence/reviews/trap-v146-s2-20261017-181944-066923.zip",
+      "version": "2.6.0",
+      "seed": 2,
+      "sha256": "872ca7c72a47df4eec9a629f9688f7d5b73314cfc3f6d83036bfcf39ac1c8da4",
+      "journal_members": [
+        "aging-01/gateway-journal.jsonl"
+      ],
+      "ir_members": [
+        "aging-01/generated/contract-ir.json"
+      ]
+    },
+    {
+      "id": "vikunja-v146-s2-aging-02",
+      "path": "results/bnd-readback-v146-20261017/evidence/reviews/trap-v146-s2-20261017-181944-066923.zip",
+      "version": "2.6.0",
+      "seed": 2,
+      "sha256": "872ca7c72a47df4eec9a629f9688f7d5b73314cfc3f6d83036bfcf39ac1c8da4",
+      "journal_members": [
+        "aging-02/gateway-journal.jsonl"
+      ],
+      "ir_members": [
+        "aging-02/generated/contract-ir.json"
+      ]
+    },
+    {
+      "id": "vikunja-v146-s2-final-A",
+      "path": "results/bnd-readback-v146-20261017/evidence/reviews/trap-v146-s2-20261017-181944-066923.zip",
+      "version": "2.6.0",
+      "seed": 2,
+      "sha256": "872ca7c72a47df4eec9a629f9688f7d5b73314cfc3f6d83036bfcf39ac1c8da4",
+      "journal_members": [
+        "final-A/gateway-journal.jsonl"
+      ],
+      "ir_members": [
+        "final-A/generated/contract-ir.json"
+      ]
+    },
+    {
+      "id": "vikunja-v146-s2-final-B",
+      "path": "results/bnd-readback-v146-20261017/evidence/reviews/trap-v146-s2-20261017-181944-066923.zip",
+      "version": "2.6.0",
+      "seed": 2,
+      "sha256": "872ca7c72a47df4eec9a629f9688f7d5b73314cfc3f6d83036bfcf39ac1c8da4",
+      "journal_members": [
+        "final-B/gateway-journal.jsonl"
+      ],
+      "ir_members": [
+        "final-B/generated/contract-ir.json"
+      ]
+    },
+    {
+      "id": "vikunja-v159-s1",
+      "path": "results/triggers-v159-work-20261018/evidence/v159-triggers-20261018-121318-redacted.zip",
+      "version": "2.6.0",
+      "seed": 1,
+      "sha256": "4dc293c38bd0cfe64c7fff9838395c9a8597bf8f531863e61fec96ff06857791",
+      "journal_members": [
+        "v159-comment-create-20261018-121323.zip",
+        "review_seed1_run1.zip",
+        "gateway-journal.jsonl"
+      ],
+      "ir_members": [
+        "v159-comment-create-20261018-121323.zip",
+        "review_seed1_run1.zip",
+        "generated/contract-ir.json"
+      ],
+      "paired_log_members": [
+        "v159-comment-create-20261018-121323.zip",
+        "sut_locked_seed1_run1.txt"
+      ]
+    },
+    {
+      "id": "vikunja-v159-s2",
+      "path": "results/triggers-v159-work-20261018/evidence/v159-triggers-20261018-121318-redacted.zip",
+      "version": "2.6.0",
+      "seed": 2,
+      "sha256": "4dc293c38bd0cfe64c7fff9838395c9a8597bf8f531863e61fec96ff06857791",
+      "journal_members": [
+        "v159-comment-create-20261018-121323.zip",
+        "review_seed2_run2.zip",
+        "gateway-journal.jsonl"
+      ],
+      "ir_members": [
+        "v159-comment-create-20261018-121323.zip",
+        "review_seed2_run2.zip",
+        "generated/contract-ir.json"
+      ],
+      "paired_log_members": [
+        "v159-comment-create-20261018-121323.zip",
+        "sut_locked_seed2_run2.txt"
+      ]
+    },
+    {
+      "id": "vikunja-v159-s3",
+      "path": "results/triggers-v159-work-20261018/evidence/v159-triggers-20261018-121318-redacted.zip",
+      "version": "2.6.0",
+      "seed": 3,
+      "sha256": "4dc293c38bd0cfe64c7fff9838395c9a8597bf8f531863e61fec96ff06857791",
+      "journal_members": [
+        "v159-comment-create-20261018-121323.zip",
+        "review_seed3_run3.zip",
+        "gateway-journal.jsonl"
+      ],
+      "ir_members": [
+        "v159-comment-create-20261018-121323.zip",
+        "review_seed3_run3.zip",
+        "generated/contract-ir.json"
+      ],
+      "paired_log_members": [
+        "v159-comment-create-20261018-121323.zip",
+        "sut_locked_seed3_run3.txt"
+      ]
+    },
+    {
+      "id": "vikunja-v159-s4",
+      "path": "results/triggers-v159-work-20261018/evidence/v159-triggers-20261018-121318-redacted.zip",
+      "version": "2.6.0",
+      "seed": 4,
+      "sha256": "4dc293c38bd0cfe64c7fff9838395c9a8597bf8f531863e61fec96ff06857791",
+      "journal_members": [
+        "v159-comment-create-20261018-121323.zip",
+        "review_seed4_run4.zip",
+        "gateway-journal.jsonl"
+      ],
+      "ir_members": [
+        "v159-comment-create-20261018-121323.zip",
+        "review_seed4_run4.zip",
+        "generated/contract-ir.json"
+      ],
+      "paired_log_members": [
+        "v159-comment-create-20261018-121323.zip",
+        "sut_locked_seed4_run4.txt"
+      ]
+    },
+    {
+      "id": "vikunja-v159-s5",
+      "path": "results/triggers-v159-work-20261018/evidence/v159-triggers-20261018-121318-redacted.zip",
+      "version": "2.6.0",
+      "seed": 5,
+      "sha256": "4dc293c38bd0cfe64c7fff9838395c9a8597bf8f531863e61fec96ff06857791",
+      "journal_members": [
+        "v159-comment-create-20261018-121323.zip",
+        "review_seed5_run5.zip",
+        "gateway-journal.jsonl"
+      ],
+      "ir_members": [
+        "v159-comment-create-20261018-121323.zip",
+        "review_seed5_run5.zip",
+        "generated/contract-ir.json"
+      ],
+      "paired_log_members": [
+        "v159-comment-create-20261018-121323.zip",
+        "sut_locked_seed5_run5.txt"
+      ]
+    }
+  ],
+  "cloud_summaries": [
+    {
+      "id": "gitea-g009-cloud-s1",
+      "path": "results/gitea-g009-cloud-20261021/result_s1.json",
+      "sha256": "56fdedc30a256d6f0c4e50f8d8bedf0ef38deebbe2f7652eb90ab19345849358",
+      "oracles": "results/gitea-g009-cloud-20261021/oracle_checks_s1.jsonl"
+    },
+    {
+      "id": "gitea-g009-cloud-s2",
+      "path": "results/gitea-g009-cloud-20261021/result_s2.json",
+      "sha256": "308d25d7b9149730adfa56fccac5a753d4472e553b9be92b176ab98547244bfb",
+      "oracles": "results/gitea-g009-cloud-20261021/oracle_checks_s2.jsonl"
+    },
+    {
+      "id": "gitea-g009-cloud-s3",
+      "path": "results/gitea-g009-cloud-20261021/result_s3.json",
+      "sha256": "ba0d8187c21e51709762bdd9aa41c371f57e10a26f288e527ac5560ba36c1c70",
+      "oracles": "results/gitea-g009-cloud-20261021/oracle_checks_s3.jsonl"
+    },
+    {
+      "id": "gitea-g009-cloud-s4",
+      "path": "results/gitea-g009-cloud-20261021/result_s4.json",
+      "sha256": "94f3ab51991676c45671bcf83a989256644d98dbd65a11e7febb38e0e48d42a9",
+      "oracles": "results/gitea-g009-cloud-20261021/oracle_checks_s4.jsonl"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "results/bnd-readback-v146-20261017/evidence/reviews/trap-v146-s1-20261017-181321-654979.zip",
+      "sha256": "1e8ef64511f78d5b60535245c1b4b3eefaff3a9837cc54a8943ca14c308f5724",
+      "git_blob_sha": "de1cc3b92dab80d0d2c7542b6dc8e792897feb54"
+    },
+    {
+      "path": "results/bnd-readback-v146-20261017/evidence/reviews/trap-v146-s2-20261017-181944-066923.zip",
+      "sha256": "872ca7c72a47df4eec9a629f9688f7d5b73314cfc3f6d83036bfcf39ac1c8da4",
+      "git_blob_sha": "a0977e51b5f34fc955bb626a1fead1a13ac7d8c0"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/result_s1.json",
+      "sha256": "56fdedc30a256d6f0c4e50f8d8bedf0ef38deebbe2f7652eb90ab19345849358",
+      "git_blob_sha": "ca2e1440a99d158d7ee03dc77f2a1d4c7f43828f"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/result_s2.json",
+      "sha256": "308d25d7b9149730adfa56fccac5a753d4472e553b9be92b176ab98547244bfb",
+      "git_blob_sha": "5bf41cd08944d090f3f2b84dfad85c0dfc1b1489"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/result_s3.json",
+      "sha256": "ba0d8187c21e51709762bdd9aa41c371f57e10a26f288e527ac5560ba36c1c70",
+      "git_blob_sha": "232449c728a076c40ed2851caf28f35a18945b3b"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/result_s4.json",
+      "sha256": "94f3ab51991676c45671bcf83a989256644d98dbd65a11e7febb38e0e48d42a9",
+      "git_blob_sha": "12f41c36edb667515bbbf7e64c3fb0664a62eaa9"
+    },
+    {
+      "path": "results/triggers-v159-work-20261018/evidence/v159-triggers-20261018-121318-redacted.zip",
+      "sha256": "4dc293c38bd0cfe64c7fff9838395c9a8597bf8f531863e61fec96ff06857791",
+      "git_blob_sha": "93b3de82a3350f56d0100c8efb60e039b3090bb7"
+    },
+    {
+      "path": "results/confirm-v185-cloud-20261020/cloud-v2.6.0/SUT_LOG_locked.txt",
+      "sha256": "0e5b7d438d6c8a80ad06b4d40b1e1fe38c1a2caf3001ae013ea83857988975fb",
+      "git_blob_sha": "a884cbeba33d5c94c6992744884b14e17d8937cb"
+    },
+    {
+      "path": "results/confirm-v185-cloud-20261020/cloud-v2.7.0/SUT_LOG_locked.txt",
+      "sha256": "f6cab5c7fccfc6f5eae269f31b843e2fdc2cc52c4126949dcceadb6d232ef2e1",
+      "git_blob_sha": "daee9aa77389afc7bc2e67f73ac712f89d2336e7"
+    }
+  ],
+  "transcript_log_pairs": [
+    {
+      "run_id": "vikunja-2.6.0-v185",
+      "path": "results/confirm-v185-cloud-20261020/cloud-v2.6.0/REPRO_v185.json",
+      "log": "results/confirm-v185-cloud-20261020/cloud-v2.6.0/SUT_LOG_locked.txt",
+      "log_sha256": "0e5b7d438d6c8a80ad06b4d40b1e1fe38c1a2caf3001ae013ea83857988975fb"
+    },
+    {
+      "run_id": "vikunja-2.7.0-v185",
+      "path": "results/confirm-v185-cloud-20261020/cloud-v2.7.0/REPRO_v185.json",
+      "log": "results/confirm-v185-cloud-20261020/cloud-v2.7.0/SUT_LOG_locked.txt",
+      "log_sha256": "f6cab5c7fccfc6f5eae269f31b843e2fdc2cc52c4126949dcceadb6d232ef2e1"
+    }
+  ]
+}

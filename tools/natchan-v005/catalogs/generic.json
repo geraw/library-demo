@@ -1,0 +1,922 @@
+{
+  "schema_version": "natchan-catalog/1",
+  "entries": [
+    {
+      "id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "title": "Server error response",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-TRANSPORT_FAILURE",
+      "kind": "pattern",
+      "title": "No HTTP response after transport error",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "transport_failure",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-COLLATERAL_DELETE",
+      "kind": "pattern",
+      "title": "Non-target resource removed",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "non_target_removed",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-LEGAL_OPERATION_REJECTED",
+      "kind": "pattern",
+      "title": "Declared legal operation rejected",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "legal_loan_rejected",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-EXISTING_RESOURCE_UNREADABLE",
+      "kind": "pattern",
+      "title": "Known existing resource returns 404",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "existing_read_404",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-PARTIAL_WRITE",
+      "kind": "pattern",
+      "title": "Some requested changes applied and others kept after error",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "atomicity",
+          "op": "eq",
+          "value": "partial"
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-COMMITTED_DESPITE_ERROR",
+      "kind": "pattern",
+      "title": "Requested changes persisted despite error",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "atomicity",
+          "op": "eq",
+          "value": "committed_despite_error"
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-SILENT_CHANGE",
+      "kind": "pattern",
+      "title": "Qualified readback differs from requested writable/readable fields",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "silent_change",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-BOUND_NOT_ENFORCED",
+      "kind": "pattern",
+      "title": "Explicit schema bound accepted",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "explicit_bound_violated",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "request_accepted",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-UNDOCUMENTED_RESTRICTION",
+      "kind": "pattern",
+      "title": "Observed restriction absent from documented boundary",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "restriction_observed",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "restriction_documented",
+          "op": "eq",
+          "value": false
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-CREATE_UPDATE_DIVERGENCE",
+      "kind": "pattern",
+      "title": "Paired create/update outcomes differ",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "pair_qualified",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "create_update_diverge",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-HARNESS_EXPECTATION_MISMATCH",
+      "kind": "pattern",
+      "title": "Harness rejects a contextually valid documented response",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "harness_expectation_wrong",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "response_context_valid",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-STALE_TEST_INPUT",
+      "kind": "pattern",
+      "title": "Test supplied a proven stale version or identifier",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "test_input_proven_stale",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-ORPHAN_AFTER_DELETE",
+      "kind": "pattern",
+      "title": "Child remains against explicit cascade policy",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "cascade_required",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "child_still_present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "state_qualified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-DUPLICATE_WRITE_ERROR",
+      "kind": "pattern",
+      "title": "Server error in a qualified repeated-write experiment",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "repeated_write_qualified",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-VIEW_MISMATCH",
+      "kind": "pattern",
+      "title": "Resource absent from a required view",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "view_membership_required",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "view_missing",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "state_qualified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-LINK_MISMATCH",
+      "kind": "pattern",
+      "title": "Required relation missing, duplicate or left behind",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "link_violation",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "state_qualified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-SERVER_LOCK_EVIDENCE",
+      "kind": "pattern",
+      "title": "Correlated server log identifies lock error",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "log_correlation_verified",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "log_error_family",
+          "op": "eq",
+          "value": "database_lock"
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-CREATE-UPDATE-PARTIAL-COMPOUND",
+      "kind": "pattern",
+      "title": "Silent create transformation, update server error and partial write in a qualified pair",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "create_update_partial_compound",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-STATE-CHANGE-AFTER-ERROR",
+      "kind": "pattern",
+      "title": "Identity-bound state differs after a failed write",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "state_changed_after_error",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Same-owner, same-resource ordered before/after readbacks with no unresolved intervening write"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-SILENT-TRUNCATION",
+      "kind": "pattern",
+      "title": "Silent truncation subtype",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "truncation_observed",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-SILENT-NORMALIZATION",
+      "kind": "pattern",
+      "title": "Silent normalization subtype; intentional behavior requires review",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "normalization_candidate",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-SILENT-DROP",
+      "kind": "pattern",
+      "title": "Dropped requested field subtype",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "field_drop_observed",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-SILENT-TIME-CHANGE",
+      "kind": "pattern",
+      "title": "Changed timestamp instant subtype",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "time_change_observed",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-CREATE-DUPLICATE",
+      "kind": "pattern",
+      "title": "Duplicate creation after error/retry",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "operation",
+          "op": "eq",
+          "value": "create"
+        },
+        {
+          "fact": "atomicity",
+          "op": "eq",
+          "value": "duplicate"
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-DELETE-COMMITTED-AFTER-ERROR",
+      "kind": "pattern",
+      "title": "Deletion committed despite error; 403 alone insufficient",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "operation",
+          "op": "eq",
+          "value": "delete"
+        },
+        {
+          "fact": "atomicity",
+          "op": "eq",
+          "value": "committed_despite_error"
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-KNOWN-TRANSIENT-SIGNATURE",
+      "kind": "pattern",
+      "title": "Known transient failure with verified signature/context",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "known_failure_signature_match",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-TRIGGER-ADJACENCY",
+      "kind": "pattern",
+      "title": "Trigger-adjacent failure with confounding assessment",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "adjacency_qualified",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-UPDATE-ACCEPTS-CREATE-REJECTED",
+      "kind": "pattern",
+      "title": "Paired update accepts a value rejected on create",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "update_accepts_create_rejected",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-UPDATE-REJECTS-CREATE-ACCEPTED",
+      "kind": "pattern",
+      "title": "Paired update rejects a value accepted on create",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "update_rejects_create_accepted",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "GEN-UPDATE-SERVER-ERROR",
+      "kind": "pattern",
+      "title": "Server error in update role",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "operation",
+          "op": "eq",
+          "value": "update"
+        },
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Implement and test extraction/qualification from original evidence before activation"
+      ],
+      "provenance": [
+        {
+          "source": "User trap/type specification, 2026-10-21",
+          "verification": "Explicit placeholder; no automatic match"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    }
+  ]
+}
