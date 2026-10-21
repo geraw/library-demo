@@ -1,0 +1,81 @@
+{
+  "validation": "PASS",
+  "combined_tests_passed": 36,
+  "source_archive_sha256": "7abd54bd10a41ac0491594ca679112140d92fbe0fb5553cccc04264d5e0d0895",
+  "runs": [
+    {
+      "id": "control",
+      "tool": "provengo",
+      "system": "library",
+      "native_status": "reported",
+      "native_metric": "failed_fixed_test_cases",
+      "native_count": 2,
+      "native_failed_cases_on_passing_control": [],
+      "http_anomalies": {
+        "request_count": 3791,
+        "http_4xx": 0,
+        "http_5xx": 0,
+        "parse_issues": [],
+        "note": "HTTP anomalies are not themselves confirmed semantic bugs; oracle readbacks are excluded"
+      },
+      "semantic_status": "EVALUATED_RECORDED_CASES",
+      "external_evaluator": {
+        "confirmed_classes_in_evaluable_cases": [],
+        "candidate_classes_in_evaluable_cases": [],
+        "cases_with_candidates": 0
+      }
+    },
+    {
+      "id": "business-four",
+      "tool": "provengo",
+      "system": "library",
+      "native_status": "reported",
+      "native_metric": "failed_fixed_test_cases",
+      "native_count": 7,
+      "native_failed_cases_on_passing_control": [
+        "80",
+        "257",
+        "260",
+        "266",
+        "433"
+      ],
+      "http_anomalies": {
+        "request_count": 3790,
+        "http_4xx": 5,
+        "http_5xx": 0,
+        "parse_issues": [],
+        "note": "HTTP anomalies are not themselves confirmed semantic bugs; oracle readbacks are excluded"
+      },
+      "semantic_status": "EVALUATED_RECORDED_CASES",
+      "external_evaluator": {
+        "confirmed_classes_in_evaluable_cases": [],
+        "candidate_classes_in_evaluable_cases": [
+          "bug-5-candidate"
+        ],
+        "cases_with_candidates": 22
+      }
+    },
+    {
+      "id": "book-read-one",
+      "tool": "provengo",
+      "system": "library",
+      "native_status": "reported",
+      "native_metric": "failed_fixed_test_cases",
+      "native_count": 2,
+      "native_failed_cases_on_passing_control": [],
+      "http_anomalies": {
+        "request_count": 3791,
+        "http_4xx": 0,
+        "http_5xx": 0,
+        "parse_issues": [],
+        "note": "HTTP anomalies are not themselves confirmed semantic bugs; oracle readbacks are excluded"
+      },
+      "semantic_status": "EVALUATED_RECORDED_CASES",
+      "external_evaluator": {
+        "confirmed_classes_in_evaluable_cases": [],
+        "candidate_classes_in_evaluable_cases": [],
+        "cases_with_candidates": 0
+      }
+    }
+  ]
+}
