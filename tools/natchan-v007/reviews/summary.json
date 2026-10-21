@@ -1,0 +1,285 @@
+{
+  "schema_version": "natchan-retrospective/1",
+  "new_sut_executions": 0,
+  "classifier_catalog": "natchan-v006",
+  "mealie": {
+    "archive_sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+    "review": {
+      "runs": [
+        {
+          "id": "household-controls-1",
+          "case": "household-controls",
+          "sample": 1,
+          "receipt_response_count": 46,
+          "source": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/household-controls/result-1.json"
+        },
+        {
+          "id": "household-controls-2",
+          "case": "household-controls",
+          "sample": 2,
+          "receipt_response_count": 46,
+          "source": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/household-controls/result-2.json"
+        },
+        {
+          "id": "reference-controls-1",
+          "case": "reference-controls",
+          "sample": 1,
+          "receipt_response_count": 47,
+          "source": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-1.json"
+        },
+        {
+          "id": "reference-controls-2",
+          "case": "reference-controls",
+          "sample": 2,
+          "receipt_response_count": 47,
+          "source": "evidence/historical/generic_generator_scope_findings_delta/evidence/scope-controls-20261005-073218/campaign-original/reference-controls/result-2.json"
+        },
+        {
+          "id": "separate-1",
+          "case": "separate",
+          "sample": 1,
+          "receipt_response_count": 57,
+          "source": "evidence/historical/generic_generator_multi_identity_findings_delta/evidence/multi-identity-20261005-065704/campaign-original/separate/result-1.json"
+        },
+        {
+          "id": "separate-2",
+          "case": "separate",
+          "sample": 2,
+          "receipt_response_count": 57,
+          "source": "evidence/historical/generic_generator_multi_identity_findings_delta/evidence/multi-identity-20261005-065704/campaign-original/separate/result-2.json"
+        },
+        {
+          "id": "shared-1",
+          "case": "shared",
+          "sample": 1,
+          "receipt_response_count": 46,
+          "source": "evidence/historical/generic_generator_multi_identity_findings_delta/evidence/multi-identity-20261005-065704/campaign-original/shared/result-1.json"
+        },
+        {
+          "id": "shared-2",
+          "case": "shared",
+          "sample": 2,
+          "receipt_response_count": 46,
+          "source": "evidence/historical/generic_generator_multi_identity_findings_delta/evidence/multi-identity-20261005-065704/campaign-original/shared/result-2.json"
+        }
+      ],
+      "owner_comparisons": [
+        {
+          "run_id": "household-controls-1",
+          "action": "other_list_add_a",
+          "preimage": "cross_list_b",
+          "readback": "owner_list_after_a",
+          "qualified": true,
+          "intervening_unresolved_writes": [],
+          "complete": true,
+          "reasons": [],
+          "response_code": 500,
+          "different_actor": true,
+          "state_changed": true,
+          "before_item_count": 2,
+          "after_item_count": 3
+        },
+        {
+          "run_id": "household-controls-1",
+          "action": "other_list_add_b",
+          "preimage": "cross_list_a",
+          "readback": "owner_list_after_b",
+          "qualified": true,
+          "intervening_unresolved_writes": [],
+          "complete": true,
+          "reasons": [],
+          "response_code": 500,
+          "different_actor": true,
+          "state_changed": true,
+          "before_item_count": 2,
+          "after_item_count": 3
+        },
+        {
+          "run_id": "household-controls-2",
+          "action": "other_list_add_a",
+          "preimage": "cross_list_b",
+          "readback": "owner_list_after_a",
+          "qualified": true,
+          "intervening_unresolved_writes": [],
+          "complete": true,
+          "reasons": [],
+          "response_code": 500,
+          "different_actor": true,
+          "state_changed": true,
+          "before_item_count": 2,
+          "after_item_count": 3
+        },
+        {
+          "run_id": "household-controls-2",
+          "action": "other_list_add_b",
+          "preimage": "cross_list_a",
+          "readback": "owner_list_after_b",
+          "qualified": true,
+          "intervening_unresolved_writes": [],
+          "complete": true,
+          "reasons": [],
+          "response_code": 500,
+          "different_actor": true,
+          "state_changed": true,
+          "before_item_count": 2,
+          "after_item_count": 3
+        }
+      ],
+      "changed_after_error": 4,
+      "server_error_count": 16,
+      "new_sut_executions": 0,
+      "limits": [
+        "Original receipt reanalysis only; no new tool execution",
+        "Nearest owner preimage is used to avoid attributing earlier successful cross-add changes to the later failure",
+        "No root cause or permission-policy confirmation from the 500 alone",
+        "No automatic named F04/F05 assignment; product known-bug definitions remain to be qualified"
+      ]
+    },
+    "previous_labels": {
+      "GEN-SERVER_ERROR": 16,
+      "GEN-STATE-CHANGE-AFTER-ERROR": 4
+    },
+    "updated_labels": {
+      "GEN-SERVER_ERROR": 16,
+      "GEN-STATE-CHANGE-AFTER-ERROR": 4
+    },
+    "boundary": "16 server-error occurrences and four state-change witnesses; no named F04/F05 or new unique bug claim"
+  },
+  "regressions": [
+    {
+      "name": "shared-historical-profiles",
+      "evidence_kind": "code-regression-not-product-run",
+      "exit_code": 0,
+      "output": ".............................                                            [100%]\n29 passed in 0.12s\n"
+    },
+    {
+      "name": "immich_prefix_evaluator_rc2a_delta",
+      "evidence_kind": "code-regression-not-product-run",
+      "exit_code": 0,
+      "output": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.001s\n\nOK\n"
+    },
+    {
+      "name": "immich_concurrency_reevaluation_delta",
+      "evidence_kind": "code-regression-not-product-run",
+      "exit_code": 0,
+      "output": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "name": "mealie_evaluator_intervening_write_v0268_delta",
+      "evidence_kind": "code-regression-not-product-run",
+      "exit_code": 0,
+      "output": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.001s\n\nOK\n"
+    },
+    {
+      "name": "openapi_sbt_empirical_evaluator_replay_delta",
+      "evidence_kind": "code-regression-not-product-run",
+      "exit_code": 0,
+      "output": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.001s\n\nOK\n"
+    }
+  ],
+  "archive_inventory": [
+    {
+      "archive": "sources/Mealie_Supervisor_Artifact_v003.zip",
+      "sha256": "867c012242c8acff92b314a80c3bcd600e114accdce82621f6afff58f20ed577",
+      "member_count": 368,
+      "candidate_members": [],
+      "interpretation": "Filename inventory only; candidates are not validated HTTP evidence"
+    },
+    {
+      "archive": "sources/keycloak_parallel_crud_v8_real_http_overlap_delta.zip",
+      "sha256": "a13ece91b481d7c78e830e8bb815f0308367bf5ee5040cc75759f4cfccf3f820",
+      "member_count": 7,
+      "candidate_members": [],
+      "interpretation": "Filename inventory only; candidates are not validated HTTP evidence"
+    },
+    {
+      "archive": "sources/\u05de\u05d0\u05de\u05e8 FSE/Mealie_Consistency_v006_SourceBundle.zip",
+      "sha256": "9d585cc35f380232926dbcc27ff1e08bf65ac8e0f1cfe0572ed0fbf7973f87e0",
+      "member_count": 27,
+      "candidate_members": [],
+      "interpretation": "Filename inventory only; candidates are not validated HTTP evidence"
+    },
+    {
+      "archive": "sources/\u05de\u05d0\u05de\u05e8 FSE/Mealie_F04_F05_Identity_Audit_v002.zip",
+      "sha256": "6d070aa198d021f8d4a44f4e6dec7c14bfecf7b24213688b10e1ca07a8fb792e",
+      "member_count": 2,
+      "candidate_members": [],
+      "interpretation": "Filename inventory only; candidates are not validated HTTP evidence"
+    },
+    {
+      "archive": "sources/\u05de\u05d0\u05de\u05e8 FSE/Mealie_Local_Observation_Tools.zip",
+      "sha256": "3b84ff0c922eeff9d632e7ecea0ca645b8616e8c60fc872661a8aeab5942daaf",
+      "member_count": 7,
+      "candidate_members": [],
+      "interpretation": "Filename inventory only; candidates are not validated HTTP evidence"
+    },
+    {
+      "archive": "sources/\u05de\u05d0\u05de\u05e8 FSE/Mealie_Research_Collector_v002.zip",
+      "sha256": "ca6d9e05c396c75945ff01c80bb71e5f8c21436c16431348f1281c1ed437aef3",
+      "member_count": 2,
+      "candidate_members": [],
+      "interpretation": "Filename inventory only; candidates are not validated HTTP evidence"
+    },
+    {
+      "archive": "sources/\u05de\u05d0\u05de\u05e8 FSE/immich_concurrency_reevaluation_delta.zip",
+      "sha256": "7ad4e65d92955fd2fc523d72749ae7691936c1e7998dee9bd26c7135a46c6d0e",
+      "member_count": 4,
+      "candidate_members": [],
+      "interpretation": "Filename inventory only; candidates are not validated HTTP evidence"
+    },
+    {
+      "archive": "sources/\u05de\u05d0\u05de\u05e8 FSE/immich_prefix_evaluator_rc2a_delta.zip",
+      "sha256": "fcfac30aafc7a5d2ada6309b6bf1dce9c928a25ee3ca7ae12804249bbc8fc9db",
+      "member_count": 3,
+      "candidate_members": [],
+      "interpretation": "Filename inventory only; candidates are not validated HTTP evidence"
+    },
+    {
+      "archive": "sources/\u05de\u05d0\u05de\u05e8 FSE/keycloak-openapi-pilot-v57.zip",
+      "sha256": "3a08a93740beb520f9f18b228fbbe3ba503d78b96b27408b5514ca397219ba73",
+      "member_count": 62,
+      "candidate_members": [],
+      "interpretation": "Filename inventory only; candidates are not validated HTTP evidence"
+    },
+    {
+      "archive": "sources/\u05de\u05d0\u05de\u05e8 FSE/keycloak-role-serial-oracle-v52.zip",
+      "sha256": "875bd55671f7022960c2c5879ed50eb866ee4dba98cee1dc60f8295285b383c0",
+      "member_count": 2,
+      "candidate_members": [],
+      "interpretation": "Filename inventory only; candidates are not validated HTTP evidence"
+    },
+    {
+      "archive": "sources/\u05de\u05d0\u05de\u05e8 FSE/keycloak-v56-evidence-audit-20260930-052445-417291.zip",
+      "sha256": "c68595073573ab0fbeb5503a2dedc21e74b458eb9ac9a9398bdc95a66e1a8249",
+      "member_count": 5,
+      "candidate_members": [],
+      "interpretation": "Filename inventory only; candidates are not validated HTTP evidence"
+    },
+    {
+      "archive": "sources/\u05de\u05d0\u05de\u05e8 FSE/keycloak-v56-evidence-coverage-v56_1-delta.zip",
+      "sha256": "622a466dc5da875865cc2a7383104ca50d02c32718be3458fd2d765c042353c7",
+      "member_count": 3,
+      "candidate_members": [],
+      "interpretation": "Filename inventory only; candidates are not validated HTTP evidence"
+    },
+    {
+      "archive": "sources/\u05de\u05d0\u05de\u05e8 FSE/keycloak_readback_binding_delta.zip",
+      "sha256": "88aed3e5315f6e139d0318951bf8aaec7095a4b349c3178461517013d7f3f10e",
+      "member_count": 11,
+      "candidate_members": [],
+      "interpretation": "Filename inventory only; candidates are not validated HTTP evidence"
+    },
+    {
+      "archive": "sources/\u05de\u05d0\u05de\u05e8 FSE/mealie_evaluator_intervening_write_v0268_delta.zip",
+      "sha256": "9877147f14ecf8453f99fba5b6433a4cb3d9ce140f22391783a7bb1047521cd2",
+      "member_count": 5,
+      "candidate_members": [],
+      "interpretation": "Filename inventory only; candidates are not validated HTTP evidence"
+    }
+  ],
+  "limitations": [
+    "Historical unit tests do not establish raw-run support in the current classifier",
+    "Immich and Keycloak need original HTTP traces, matching manifests, controls and product adapters",
+    "Garage, Pharmacy, NetBox and historical Library retain frozen semantic profiles, not new generic adapters"
+  ]
+}
