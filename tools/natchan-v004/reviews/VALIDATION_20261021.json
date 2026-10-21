@@ -1,0 +1,136 @@
+{
+  "status": "PASS_FOR_DECLARED_SCOPE",
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "unit_tests": {
+    "v002": 26,
+    "v003": 25,
+    "v004": 13,
+    "total": 64
+  },
+  "library_regression": {
+    "observation_count": 22,
+    "unclassified_count": 0,
+    "known_bug_ids": [
+      "LIB-ISSTA-BUG-5"
+    ]
+  },
+  "tse_parity": "PASS_FOR_SCOPED_EXPECTATIONS",
+  "exact_git_blobs_verified": 22,
+  "inputs": [
+    {
+      "path": "results/gitea-g007-work-20261021/review_g007_s1.zip",
+      "git_blob_sha": "11c380fdd4d1b892da5d96453b10383c1c7055fd",
+      "sha256": "742322d699eceb3dae8ccfce3c263616a825cf2fa142ed8e146b4d4ff4644f76"
+    },
+    {
+      "path": "results/gitea-g007-work-20261021/review_g007_s2.zip",
+      "git_blob_sha": "79a57d06ca8079b5b571ae8322cfbc3dd20659d1",
+      "sha256": "cfb1bb1db9b0336a07885a0297cbb8d29002288f6d4e128824ef4660086831f6"
+    },
+    {
+      "path": "results/gitea-g007-work-20261021/review_g007_s3.zip",
+      "git_blob_sha": "8bd189ebfb5995b0f2489f31ea7f77d119f76e3f",
+      "sha256": "6e68b0f4737cf14832d53991136c5a2588dd9644ffa1b8e37ff4ef0364badef6"
+    },
+    {
+      "path": "results/gitea-g007-work-20261021/review_g007_s4.zip",
+      "git_blob_sha": "c83a20230fe67539b7ee4405c654ff08113816a0",
+      "sha256": "c9ddf2695d08b9c2c93d2e05c101c78265058e5b92222b055a96beb9c57fc40f"
+    },
+    {
+      "path": "results/gitea-g009-work-20261021/review_g009_s1.zip",
+      "git_blob_sha": "cfb464c7d4bb8ae6080dace05b9eeccd948e3639",
+      "sha256": "1a36911e21705ac0d4db634cf6e9e330e2c17de834f4c7ab55224b92bca91974"
+    },
+    {
+      "path": "results/gitea-g009-work-20261021/review_g009_s2.zip",
+      "git_blob_sha": "eff96ecb76f06b1b1e991fa8d91cc2b1862c232a",
+      "sha256": "3c8ddc113fbf40a1f76c6a114cad754978669c1a0d03fafbf8847ff7fa7e6090"
+    },
+    {
+      "path": "results/gitea-g009-work-20261021/review_g009_s3.zip",
+      "git_blob_sha": "024c18d71518243c4b014e7d842590a1067540f3",
+      "sha256": "a641d932fea7b8bf03fae942a1a87f0a817f957a7ec2d50aa216a046d0b71bde"
+    },
+    {
+      "path": "results/gitea-g009-work-20261021/review_g009_s4.zip",
+      "git_blob_sha": "931777ebfb40c69dbc32442195df270ffeb3d5b5",
+      "sha256": "29a4524d54febb76a1dd7d96e43671731bbe7ed7614dd97d5d26b7b8d9179910"
+    },
+    {
+      "path": "results/confirm-v185-cloud-20261020/cloud-v2.6.0/REPRO_v177.json",
+      "git_blob_sha": "00d640fe48ad2a7760e1cb39b9c76c3f41dec12e",
+      "sha256": "853598912a9e571e1ce32ae6ac53fd5377c2809eaf1421a657b97f0932fc2ce4"
+    },
+    {
+      "path": "results/confirm-v185-cloud-20261020/cloud-v2.6.0/REPRO_v180.json",
+      "git_blob_sha": "8d888b1def93751fa79ca524963bb0429bd7737d",
+      "sha256": "e57a0dc959d140fb0e0b11ae0e1ea5185f9cdbaa3b2b7eaa5ca71b2cabc0a403"
+    },
+    {
+      "path": "results/confirm-v185-cloud-20261020/cloud-v2.6.0/REPRO_v185.json",
+      "git_blob_sha": "e653605a0b34beb69c9231d45f43b29ed71333bf",
+      "sha256": "5e2dc35887604cd8701c853e61e62866f331a4cc3c4f08243df98343b6feb53e"
+    },
+    {
+      "path": "results/confirm-v185-cloud-20261020/cloud-v2.7.0/REPRO_v177.json",
+      "git_blob_sha": "4febec62e4ac611db243e1c21da2b22a39d94a22",
+      "sha256": "5c09db4c6dcbf007c23c152814ed3c64474398fc661c5eb9e49291776c838ab7"
+    },
+    {
+      "path": "results/confirm-v185-cloud-20261020/cloud-v2.7.0/REPRO_v180.json",
+      "git_blob_sha": "3ed660b6b904fb4f599e22965406e956a44b6e72",
+      "sha256": "38abd8b6b942acbdcf4200e038cf4fed9d21d1c15bec18c0e277269751251cb6"
+    },
+    {
+      "path": "results/confirm-v185-cloud-20261020/cloud-v2.7.0/REPRO_v185.json",
+      "git_blob_sha": "004d3c04e41f46df559b02a4a0f2964bc34a945a",
+      "sha256": "3dcdc6a6d1a590a62e9c82c07e3ab62375c1ff0906bc4d022caf1f71b582955a"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/oracle_checks_s1.jsonl",
+      "git_blob_sha": "48882376eddd27f8ce00beddfdfbeada3e9ecf50",
+      "sha256": "18d937fb2a131ee83c84f94928df8a1405d8f7d8541c3bd2ad29370697d77886"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/oracle_checks_s2.jsonl",
+      "git_blob_sha": "057bff09fdf9afbe5ec64e6f61bcc00d7405f07f",
+      "sha256": "6ece7166e0f9d1282c4ece2e3fa331bbf69f069cb5a0112b3c06cf53b559d510"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/oracle_checks_s3.jsonl",
+      "git_blob_sha": "3be0fba96e92b6b36012ced5180ad49273f2786a",
+      "sha256": "93bc1f43f1d0dde8cecdf77de3d5f632edc7eedbe898110afc2471b75ecabebd"
+    },
+    {
+      "path": "results/gitea-g009-cloud-20261021/oracle_checks_s4.jsonl",
+      "git_blob_sha": "018d9bda7e5f55fab158a4795012af7d99f066d3",
+      "sha256": "45058a7776942edb207b2b9718f2efdf9746a2f7fc9c3df68568973c77e1ccd6"
+    },
+    {
+      "path": "results/gitea-g003-work-20261021/review_g003_s1.zip",
+      "git_blob_sha": "4a444964bca0e1c378393b1ab437ecaefafb4c5d",
+      "sha256": "6a5b4bf9a5a60686ae14aed3da1148ad2d00a261b9a17b9f4a322510447135df"
+    },
+    {
+      "path": "results/gitea-g003-work-20261021/review_g003_s2.zip",
+      "git_blob_sha": "43661d7ecf182d552ab0ee8a8bbcaa8488f5a03f",
+      "sha256": "edb3fae11a5ab03afdaa8e1759889a6ddfe87fec2ec751b1e3968836097be1b3"
+    },
+    {
+      "path": "results/gitea-g003-work-20261021/review_g003_s3.zip",
+      "git_blob_sha": "fcb4f5ee0c566926cc95c18f7cc57feca2bb203e",
+      "sha256": "5f38b9c046a5d51606724da9a4a98e508724be5b721d584950f01e714eca6f4e"
+    },
+    {
+      "path": "results/gitea-g003-work-20261021/review_g003_s4.zip",
+      "git_blob_sha": "39d45106827f2d9d617b61db309b2deb85ac76ba",
+      "sha256": "546208f483d855e5e9f4dc87a9f298027d8871bf6f689d14ce4fc11efc533e76"
+    }
+  ],
+  "manifest_sha256": "40349c70e64a6842ec492c4f47f3c810bf72dd479b76ed6e517c9a65edeb6f01",
+  "actual_tse_http_records": 7967,
+  "new_sut_calls": 0,
+  "powershell_execution": "not executed; pwsh unavailable; Python pipeline executed",
+  "limitations": "See COVERAGE.md and reviews/REVIEW_20261021.md"
+}

@@ -1,0 +1,703 @@
+{
+  "schema_version": "natchan-tse-summary/1",
+  "source_repository": "weissye/vikunja_study",
+  "source_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+  "manifest_sha256": "40349c70e64a6842ec492c4f47f3c810bf72dd479b76ed6e517c9a65edeb6f01",
+  "runs": [
+    {
+      "id": "gitea-g007-work-s1",
+      "product": "gitea",
+      "version": "28.1.0",
+      "tool": "provengo",
+      "source_sha256": "742322d699eceb3dae8ccfce3c263616a825cf2fa142ed8e146b4d4ff4644f76",
+      "http_records": 887,
+      "http_5xx": 3,
+      "original_oracle_records": 128,
+      "native_run_status": "COMPLETED",
+      "native_exit": 0,
+      "native_log_sha256": "4a3e175a480d801cc670e741cbb4b7d7eb5672db31781537b0af5602a05e7923"
+    },
+    {
+      "id": "gitea-g007-work-s2",
+      "product": "gitea",
+      "version": "28.1.0",
+      "tool": "provengo",
+      "source_sha256": "cfb1bb1db9b0336a07885a0297cbb8d29002288f6d4e128824ef4660086831f6",
+      "http_records": 888,
+      "http_5xx": 2,
+      "original_oracle_records": 127,
+      "native_run_status": "COMPLETED",
+      "native_exit": 0,
+      "native_log_sha256": "2eca6ef5fd3c8f7751f3a43ffd5933238ec8eb1bae3d00f1fe85617162c00f92"
+    },
+    {
+      "id": "gitea-g007-work-s3",
+      "product": "gitea",
+      "version": "28.1.0",
+      "tool": "provengo",
+      "source_sha256": "6e68b0f4737cf14832d53991136c5a2588dd9644ffa1b8e37ff4ef0364badef6",
+      "http_records": 899,
+      "http_5xx": 1,
+      "original_oracle_records": 132,
+      "native_run_status": "COMPLETED",
+      "native_exit": 0,
+      "native_log_sha256": "38c9043a7a4b90ed9a19fe190286899b353be2bcd9253978658acb947ab72ef0"
+    },
+    {
+      "id": "gitea-g007-work-s4",
+      "product": "gitea",
+      "version": "28.1.0",
+      "tool": "provengo",
+      "source_sha256": "c9ddf2695d08b9c2c93d2e05c101c78265058e5b92222b055a96beb9c57fc40f",
+      "http_records": 894,
+      "http_5xx": 3,
+      "original_oracle_records": 126,
+      "native_run_status": "COMPLETED",
+      "native_exit": 0,
+      "native_log_sha256": "f7ef373a98b5b12c99c4092c237d97ebc521ba07a96f2ab5872127e656b4f921"
+    },
+    {
+      "id": "gitea-g009-work-s1",
+      "product": "gitea",
+      "version": "28.1.0",
+      "tool": "provengo",
+      "source_sha256": "1a36911e21705ac0d4db634cf6e9e330e2c17de834f4c7ab55224b92bca91974",
+      "http_records": 451,
+      "http_5xx": 3,
+      "original_oracle_records": 159,
+      "native_run_status": "STOPPED_AT_FIRST_FAILURE",
+      "native_exit": 1,
+      "native_log_sha256": "700a285c6956db7c24213ce8ad1cba6908a763222d94174522a3cedc7d69cc0d"
+    },
+    {
+      "id": "gitea-g009-work-s2",
+      "product": "gitea",
+      "version": "28.1.0",
+      "tool": "provengo",
+      "source_sha256": "3c8ddc113fbf40a1f76c6a114cad754978669c1a0d03fafbf8847ff7fa7e6090",
+      "http_records": 422,
+      "http_5xx": 4,
+      "original_oracle_records": 148,
+      "native_run_status": "STOPPED_AT_FIRST_FAILURE",
+      "native_exit": 1,
+      "native_log_sha256": "58219abd9e1a4ac265cc8a28943c64e130e12fecfcb4943c3b49072df20dc219"
+    },
+    {
+      "id": "gitea-g009-work-s3",
+      "product": "gitea",
+      "version": "28.1.0",
+      "tool": "provengo",
+      "source_sha256": "a641d932fea7b8bf03fae942a1a87f0a817f957a7ec2d50aa216a046d0b71bde",
+      "http_records": 417,
+      "http_5xx": 3,
+      "original_oracle_records": 150,
+      "native_run_status": "STOPPED_AT_FIRST_FAILURE",
+      "native_exit": 1,
+      "native_log_sha256": "5746ccf3cef2f4a17a4d48376933aa939ce597b2fa2cfa4fc8467caace1083a9"
+    },
+    {
+      "id": "gitea-g009-work-s4",
+      "product": "gitea",
+      "version": "28.1.0",
+      "tool": "provengo",
+      "source_sha256": "29a4524d54febb76a1dd7d96e43671731bbe7ed7614dd97d5d26b7b8d9179910",
+      "http_records": 492,
+      "http_5xx": 5,
+      "original_oracle_records": 175,
+      "native_run_status": "STOPPED_AT_FIRST_FAILURE",
+      "native_exit": 1,
+      "native_log_sha256": "72ffd22b930e8290aa84fa63be18ce6434106330095523d9c702d72f2f6a1f30"
+    },
+    {
+      "id": "vikunja-2.6.0-v177",
+      "product": "vikunja",
+      "version": "2.6.0",
+      "tool": "direct-reproducer",
+      "source_sha256": "853598912a9e571e1ce32ae6ac53fd5377c2809eaf1421a657b97f0932fc2ce4",
+      "http_records": 100,
+      "http_5xx": 0,
+      "original_oracle_records": 0,
+      "native_run_status": null,
+      "native_exit": null,
+      "native_log_sha256": null
+    },
+    {
+      "id": "vikunja-2.6.0-v180",
+      "product": "vikunja",
+      "version": "2.6.0",
+      "tool": "direct-reproducer",
+      "source_sha256": "e57a0dc959d140fb0e0b11ae0e1ea5185f9cdbaa3b2b7eaa5ca71b2cabc0a403",
+      "http_records": 35,
+      "http_5xx": 0,
+      "original_oracle_records": 0,
+      "native_run_status": null,
+      "native_exit": null,
+      "native_log_sha256": null
+    },
+    {
+      "id": "vikunja-2.6.0-v185",
+      "product": "vikunja",
+      "version": "2.6.0",
+      "tool": "direct-reproducer",
+      "source_sha256": "5e2dc35887604cd8701c853e61e62866f331a4cc3c4f08243df98343b6feb53e",
+      "http_records": 249,
+      "http_5xx": 32,
+      "original_oracle_records": 0,
+      "native_run_status": null,
+      "native_exit": null,
+      "native_log_sha256": null
+    },
+    {
+      "id": "vikunja-2.7.0-v177",
+      "product": "vikunja",
+      "version": "2.7.0",
+      "tool": "direct-reproducer",
+      "source_sha256": "5c09db4c6dcbf007c23c152814ed3c64474398fc661c5eb9e49291776c838ab7",
+      "http_records": 100,
+      "http_5xx": 0,
+      "original_oracle_records": 0,
+      "native_run_status": null,
+      "native_exit": null,
+      "native_log_sha256": null
+    },
+    {
+      "id": "vikunja-2.7.0-v180",
+      "product": "vikunja",
+      "version": "2.7.0",
+      "tool": "direct-reproducer",
+      "source_sha256": "38abd8b6b942acbdcf4200e038cf4fed9d21d1c15bec18c0e277269751251cb6",
+      "http_records": 35,
+      "http_5xx": 0,
+      "original_oracle_records": 0,
+      "native_run_status": null,
+      "native_exit": null,
+      "native_log_sha256": null
+    },
+    {
+      "id": "vikunja-2.7.0-v185",
+      "product": "vikunja",
+      "version": "2.7.0",
+      "tool": "direct-reproducer",
+      "source_sha256": "3dcdc6a6d1a590a62e9c82c07e3ab62375c1ff0906bc4d022caf1f71b582955a",
+      "http_records": 250,
+      "http_5xx": 31,
+      "original_oracle_records": 0,
+      "native_run_status": null,
+      "native_exit": null,
+      "native_log_sha256": null
+    },
+    {
+      "id": "gitea-g009-cloud-s1",
+      "product": "gitea",
+      "version": "28.1.0",
+      "tool": "route-harness",
+      "source_sha256": "18d937fb2a131ee83c84f94928df8a1405d8f7d8541c3bd2ad29370697d77886",
+      "http_records": null,
+      "http_5xx": null,
+      "original_oracle_records": 92,
+      "native_run_status": null,
+      "native_exit": null,
+      "native_log_sha256": null
+    },
+    {
+      "id": "gitea-g009-cloud-s2",
+      "product": "gitea",
+      "version": "28.1.0",
+      "tool": "route-harness",
+      "source_sha256": "6ece7166e0f9d1282c4ece2e3fa331bbf69f069cb5a0112b3c06cf53b559d510",
+      "http_records": null,
+      "http_5xx": null,
+      "original_oracle_records": 91,
+      "native_run_status": null,
+      "native_exit": null,
+      "native_log_sha256": null
+    },
+    {
+      "id": "gitea-g009-cloud-s3",
+      "product": "gitea",
+      "version": "28.1.0",
+      "tool": "route-harness",
+      "source_sha256": "93bc1f43f1d0dde8cecdf77de3d5f632edc7eedbe898110afc2471b75ecabebd",
+      "http_records": null,
+      "http_5xx": null,
+      "original_oracle_records": 90,
+      "native_run_status": null,
+      "native_exit": null,
+      "native_log_sha256": null
+    },
+    {
+      "id": "gitea-g009-cloud-s4",
+      "product": "gitea",
+      "version": "28.1.0",
+      "tool": "route-harness",
+      "source_sha256": "45058a7776942edb207b2b9718f2efdf9746a2f7fc9c3df68568973c77e1ccd6",
+      "http_records": null,
+      "http_5xx": null,
+      "original_oracle_records": 92,
+      "native_run_status": null,
+      "native_exit": null,
+      "native_log_sha256": null
+    },
+    {
+      "id": "gitea-g003-work-s1",
+      "product": "gitea",
+      "version": "28.1.0",
+      "tool": "provengo",
+      "source_sha256": "6a5b4bf9a5a60686ae14aed3da1148ad2d00a261b9a17b9f4a322510447135df",
+      "http_records": 460,
+      "http_5xx": 3,
+      "original_oracle_records": 125,
+      "native_run_status": "COMPLETED",
+      "native_exit": 0,
+      "native_log_sha256": "456db68db37f9208d49d0e78599a66d6eb49cda9d2f1255a64f5b75e212e6240"
+    },
+    {
+      "id": "gitea-g003-work-s2",
+      "product": "gitea",
+      "version": "28.1.0",
+      "tool": "provengo",
+      "source_sha256": "edb3fae11a5ab03afdaa8e1759889a6ddfe87fec2ec751b1e3968836097be1b3",
+      "http_records": 460,
+      "http_5xx": 2,
+      "original_oracle_records": 125,
+      "native_run_status": "COMPLETED",
+      "native_exit": 0,
+      "native_log_sha256": "063dc8b57f52ecb1899c63e9dfbea0d3c089584e31efa30c16bbf6d6f1cd1dca"
+    },
+    {
+      "id": "gitea-g003-work-s3",
+      "product": "gitea",
+      "version": "28.1.0",
+      "tool": "provengo",
+      "source_sha256": "5f38b9c046a5d51606724da9a4a98e508724be5b721d584950f01e714eca6f4e",
+      "http_records": 464,
+      "http_5xx": 1,
+      "original_oracle_records": 131,
+      "native_run_status": "COMPLETED",
+      "native_exit": 0,
+      "native_log_sha256": "fd62462a45c7ad12d376a134c65408787389fd719f90ffe96b6e9d867cf3e24f"
+    },
+    {
+      "id": "gitea-g003-work-s4",
+      "product": "gitea",
+      "version": "28.1.0",
+      "tool": "provengo",
+      "source_sha256": "546208f483d855e5e9f4dc87a9f298027d8871bf6f689d14ce4fc11efc533e76",
+      "http_records": 464,
+      "http_5xx": 3,
+      "original_oracle_records": 123,
+      "native_run_status": "COMPLETED",
+      "native_exit": 0,
+      "native_log_sha256": "0eaa494c235263ccb0d3b3ec3b9c5057037a3c343b5c785dbb6be8590d1444f4"
+    }
+  ],
+  "http_records": 7967,
+  "http_5xx": 96,
+  "oracle_only_run_count": 4,
+  "known_signature_occurrences": {
+    "GIT-C1": 16,
+    "GIT-C2": 13,
+    "GIT-C3": 4,
+    "GIT-C8": 4,
+    "GIT-O1": 4,
+    "GIT-O2": 6,
+    "VIK-F02": 2,
+    "VIK-F04": 6,
+    "VIK-F05": 16,
+    "VIK-F06": 60,
+    "VIK-O04": 2,
+    "VIK-O05": 4,
+    "VIK-O06": 12,
+    "VIK-O08": 1
+  },
+  "by_version": {
+    "2.6.0": {
+      "VIK-F05": 8,
+      "VIK-F02": 1,
+      "VIK-O04": 1,
+      "VIK-O06": 6,
+      "VIK-F04": 3,
+      "VIK-O05": 2,
+      "VIK-F06": 30,
+      "VIK-O08": 1
+    },
+    "2.7.0": {
+      "VIK-F05": 8,
+      "VIK-F02": 1,
+      "VIK-O04": 1,
+      "VIK-O06": 6,
+      "VIK-F04": 3,
+      "VIK-O05": 2,
+      "VIK-F06": 30
+    },
+    "28.1.0": {
+      "GIT-C1": 16,
+      "GIT-C2": 13,
+      "GIT-C3": 4,
+      "GIT-O1": 4,
+      "GIT-O2": 6,
+      "GIT-C8": 4
+    }
+  },
+  "original_oracle_summary": {
+    "gitea-g007-work-20261021/review_g007_s1": {
+      "categories": {
+        "roundtrip-check": {
+          "ok": 122,
+          "mismatch": 3
+        },
+        "atomicity-check": {
+          "partial": 3
+        }
+      },
+      "atomicity_from_recorded_field_states": {
+        "partial": 3
+      },
+      "atomicity_verdict_disagreements": 0
+    },
+    "gitea-g007-work-20261021/review_g007_s2": {
+      "categories": {
+        "roundtrip-check": {
+          "ok": 120,
+          "mismatch": 5
+        },
+        "atomicity-check": {
+          "partial": 2
+        }
+      },
+      "atomicity_from_recorded_field_states": {
+        "partial": 2
+      },
+      "atomicity_verdict_disagreements": 0
+    },
+    "gitea-g007-work-20261021/review_g007_s3": {
+      "categories": {
+        "roundtrip-check": {
+          "ok": 127,
+          "mismatch": 4
+        },
+        "atomicity-check": {
+          "partial": 1
+        }
+      },
+      "atomicity_from_recorded_field_states": {
+        "partial": 1
+      },
+      "atomicity_verdict_disagreements": 0
+    },
+    "gitea-g007-work-20261021/review_g007_s4": {
+      "categories": {
+        "roundtrip-check": {
+          "ok": 118,
+          "mismatch": 5
+        },
+        "atomicity-check": {
+          "partial": 3
+        }
+      },
+      "atomicity_from_recorded_field_states": {
+        "partial": 3
+      },
+      "atomicity_verdict_disagreements": 0
+    },
+    "gitea-g009-work-20261021/review_g009_s1": {
+      "categories": {
+        "roundtrip-check": {
+          "ok": 111
+        },
+        "link2-check": {
+          "ok": 13,
+          "silently_dropped": 12,
+          "rejected": 2
+        },
+        "reference-check": {
+          "ok": 3,
+          "silently_dropped": 6,
+          "crash": 1
+        },
+        "atomicity-check": {
+          "partial": 2,
+          "rolled_back": 1
+        },
+        "divergence-check": {
+          "same": 6,
+          "class_diverge": 2
+        }
+      },
+      "atomicity_from_recorded_field_states": {
+        "partial": 2,
+        "rolled_back": 1
+      },
+      "atomicity_verdict_disagreements": 0
+    },
+    "gitea-g009-work-20261021/review_g009_s2": {
+      "categories": {
+        "roundtrip-check": {
+          "ok": 102
+        },
+        "reference-check": {
+          "ok": 3,
+          "silently_dropped": 6,
+          "crash": 2
+        },
+        "link2-check": {
+          "ok": 10,
+          "silently_dropped": 10,
+          "rejected": 1
+        },
+        "atomicity-check": {
+          "partial": 3,
+          "rolled_back": 1
+        },
+        "divergence-check": {
+          "same": 7,
+          "class_diverge": 3
+        }
+      },
+      "atomicity_from_recorded_field_states": {
+        "partial": 3,
+        "rolled_back": 1
+      },
+      "atomicity_verdict_disagreements": 0
+    },
+    "gitea-g009-work-20261021/review_g009_s3": {
+      "categories": {
+        "roundtrip-check": {
+          "ok": 105
+        },
+        "link2-check": {
+          "ok": 12,
+          "silently_dropped": 10,
+          "rejected": 2
+        },
+        "reference-check": {
+          "ok": 3,
+          "silently_dropped": 6,
+          "crash": 1
+        },
+        "atomicity-check": {
+          "partial": 2,
+          "rolled_back": 1
+        },
+        "divergence-check": {
+          "same": 6,
+          "class_diverge": 2
+        }
+      },
+      "atomicity_from_recorded_field_states": {
+        "partial": 2,
+        "rolled_back": 1
+      },
+      "atomicity_verdict_disagreements": 0
+    },
+    "gitea-g009-work-20261021/review_g009_s4": {
+      "categories": {
+        "roundtrip-check": {
+          "ok": 119
+        },
+        "reference-check": {
+          "ok": 3,
+          "silently_dropped": 6,
+          "crash": 3
+        },
+        "link2-check": {
+          "ok": 13,
+          "silently_dropped": 12,
+          "rejected": 2
+        },
+        "atomicity-check": {
+          "partial": 4,
+          "rolled_back": 1
+        },
+        "divergence-check": {
+          "same": 8,
+          "class_diverge": 4
+        }
+      },
+      "atomicity_from_recorded_field_states": {
+        "partial": 4,
+        "rolled_back": 1
+      },
+      "atomicity_verdict_disagreements": 0
+    },
+    "gitea-g009-cloud-20261021/oracle_checks_s1": {
+      "categories": {
+        "atomicity-check": {
+          "partial": 6,
+          "rolled_back": 2
+        },
+        "reference-check": {
+          "ok": 3,
+          "silently_dropped": 6,
+          "crash": 3
+        },
+        "link2-check": {
+          "ok": 15,
+          "silently_dropped": 15,
+          "rejected": 3
+        },
+        "divergence-check": {
+          "same": 31,
+          "class_diverge": 8
+        }
+      },
+      "atomicity_from_recorded_field_states": {
+        "partial": 6,
+        "rolled_back": 2
+      },
+      "atomicity_verdict_disagreements": 0
+    },
+    "gitea-g009-cloud-20261021/oracle_checks_s2": {
+      "categories": {
+        "atomicity-check": {
+          "partial": 5,
+          "rolled_back": 2
+        },
+        "reference-check": {
+          "ok": 3,
+          "silently_dropped": 6,
+          "crash": 3
+        },
+        "link2-check": {
+          "ok": 15,
+          "silently_dropped": 15,
+          "rejected": 3
+        },
+        "divergence-check": {
+          "same": 32,
+          "class_diverge": 7
+        }
+      },
+      "atomicity_from_recorded_field_states": {
+        "partial": 5,
+        "rolled_back": 2
+      },
+      "atomicity_verdict_disagreements": 0
+    },
+    "gitea-g009-cloud-20261021/oracle_checks_s3": {
+      "categories": {
+        "atomicity-check": {
+          "partial": 4,
+          "rolled_back": 1
+        },
+        "reference-check": {
+          "ok": 3,
+          "silently_dropped": 6,
+          "crash": 3
+        },
+        "link2-check": {
+          "ok": 15,
+          "silently_dropped": 15,
+          "rejected": 3
+        },
+        "divergence-check": {
+          "same": 30,
+          "class_diverge": 8,
+          "stored_diverge": 2
+        }
+      },
+      "atomicity_from_recorded_field_states": {
+        "partial": 4,
+        "rolled_back": 1
+      },
+      "atomicity_verdict_disagreements": 0
+    },
+    "gitea-g009-cloud-20261021/oracle_checks_s4": {
+      "categories": {
+        "atomicity-check": {
+          "partial": 6,
+          "rolled_back": 1
+        },
+        "reference-check": {
+          "ok": 3,
+          "silently_dropped": 6,
+          "crash": 3
+        },
+        "link2-check": {
+          "ok": 15,
+          "silently_dropped": 15,
+          "rejected": 3
+        },
+        "divergence-check": {
+          "same": 30,
+          "class_diverge": 9,
+          "stored_diverge": 1
+        }
+      },
+      "atomicity_from_recorded_field_states": {
+        "partial": 6,
+        "rolled_back": 1
+      },
+      "atomicity_verdict_disagreements": 0
+    },
+    "gitea-g003-work-20261021/review_g003_s1": {
+      "categories": {
+        "roundtrip-check": {
+          "ok": 122,
+          "mismatch": 3
+        }
+      },
+      "atomicity_from_recorded_field_states": {},
+      "atomicity_verdict_disagreements": 0
+    },
+    "gitea-g003-work-20261021/review_g003_s2": {
+      "categories": {
+        "roundtrip-check": {
+          "ok": 120,
+          "mismatch": 5
+        }
+      },
+      "atomicity_from_recorded_field_states": {},
+      "atomicity_verdict_disagreements": 0
+    },
+    "gitea-g003-work-20261021/review_g003_s3": {
+      "categories": {
+        "roundtrip-check": {
+          "ok": 127,
+          "mismatch": 4
+        }
+      },
+      "atomicity_from_recorded_field_states": {},
+      "atomicity_verdict_disagreements": 0
+    },
+    "gitea-g003-work-20261021/review_g003_s4": {
+      "categories": {
+        "roundtrip-check": {
+          "ok": 118,
+          "mismatch": 5
+        }
+      },
+      "atomicity_from_recorded_field_states": {},
+      "atomicity_verdict_disagreements": 0
+    }
+  },
+  "catalogs": [
+    {
+      "name": "generic.json",
+      "sha256": "97c2284b2850ebdeae64ebaa08c8887446ddaff6d25f86c7d2199432e3fbc392"
+    },
+    {
+      "name": "gitea.json",
+      "sha256": "8387cda04ebbfad72827f0b2d72b621f08586fd074ff8db48a9eca247199f470"
+    },
+    {
+      "name": "library.json",
+      "sha256": "788acf5053ba855a2cdaeddf4c8bc6a15ee9224e17caf0284a1186bf507f4ccf"
+    },
+    {
+      "name": "tse-known.json",
+      "sha256": "cafb8e1e8fac860ea415e763b8acb4640bcf93c7f3f551603244f57867f0e326"
+    },
+    {
+      "name": "vikunja.json",
+      "sha256": "a7108c548aa441ca898f2c9f1112a07fb644501a4bea4ee01ce2bd2a1947de49"
+    }
+  ],
+  "limitations": [
+    "Occurrence counts are not unique new bugs.",
+    "Vikunja receipts are direct reproducers, not Provengo detection measurements.",
+    "Gitea C4-C7 cloud evidence lacks complete original HTTP/log witnesses.",
+    "Three Vikunja burst 500s lack per-request timestamps for exact F01 log joins.",
+    "Gitea atomicity field states are producer measurements, not independent full snapshots."
+  ]
+}

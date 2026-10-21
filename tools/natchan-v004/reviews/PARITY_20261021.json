@@ -1,0 +1,127 @@
+{
+  "schema_version": "natchan-parity/1",
+  "status": "PASS_FOR_SCOPED_EXPECTATIONS",
+  "checks": [
+    {
+      "name": "gitea-g007-work http_5xx",
+      "actual": 9,
+      "expected": 9,
+      "passed": true
+    },
+    {
+      "name": "gitea-g007-work original_partial_oracles",
+      "actual": 9,
+      "expected": 9,
+      "passed": true
+    },
+    {
+      "name": "gitea-g007-work eligible adjacency probes",
+      "actual": 503,
+      "expected": 503,
+      "passed": true
+    },
+    {
+      "name": "gitea-g007-work adjacency_5xx",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "name": "gitea-g009-work GIT-C8_runs",
+      "actual": 4,
+      "expected": 4,
+      "passed": true
+    },
+    {
+      "name": "vikunja-2.6.0 VIK-F06_occurrences",
+      "actual": 30,
+      "expected": 30,
+      "passed": true
+    },
+    {
+      "name": "vikunja-2.7.0 VIK-F06_occurrences",
+      "actual": 30,
+      "expected": 30,
+      "passed": true
+    },
+    {
+      "name": "vikunja 2.6.0 VIK-F02",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "vikunja 2.6.0 VIK-F04",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "vikunja 2.6.0 VIK-F05",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "vikunja 2.6.0 VIK-F06",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "vikunja 2.7.0 VIK-F02",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "vikunja 2.7.0 VIK-F04",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "vikunja 2.7.0 VIK-F05",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "vikunja 2.7.0 VIK-F06",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "gitea 28.1.0 GIT-C1",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "gitea 28.1.0 GIT-C2",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "gitea 28.1.0 GIT-C8",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "name": "gitea 28.1.0 GIT-C3",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    }
+  ],
+  "unresolved": {
+    "VIK-F01": "Run-level lock log available but per-request timestamp correlation absent from transcript",
+    "VIK-F03": "Not rechecked in selected v185 evidence; older evidence must be analyzed separately",
+    "GIT-C4..C7": "Cloud has oracle checks only; no complete HTTP transcript or original server logs in retained cloud folder",
+    "atomicity_independent_recheck": "Gitea ATOM field outcomes retained; full snapshots absent"
+  },
+  "scope": "Historical evidence signature parity, not independent re-confirmation of every historical root cause"
+}
