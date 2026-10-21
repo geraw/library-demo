@@ -89,3 +89,8 @@ For every rule test: actual violation; legal counterexample; missing response/re
 ## Immediate next step
 
 Implement package 0 as a reviewable lineage/reconciliation change: compare archived evaluator functions and manifests, freeze the eleven tests plus representative evidence, then propose the core extraction. Keep existing v001 commands available during migration. Do not add another parallel engine before this reconciliation.
+
+
+## Stage 1 implementation checkpoint — 2026-10-21
+
+Implemented in `tools/natchan-v002/`: bounded offline ZIP inventory, versioned evidence envelope, explicit source locations, separate ToolGateway and ProductGateway protocols/registries, generic recorded JSON and fixed-Java/Library initial gateways. The user requires independent gateways in both dimensions. Layout adapters remain separate from product semantics. Existing v001 evaluators remain unchanged; native gateway migration and verifier reconciliation are pending. Eleven ingestion tests passed; the real work v011 ZIP imported 3 arms, 542 native records per arm, 30,678 events, 77 members and zero ingestion issues. This is not a new bug-finding result. Additional requirements are expected and can extend the interfaces.
