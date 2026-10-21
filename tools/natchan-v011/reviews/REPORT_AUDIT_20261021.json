@@ -1,0 +1,728 @@
+{
+  "schema_version": "natchan-report-audit/1",
+  "g005": {
+    "noop_version_observations": [
+      {
+        "id": "GIT-O3",
+        "source": {
+          "archive": "review_g005_s5.zip",
+          "archive_sha256": "e9b22ac663d6142c4d59167992207a1e26f870a189b2045b015648f73ecc13d4",
+          "journal_sha256": "ff8c1ed11e794b453e0e93bfbc403d661c9d1cce98f486283c0b64a16e6e46dd"
+        },
+        "lines": [
+          468,
+          469,
+          470
+        ],
+        "business_fields": [
+          "body",
+          "ref",
+          "state",
+          "title"
+        ],
+        "version_before": 6,
+        "version_after": 7,
+        "statuses": [
+          201,
+          409
+        ],
+        "interpretation": "optimistic concurrency observation; not automatically a bug"
+      },
+      {
+        "id": "GIT-O3",
+        "source": {
+          "archive": "review_g005_s5.zip",
+          "archive_sha256": "e9b22ac663d6142c4d59167992207a1e26f870a189b2045b015648f73ecc13d4",
+          "journal_sha256": "ff8c1ed11e794b453e0e93bfbc403d661c9d1cce98f486283c0b64a16e6e46dd"
+        },
+        "lines": [
+          478,
+          479,
+          480
+        ],
+        "business_fields": [
+          "body",
+          "ref",
+          "state",
+          "title"
+        ],
+        "version_before": 6,
+        "version_after": 7,
+        "statuses": [
+          201,
+          409
+        ],
+        "interpretation": "optimistic concurrency observation; not automatically a bug"
+      },
+      {
+        "id": "GIT-O3",
+        "source": {
+          "archive": "review_g005_s5.zip",
+          "archive_sha256": "e9b22ac663d6142c4d59167992207a1e26f870a189b2045b015648f73ecc13d4",
+          "journal_sha256": "ff8c1ed11e794b453e0e93bfbc403d661c9d1cce98f486283c0b64a16e6e46dd"
+        },
+        "lines": [
+          485,
+          486,
+          487
+        ],
+        "business_fields": [
+          "body",
+          "ref",
+          "state",
+          "title"
+        ],
+        "version_before": 6,
+        "version_after": 7,
+        "statuses": [
+          201,
+          409
+        ],
+        "interpretation": "optimistic concurrency observation; not automatically a bug"
+      },
+      {
+        "id": "GIT-O3",
+        "source": {
+          "archive": "review_g005_s6.zip",
+          "archive_sha256": "27c6ed00bc72d4d2708e7f97ddb6f7dafb63a5ba8cd1529265e78a4edfeb1097",
+          "journal_sha256": "faba89f927249d47c11d2ad9e018c1386de33ea5797fb86b172dd06f977f3b0e"
+        },
+        "lines": [
+          471,
+          472,
+          473
+        ],
+        "business_fields": [
+          "body",
+          "ref",
+          "state",
+          "title"
+        ],
+        "version_before": 6,
+        "version_after": 7,
+        "statuses": [
+          201,
+          409
+        ],
+        "interpretation": "optimistic concurrency observation; not automatically a bug"
+      },
+      {
+        "id": "GIT-O3",
+        "source": {
+          "archive": "review_g005_s6.zip",
+          "archive_sha256": "27c6ed00bc72d4d2708e7f97ddb6f7dafb63a5ba8cd1529265e78a4edfeb1097",
+          "journal_sha256": "faba89f927249d47c11d2ad9e018c1386de33ea5797fb86b172dd06f977f3b0e"
+        },
+        "lines": [
+          478,
+          479,
+          480
+        ],
+        "business_fields": [
+          "body",
+          "ref",
+          "state",
+          "title"
+        ],
+        "version_before": 6,
+        "version_after": 7,
+        "statuses": [
+          201,
+          409
+        ],
+        "interpretation": "optimistic concurrency observation; not automatically a bug"
+      },
+      {
+        "id": "GIT-O3",
+        "source": {
+          "archive": "review_g005_s6.zip",
+          "archive_sha256": "27c6ed00bc72d4d2708e7f97ddb6f7dafb63a5ba8cd1529265e78a4edfeb1097",
+          "journal_sha256": "faba89f927249d47c11d2ad9e018c1386de33ea5797fb86b172dd06f977f3b0e"
+        },
+        "lines": [
+          483,
+          484,
+          485
+        ],
+        "business_fields": [
+          "body",
+          "ref",
+          "state",
+          "title"
+        ],
+        "version_before": 6,
+        "version_after": 7,
+        "statuses": [
+          201,
+          409
+        ],
+        "interpretation": "optimistic concurrency observation; not automatically a bug"
+      },
+      {
+        "id": "GIT-O3",
+        "source": {
+          "archive": "review_g005_s7.zip",
+          "archive_sha256": "b83d44ac63fea4f580e2f7d58c14d971e1f2059269ec8265ee0ab487696d93bb",
+          "journal_sha256": "8d7ed5e0a69ef913529cfcc59df707e009c5c4785f6967214f608e538af27dae"
+        },
+        "lines": [
+          472,
+          473,
+          474
+        ],
+        "business_fields": [
+          "body",
+          "ref",
+          "state",
+          "title"
+        ],
+        "version_before": 6,
+        "version_after": 7,
+        "statuses": [
+          201,
+          409
+        ],
+        "interpretation": "optimistic concurrency observation; not automatically a bug"
+      },
+      {
+        "id": "GIT-O3",
+        "source": {
+          "archive": "review_g005_s7.zip",
+          "archive_sha256": "b83d44ac63fea4f580e2f7d58c14d971e1f2059269ec8265ee0ab487696d93bb",
+          "journal_sha256": "8d7ed5e0a69ef913529cfcc59df707e009c5c4785f6967214f608e538af27dae"
+        },
+        "lines": [
+          478,
+          479,
+          480
+        ],
+        "business_fields": [
+          "body",
+          "ref",
+          "state",
+          "title"
+        ],
+        "version_before": 6,
+        "version_after": 7,
+        "statuses": [
+          201,
+          409
+        ],
+        "interpretation": "optimistic concurrency observation; not automatically a bug"
+      },
+      {
+        "id": "GIT-O3",
+        "source": {
+          "archive": "review_g005_s7.zip",
+          "archive_sha256": "b83d44ac63fea4f580e2f7d58c14d971e1f2059269ec8265ee0ab487696d93bb",
+          "journal_sha256": "8d7ed5e0a69ef913529cfcc59df707e009c5c4785f6967214f608e538af27dae"
+        },
+        "lines": [
+          481,
+          482,
+          483
+        ],
+        "business_fields": [
+          "body",
+          "ref",
+          "state",
+          "title"
+        ],
+        "version_before": 6,
+        "version_after": 7,
+        "statuses": [
+          201,
+          409
+        ],
+        "interpretation": "optimistic concurrency observation; not automatically a bug"
+      },
+      {
+        "id": "GIT-O3",
+        "source": {
+          "archive": "review_g005_s8.zip",
+          "archive_sha256": "a8f2ebc62a073a6e3420e17f49ea01c8e65629f9c2d796d6e376387b709cfe9e",
+          "journal_sha256": "d6890a90fb528463bc3da17c18e9bad4f928650422576ac2a2f49f433fbfcaec"
+        },
+        "lines": [
+          431,
+          432,
+          433
+        ],
+        "business_fields": [
+          "body",
+          "ref",
+          "state",
+          "title"
+        ],
+        "version_before": 6,
+        "version_after": 7,
+        "statuses": [
+          201,
+          409
+        ],
+        "interpretation": "optimistic concurrency observation; not automatically a bug"
+      },
+      {
+        "id": "GIT-O3",
+        "source": {
+          "archive": "review_g005_s8.zip",
+          "archive_sha256": "a8f2ebc62a073a6e3420e17f49ea01c8e65629f9c2d796d6e376387b709cfe9e",
+          "journal_sha256": "d6890a90fb528463bc3da17c18e9bad4f928650422576ac2a2f49f433fbfcaec"
+        },
+        "lines": [
+          455,
+          456,
+          457
+        ],
+        "business_fields": [
+          "body",
+          "ref",
+          "state",
+          "title"
+        ],
+        "version_before": 6,
+        "version_after": 7,
+        "statuses": [
+          201,
+          409
+        ],
+        "interpretation": "optimistic concurrency observation; not automatically a bug"
+      },
+      {
+        "id": "GIT-O3",
+        "source": {
+          "archive": "review_g005_s8.zip",
+          "archive_sha256": "a8f2ebc62a073a6e3420e17f49ea01c8e65629f9c2d796d6e376387b709cfe9e",
+          "journal_sha256": "d6890a90fb528463bc3da17c18e9bad4f928650422576ac2a2f49f433fbfcaec"
+        },
+        "lines": [
+          473,
+          474,
+          475
+        ],
+        "business_fields": [
+          "body",
+          "ref",
+          "state",
+          "title"
+        ],
+        "version_before": 6,
+        "version_after": 7,
+        "statuses": [
+          201,
+          409
+        ],
+        "interpretation": "optimistic concurrency observation; not automatically a bug"
+      }
+    ],
+    "undeclared_length_observations": [
+      {
+        "id": "GIT-O4",
+        "source": {
+          "archive": "review_g005_s6.zip",
+          "archive_sha256": "27c6ed00bc72d4d2708e7f97ddb6f7dafb63a5ba8cd1529265e78a4edfeb1097",
+          "journal_sha256": "faba89f927249d47c11d2ad9e018c1386de33ea5797fb86b172dd06f977f3b0e"
+        },
+        "line": 502,
+        "entity": "organization",
+        "field": "description",
+        "sent_length": 10000,
+        "response": {
+          "message": "[Description]: MaxSize",
+          "url": "http://127.0.0.1:3300/api/swagger"
+        },
+        "maxLength_declared": false,
+        "exact_limit_verified": false
+      },
+      {
+        "id": "GIT-O4",
+        "source": {
+          "archive": "review_g005_s6.zip",
+          "archive_sha256": "27c6ed00bc72d4d2708e7f97ddb6f7dafb63a5ba8cd1529265e78a4edfeb1097",
+          "journal_sha256": "faba89f927249d47c11d2ad9e018c1386de33ea5797fb86b172dd06f977f3b0e"
+        },
+        "line": 512,
+        "entity": "organization",
+        "field": "description",
+        "sent_length": 10000,
+        "response": {
+          "message": "[Description]: MaxSize",
+          "url": "http://127.0.0.1:3300/api/swagger"
+        },
+        "maxLength_declared": false,
+        "exact_limit_verified": false
+      },
+      {
+        "id": "GIT-O4",
+        "source": {
+          "archive": "review_g005_s6.zip",
+          "archive_sha256": "27c6ed00bc72d4d2708e7f97ddb6f7dafb63a5ba8cd1529265e78a4edfeb1097",
+          "journal_sha256": "faba89f927249d47c11d2ad9e018c1386de33ea5797fb86b172dd06f977f3b0e"
+        },
+        "line": 514,
+        "entity": "team",
+        "field": "description",
+        "sent_length": 10000,
+        "response": {
+          "message": "[Description]: MaxSize",
+          "url": "http://127.0.0.1:3300/api/swagger"
+        },
+        "maxLength_declared": false,
+        "exact_limit_verified": false
+      },
+      {
+        "id": "GIT-O4",
+        "source": {
+          "archive": "review_g005_s6.zip",
+          "archive_sha256": "27c6ed00bc72d4d2708e7f97ddb6f7dafb63a5ba8cd1529265e78a4edfeb1097",
+          "journal_sha256": "faba89f927249d47c11d2ad9e018c1386de33ea5797fb86b172dd06f977f3b0e"
+        },
+        "line": 524,
+        "entity": "team",
+        "field": "description",
+        "sent_length": 10000,
+        "response": {
+          "message": "[Description]: MaxSize",
+          "url": "http://127.0.0.1:3300/api/swagger"
+        },
+        "maxLength_declared": false,
+        "exact_limit_verified": false
+      },
+      {
+        "id": "GIT-O4",
+        "source": {
+          "archive": "review_g005_s6.zip",
+          "archive_sha256": "27c6ed00bc72d4d2708e7f97ddb6f7dafb63a5ba8cd1529265e78a4edfeb1097",
+          "journal_sha256": "faba89f927249d47c11d2ad9e018c1386de33ea5797fb86b172dd06f977f3b0e"
+        },
+        "line": 615,
+        "entity": "organization",
+        "field": "full_name",
+        "sent_length": 10000,
+        "response": {
+          "message": "[FullName]: MaxSize",
+          "url": "http://127.0.0.1:3300/api/swagger"
+        },
+        "maxLength_declared": false,
+        "exact_limit_verified": false
+      },
+      {
+        "id": "GIT-O4",
+        "source": {
+          "archive": "review_g005_s6.zip",
+          "archive_sha256": "27c6ed00bc72d4d2708e7f97ddb6f7dafb63a5ba8cd1529265e78a4edfeb1097",
+          "journal_sha256": "faba89f927249d47c11d2ad9e018c1386de33ea5797fb86b172dd06f977f3b0e"
+        },
+        "line": 619,
+        "entity": "organization",
+        "field": "full_name",
+        "sent_length": 10000,
+        "response": {
+          "message": "[FullName]: MaxSize",
+          "url": "http://127.0.0.1:3300/api/swagger"
+        },
+        "maxLength_declared": false,
+        "exact_limit_verified": false
+      },
+      {
+        "id": "GIT-O4",
+        "source": {
+          "archive": "review_g005_s6.zip",
+          "archive_sha256": "27c6ed00bc72d4d2708e7f97ddb6f7dafb63a5ba8cd1529265e78a4edfeb1097",
+          "journal_sha256": "faba89f927249d47c11d2ad9e018c1386de33ea5797fb86b172dd06f977f3b0e"
+        },
+        "line": 655,
+        "entity": "organization",
+        "field": "username",
+        "sent_length": 10000,
+        "response": {
+          "message": "[UserName]: MaxSize",
+          "url": "http://127.0.0.1:3300/api/swagger"
+        },
+        "maxLength_declared": false,
+        "exact_limit_verified": false
+      },
+      {
+        "id": "GIT-O4",
+        "source": {
+          "archive": "review_g005_s8.zip",
+          "archive_sha256": "a8f2ebc62a073a6e3420e17f49ea01c8e65629f9c2d796d6e376387b709cfe9e",
+          "journal_sha256": "d6890a90fb528463bc3da17c18e9bad4f928650422576ac2a2f49f433fbfcaec"
+        },
+        "line": 566,
+        "entity": "organization",
+        "field": "email",
+        "sent_length": 10000,
+        "response": {
+          "message": "[Email]: MaxSize",
+          "url": "http://127.0.0.1:3300/api/swagger"
+        },
+        "maxLength_declared": false,
+        "exact_limit_verified": false
+      },
+      {
+        "id": "GIT-O4",
+        "source": {
+          "archive": "review_g005_s8.zip",
+          "archive_sha256": "a8f2ebc62a073a6e3420e17f49ea01c8e65629f9c2d796d6e376387b709cfe9e",
+          "journal_sha256": "d6890a90fb528463bc3da17c18e9bad4f928650422576ac2a2f49f433fbfcaec"
+        },
+        "line": 570,
+        "entity": "organization",
+        "field": "email",
+        "sent_length": 10000,
+        "response": {
+          "message": "[Email]: MaxSize",
+          "url": "http://127.0.0.1:3300/api/swagger"
+        },
+        "maxLength_declared": false,
+        "exact_limit_verified": false
+      },
+      {
+        "id": "GIT-O4",
+        "source": {
+          "archive": "review_g005_s8.zip",
+          "archive_sha256": "a8f2ebc62a073a6e3420e17f49ea01c8e65629f9c2d796d6e376387b709cfe9e",
+          "journal_sha256": "d6890a90fb528463bc3da17c18e9bad4f928650422576ac2a2f49f433fbfcaec"
+        },
+        "line": 572,
+        "entity": "team",
+        "field": "name",
+        "sent_length": 10000,
+        "response": {
+          "message": "[Name]: MaxSize",
+          "url": "http://127.0.0.1:3300/api/swagger"
+        },
+        "maxLength_declared": false,
+        "exact_limit_verified": false
+      },
+      {
+        "id": "GIT-O4",
+        "source": {
+          "archive": "review_g005_s8.zip",
+          "archive_sha256": "a8f2ebc62a073a6e3420e17f49ea01c8e65629f9c2d796d6e376387b709cfe9e",
+          "journal_sha256": "d6890a90fb528463bc3da17c18e9bad4f928650422576ac2a2f49f433fbfcaec"
+        },
+        "line": 576,
+        "entity": "team",
+        "field": "name",
+        "sent_length": 10000,
+        "response": {
+          "message": "[Name]: MaxSize",
+          "url": "http://127.0.0.1:3300/api/swagger"
+        },
+        "maxLength_declared": false,
+        "exact_limit_verified": false
+      },
+      {
+        "id": "GIT-O4",
+        "source": {
+          "archive": "review_g005_s8.zip",
+          "archive_sha256": "a8f2ebc62a073a6e3420e17f49ea01c8e65629f9c2d796d6e376387b709cfe9e",
+          "journal_sha256": "d6890a90fb528463bc3da17c18e9bad4f928650422576ac2a2f49f433fbfcaec"
+        },
+        "line": 630,
+        "entity": "organization",
+        "field": "location",
+        "sent_length": 10000,
+        "response": {
+          "message": "[Location]: MaxSize",
+          "url": "http://127.0.0.1:3300/api/swagger"
+        },
+        "maxLength_declared": false,
+        "exact_limit_verified": false
+      }
+    ]
+  },
+  "adjacency": [
+    {
+      "product": "vikunja",
+      "seed": 1,
+      "line": 67,
+      "method": "POST",
+      "path": "/tasks/580",
+      "case_id": "ADJ_4",
+      "archive_sha256": "a76fa16735830a838ac8720fcf4db8c8e826b7e6626e942814ba615a890de502",
+      "journal_sha256": "c1e8273705ee43803117f2bbffc13ab08c75dd2d49bcb2818253d3b16f4ad535",
+      "review_member": "review_seed1_run1.zip",
+      "unique_log_match": true,
+      "matching_lock_lines": 1,
+      "matching_client_500s": 1,
+      "grouped_lock_evidence": true,
+      "limitation": "Single-key class evidence does not establish trigger causality or a unique line assignment when repeated"
+    },
+    {
+      "product": "vikunja",
+      "seed": 2,
+      "line": 92,
+      "method": "POST",
+      "path": "/projects/468/views/2648",
+      "case_id": "ADJ_3",
+      "archive_sha256": "a76fa16735830a838ac8720fcf4db8c8e826b7e6626e942814ba615a890de502",
+      "journal_sha256": "cf5ea125a9da349ea81a86b3174e5bea63a12fbcef9b3c7c68b2b24c1c501933",
+      "review_member": "review_seed2_run2.zip",
+      "unique_log_match": true,
+      "matching_lock_lines": 1,
+      "matching_client_500s": 1,
+      "grouped_lock_evidence": true,
+      "limitation": "Single-key class evidence does not establish trigger causality or a unique line assignment when repeated"
+    },
+    {
+      "product": "vikunja",
+      "seed": 2,
+      "line": 260,
+      "method": "POST",
+      "path": "/tasks/586",
+      "case_id": "ADJ_10",
+      "archive_sha256": "a76fa16735830a838ac8720fcf4db8c8e826b7e6626e942814ba615a890de502",
+      "journal_sha256": "cf5ea125a9da349ea81a86b3174e5bea63a12fbcef9b3c7c68b2b24c1c501933",
+      "review_member": "review_seed2_run2.zip",
+      "unique_log_match": true,
+      "matching_lock_lines": 1,
+      "matching_client_500s": 1,
+      "grouped_lock_evidence": true,
+      "limitation": "Single-key class evidence does not establish trigger causality or a unique line assignment when repeated"
+    },
+    {
+      "product": "vikunja",
+      "seed": 2,
+      "line": 273,
+      "method": "POST",
+      "path": "/tasks/587",
+      "case_id": "ADJ_13",
+      "archive_sha256": "a76fa16735830a838ac8720fcf4db8c8e826b7e6626e942814ba615a890de502",
+      "journal_sha256": "cf5ea125a9da349ea81a86b3174e5bea63a12fbcef9b3c7c68b2b24c1c501933",
+      "review_member": "review_seed2_run2.zip",
+      "unique_log_match": true,
+      "matching_lock_lines": 1,
+      "matching_client_500s": 1,
+      "grouped_lock_evidence": true,
+      "limitation": "Single-key class evidence does not establish trigger causality or a unique line assignment when repeated"
+    },
+    {
+      "product": "vikunja",
+      "seed": 2,
+      "line": 656,
+      "method": "POST",
+      "path": "/projects/464/views/2682",
+      "case_id": "ADJ_16",
+      "archive_sha256": "a76fa16735830a838ac8720fcf4db8c8e826b7e6626e942814ba615a890de502",
+      "journal_sha256": "cf5ea125a9da349ea81a86b3174e5bea63a12fbcef9b3c7c68b2b24c1c501933",
+      "review_member": "review_seed2_run2.zip",
+      "unique_log_match": true,
+      "matching_lock_lines": 1,
+      "matching_client_500s": 1,
+      "grouped_lock_evidence": true,
+      "limitation": "Single-key class evidence does not establish trigger causality or a unique line assignment when repeated"
+    },
+    {
+      "product": "vikunja",
+      "seed": 2,
+      "line": 745,
+      "method": "POST",
+      "path": "/tasks/585",
+      "case_id": "ADJ_18",
+      "archive_sha256": "a76fa16735830a838ac8720fcf4db8c8e826b7e6626e942814ba615a890de502",
+      "journal_sha256": "cf5ea125a9da349ea81a86b3174e5bea63a12fbcef9b3c7c68b2b24c1c501933",
+      "review_member": "review_seed2_run2.zip",
+      "unique_log_match": false,
+      "matching_lock_lines": 2,
+      "matching_client_500s": 2,
+      "grouped_lock_evidence": true,
+      "limitation": "Single-key class evidence does not establish trigger causality or a unique line assignment when repeated"
+    }
+  ],
+  "baselines": [
+    {
+      "tool": "EvoMaster",
+      "run": "evomaster_rep1",
+      "version": "6.2.0",
+      "report_sha256": "9172948b5dfca9bb8e1db8e9784a028ce952f72cd905d39fa81e497077eee61f",
+      "native_fault_total_field": 40,
+      "native_fault_entries": 134,
+      "native_category_codes": [
+        109,
+        201,
+        310
+      ],
+      "has_native_500_fault_code_100": false,
+      "lock_log_count": 1,
+      "lock_log_sha256": "1f741b5b21aa8144b2fba55159b8fc1a35eb2ab7575105ebdc3925908ff69379",
+      "replay_500_became_401": true,
+      "limitation": "Native aggregate count and entry count differ; neither is a known-business-bug count"
+    },
+    {
+      "tool": "EvoMaster",
+      "run": "evomaster_rep2",
+      "version": "6.2.0",
+      "report_sha256": "4f3dfbd45bf17e01d1f34ff19fa2c3251311d228e70a4e56f2f434fbc9b1bb8f",
+      "native_fault_total_field": 40,
+      "native_fault_entries": 134,
+      "native_category_codes": [
+        109,
+        201,
+        310
+      ],
+      "has_native_500_fault_code_100": false,
+      "lock_log_count": 1,
+      "lock_log_sha256": "3a95b63aa2c1768eb962dcbc6011683f4355f442dcec863958b2cfdaacda2adf",
+      "replay_500_became_401": true,
+      "limitation": "Native aggregate count and entry count differ; neither is a known-business-bug count"
+    },
+    {
+      "tool": "EvoMaster",
+      "run": "evomaster_rep3",
+      "version": "6.2.0",
+      "report_sha256": "860dc2b4f0d6cab700eb072de6761b4d2bf05a9710b6ab0e8b3466a1200635b6",
+      "native_fault_total_field": 40,
+      "native_fault_entries": 136,
+      "native_category_codes": [
+        109,
+        201,
+        310
+      ],
+      "has_native_500_fault_code_100": false,
+      "lock_log_count": 1,
+      "lock_log_sha256": "f4660543ae95c0cc09846cea6f73016bbf22792e4e7b4aed7aa2b8f142e72cf4",
+      "replay_500_became_401": true,
+      "limitation": "Native aggregate count and entry count differ; neither is a known-business-bug count"
+    },
+    {
+      "tool": "Schemathesis",
+      "run": "schemathesis_rep1",
+      "junit_sha256": "550393b0dcc1ac589a256611346c99ac5426dfcf46c40a5ae452424ab23e442b",
+      "native_failed_testcases": 38,
+      "native_testcases": 38,
+      "label_title_empty_201": true,
+      "declared_minLength_1": true,
+      "missing_body_reported": true,
+      "known_signature": "VIK-F02",
+      "evidence_tier": "native response body and schema excerpt; no independent subsequent GET"
+    },
+    {
+      "tool": "Schemathesis",
+      "run": "schemathesis_rep2",
+      "junit_sha256": "331b9263934a79ac7e43fa0f6d8bfdadbf05410829b4ad872594613c40858c8d",
+      "native_failed_testcases": 38,
+      "native_testcases": 38,
+      "label_title_empty_201": true,
+      "declared_minLength_1": true,
+      "missing_body_reported": true,
+      "known_signature": "VIK-F02",
+      "evidence_tier": "native response body and schema excerpt; no independent subsequent GET"
+    },
+    {
+      "tool": "Schemathesis",
+      "run": "schemathesis_rep3",
+      "junit_sha256": "b084e4e3c98377e237650700057e3d8584d97fdacebb65170b46883bf61950ad",
+      "native_failed_testcases": 38,
+      "native_testcases": 38,
+      "label_title_empty_201": true,
+      "declared_minLength_1": true,
+      "missing_body_reported": true,
+      "known_signature": "VIK-F02",
+      "evidence_tier": "native response body and schema excerpt; no independent subsequent GET"
+    }
+  ],
+  "new_sut_requests": 0
+}
