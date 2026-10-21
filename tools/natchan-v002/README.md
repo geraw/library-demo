@@ -77,3 +77,7 @@ Reuses the v001 three-arm artifact layout and manifest naming; retains its no-ov
 ZIPs are read without extracting files. Member paths, duplicate names, CRC/decompression errors and nested ZIPs are checked. Defaults: 10,000 members, 32 MiB per member, 256 MiB cumulative decompressed bytes, 2 nested ZIP levels, 100,000 events. These limits include nested archive containers and contents. Exceeding them yields incomplete evidence, never a clean result. Python callers can supply `Limits`; CLI tuning is deferred. Reports are deterministically ordered for a given archive; no wall clock is inserted.
 
 Exit 0: ingestion complete. Exit 2: report saved with incomplete evidence. Invalid manifest/missing outer file is a command failure. A PowerShell wrapper throws after printing the saved report path for incomplete imports. This is the first stage implementation, open to additional requirements.
+
+## Completed stage 1 contract
+
+See [GATEWAY_CONTRACTS.md](GATEWAY_CONTRACTS.md) for the versioned two-dimensional API, capability negotiation, required evidence, output validation and error behavior. Run reports now include both contracts and per-event evidence availability. `python gateways.py` prints the registered contract catalog. The suite now has 18 passing tests.

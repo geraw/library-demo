@@ -9,6 +9,7 @@ from pathlib import Path, PurePosixPath
 import zipfile
 from collections import Counter
 from gateways import select
+from contracts import describe_contract, validate_tool_output, validate_product_output, evidence_availability
 
 VERSION = 'natchan-evidence/1'
 
@@ -167,7 +168,12 @@ def ingest(path, manifest=None, limits=None, library=False):
         run = dict(tool_gateway=tool_gateway.id, product_gateway=product_gateway.id, id=declaration['id'], tool=declaration['tool'], product=declaration['system'],
                    variant=declaration.get('variant'), status='complete', artifacts={},
                    metadata={k:v for k,v in declaration.items() if k not in ('id','tool','system','variant','artifacts')})
+        run['gateway_contracts'] = dict(tool=describe_contract(tool_gateway, 'tool'), product=describe_contract(product_gateway, 'product'))
         report['runs'].append(run)
+        required = set(tool_gateway.contract.required_artifacts) | set(product_gateway.contract.required_artifacts)
+        for missing in sorted(required - set(declaration.get('artifacts', {}))):
+            inv.issue('gateway_required_artifact_missing', detail=dict(run_id=run['id'], label=missing))
+            run['status'] = 'incomplete'
         for label, locator in declaration.get('artifacts', {}).items():
             artifact = artifacts.get(locator)
             if artifact is None:
@@ -219,9 +225,18 @@ def ingest(path, manifest=None, limits=None, library=False):
                     run['status'] = 'incomplete'
                     current_case = None
                 # Preserve imported verdicts as claims, never recompute or endorse them here.
-                normalized = tool_gateway.normalize(label, payload)
+                try:
+                    normalized = tool_gateway.normalize(label, payload)
+                    validate_tool_output(normalized, tool_gateway.id)
+                    product = product_gateway.describe(payload)
+                    validate_product_output(product, product_gateway.id)
+                except Exception as exc:
+                    inv.issue('gateway_record_error', locator, dict(run_id=run['id'], line=number, error=type(exc).__name__ + ': ' + str(exc)))
+                    run['status'] = 'incomplete'
+                    normalized = dict(kind='observation', role='unknown', gateway=tool_gateway.id, native_interpretation='not_evaluated')
+                    product = dict(gateway=product_gateway.id, operation=None, entities=[], rules=[], status='unmapped', reason='Gateway record processing failed')
                 report['events'].append(dict(id='e' + str(len(report['events']) + 1), run_id=run['id'],
-                    **normalized, product=product_gateway.describe(payload), scope=dict(case_id=case_id, basis=scope),
+                    **normalized, product=product, evidence_availability=evidence_availability(payload, normalized['kind']), scope=dict(case_id=case_id, basis=scope),
                     source=dict(artifact_id=artifact['id'], line=number), payload=payload))
             if len(report['events']) == count_before:
                 inv.issue('empty_or_unreadable_artifact', locator, dict(run_id=run['id'], label=label))

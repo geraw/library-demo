@@ -95,7 +95,8 @@
           "tool_gateway",
           "product_gateway",
           "status",
-          "artifacts"
+          "artifacts",
+          "gateway_contracts"
         ],
         "properties": {
           "id": {
@@ -127,6 +128,123 @@
                 "null"
               ]
             }
+          },
+          "gateway_contracts": {
+            "type": "object",
+            "required": [
+              "tool",
+              "product"
+            ],
+            "properties": {
+              "tool": {
+                "type": "object",
+                "required": [
+                  "api_version",
+                  "id",
+                  "dimension",
+                  "capabilities",
+                  "required_artifacts",
+                  "optional_artifacts",
+                  "evidence_requirements",
+                  "limitations"
+                ],
+                "properties": {
+                  "api_version": {
+                    "const": "natchan-gateway/1"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "dimension": {
+                    "const": "tool"
+                  },
+                  "capabilities": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "required_artifacts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "optional_artifacts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "evidence_requirements": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "limitations": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "product": {
+                "type": "object",
+                "required": [
+                  "api_version",
+                  "id",
+                  "dimension",
+                  "capabilities",
+                  "required_artifacts",
+                  "optional_artifacts",
+                  "evidence_requirements",
+                  "limitations"
+                ],
+                "properties": {
+                  "api_version": {
+                    "const": "natchan-gateway/1"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "dimension": {
+                    "const": "product"
+                  },
+                  "capabilities": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "required_artifacts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "optional_artifacts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "evidence_requirements": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "limitations": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -144,7 +262,8 @@
           "scope",
           "source",
           "payload",
-          "product"
+          "product",
+          "evidence_availability"
         ],
         "properties": {
           "id": {
@@ -204,6 +323,28 @@
           },
           "product": {
             "type": "object"
+          },
+          "evidence_availability": {
+            "type": "object",
+            "required": [
+              "status",
+              "missing"
+            ],
+            "properties": {
+              "status": {
+                "enum": [
+                  "not_applicable",
+                  "partial",
+                  "recorded"
+                ]
+              },
+              "missing": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       }

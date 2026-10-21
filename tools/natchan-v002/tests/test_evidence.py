@@ -37,7 +37,7 @@ def test_independent_gateways_and_exact_source(tmp_path):
 def test_custom_tool_and_custom_product_independent(tmp_path):
     class ExtraTool(RecordedToolGateway):
         def normalize(self,label,record):
-            return dict(super().normalize(label,record),extra_tool=True)
+            return dict(super().normalize(label,record),native_interpretation='extra_tool')
     class ExtraProduct(OpaqueProductGateway):
         def describe(self,record):
             return dict(super().describe(record),extra_product=True)
@@ -45,7 +45,7 @@ def test_custom_tool_and_custom_product_independent(tmp_path):
     products_patch=patch.dict(PRODUCTS,{'extra':ExtraProduct()}); products_patch.start()
     p=archive(tmp_path,[('trace.jsonl','{"method":"GET","path":"/a"}')])
     r=ingest(p,manifest(tool_gateway='extra',product_gateway='extra'))
-    assert r['events'][0]['extra_tool'] and r['events'][0]['product']['extra_product']
+    assert r['events'][0]['native_interpretation']=='extra_tool' and r['events'][0]['product']['extra_product']
     tools_patch.stop(); products_patch.stop()
 
 

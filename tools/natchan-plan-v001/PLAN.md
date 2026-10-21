@@ -94,3 +94,6 @@ Implement package 0 as a reviewable lineage/reconciliation change: compare archi
 ## Stage 1 implementation checkpoint — 2026-10-21
 
 Implemented in `tools/natchan-v002/`: bounded offline ZIP inventory, versioned evidence envelope, explicit source locations, separate ToolGateway and ProductGateway protocols/registries, generic recorded JSON and fixed-Java/Library initial gateways. The user requires independent gateways in both dimensions. Layout adapters remain separate from product semantics. Existing v001 evaluators remain unchanged; native gateway migration and verifier reconciliation are pending. Eleven ingestion tests passed; the real work v011 ZIP imported 3 arms, 542 native records per arm, 30,678 events, 77 members and zero ingestion issues. This is not a new bug-finding result. Additional requirements are expected and can extend the interfaces.
+
+
+Stage 1 contract completion: `tools/natchan-v002/GATEWAY_CONTRACTS.md` defines and implements explicit capability declarations, required/optional artifacts, record output validation, missing-evidence handling and independent extension. Eighteen tests passed; the real archive remains ingestion-complete with no new bug scores. Next stage is connecting the preserved Library evaluator and proving legacy parity.

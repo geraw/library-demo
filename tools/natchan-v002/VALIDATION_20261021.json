@@ -3,7 +3,7 @@
   "python": "3.12.14",
   "unit_tests": {
     "command": "python -m unittest discover -s tools/natchan-v002/tests -q",
-    "passed": 11,
+    "passed": 18,
     "failed": 0
   },
   "real_archive": {
@@ -49,5 +49,12 @@
     "No new semantic verdicts",
     "PowerShell wrapper source-reviewed; not run on Windows in this environment",
     "RESTler/EvoMaster native gateway migration pending"
+  ],
+  "gateway_contract_api": "natchan-gateway/1",
+  "stage_1_contract_acceptance": [
+    "Declared and enforced capabilities/required artifacts",
+    "Independent tool/product registration and all four built-in combinations",
+    "Invalid gateway output preserves raw evidence and marks incomplete",
+    "Real archive reimport complete with 30678 events and no issues"
   ]
 }
