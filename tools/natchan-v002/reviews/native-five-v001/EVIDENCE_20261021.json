@@ -1,0 +1,907 @@
+{
+  "schema_version": 1,
+  "scope": "Focused retrospective audit; no new execution or automatic general classification",
+  "archive_sha256": "7abd54bd10a41ac0491594ca679112140d92fbe0fb5553cccc04264d5e0d0895",
+  "cases": [
+    {
+      "case": 80,
+      "assessment": "Confirmed manifestation of seeded bug 5 in retained evidence",
+      "native_failure": "Later deleteHold receives 404 instead of expected 200",
+      "common_observer": "Earlier successful delete removes the non-target same-owner hold",
+      "arms": {
+        "control": {
+          "native": {
+            "case": 80,
+            "name": "User with two Holds deletes both, then is deletable",
+            "steps": 8,
+            "expectReached": true,
+            "reached": true,
+            "reachedSteps": 8,
+            "failedAction": null,
+            "actuator_errors": 0,
+            "listener_errors": 0,
+            "exception": null,
+            "native_pass": true,
+            "wall_seconds": 0.1193274
+          },
+          "checks": {
+            "verified_empty_start": true,
+            "both_hold_ids_came_from_successful_creation": true,
+            "distinct_holds_same_owner": true,
+            "readbacks_succeeded": true,
+            "first_delete_success": true,
+            "target_removed": true,
+            "sibling_preserved": true,
+            "second_delete_status": 200,
+            "recomputed_case_evaluable": true
+          },
+          "first_delete": {
+            "line": 1065,
+            "step": 6,
+            "path": "/holds/447355?description=Delete%3A+Hold+1+for+User+1+and+Book+1&id=1.0&userId=1.0&bookId=1.0",
+            "target_id": 447355
+          },
+          "second_delete": {
+            "line": 1067,
+            "path": "/holds/956906?description=Delete%3A+Hold+2+for+User+1+and+Book+2&id=2.0&userId=1.0&bookId=2.0",
+            "sibling_id": 956906,
+            "response": {
+              "message": "Hold deleted"
+            }
+          },
+          "owner_id": 515064,
+          "before_readback": {
+            "line": 1064,
+            "holds": [
+              {
+                "bookId": 337683,
+                "id": 447355,
+                "userId": 515064
+              },
+              {
+                "bookId": 661021,
+                "id": 956906,
+                "userId": 515064
+              }
+            ]
+          },
+          "after_readback": {
+            "line": 1066,
+            "holds": [
+              {
+                "bookId": 661021,
+                "id": 956906,
+                "userId": 515064
+              }
+            ]
+          },
+          "creation_lines": {
+            "447355": 1061,
+            "956906": 1063
+          },
+          "recomputed_clean_verdicts": []
+        },
+        "business-four": {
+          "native": {
+            "case": 80,
+            "name": "User with two Holds deletes both, then is deletable",
+            "steps": 8,
+            "expectReached": true,
+            "reached": false,
+            "reachedSteps": 6,
+            "failedAction": "deleteHold",
+            "actuator_errors": 1,
+            "listener_errors": 0,
+            "exception": null,
+            "native_pass": false,
+            "wall_seconds": 0.1037256
+          },
+          "checks": {
+            "verified_empty_start": true,
+            "both_hold_ids_came_from_successful_creation": true,
+            "distinct_holds_same_owner": true,
+            "readbacks_succeeded": true,
+            "first_delete_success": true,
+            "target_removed": true,
+            "sibling_preserved": false,
+            "second_delete_status": 404,
+            "recomputed_case_evaluable": true
+          },
+          "first_delete": {
+            "line": 1066,
+            "step": 6,
+            "path": "/holds/851418?description=Delete%3A+Hold+1+for+User+1+and+Book+1&id=1.0&userId=1.0&bookId=1.0",
+            "target_id": 851418
+          },
+          "second_delete": {
+            "line": 1069,
+            "path": "/holds/725855?description=Delete%3A+Hold+2+for+User+1+and+Book+2&id=2.0&userId=1.0&bookId=2.0",
+            "sibling_id": 725855,
+            "response": {
+              "error": "Hold not found"
+            }
+          },
+          "owner_id": 814993,
+          "before_readback": {
+            "line": 1065,
+            "holds": [
+              {
+                "bookId": 631289,
+                "id": 851418,
+                "userId": 814993
+              },
+              {
+                "bookId": 375301,
+                "id": 725855,
+                "userId": 814993
+              }
+            ]
+          },
+          "after_readback": {
+            "line": 1067,
+            "holds": []
+          },
+          "creation_lines": {
+            "851418": 1062,
+            "725855": 1064
+          },
+          "recomputed_clean_verdicts": [
+            {
+              "role": "verdict",
+              "case": "one-recorded-case",
+              "method": "DELETE",
+              "path": "/holds/851418?description=Delete%3A+Hold+1+for+User+1+and+Book+1&id=1.0&userId=1.0&bookId=1.0",
+              "status": 200,
+              "response": {
+                "message": "Hold deleted"
+              },
+              "violations": [
+                {
+                  "rule": "STATE_MISMATCH",
+                  "entity": "holds",
+                  "expected": [
+                    {
+                      "bookId": 375301,
+                      "id": 725855,
+                      "userId": 814993
+                    }
+                  ],
+                  "actual": []
+                }
+              ],
+              "prefix_tainted": false,
+              "source_line": 1066
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": 257,
+      "assessment": "Confirmed manifestation of seeded bug 5 in retained evidence",
+      "native_failure": "Later deleteHold receives 404 instead of expected 200",
+      "common_observer": "Earlier successful delete removes the non-target same-owner hold",
+      "arms": {
+        "control": {
+          "native": {
+            "case": 257,
+            "name": "sample-derived-169 (9 steps)",
+            "steps": 9,
+            "expectReached": true,
+            "reached": true,
+            "reachedSteps": 9,
+            "failedAction": null,
+            "actuator_errors": 0,
+            "listener_errors": 0,
+            "exception": null,
+            "native_pass": true,
+            "wall_seconds": 0.1530676
+          },
+          "checks": {
+            "verified_empty_start": true,
+            "both_hold_ids_came_from_successful_creation": true,
+            "distinct_holds_same_owner": true,
+            "readbacks_succeeded": true,
+            "first_delete_success": true,
+            "target_removed": true,
+            "sibling_preserved": true,
+            "second_delete_status": 200,
+            "recomputed_case_evaluable": true
+          },
+          "first_delete": {
+            "line": 4111,
+            "step": 6,
+            "path": "/holds/598548?description=Delete%3A+Hold+1+for+User+1+and+Book+1&id=1.0&userId=1.0&bookId=1.0",
+            "target_id": 598548
+          },
+          "second_delete": {
+            "line": 4117,
+            "path": "/holds/288228?description=Delete%3A+Hold+2+for+User+1+and+Book+2&id=2.0&userId=1.0&bookId=2.0",
+            "sibling_id": 288228,
+            "response": {
+              "message": "Hold deleted"
+            }
+          },
+          "owner_id": 511813,
+          "before_readback": {
+            "line": 4110,
+            "holds": [
+              {
+                "bookId": 995679,
+                "id": 598548,
+                "userId": 511813
+              },
+              {
+                "bookId": 249441,
+                "id": 288228,
+                "userId": 511813
+              }
+            ]
+          },
+          "after_readback": {
+            "line": 4112,
+            "holds": [
+              {
+                "bookId": 249441,
+                "id": 288228,
+                "userId": 511813
+              }
+            ]
+          },
+          "creation_lines": {
+            "598548": 4107,
+            "288228": 4109
+          },
+          "recomputed_clean_verdicts": []
+        },
+        "business-four": {
+          "native": {
+            "case": 257,
+            "name": "sample-derived-169 (9 steps)",
+            "steps": 9,
+            "expectReached": true,
+            "reached": false,
+            "reachedSteps": 8,
+            "failedAction": "deleteHold",
+            "actuator_errors": 1,
+            "listener_errors": 0,
+            "exception": null,
+            "native_pass": false,
+            "wall_seconds": 0.1070969
+          },
+          "checks": {
+            "verified_empty_start": true,
+            "both_hold_ids_came_from_successful_creation": true,
+            "distinct_holds_same_owner": true,
+            "readbacks_succeeded": true,
+            "first_delete_success": true,
+            "target_removed": true,
+            "sibling_preserved": false,
+            "second_delete_status": 404,
+            "recomputed_case_evaluable": true
+          },
+          "first_delete": {
+            "line": 4115,
+            "step": 6,
+            "path": "/holds/998305?description=Delete%3A+Hold+1+for+User+1+and+Book+1&id=1.0&userId=1.0&bookId=1.0",
+            "target_id": 998305
+          },
+          "second_delete": {
+            "line": 4123,
+            "path": "/holds/499873?description=Delete%3A+Hold+2+for+User+1+and+Book+2&id=2.0&userId=1.0&bookId=2.0",
+            "sibling_id": 499873,
+            "response": {
+              "error": "Hold not found"
+            }
+          },
+          "owner_id": 586176,
+          "before_readback": {
+            "line": 4114,
+            "holds": [
+              {
+                "bookId": 326993,
+                "id": 998305,
+                "userId": 586176
+              },
+              {
+                "bookId": 908709,
+                "id": 499873,
+                "userId": 586176
+              }
+            ]
+          },
+          "after_readback": {
+            "line": 4116,
+            "holds": []
+          },
+          "creation_lines": {
+            "998305": 4111,
+            "499873": 4113
+          },
+          "recomputed_clean_verdicts": [
+            {
+              "role": "verdict",
+              "case": "one-recorded-case",
+              "method": "DELETE",
+              "path": "/holds/998305?description=Delete%3A+Hold+1+for+User+1+and+Book+1&id=1.0&userId=1.0&bookId=1.0",
+              "status": 200,
+              "response": {
+                "message": "Hold deleted"
+              },
+              "violations": [
+                {
+                  "rule": "STATE_MISMATCH",
+                  "entity": "holds",
+                  "expected": [
+                    {
+                      "bookId": 908709,
+                      "id": 499873,
+                      "userId": 586176
+                    },
+                    {
+                      "bookId": 326993,
+                      "id": 900622,
+                      "userId": 367698
+                    }
+                  ],
+                  "actual": []
+                }
+              ],
+              "prefix_tainted": false,
+              "source_line": 4115
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": 260,
+      "assessment": "Confirmed manifestation of seeded bug 5 in retained evidence",
+      "native_failure": "Later deleteHold receives 404 instead of expected 200",
+      "common_observer": "Earlier successful delete removes the non-target same-owner hold",
+      "arms": {
+        "control": {
+          "native": {
+            "case": 260,
+            "name": "sample-derived-172 (9 steps)",
+            "steps": 9,
+            "expectReached": true,
+            "reached": true,
+            "reachedSteps": 9,
+            "failedAction": null,
+            "actuator_errors": 0,
+            "listener_errors": 0,
+            "exception": null,
+            "native_pass": true,
+            "wall_seconds": 0.1345029
+          },
+          "checks": {
+            "verified_empty_start": true,
+            "both_hold_ids_came_from_successful_creation": true,
+            "distinct_holds_same_owner": true,
+            "readbacks_succeeded": true,
+            "first_delete_success": true,
+            "target_removed": true,
+            "sibling_preserved": true,
+            "second_delete_status": 200,
+            "recomputed_case_evaluable": true
+          },
+          "first_delete": {
+            "line": 4181,
+            "step": 8,
+            "path": "/holds/585722?description=Delete%3A+Hold+4+for+User+1+and+Book+3&id=4.0&userId=1.0&bookId=3.0",
+            "target_id": 585722
+          },
+          "second_delete": {
+            "line": 4183,
+            "path": "/holds/524590?description=Delete%3A+Hold+3+for+User+1+and+Book+2&id=3.0&userId=1.0&bookId=2.0",
+            "sibling_id": 524590,
+            "response": {
+              "message": "Hold deleted"
+            }
+          },
+          "owner_id": 773282,
+          "before_readback": {
+            "line": 4180,
+            "holds": [
+              {
+                "bookId": 697691,
+                "id": 585722,
+                "userId": 773282
+              },
+              {
+                "bookId": 629950,
+                "id": 524590,
+                "userId": 773282
+              }
+            ]
+          },
+          "after_readback": {
+            "line": 4182,
+            "holds": [
+              {
+                "bookId": 629950,
+                "id": 524590,
+                "userId": 773282
+              }
+            ]
+          },
+          "creation_lines": {
+            "585722": 4177,
+            "524590": 4179
+          },
+          "recomputed_clean_verdicts": []
+        },
+        "business-four": {
+          "native": {
+            "case": 260,
+            "name": "sample-derived-172 (9 steps)",
+            "steps": 9,
+            "expectReached": true,
+            "reached": false,
+            "reachedSteps": 8,
+            "failedAction": "deleteHold",
+            "actuator_errors": 1,
+            "listener_errors": 0,
+            "exception": null,
+            "native_pass": false,
+            "wall_seconds": 0.1200042
+          },
+          "checks": {
+            "verified_empty_start": true,
+            "both_hold_ids_came_from_successful_creation": true,
+            "distinct_holds_same_owner": true,
+            "readbacks_succeeded": true,
+            "first_delete_success": true,
+            "target_removed": true,
+            "sibling_preserved": false,
+            "second_delete_status": 404,
+            "recomputed_case_evaluable": true
+          },
+          "first_delete": {
+            "line": 4188,
+            "step": 8,
+            "path": "/holds/796947?description=Delete%3A+Hold+4+for+User+1+and+Book+3&id=4.0&userId=1.0&bookId=3.0",
+            "target_id": 796947
+          },
+          "second_delete": {
+            "line": 4191,
+            "path": "/holds/306903?description=Delete%3A+Hold+3+for+User+1+and+Book+2&id=3.0&userId=1.0&bookId=2.0",
+            "sibling_id": 306903,
+            "response": {
+              "error": "Hold not found"
+            }
+          },
+          "owner_id": 591010,
+          "before_readback": {
+            "line": 4187,
+            "holds": [
+              {
+                "bookId": 764622,
+                "id": 796947,
+                "userId": 591010
+              },
+              {
+                "bookId": 528854,
+                "id": 306903,
+                "userId": 591010
+              }
+            ]
+          },
+          "after_readback": {
+            "line": 4189,
+            "holds": []
+          },
+          "creation_lines": {
+            "796947": 4184,
+            "306903": 4186
+          },
+          "recomputed_clean_verdicts": [
+            {
+              "role": "verdict",
+              "case": "one-recorded-case",
+              "method": "DELETE",
+              "path": "/holds/796947?description=Delete%3A+Hold+4+for+User+1+and+Book+3&id=4.0&userId=1.0&bookId=3.0",
+              "status": 200,
+              "response": {
+                "message": "Hold deleted"
+              },
+              "violations": [
+                {
+                  "rule": "STATE_MISMATCH",
+                  "entity": "holds",
+                  "expected": [
+                    {
+                      "bookId": 528854,
+                      "id": 306903,
+                      "userId": 591010
+                    }
+                  ],
+                  "actual": []
+                }
+              ],
+              "prefix_tainted": false,
+              "source_line": 4188
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": 266,
+      "assessment": "Confirmed manifestation of seeded bug 5 in retained evidence",
+      "native_failure": "Later deleteHold receives 404 instead of expected 200",
+      "common_observer": "Earlier successful delete removes the non-target same-owner hold",
+      "arms": {
+        "control": {
+          "native": {
+            "case": 266,
+            "name": "sample-derived-178 (10 steps)",
+            "steps": 10,
+            "expectReached": true,
+            "reached": true,
+            "reachedSteps": 10,
+            "failedAction": null,
+            "actuator_errors": 0,
+            "listener_errors": 0,
+            "exception": null,
+            "native_pass": true,
+            "wall_seconds": 0.1220009
+          },
+          "checks": {
+            "verified_empty_start": true,
+            "both_hold_ids_came_from_successful_creation": true,
+            "distinct_holds_same_owner": true,
+            "readbacks_succeeded": true,
+            "first_delete_success": true,
+            "target_removed": true,
+            "sibling_preserved": true,
+            "second_delete_status": 200,
+            "recomputed_case_evaluable": true
+          },
+          "first_delete": {
+            "line": 4324,
+            "step": 6,
+            "path": "/holds/381607?description=Delete%3A+Hold+2+for+User+1+and+Book+2&id=2.0&userId=1.0&bookId=2.0",
+            "target_id": 381607
+          },
+          "second_delete": {
+            "line": 4332,
+            "path": "/holds/159127?description=Delete%3A+Hold+1+for+User+1+and+Book+1&id=1.0&userId=1.0&bookId=1.0",
+            "sibling_id": 159127,
+            "response": {
+              "message": "Hold deleted"
+            }
+          },
+          "owner_id": 949806,
+          "before_readback": {
+            "line": 4323,
+            "holds": [
+              {
+                "bookId": 814732,
+                "id": 159127,
+                "userId": 949806
+              },
+              {
+                "bookId": 271338,
+                "id": 381607,
+                "userId": 949806
+              }
+            ]
+          },
+          "after_readback": {
+            "line": 4325,
+            "holds": [
+              {
+                "bookId": 814732,
+                "id": 159127,
+                "userId": 949806
+              }
+            ]
+          },
+          "creation_lines": {
+            "381607": 4322,
+            "159127": 4320
+          },
+          "recomputed_clean_verdicts": []
+        },
+        "business-four": {
+          "native": {
+            "case": 266,
+            "name": "sample-derived-178 (10 steps)",
+            "steps": 10,
+            "expectReached": true,
+            "reached": false,
+            "reachedSteps": 9,
+            "failedAction": "deleteHold",
+            "actuator_errors": 1,
+            "listener_errors": 0,
+            "exception": null,
+            "native_pass": false,
+            "wall_seconds": 0.0804123
+          },
+          "checks": {
+            "verified_empty_start": true,
+            "both_hold_ids_came_from_successful_creation": true,
+            "distinct_holds_same_owner": true,
+            "readbacks_succeeded": true,
+            "first_delete_success": true,
+            "target_removed": true,
+            "sibling_preserved": false,
+            "second_delete_status": 404,
+            "recomputed_case_evaluable": true
+          },
+          "first_delete": {
+            "line": 4333,
+            "step": 6,
+            "path": "/holds/438147?description=Delete%3A+Hold+2+for+User+1+and+Book+2&id=2.0&userId=1.0&bookId=2.0",
+            "target_id": 438147
+          },
+          "second_delete": {
+            "line": 4343,
+            "path": "/holds/712936?description=Delete%3A+Hold+1+for+User+1+and+Book+1&id=1.0&userId=1.0&bookId=1.0",
+            "sibling_id": 712936,
+            "response": {
+              "error": "Hold not found"
+            }
+          },
+          "owner_id": 724446,
+          "before_readback": {
+            "line": 4332,
+            "holds": [
+              {
+                "bookId": 620014,
+                "id": 712936,
+                "userId": 724446
+              },
+              {
+                "bookId": 246900,
+                "id": 438147,
+                "userId": 724446
+              }
+            ]
+          },
+          "after_readback": {
+            "line": 4334,
+            "holds": []
+          },
+          "creation_lines": {
+            "438147": 4331,
+            "712936": 4329
+          },
+          "recomputed_clean_verdicts": [
+            {
+              "role": "verdict",
+              "case": "one-recorded-case",
+              "method": "DELETE",
+              "path": "/holds/438147?description=Delete%3A+Hold+2+for+User+1+and+Book+2&id=2.0&userId=1.0&bookId=2.0",
+              "status": 200,
+              "response": {
+                "message": "Hold deleted"
+              },
+              "violations": [
+                {
+                  "rule": "STATE_MISMATCH",
+                  "entity": "holds",
+                  "expected": [
+                    {
+                      "bookId": 620014,
+                      "id": 712936,
+                      "userId": 724446
+                    },
+                    {
+                      "bookId": 550364,
+                      "id": 651870,
+                      "userId": 724446
+                    }
+                  ],
+                  "actual": []
+                }
+              ],
+              "prefix_tainted": false,
+              "source_line": 4333
+            }
+          ]
+        }
+      }
+    },
+    {
+      "case": 433,
+      "assessment": "Confirmed manifestation of seeded bug 5 in retained evidence",
+      "native_failure": "Later deleteHold receives 404 instead of expected 200",
+      "common_observer": "Earlier successful delete removes the non-target same-owner hold",
+      "arms": {
+        "control": {
+          "native": {
+            "case": 433,
+            "name": "sample-derived-298 (8 steps)",
+            "steps": 8,
+            "expectReached": true,
+            "reached": true,
+            "reachedSteps": 8,
+            "failedAction": null,
+            "actuator_errors": 0,
+            "listener_errors": 0,
+            "exception": null,
+            "native_pass": true,
+            "wall_seconds": 0.088269
+          },
+          "checks": {
+            "verified_empty_start": true,
+            "both_hold_ids_came_from_successful_creation": true,
+            "distinct_holds_same_owner": true,
+            "readbacks_succeeded": true,
+            "first_delete_success": true,
+            "target_removed": true,
+            "sibling_preserved": true,
+            "second_delete_status": 200,
+            "recomputed_case_evaluable": true
+          },
+          "first_delete": {
+            "line": 7171,
+            "step": 6,
+            "path": "/holds/140707?description=Delete%3A+Hold+1+for+User+1+and+Book+1&id=1.0&userId=1.0&bookId=1.0",
+            "target_id": 140707
+          },
+          "second_delete": {
+            "line": 7175,
+            "path": "/holds/144167?description=Delete%3A+Hold+2+for+User+1+and+Book+2&id=2.0&userId=1.0&bookId=2.0",
+            "sibling_id": 144167,
+            "response": {
+              "message": "Hold deleted"
+            }
+          },
+          "owner_id": 369684,
+          "before_readback": {
+            "line": 7170,
+            "holds": [
+              {
+                "bookId": 266859,
+                "id": 144167,
+                "userId": 369684
+              },
+              {
+                "bookId": 228383,
+                "id": 140707,
+                "userId": 369684
+              }
+            ]
+          },
+          "after_readback": {
+            "line": 7172,
+            "holds": [
+              {
+                "bookId": 266859,
+                "id": 144167,
+                "userId": 369684
+              }
+            ]
+          },
+          "creation_lines": {
+            "140707": 7169,
+            "144167": 7167
+          },
+          "recomputed_clean_verdicts": []
+        },
+        "business-four": {
+          "native": {
+            "case": 433,
+            "name": "sample-derived-298 (8 steps)",
+            "steps": 8,
+            "expectReached": true,
+            "reached": false,
+            "reachedSteps": 7,
+            "failedAction": "deleteHold",
+            "actuator_errors": 1,
+            "listener_errors": 0,
+            "exception": null,
+            "native_pass": false,
+            "wall_seconds": 0.0878109
+          },
+          "checks": {
+            "verified_empty_start": true,
+            "both_hold_ids_came_from_successful_creation": true,
+            "distinct_holds_same_owner": true,
+            "readbacks_succeeded": true,
+            "first_delete_success": true,
+            "target_removed": true,
+            "sibling_preserved": false,
+            "second_delete_status": 404,
+            "recomputed_case_evaluable": true
+          },
+          "first_delete": {
+            "line": 7185,
+            "step": 6,
+            "path": "/holds/476464?description=Delete%3A+Hold+1+for+User+1+and+Book+1&id=1.0&userId=1.0&bookId=1.0",
+            "target_id": 476464
+          },
+          "second_delete": {
+            "line": 7190,
+            "path": "/holds/204718?description=Delete%3A+Hold+2+for+User+1+and+Book+2&id=2.0&userId=1.0&bookId=2.0",
+            "sibling_id": 204718,
+            "response": {
+              "error": "Hold not found"
+            }
+          },
+          "owner_id": 970680,
+          "before_readback": {
+            "line": 7184,
+            "holds": [
+              {
+                "bookId": 525342,
+                "id": 204718,
+                "userId": 970680
+              },
+              {
+                "bookId": 473180,
+                "id": 476464,
+                "userId": 970680
+              }
+            ]
+          },
+          "after_readback": {
+            "line": 7186,
+            "holds": []
+          },
+          "creation_lines": {
+            "476464": 7183,
+            "204718": 7181
+          },
+          "recomputed_clean_verdicts": [
+            {
+              "role": "verdict",
+              "case": "one-recorded-case",
+              "method": "DELETE",
+              "path": "/holds/476464?description=Delete%3A+Hold+1+for+User+1+and+Book+1&id=1.0&userId=1.0&bookId=1.0",
+              "status": 200,
+              "response": {
+                "message": "Hold deleted"
+              },
+              "violations": [
+                {
+                  "rule": "STATE_MISMATCH",
+                  "entity": "holds",
+                  "expected": [
+                    {
+                      "bookId": 525342,
+                      "id": 204718,
+                      "userId": 970680
+                    }
+                  ],
+                  "actual": []
+                }
+              ],
+              "prefix_tainted": false,
+              "source_line": 7185
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "source_files": {
+    "control/http.jsonl": "67689d6688a2d29cafb84f4614fc04e89650f47b35d554cb3c7423490490fd3a",
+    "business-four/http.jsonl": "cb5cb3e13b28fa53b75167441afc9dc520a562a7846c36832ec3bf7f5f62777f",
+    "control/native.jsonl": "c750d42cc2b1751f7e3cd51e0131e157a8aa610db2adf153c0271c03f20441e8",
+    "business-four/native.jsonl": "eb2df4df753444ebc27fce5a081cfefda65b0da8a79a91cc5ddc36338c02443c",
+    "business-four/java-suite.log": "d6ced51d0f72150f5c2004ac53014105c0ecc4d32863dd7f03a6ec6efa691215",
+    "src/V011Actuation.java": "950424ce4177551b263ee234b22b3cca8dd8ae3e1f8f9e85ccf1f6b55d781d16",
+    "src/V011GuidedSuiteHarness.java": "8116796a70741730c53c6343de3f893a79ccf4d0b653addde40b18901dc3fa98",
+    "model/spec/js/interfaces.library.js": "4eb0aa520f8d139bab280adf770b5fc34cab126400d53fc793f5a20a3852dcca",
+    "sut_buggy_issta.py": "91b5cbe404afbd9906ab5dd8999710d38257d7d6fc2d8a40b8098b02ef66cb7f"
+  },
+  "input_manifest_verified": true,
+  "summary": {
+    "qualified_case_count": 5,
+    "distinct_seeded_bugs": 1,
+    "seeded_bug": "bug-5",
+    "new_sut_executions": 0,
+    "native_detection": "Response-code assertion detects the later consequence; the business explanation comes from independent state evidence",
+    "limits": [
+      "Paired runs use the same fixed catalog but fuzz payload variants and allocated IDs differ",
+      "No isolated bug-5-only replay was performed in this audit",
+      "No universal tool capability conclusion follows from this run"
+    ]
+  },
+  "validation": "PASS"
+}
