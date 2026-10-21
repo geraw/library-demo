@@ -32,6 +32,8 @@ def describe_contract(gateway, dimension):
         raise ValueError('Gateway id must be nonempty')
     if not callable(getattr(gateway, 'normalize' if dimension == 'tool' else 'describe', None)):
         raise ValueError('Gateway method missing')
+    if dimension == 'product' and 'semantic_evaluation' in value['capabilities'] and not callable(getattr(gateway, 'evaluate', None)):
+        raise ValueError('Semantic capability requires an evaluate method')
     return value
 
 

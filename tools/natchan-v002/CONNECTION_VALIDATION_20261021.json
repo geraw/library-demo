@@ -1,0 +1,108 @@
+{
+  "source": {
+    "filename": "java-fixed-split-v011-20261021-094721-5216-review.zip",
+    "sha256": "7abd54bd10a41ac0491594ca679112140d92fbe0fb5553cccc04264d5e0d0895"
+  },
+  "analysis_status": "complete",
+  "arms": {
+    "control": {
+      "case_count": 542,
+      "evaluable_case_count": 542,
+      "exact_legacy_report_parity": true,
+      "archived_candidate_cases_parity": true,
+      "native_failed_cases_parity": true,
+      "native_failed_cases": [
+        "73",
+        "77"
+      ],
+      "candidate_case_count": 0,
+      "external_evaluator": {
+        "confirmed_classes_in_evaluable_cases": [],
+        "candidate_classes_in_evaluable_cases": [],
+        "cases_with_candidates": 0
+      }
+    },
+    "business-four": {
+      "case_count": 542,
+      "evaluable_case_count": 542,
+      "exact_legacy_report_parity": true,
+      "archived_candidate_cases_parity": true,
+      "native_failed_cases_parity": true,
+      "native_failed_cases": [
+        "73",
+        "77",
+        "80",
+        "257",
+        "260",
+        "266",
+        "433"
+      ],
+      "candidate_case_count": 22,
+      "external_evaluator": {
+        "confirmed_classes_in_evaluable_cases": [],
+        "candidate_classes_in_evaluable_cases": [
+          "bug-5-candidate"
+        ],
+        "cases_with_candidates": 22
+      }
+    },
+    "book-read-one": {
+      "case_count": 542,
+      "evaluable_case_count": 542,
+      "exact_legacy_report_parity": true,
+      "archived_candidate_cases_parity": true,
+      "native_failed_cases_parity": true,
+      "native_failed_cases": [
+        "73",
+        "77"
+      ],
+      "candidate_case_count": 0,
+      "external_evaluator": {
+        "confirmed_classes_in_evaluable_cases": [],
+        "candidate_classes_in_evaluable_cases": [],
+        "cases_with_candidates": 0
+      }
+    }
+  },
+  "control_comparison": {
+    "status": "recorded",
+    "control_run_id": "control",
+    "runs": [
+      {
+        "id": "business-four",
+        "status": "recorded",
+        "native_failed_on_passing_control": [
+          "80",
+          "257",
+          "260",
+          "266",
+          "433"
+        ],
+        "native_failed_on_failing_control": [
+          "73",
+          "77"
+        ],
+        "native_failed_without_control_verdict": []
+      },
+      {
+        "id": "book-read-one",
+        "status": "recorded",
+        "native_failed_on_passing_control": [],
+        "native_failed_on_failing_control": [
+          "73",
+          "77"
+        ],
+        "native_failed_without_control_verdict": []
+      }
+    ],
+    "note": "Explicit case-ID correlation only; pairing assumes the declared same catalog. It does not confirm unique bugs."
+  },
+  "summary": {
+    "run_count": 3,
+    "external_observation_count": 22,
+    "confirmed_unique_bug_count": null,
+    "candidate_cases": 22
+  },
+  "input_manifest_verified": true,
+  "validation": "PASS"
+}

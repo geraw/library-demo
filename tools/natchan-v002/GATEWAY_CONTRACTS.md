@@ -38,7 +38,7 @@ python tools/natchan-v002/gateways.py
 
 `ToolGateway.normalize(label, record)` returns an allowed event kind, a string role, its own gateway ID, and explicit native interpretation. Optional native metric/value preserve original units. Unsupported envelope keys are rejected. The fixed Java adapter recognizes a verdict only when `native_pass` is boolean and a case ID is supplied; unknown/malformed native records stay uninterpreted.
 
-`ProductGateway.describe(record)` returns its gateway ID, mapping status (`mapped`, `unmapped`, `not_http`), operation or null, entities array and rules array. The Library implementation maps its public resource paths and references the preserved Ledger. It performs neither state extraction nor semantic evaluation in this stage.
+`ProductGateway.describe(record)` returns its gateway ID, mapping status (`mapped`, `unmapped`, `not_http`), operation or null, entities array and rules array. The Library implementation maps its public resource paths and references the preserved Ledger. Its describe method performs path mapping only. Its optional evaluate method now delegates to the preserved case-local checker; ingestion remains separate.
 
 Core validates outputs on every record. A plugin exception or invalid output adds `gateway_record_error`, marks ingestion incomplete, and preserves the original payload/source with fallback unknown mapping. No exception is interpreted as a bug. Missing HTTP fields are listed under `evidence_availability`; a null response is recorded presence, not proof of a complete readback. Partial evidence is not discarded, and availability is not correctness.
 
@@ -49,7 +49,7 @@ Core validates outputs on every record. A plugin exception or invalid output add
 | recorded-json-v1 | None | Common recorded JSON, HTTP/execution envelopes | No native format interpretation |
 | provengo-fixed-java-v011 | native_jsonl | Recorded fixed-Java pass Boolean and case | Failed tests do not establish unique bugs |
 | opaque-product-v1 | None | Preserve evidence without product interpretation | No product semantics |
-| library-issta-v006 | trace | Resource/operation mapping, semantic provider reference | Unverified path ID; semantic evaluator not invoked |
+| library-issta-v006 | trace | Resource/operation mapping, semantic provider reference | Unverified path ID; semantic evaluation available separately through preserved checker |
 
 RESTler/EvoMaster native implementations and additional product mappings remain planned work. Their existing v001 analysis code remains available. Stage 1 completes the extensible contract and its enforcement, not every future gateway implementation.
 
@@ -58,3 +58,7 @@ RESTler/EvoMaster native implementations and additional product mappings remain 
 All four combinations of currently registered tool/product gateways select without pair-specific logic. A custom tool and a custom product can be registered independently. Invalid dimension, undeclared contract, missing required input and invalid plugin output are tested. Source preservation and unknown states are retained. Full test suite: 18 passed. Real Library work ZIP: 3 arms, 542 native records each, 30,678 events, zero ingestion issues. No new SUT execution or bug-detection claim.
 
 Future requirements can add versioned gateways/capabilities. Incompatible envelope/API changes require a new version and migration adapter; do not silently reinterpret historical payloads.
+
+## Semantic provider connection
+
+A product declaring `semantic_evaluation` must supply `evaluate(events, artifact)`. Selection enforces that method. The Library implementation returns the preserved case-local report via `library_bridge.py`; core `analyze.py` supplies only that run's declared trace events. Source line numbers are preserved, representation hashes are distinct, and imported verdicts are recomputed. This optional method adds no tool/product pair dependency. See README for analysis commands and full legacy parity evidence. Current suite: 26 tests passed.

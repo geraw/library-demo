@@ -65,10 +65,10 @@ class OpaqueProductGateway:
 @dataclass(frozen=True)
 class LibraryProductGateway:
     id: str = 'library-issta-v006'
-    contract = GatewayContract('product', ('operation_mapping','resource_path_mapping','rule_provider_reference'),
+    contract = GatewayContract('product', ('operation_mapping','resource_path_mapping','rule_provider_reference','semantic_evaluation'),
         required_artifacts=('trace',), evidence_requirements=('Recorded public API method and path',
         'State/rule evaluation requires identity-bound responses and case boundaries in the later evaluator'),
-        limitations=('No state extraction or semantic evaluation in this gateway', 'Path IDs are unverified lexical IDs'))
+        limitations=('Semantic evaluation delegates to preserved case-local Library checker', 'Path IDs are unverified lexical IDs'))
 
     def describe(self, record):
         # Use recorded API path and explicit fixture catalog; no inferred business semantics.
@@ -85,6 +85,11 @@ class LibraryProductGateway:
                     rules=[], status='mapped',
                     rule_provider='tools/semantic-checker-v001:library-issta-v006',
                     note='Rules remain in the preserved evaluator; not executed by ingestion')
+
+
+    def evaluate(self, events, artifact):
+        from library_bridge import evaluate
+        return evaluate(events, artifact)
 
 
 TOOLS = {'recorded-json-v1': RecordedToolGateway(),

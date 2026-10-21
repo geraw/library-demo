@@ -97,3 +97,6 @@ Implemented in `tools/natchan-v002/`: bounded offline ZIP inventory, versioned e
 
 
 Stage 1 contract completion: `tools/natchan-v002/GATEWAY_CONTRACTS.md` defines and implements explicit capability declarations, required/optional artifacts, record output validation, missing-evidence handling and independent extension. Eighteen tests passed; the real archive remains ingestion-complete with no new bug scores. Next stage is connecting the preserved Library evaluator and proving legacy parity.
+
+
+Library provider connected through ProductGateway.evaluate in `tools/natchan-v002/analyze.py`. No historical rule implementation changed. Full three-arm legacy report parity and archived candidate/native parity verified; input hashes verified. Twenty-six tests pass. Reports separate external candidate occurrences, recorded native failures and explicit healthy-control comparisons. See CONNECTION_VALIDATION_20261021.json. Next migration cells remain RESTler/EvoMaster native gateways and additional product providers.

@@ -81,3 +81,29 @@ Exit 0: ingestion complete. Exit 2: report saved with incomplete evidence. Inval
 ## Completed stage 1 contract
 
 See [GATEWAY_CONTRACTS.md](GATEWAY_CONTRACTS.md) for the versioned two-dimensional API, capability negotiation, required evidence, output validation and error behavior. Run reports now include both contracts and per-event evidence availability. `python gateways.py` prints the registered contract catalog. The suite now has 18 passing tests.
+
+
+## Connected Library evaluation
+
+`analyze.py` adds semantic evaluation through the product gateway. It reuses the preserved `semantic-checker-v001` Library checker and Ledger without editing their rules. `evidence.py` remains ingestion-only. Run from the repository root:
+
+```powershell
+& .\tools\natchan-v002\Invoke-Natchan-Analyze-v002.ps1 `
+    -ArchivePath '.\library\ess-experiment\runs\java-fixed-split-v011-20261021-094721-5216-review.zip' `
+    -LibraryV011
+```
+
+Python and repeatable compatibility validation:
+
+```text
+python tools/natchan-v002/analyze.py --archive evidence.zip --library-v011 --output new-analysis.json
+python tools/natchan-v002/validate_connection.py --archive evidence.zip --output new-parity.json
+```
+
+A generic manifest selects `product_gateway: library-issta-v006` with its trace artifact; it does not require the Provengo tool gateway. This allows the shared semantic provider to consume correctly scoped evidence from another tool while keeping native decoding independent. Without a semantic provider the run stays NOT_EVALUATED. `--control-run RUN_ID` explicitly requests case-ID comparison; the Library layout supplies `control` automatically. This is catalog pairing, not causal confirmation or input-equivalence proof.
+
+The analysis envelope (`natchan-analysis/1`, `analysis.schema.json`) contains the original ingestion envelope, one semantic report per run, external observation occurrences with exact source-event and same-boundary context references, native results and optional healthy-control comparison. The import envelope schema is unchanged. Original trace/member hashes and the separately re-serialized adapter-trace hash are retained; they are never substituted for each other. Preserved evaluator source and rules-manifest hashes are recorded. Serialized old verdicts remain imported claims and are ignored by the evaluator.
+
+Raw event data is retained, so analysis reports have the sensitivity of the original evidence. Semantic verdicts depend on complete ingestion, recorded verified-empty case starts, ordered readbacks and the existing taint rules. A repeated case ID never joins observation contexts across boundaries. Missing evidence is incomplete, not clean. Native flags are separate from external observations. Twenty-two candidate occurrences are not twenty-two unique bugs. Confirmed unique-bug count remains unknown; this connection adds no automatic bug confirmation.
+
+Validation: 26 unit tests passed. Full reports on all three work-archive arms match the direct preserved checker exactly (excluding adapter-specific provenance fields), all archived candidate cases match, original input hashes verify, and native failed-case lists match. Each arm has 542 evaluable cases. Business-four has 22 candidate cases for bug 5; five native failing tests passed control, while two native failures already occurred on healthy control. See CONNECTION_VALIDATION_20261021.json. This is offline reanalysis; no new SUT execution. PowerShell wrapper is source-reviewed here, not executed on Windows.
