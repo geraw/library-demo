@@ -61,6 +61,8 @@ def main(args):
             'patched_source_sha256':core.sha(src/'StrictGuidedRun.java'),
             'source_note':'Existing catalog includes previously sample-derived scenarios',
             'arms':ARMS,'case_timeout_seconds':args.case_timeout,'arm_timeout_seconds':args.arm_timeout})
+        if (reference/'work-provenance.json').is_file():
+            shutil.copy2(reference/'work-provenance.json',root/'work-provenance.json')
         core.write(root/'input_hashes.json',{str(p.relative_to(root)):core.sha(p) for p in root.rglob('*') if p.is_file()})
         # Invoking the JDK compiler module also works when javac is not on PATH.
         compile_result=launch([args.java,'-m','jdk.compiler/com.sun.tools.javac.Main','-cp',jar,'-d',classes,
