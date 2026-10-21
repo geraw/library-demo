@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-21",
+  "unit_tests": {
+    "v003_passed": 21,
+    "v002_passed": 26,
+    "commands": [
+      "python -m unittest discover -s tools/natchan-v003/tests -q",
+      "python -m unittest discover -s tools/natchan-v002/tests -q"
+    ]
+  },
+  "library": {
+    "input_sha256": "7d1f08a7d6002507657677d37c31bf13170bb0122fcc872cb623cd8b4538ff3d",
+    "summary": {
+      "observation_count": 22,
+      "unclassified_count": 0,
+      "known_bug_ids": [
+        "LIB-ISSTA-BUG-5"
+      ]
+    },
+    "known_groups": [
+      {
+        "catalog_id": "LIB-ISSTA-BUG-5",
+        "occurrence_count": 22
+      }
+    ],
+    "consequence_cases": [
+      "80",
+      "257",
+      "260",
+      "266",
+      "433"
+    ],
+    "case_ids": [
+      "18",
+      "80",
+      "81",
+      "135",
+      "175",
+      "234",
+      "254",
+      "257",
+      "260",
+      "266",
+      "305",
+      "372",
+      "433",
+      "435",
+      "465",
+      "479",
+      "498",
+      "500",
+      "502",
+      "507",
+      "509",
+      "541"
+    ]
+  },
+  "synthetic_vikunja": {
+    "kind": "Synthetic classifier fixture; no SUT execution",
+    "compound_match_expected": true
+  },
+  "limitations": [
+    "Raw historical Vikunja/Gitea artifact adapters not validated yet",
+    "Named Vikunja known bugs remain draft pending exact versions and evidence",
+    "No live replay or new SUT execution",
+    "PowerShell wrapper source-reviewed only"
+  ]
+}

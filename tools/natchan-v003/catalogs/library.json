@@ -1,0 +1,207 @@
+{
+  "schema_version": "natchan-catalog/1",
+  "entries": [
+    {
+      "id": "LIB-ISSTA-BUG-1",
+      "kind": "known_bug",
+      "title": "Fourth active distinct-book loan rejected",
+      "status": "active",
+      "product": "library",
+      "versions": [
+        "issta-v006"
+      ],
+      "all": [
+        {
+          "fact": "legal_loan_rejected",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "active_for_user",
+          "op": "eq",
+          "value": 3
+        },
+        {
+          "fact": "prior_pair_loans",
+          "op": "in",
+          "value": [
+            0,
+            1
+          ]
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Preserved Library fixture and Ledger, tools/semantic-checker-v001; scoped seeded mutation definition",
+          "verification": "Recovered fixture and Ledger inspected; scoped seeded definition. Individual evidence matches are assessed separately."
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "LIB-ISSTA-BUG-2",
+      "kind": "known_bug",
+      "title": "Third historical reader/book loan rejected",
+      "status": "active",
+      "product": "library",
+      "versions": [
+        "issta-v006"
+      ],
+      "all": [
+        {
+          "fact": "legal_loan_rejected",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "prior_pair_loans",
+          "op": "eq",
+          "value": 2
+        },
+        {
+          "fact": "active_for_user",
+          "op": "in",
+          "value": [
+            0,
+            1,
+            2
+          ]
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Preserved Library fixture and Ledger, tools/semantic-checker-v001; scoped seeded mutation definition",
+          "verification": "Recovered fixture and Ledger inspected; scoped seeded definition. Individual evidence matches are assessed separately."
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "LIB-ISSTA-BUG-3",
+      "kind": "known_bug",
+      "title": "Returning one loan removes other loans of reader",
+      "status": "active",
+      "product": "library",
+      "versions": [
+        "issta-v006"
+      ],
+      "all": [
+        {
+          "fact": "resource",
+          "op": "eq",
+          "value": "loans"
+        },
+        {
+          "fact": "non_target_removed",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "same_owner_non_target_removed",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Preserved Library fixture and Ledger, tools/semantic-checker-v001; scoped seeded mutation definition",
+          "verification": "Recovered fixture and Ledger inspected; scoped seeded definition. Individual evidence matches are assessed separately."
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "LIB-ISSTA-BUG-4",
+      "kind": "known_bug",
+      "title": "Existing book detail incorrectly returns 404",
+      "status": "active",
+      "product": "library",
+      "versions": [
+        "issta-v006"
+      ],
+      "all": [
+        {
+          "fact": "known_existing_book",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "existing_read_404",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Preserved Library fixture and Ledger, tools/semantic-checker-v001; scoped seeded mutation definition",
+          "verification": "Recovered fixture and Ledger inspected; scoped seeded definition. Individual evidence matches are assessed separately."
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "LIB-ISSTA-BUG-5",
+      "kind": "known_bug",
+      "title": "Canceling one hold removes another hold of same reader",
+      "status": "active",
+      "product": "library",
+      "versions": [
+        "issta-v006"
+      ],
+      "all": [
+        {
+          "fact": "resource",
+          "op": "eq",
+          "value": "holds"
+        },
+        {
+          "fact": "target_existed_before",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "non_target_removed",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "same_owner_non_target_removed",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "Preserved Library fixture and Ledger, tools/semantic-checker-v001; scoped seeded mutation definition",
+          "verification": "Recovered fixture and Ledger inspected; scoped seeded definition. Individual evidence matches are assessed separately."
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Natchan catalog v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "entries"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "natchan-catalog/1"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "status",
+          "product",
+          "versions",
+          "all",
+          "exclusions",
+          "evidence_requirements",
+          "provenance",
+          "severity",
+          "human_review"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "pattern",
+              "known_bug"
+            ]
+          },
+          "status": {
+            "enum": [
+              "active",
+              "draft"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "product": {
+            "type": "string"
+          },
+          "versions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "all": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/$defs/predicate"
+            }
+          },
+          "exclusions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/predicate"
+            }
+          },
+          "evidence_requirements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "provenance": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "source",
+                "verification"
+              ]
+            }
+          },
+          "severity": {
+            "type": "string"
+          },
+          "human_review": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "predicate": {
+      "type": "object",
+      "required": [
+        "fact",
+        "op"
+      ],
+      "properties": {
+        "fact": {
+          "type": "string"
+        },
+        "op": {
+          "enum": [
+            "eq",
+            "in",
+            "gte",
+            "present"
+          ]
+        },
+        "value": {}
+      },
+      "additionalProperties": false
+    }
+  }
+}

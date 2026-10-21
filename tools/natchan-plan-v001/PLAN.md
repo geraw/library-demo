@@ -100,3 +100,6 @@ Stage 1 contract completion: `tools/natchan-v002/GATEWAY_CONTRACTS.md` defines a
 
 
 Library provider connected through ProductGateway.evaluate in `tools/natchan-v002/analyze.py`. No historical rule implementation changed. Full three-arm legacy report parity and archived candidate/native parity verified; input hashes verified. Twenty-six tests pass. Reports separate external candidate occurrences, recorded native failures and explicit healthy-control comparisons. See CONNECTION_VALIDATION_20261021.json. Next migration cells remain RESTler/EvoMaster native gateways and additional product providers.
+
+
+Classification checkpoint v003: implemented public JSON catalog/schema/template, generic and product-scoped patterns, five Library known-bug definitions, draft Vikunja identities, deterministic multi-label classification/grouping, normalized-observation adapter and JSON/Markdown reporting. Library evidence is recomputed and actual readbacks drive collateral-deletion association; all 22 occurrences map to bug 5 with five later native 404 consequences. Twenty-one v003 tests plus twenty-six v002 tests passed. Actual raw Vikunja/Gitea format qualification and named-bug completion remain pending incoming artifacts. See tools/natchan-v003/README.md.
