@@ -1,0 +1,376 @@
+{
+  "source_revision": "cdf56ab05f361d998929227c916ae13bbdb7219c",
+  "datasets": [
+    {
+      "id": "java-work-v012",
+      "archive": "upload/java-fixed-split-v011-20261021-094721-5216-review.zip",
+      "archive_sha256": "7abd54bd10a41ac0491594ca679112140d92fbe0fb5553cccc04264d5e0d0895",
+      "status": "complete",
+      "summary": {
+        "run_count": 3,
+        "external_observation_count": 22,
+        "confirmed_unique_bug_count": null,
+        "candidate_cases": 22
+      }
+    },
+    {
+      "id": "java-home-v011",
+      "archive": "transfer-v012/java-fixed-split-v011-20261020-201115-48880-review.zip",
+      "archive_sha256": "173407454d15833b4b503d977c5a2d0498a6b429c839f3b2ac7c0b602cd41b28",
+      "status": "complete",
+      "summary": {
+        "run_count": 3,
+        "external_observation_count": 22,
+        "confirmed_unique_bug_count": null,
+        "candidate_cases": 22
+      }
+    },
+    {
+      "id": "sample-v009",
+      "archive": "library-audit/evidence/provengo-sample10-split-v009-20261020-143852-69796-review.zip",
+      "archive_sha256": "45230f88bb63076795ff876c10b233f78e50249e8c93cd7ccf7e41fb75c4b182",
+      "status": "complete",
+      "summary": {
+        "run_count": 3,
+        "external_observation_count": 20,
+        "confirmed_unique_bug_count": null,
+        "candidate_cases": 20
+      }
+    },
+    {
+      "id": "control-v007",
+      "archive": "upload/neutral-contract-v007-20261020-124530-51864-review.zip",
+      "archive_sha256": "f976b05dc6c4b1dd08e32c589759ab4190f1e1c1e938422b56ec89e475913002",
+      "status": "complete",
+      "summary": {
+        "run_count": 2,
+        "external_observation_count": 0,
+        "confirmed_unique_bug_count": null,
+        "candidate_cases": 0
+      }
+    },
+    {
+      "id": "mutants-v008",
+      "archive": "upload/mutants-neutral-v008-20261020-131134-37312-review.zip",
+      "archive_sha256": "41d2e1b8369d1d552a0e1e5b55181b9f1a3c38dd0ebd2d5bd4a719cf57c90b86",
+      "status": "complete",
+      "summary": {
+        "run_count": 2,
+        "external_observation_count": 2,
+        "confirmed_unique_bug_count": null,
+        "candidate_cases": 2
+      }
+    },
+    {
+      "id": "evomaster-v006",
+      "archive": "library-audit/retained/\u05de\u05d0\u05de\u05e8 FSE/baselines-all-v006-20261020-084601-67520.zip",
+      "archive_sha256": "f31162198c5613e52904147b768277f3718cf457bf98c9e879ef9343e502a7aa",
+      "status": "complete",
+      "summary": {
+        "run_count": 1,
+        "external_observation_count": 1,
+        "confirmed_unique_bug_count": null,
+        "candidate_cases": 1
+      }
+    }
+  ],
+  "historical_compact_inventory": [
+    {
+      "archive": "issta-business-v004-20261019-225558-isolated-compact.zip",
+      "files": []
+    },
+    {
+      "archive": "issta-business-v004-20261019-225558-compact.zip",
+      "files": [
+        {
+          "member": "environment.json",
+          "value": {
+            "python": "3.10.8 (tags/v3.10.8:aaaf517, Oct 11 2022, 16:50:30) [MSC v.1933 64 bit (AMD64)]",
+            "executable": "D:\\Yeshayahu\\Temp\\library-demo\\.venv\\Scripts\\python.exe",
+            "provengo_jar": "C:\\Program Files\\Provengo\\Provengo Cli\\Provengo.uber.jar",
+            "jar_sha256": "e4e9ec6914d8ceb0e2fb91d2322472d8208d9c01b735412dbe4db3cacfd392cc",
+            "size_requested": 10,
+            "git_head": "fb97859796934d24eae3fbeeb87856096a12c9f1"
+          }
+        },
+        {
+          "member": "sampling.json",
+          "value": {
+            "wall_seconds": 54.3211421999149,
+            "retained_count": 10,
+            "batch_size": 5,
+            "heap_argument": "-Xmx2g",
+            "complete": true
+          }
+        }
+      ]
+    },
+    {
+      "archive": "issta-business-v004-20261019-225558-audit.zip",
+      "files": []
+    },
+    {
+      "archive": "issta-business-v004-20261019-225558-mutant-compact.zip",
+      "files": []
+    },
+    {
+      "archive": "issta-business-v004-20261019-225558-split-v005-compact.zip",
+      "files": [
+        {
+          "member": "split-v005-business-four/budget.json",
+          "value": {
+            "arm": "business-four",
+            "bugs": "1,2,3,5",
+            "sample_size": 10,
+            "sampling_seconds": 54.3211421999149,
+            "mutant_execution_seconds": 430.56568139977753,
+            "baseline_search_budget_seconds": 485,
+            "policy": "Full generation plus this arm replay; control and isolated validation excluded",
+            "official_score": "NOT_YET_SCORED"
+          }
+        },
+        {
+          "member": "split-v005-book-read-one/budget.json",
+          "value": {
+            "arm": "book-read-one",
+            "bugs": "4",
+            "sample_size": 10,
+            "sampling_seconds": 54.3211421999149,
+            "mutant_execution_seconds": 461.9353541000746,
+            "baseline_search_budget_seconds": 517,
+            "policy": "Full generation plus this arm replay; control and isolated validation excluded",
+            "official_score": "NOT_YET_SCORED"
+          }
+        }
+      ]
+    },
+    {
+      "archive": "baselines-all-v006-20261020-084601-67520.zip",
+      "files": [
+        {
+          "member": "provenance.json",
+          "value": {
+            "bugs": "1,2,3,4,5",
+            "search_seconds_per_tool": 600,
+            "order": [
+              "evomaster"
+            ],
+            "observer_version": "v006-fixed-http-body",
+            "internal_transport": "Flask WSGI client; external tool HTTP unchanged",
+            "previous_pilot": "D:\\Yeshayahu\\Temp\\library-demo\\library\\ess-experiment\\runs\\issta-business-v004-20261019-225558\\baselines-all-v006-20261020-080729-55236",
+            "evomaster_jar": "C:\\Program Files\\evomaster\\app\\evomaster.jar",
+            "restler": "C:\\FSETools\\RESTler\\restler\\Restler.exe",
+            "evomaster_sha256": "11fe832bba91883d6936b3e42fdea6a0e8c9a2b9c4f80bd7cdd043f1a2c86d4c",
+            "restler_sha256": "53d9c042539474823e39cd486bf4e0e877459c48a91e18d75cdbc5c955bed820",
+            "contract_sha256": "ad339fe9ed425ac950ac7a90138785072fbe17c2758526234aa36794d08210d6",
+            "sut_sha256": "91b5cbe404afbd9906ab5dd8999710d38257d7d6fc2d8a40b8098b02ef66cb7f",
+            "scope": "Pilot; campaign-global observer diagnostics, not sequence-local official scores",
+            "native_detection": "Inspect native reports separately; observer findings are not native tool findings",
+            "stopping": "Observer never stops tools on a semantic finding; tools retain their native behavior",
+            "preparation": "Compilation, startup and output finalization are outside the 600-second engine budget"
+          }
+        }
+      ]
+    },
+    {
+      "archive": "neutral-contract-v007-20261020-124530-51864-review.zip",
+      "files": [
+        {
+          "member": "baselines-all-v006-20261020-124530-51864/provenance.json",
+          "value": {
+            "bugs": "none",
+            "search_seconds_per_tool": 60,
+            "order": [
+              "restler",
+              "evomaster"
+            ],
+            "observer_version": "v006-fixed-http-body",
+            "internal_transport": "Flask WSGI client; external tool HTTP unchanged",
+            "previous_pilot": null,
+            "evomaster_jar": "C:\\Program Files\\evomaster\\app\\evomaster.jar",
+            "restler": "C:\\FSETools\\RESTler\\restler\\Restler.exe",
+            "evomaster_sha256": "11fe832bba91883d6936b3e42fdea6a0e8c9a2b9c4f80bd7cdd043f1a2c86d4c",
+            "restler_sha256": "53d9c042539474823e39cd486bf4e0e877459c48a91e18d75cdbc5c955bed820",
+            "contract_sha256": "e63f6c2f2f070f7225dd625a019da39fd9038bea0a660225fd3c420acefffae3",
+            "sut_sha256": "91b5cbe404afbd9906ab5dd8999710d38257d7d6fc2d8a40b8098b02ef66cb7f",
+            "scope": "Pilot; campaign-global observer diagnostics, not sequence-local official scores",
+            "native_detection": "Inspect native reports separately; observer findings are not native tool findings",
+            "stopping": "Observer never stops tools on a semantic finding; tools retain their native behavior",
+            "preparation": "Compilation, startup and output finalization are outside the engine budget"
+          }
+        }
+      ]
+    },
+    {
+      "archive": "mutants-neutral-v008-20261020-131134-37312-review.zip",
+      "files": [
+        {
+          "member": "baselines-all-v006-20261020-131134-37312/provenance.json",
+          "value": {
+            "bugs": "1,2,3,4,5",
+            "search_seconds_per_tool": 600,
+            "order": [
+              "restler",
+              "evomaster"
+            ],
+            "observer_version": "v006-fixed-http-body",
+            "internal_transport": "Flask WSGI client; external tool HTTP unchanged",
+            "previous_pilot": null,
+            "evomaster_jar": "C:\\Program Files\\evomaster\\app\\evomaster.jar",
+            "restler": "C:\\FSETools\\RESTler\\restler\\Restler.exe",
+            "evomaster_sha256": "11fe832bba91883d6936b3e42fdea6a0e8c9a2b9c4f80bd7cdd043f1a2c86d4c",
+            "restler_sha256": "53d9c042539474823e39cd486bf4e0e877459c48a91e18d75cdbc5c955bed820",
+            "contract_sha256": "e63f6c2f2f070f7225dd625a019da39fd9038bea0a660225fd3c420acefffae3",
+            "sut_sha256": "91b5cbe404afbd9906ab5dd8999710d38257d7d6fc2d8a40b8098b02ef66cb7f",
+            "scope": "Pilot; campaign-global observer diagnostics, not sequence-local official scores",
+            "native_detection": "Inspect native reports separately; observer findings are not native tool findings",
+            "stopping": "Observer never stops tools on a semantic finding; tools retain their native behavior",
+            "preparation": "Compilation, startup and output finalization are outside the engine budget"
+          }
+        }
+      ]
+    },
+    {
+      "archive": "provengo-sample10-split-v009-20261020-143852-69796-review.zip",
+      "files": [
+        {
+          "member": "environment.json",
+          "value": {
+            "version": "v009",
+            "reference_campaign": "D:\\Yeshayahu\\Temp\\library-demo\\library\\ess-experiment\\runs\\issta-business-v004-20261019-225558",
+            "provengo_jar": "C:\\Program Files\\Provengo\\Provengo Cli\\Provengo.uber.jar",
+            "jar_sha256": "e4e9ec6914d8ceb0e2fb91d2322472d8208d9c01b735412dbe4db3cacfd392cc",
+            "python": "3.10.8 (tags/v3.10.8:aaaf517, Oct 11 2022, 16:50:30) [MSC v.1933 64 bit (AMD64)]",
+            "sample_size": 10,
+            "batch_size": 5,
+            "selection": "Fresh native sample; no ranking or fault-directed selection",
+            "sut_sha256": "91b5cbe404afbd9906ab5dd8999710d38257d7d6fc2d8a40b8098b02ef66cb7f",
+            "contract_sha256": "e63f6c2f2f070f7225dd625a019da39fd9038bea0a660225fd3c420acefffae3",
+            "java_tests_next": "Existing StrictGuidedRun.java; not executed in this sampling measurement"
+          }
+        },
+        {
+          "member": "sampling.json",
+          "value": {
+            "wall_seconds": 41.78069979976863,
+            "retained_count": 10,
+            "batch_size": 5,
+            "heap_argument": "-Xmx2g",
+            "complete": true
+          }
+        },
+        {
+          "member": "timings.json",
+          "value": {
+            "preparation_seconds": 0.5060743000358343,
+            "sampling_native_seconds": 41.78069979976863,
+            "control_validation_seconds": 641.0136921997182,
+            "business-four_replay_seconds": 481.78013750026,
+            "business-four_sampling_plus_replay_seconds": 523.5608373000287,
+            "book-read-one_replay_seconds": 488.3459046003409,
+            "book-read-one_sampling_plus_replay_seconds": 530.1266044001095,
+            "combined_sampling_plus_two_arms_seconds": 1011.9067419003695,
+            "sample_charged_once_in_combined_total": true,
+            "standalone_arm_totals_each_include_full_sampling_cost": true,
+            "total_elapsed_before_packaging_seconds": 1672.706555200275
+          }
+        }
+      ]
+    },
+    {
+      "archive": "java-fixed-split-v011-20261021-094721-5216-review.zip",
+      "files": [
+        {
+          "member": "environment.json",
+          "value": {
+            "version": "v011",
+            "reference_campaign": "C:\\work\\temp\\library-demo\\library\\ess-experiment\\runs\\work-reference-v012-j3jc90yo",
+            "provengo_jar": "C:\\Program Files\\Provengo\\Provengo Cli\\Provengo.uber.jar",
+            "jar_sha256": "5a8140409e200fb752a97b7317e1b259e668383d9d42814063b3365f0044981b",
+            "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+            "java_source_sha256": "10cc5da534199f5b1398087c4235bf8d1c4004e21887912ae509cb62f8d60b2c",
+            "java_source_normalized_sha256": "04084199740dedaeacade4efb4310ec8525181ae2de6b8a6376887146b85f514",
+            "selection": "All existing fixed Java scenarios, original order; no sampling",
+            "runtime_patch": "Native RTV evaluation, ActuationSummary checks, stop on failed actuation, cleanup",
+            "patched_source_sha256": "d0d926677b385dce4515eed0bbdaf0eeea10ce376aa1acb9fc8fd4bfe49582bc",
+            "source_note": "Existing catalog includes previously sample-derived scenarios",
+            "arms": {
+              "control": "none",
+              "business-four": "1,2,3,5",
+              "book-read-one": "4"
+            },
+            "case_timeout_seconds": 120,
+            "arm_timeout_seconds": 7200
+          }
+        },
+        {
+          "member": "timings.json",
+          "value": {
+            "compilation_seconds": 3.3240233999995326,
+            "transport_preflight_seconds": 13.792056899999807,
+            "control_seconds": 55.964440800000375,
+            "business-four_seconds": 54.718008899999404,
+            "book-read-one_seconds": 54.90051229999972,
+            "mutant_two_arms_seconds": 109.61852119999912,
+            "total_before_packaging_seconds": 198.55072719999953
+          }
+        },
+        {
+          "member": "work-provenance.json",
+          "value": {
+            "version": "v012",
+            "source_archive": "java-fixed-split-v011-20261020-201115-48880-review.zip",
+            "source_archive_sha256": "173407454d15833b4b503d977c5a2d0498a6b429c839f3b2ac7c0b602cd41b28",
+            "bundle_sha256": "eecfb354db010110ed97e6af2f40252350c064c93071a999ec9648b19559738e",
+            "original_jar_sha256": "e4e9ec6914d8ceb0e2fb91d2322472d8208d9c01b735412dbe4db3cacfd392cc",
+            "local_jar_sha256": "5a8140409e200fb752a97b7317e1b259e668383d9d42814063b3365f0044981b",
+            "same_jar_as_home": false,
+            "model_and_sut": "Exact source-archive bytes; restored from Base64 to avoid Git newline conversion",
+            "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+            "reference_directory": "C:\\work\\temp\\library-demo\\library\\ess-experiment\\runs\\work-reference-v012-j3jc90yo"
+          }
+        }
+      ]
+    },
+    {
+      "archive": "java-fixed-split-v011-20261020-201115-48880-review.zip",
+      "files": [
+        {
+          "member": "environment.json",
+          "value": {
+            "version": "v011",
+            "reference_campaign": "D:\\Yeshayahu\\Temp\\library-demo\\library\\ess-experiment\\runs\\provengo-sample10-split-v009-20261020-143852-69796",
+            "provengo_jar": "C:\\Program Files\\Provengo\\Provengo Cli\\Provengo.uber.jar",
+            "jar_sha256": "e4e9ec6914d8ceb0e2fb91d2322472d8208d9c01b735412dbe4db3cacfd392cc",
+            "python": "3.10.8 (tags/v3.10.8:aaaf517, Oct 11 2022, 16:50:30) [MSC v.1933 64 bit (AMD64)]",
+            "java_source_sha256": "10cc5da534199f5b1398087c4235bf8d1c4004e21887912ae509cb62f8d60b2c",
+            "java_source_normalized_sha256": "04084199740dedaeacade4efb4310ec8525181ae2de6b8a6376887146b85f514",
+            "selection": "All existing fixed Java scenarios, original order; no sampling",
+            "runtime_patch": "Native RTV evaluation, ActuationSummary checks, stop on failed actuation, cleanup",
+            "patched_source_sha256": "d0d926677b385dce4515eed0bbdaf0eeea10ce376aa1acb9fc8fd4bfe49582bc",
+            "source_note": "Existing catalog includes previously sample-derived scenarios",
+            "arms": {
+              "control": "none",
+              "business-four": "1,2,3,5",
+              "book-read-one": "4"
+            },
+            "case_timeout_seconds": 120,
+            "arm_timeout_seconds": 7200
+          }
+        },
+        {
+          "member": "timings.json",
+          "value": {
+            "compilation_seconds": 4.959270799998194,
+            "transport_preflight_seconds": 13.761718800291419,
+            "control_seconds": 54.33346639992669,
+            "business-four_seconds": 51.884601700119674,
+            "book-read-one_seconds": 56.19511740002781,
+            "mutant_two_arms_seconds": 108.07971910014749,
+            "total_before_packaging_seconds": 196.15469620004296
+          }
+        }
+      ]
+    }
+  ]
+}

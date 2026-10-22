@@ -1,0 +1,130 @@
+{
+  "datasets": [
+    {
+      "id": "java-work-v012",
+      "archive": "RESTORED_ARCHIVES/java-fixed-split-v011-20261021-094721-5216-review.zip",
+      "layout": "library-v011"
+    },
+    {
+      "id": "java-home-v011",
+      "archive": "RESTORED_ARCHIVES/java-fixed-split-v011-20261020-201115-48880-review.zip",
+      "layout": "library-v011"
+    },
+    {
+      "id": "sample-v009",
+      "archive": "RESTORED_ARCHIVES/provengo-sample10-split-v009-20261020-143852-69796-review.zip",
+      "manifest": {
+        "schema_version": 1,
+        "runs": [
+          {
+            "id": "book-read-one",
+            "tool": "provengo",
+            "system": "library",
+            "tool_gateway": "recorded-json-v1",
+            "product_gateway": "library-issta-v006",
+            "artifacts": {
+              "trace": "book-read-one/http.jsonl"
+            }
+          },
+          {
+            "id": "business-four",
+            "tool": "provengo",
+            "system": "library",
+            "tool_gateway": "recorded-json-v1",
+            "product_gateway": "library-issta-v006",
+            "artifacts": {
+              "trace": "business-four/http.jsonl"
+            }
+          },
+          {
+            "id": "control",
+            "tool": "provengo",
+            "system": "library",
+            "tool_gateway": "recorded-json-v1",
+            "product_gateway": "library-issta-v006",
+            "artifacts": {
+              "trace": "control/http.jsonl"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "control-v007",
+      "archive": "RESTORED_ARCHIVES/neutral-contract-v007-20261020-124530-51864-review.zip",
+      "manifest": {
+        "schema_version": 1,
+        "runs": [
+          {
+            "id": "evomaster",
+            "tool": "evomaster",
+            "system": "library",
+            "tool_gateway": "recorded-json-v1",
+            "product_gateway": "library-issta-v006",
+            "artifacts": {
+              "trace": "baselines-all-v006-20261020-124530-51864/evomaster/http.jsonl"
+            }
+          },
+          {
+            "id": "restler",
+            "tool": "restler",
+            "system": "library",
+            "tool_gateway": "recorded-json-v1",
+            "product_gateway": "library-issta-v006",
+            "artifacts": {
+              "trace": "baselines-all-v006-20261020-124530-51864/restler/http.jsonl"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "mutants-v008",
+      "archive": "RESTORED_ARCHIVES/mutants-neutral-v008-20261020-131134-37312-review.zip",
+      "manifest": {
+        "schema_version": 1,
+        "runs": [
+          {
+            "id": "evomaster",
+            "tool": "evomaster",
+            "system": "library",
+            "tool_gateway": "recorded-json-v1",
+            "product_gateway": "library-issta-v006",
+            "artifacts": {
+              "trace": "baselines-all-v006-20261020-131134-37312/evomaster/http.jsonl"
+            }
+          },
+          {
+            "id": "restler",
+            "tool": "restler",
+            "system": "library",
+            "tool_gateway": "recorded-json-v1",
+            "product_gateway": "library-issta-v006",
+            "artifacts": {
+              "trace": "baselines-all-v006-20261020-131134-37312/restler/http.jsonl"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "evomaster-v006",
+      "archive": "RESTORED_ARCHIVES/baselines-all-v006-20261020-084601-67520.zip",
+      "manifest": {
+        "schema_version": 1,
+        "runs": [
+          {
+            "id": "evomaster",
+            "tool": "evomaster",
+            "system": "library",
+            "tool_gateway": "recorded-json-v1",
+            "product_gateway": "library-issta-v006",
+            "artifacts": {
+              "trace": "evomaster/http.jsonl"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
