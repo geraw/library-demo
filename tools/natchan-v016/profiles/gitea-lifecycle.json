@@ -1,0 +1,27 @@
+{
+  "product": "gitea",
+  "api_prefix": "/api/v1",
+  "entity_routes": [
+    {
+      "pattern": "^/repos/[^/]+/[^/]+/issues/[0-9]+$",
+      "entity": "issue"
+    },
+    {
+      "pattern": "^/repos/[^/]+/[^/]+/pulls/[0-9]+$",
+      "entity": "pullrequest"
+    }
+  ],
+  "methods": {
+    "PATCH": "update"
+  },
+  "error_signatures": [
+    {
+      "family": "missing_milestone",
+      "entity": "issue",
+      "request_field": "milestone",
+      "pattern": "EditIssue\\(\\).*milestone does not exist \\[id: (?P<target>[0-9]+), repo_id: (?P<root>[0-9]+)\\]",
+      "reference_path": "^/repos/[^/]+/[^/]+/milestones/(?P<target>[0-9]+)$"
+    }
+  ],
+  "item_root_identity": "repository.id"
+}

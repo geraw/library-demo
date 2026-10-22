@@ -1,0 +1,208 @@
+{
+  "schema_version": "natchan-native-catalog-analysis/1",
+  "input_archive_sha256": "fb5ba82f0f9d2d0692798d3d9e14522a153e4e7313d6efd0c0a36cb24497eb46",
+  "profile_sha256": "cb52b30b4e754c5f8fa254ad3098bee192719b32cc8feeb93bc567a910478448",
+  "classifier_sha256": "7ee469c630ccc92eef41dcf94cffacf15756fb9c4d50a3b12a9381d743e24b9a",
+  "catalogs": [
+    {
+      "name": "generic.json",
+      "sha256": "c41725e8b640cf6dd1d6e193c60f9d1ec4bac543908cfad261ccc51981e38470"
+    },
+    {
+      "name": "gitea.json",
+      "sha256": "4f3aed033b8d384a4713a284dbd1e08c1a4d937b6fbadea53bc8fa0b61888104"
+    },
+    {
+      "name": "library.json",
+      "sha256": "0306ea334fe489097d5627e35a7b84e54c5f37dc51f44ce839b68f84a6f41483"
+    },
+    {
+      "name": "tse-known.json",
+      "sha256": "992515036eb4e2eb664cf7ee210267bd4147486bb10bbc34160c04b51eccb685"
+    },
+    {
+      "name": "unified.json",
+      "sha256": "1acb98040993f4fa095c054328eb7f5f0de466ccb63dd920587761384db02f6d"
+    },
+    {
+      "name": "vikunja.json",
+      "sha256": "f683c1c8bcc36ca31a83929245fb2e40de7b9788fc6b636add88f82725730928"
+    }
+  ],
+  "counts": {
+    "http_records": 183,
+    "failure_occurrences": 1,
+    "known_bug_occurrences": 1,
+    "known_bug_ids": [
+      "GIT-C2"
+    ]
+  },
+  "findings": [
+    {
+      "occurrence_id": "event-d1094434e20c5eea5d5e2118d14e",
+      "group": "LIFE_4_serial_AB",
+      "known_bugs": [
+        "GIT-C2"
+      ],
+      "tags": [
+        "SERVER_5XX",
+        "FIELD_PERSISTED_DESPITE_ERROR"
+      ],
+      "match_qualification": "known_bug_evidence_match",
+      "root_cause_identity_proven": false,
+      "checks": [
+        {
+          "catalog_id": "GIT-C2",
+          "predicates": [
+            {
+              "condition": {
+                "fact": "entity",
+                "op": "eq",
+                "value": "issue"
+              },
+              "satisfied": true
+            },
+            {
+              "condition": {
+                "fact": "operation",
+                "op": "eq",
+                "value": "update"
+              },
+              "satisfied": true
+            },
+            {
+              "condition": {
+                "fact": "server_error",
+                "op": "eq",
+                "value": true
+              },
+              "satisfied": true
+            },
+            {
+              "condition": {
+                "fact": "correlated_error_family",
+                "op": "eq",
+                "value": "missing_milestone"
+              },
+              "satisfied": true
+            }
+          ]
+        }
+      ],
+      "facts": {
+        "entity": "issue",
+        "operation": "update",
+        "correlated_error_family": "missing_milestone",
+        "field_persisted_despite_error": true,
+        "persisted_fields": [
+          "body"
+        ],
+        "deleted_reference_context_verified": true
+      },
+      "source": {
+        "file": "native.log",
+        "sha256": "9bc23721c413d49969335b7c3bda65b85d6f55b2ab21719220b1a7496ffa076c",
+        "record": 406
+      },
+      "witnesses": [
+        {
+          "kind": "error_log",
+          "source": {
+            "file": "sut.log",
+            "sha256": "3f5bedb21c0097434b66c3c1e6e013f64aaa7de5b204809c3acc934b3137287b",
+            "record": 162
+          },
+          "message": "2026/10/22 18:13:09 .../api/v1/repo/issue.go:817:EditIssue() [E] InternalServerError: milestone does not exist [id: 8, repo_id: 19]"
+        },
+        {
+          "kind": "router_completion",
+          "source": {
+            "file": "sut.log",
+            "sha256": "3f5bedb21c0097434b66c3c1e6e013f64aaa7de5b204809c3acc934b3137287b",
+            "record": 163
+          }
+        },
+        {
+          "kind": "root_identity",
+          "source": {
+            "file": "native.log",
+            "sha256": "9bc23721c413d49969335b7c3bda65b85d6f55b2ab21719220b1a7496ffa076c",
+            "record": 384
+          },
+          "value": 19
+        },
+        {
+          "kind": "item_root_identity",
+          "source": {
+            "file": "native.log",
+            "sha256": "9bc23721c413d49969335b7c3bda65b85d6f55b2ab21719220b1a7496ffa076c",
+            "record": 399
+          },
+          "value": 19
+        },
+        {
+          "kind": "before",
+          "field": "body",
+          "value": "initial-body",
+          "source": {
+            "file": "native.log",
+            "sha256": "9bc23721c413d49969335b7c3bda65b85d6f55b2ab21719220b1a7496ffa076c",
+            "record": 399
+          }
+        },
+        {
+          "kind": "persisted_readback",
+          "field": "body",
+          "value": "life-B-LIFE_4",
+          "source": {
+            "file": "native.log",
+            "sha256": "9bc23721c413d49969335b7c3bda65b85d6f55b2ab21719220b1a7496ffa076c",
+            "record": 409
+          }
+        },
+        {
+          "kind": "persisted_readback",
+          "field": "body",
+          "value": "life-B-LIFE_4",
+          "source": {
+            "file": "native.log",
+            "sha256": "9bc23721c413d49969335b7c3bda65b85d6f55b2ab21719220b1a7496ffa076c",
+            "record": 411
+          }
+        },
+        {
+          "kind": "persisted_readback",
+          "field": "body",
+          "value": "life-B-LIFE_4",
+          "source": {
+            "file": "native.log",
+            "sha256": "9bc23721c413d49969335b7c3bda65b85d6f55b2ab21719220b1a7496ffa076c",
+            "record": 413
+          }
+        },
+        {
+          "kind": "persisted_readback",
+          "field": "body",
+          "value": "life-B-LIFE_4",
+          "source": {
+            "file": "native.log",
+            "sha256": "9bc23721c413d49969335b7c3bda65b85d6f55b2ab21719220b1a7496ffa076c",
+            "record": 415
+          }
+        },
+        {
+          "kind": "deleted_reference",
+          "source": {
+            "file": "native.log",
+            "sha256": "9bc23721c413d49969335b7c3bda65b85d6f55b2ab21719220b1a7496ffa076c",
+            "record": 403
+          },
+          "value": 8
+        }
+      ],
+      "needs_human": true
+    }
+  ],
+  "new_sut_requests": 0,
+  "producer_verdicts_used": false
+}
