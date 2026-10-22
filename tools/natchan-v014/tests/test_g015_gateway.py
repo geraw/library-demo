@@ -12,6 +12,38 @@ spec.loader.exec_module(gateway)
 
 
 class GatewayTests(unittest.TestCase):
+    def test_repository_coverage_ignores_query_and_excludes_non_nested_routes(self):
+        self.assertEqual(gateway.repository_route('/api/v1/repos/a/b/issues/7?x=1'),
+                         ('/repos/{owner}/{repo}/issues', True))
+        self.assertEqual(gateway.repository_route('/api/v1/repos/a/b/issues/7/comments'),
+                         ('/repos/{owner}/{repo}/issues', False))
+        self.assertIsNone(gateway.repository_route('/api/v1/user/repos'))
+        self.assertIsNone(gateway.repository_route('/api/v1/repos/a/b'))
+
+    def test_coverage_no_success_is_not_rejection_cause(self):
+        with tempfile.TemporaryDirectory() as directory:
+            p = Path(directory) / 'sut.log'
+            p.write_text('x router: completed PATCH /api/v1/repos/a/b/issues/3 for x:1, 404 Not Found\n'
+                         'x router: completed POST /api/v1/repos/a/b/issues for x:1, 500 Internal Server Error\n')
+            stats, _ = gateway.scan_logs(p)
+            reach = stats['repository_reach']
+            self.assertEqual(reach['successful_nested_responses'], 0)
+            self.assertEqual(reach['issue_patch_status_classes'], {'4xx': 1})
+            self.assertEqual(reach['rejection_cause'], 'not_inferred_from_access_status_only')
+
+    def test_successful_nested_response_is_counted(self):
+        with tempfile.TemporaryDirectory() as directory:
+            p = Path(directory) / 'sut.log'
+            p.write_text('x router: completed POST /api/v1/repos/a/b/issues for x:1, 201 Created\n')
+            stats, _ = gateway.scan_logs(p)
+            self.assertEqual(stats['repository_reach']['successful_nested_responses'], 1)
+
+    def test_multipart_context_requires_header_and_500_not_operation_name(self):
+        self.assertTrue(gateway.multipart_context({'headers': {'Content-Type': ['multipart/form-data']}}, 500)['malformed_multipart_500'])
+        for header in ['application/json', 'multipart/form-data; boundary=x', 'multipart/form-data; boundary="x"']:
+            self.assertFalse(gateway.multipart_context({'headers': {'content-type': header}}, 500)['malformed_multipart_500'])
+        self.assertFalse(gateway.multipart_context({'headers': {'Content-Type': 'multipart/form-data'}}, 404)['malformed_multipart_500'])
+
     def test_decode_preserves_json_and_non_json(self):
         raw = base64.b64encode(b'{"x":0}').decode()
         self.assertEqual(gateway.decoded({'$base64': raw}), {'x': 0})
