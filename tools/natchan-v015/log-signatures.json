@@ -1,0 +1,13 @@
+{
+  "schema_version": "natchan-log-signatures/1",
+  "product": "gitea",
+  "rules": [
+    {"id":"GIT-LOG-MISSING-ISSUE-COMMENTS","pattern":"(?:CreateIssueComment|ListIssueComments)\\(\\).*InternalServerError: issue does not exist", "method":"GET|POST", "path":"/api/v1/repos/[^/]+/[^/]+/issues/[^/]+/comments", "kind":"robustness_candidate", "known_bug":null},
+    {"id":"GIT-C1-SIGNATURE","pattern":"EditIssue\\(\\).*InternalServerError: user does not exist", "method":"PATCH", "path":"/api/v1/repos/[^/]+/[^/]+/issues/[^/]+", "kind":"known_bug_signature_candidate", "known_bug":"GIT-C1"},
+    {"id":"GIT-LOG-RELEASE-OBJECT-MISSING","pattern":"CreateRelease\\(\\).*InternalServerError: object does not exist", "method":"POST", "path":"/api/v1/repos/[^/]+/[^/]+/releases", "kind":"reference_error_candidate", "known_bug":null},
+    {"id":"GIT-LOG-INIT-TEMPLATE","pattern":"GetRepoInitFile\\[.*file does not exist", "method":"POST", "path":"/api/v1/(?:user/repos|orgs/[^/]+/repos)", "kind":"server_error_signature", "known_bug":null},
+    {"id":"GIT-LOG-LICENSE-TEMPLATE","pattern":"GetLicense\\[.*file does not exist", "method":"POST", "path":"/api/v1/(?:user/repos|orgs/[^/]+/repos)", "kind":"server_error_signature", "known_bug":null},
+    {"id":"GIT-LOG-TEAM-UNIT-UNIQUE","pattern":"UNIQUE constraint failed: team_unit.team_id, team_unit.type", "method":"POST|PATCH", "path":"/api/v1/(?:orgs/[^/]+/teams|teams/[^/]+)", "kind":"server_error_signature", "known_bug":null},
+    {"id":"GIT-LOG-OWNER-TEAM-MISSING","pattern":"Organization does not have owner team", "kind":"log_only_candidate", "known_bug":"B-OWNERS"}
+  ]
+}
