@@ -470,6 +470,34 @@
       ],
       "severity": "requires_context",
       "human_review": true
+    },
+    {
+      "id": "GITEA-STORED-ABSENT-BRANCH-OBSERVATION",
+      "kind": "pattern",
+      "title": "Supplied absent branch reference retained (semantic violation not inferred)",
+      "status": "active",
+      "product": "gitea",
+      "versions": [],
+      "all": [
+        {
+          "fact": "stored_absent_branch_reference",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "תצפית: נשמרת הפניה לענף חסר; ללא קביעה שזו הפרה עסקית"
     }
   ]
 }

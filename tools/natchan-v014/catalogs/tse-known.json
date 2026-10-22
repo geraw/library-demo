@@ -1073,6 +1073,99 @@
       "severity": "requires_context",
       "human_review": true,
       "title_he": "נרמול ערך בכותרת או צבע"
+    },
+    {
+      "id": "GIT-C2-PR",
+      "kind": "known_bug",
+      "title": "PullRequest edit server error for a missing or deleted milestone",
+      "status": "active",
+      "product": "gitea",
+      "versions": [
+        "28.1.0"
+      ],
+      "all": [
+        {
+          "fact": "entity",
+          "op": "eq",
+          "value": "pullrequest"
+        },
+        {
+          "fact": "operation",
+          "op": "eq",
+          "value": "update"
+        },
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "correlated_error_family",
+          "op": "eq",
+          "value": "missing_milestone"
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Source-linked HTTP response and all predicate witnesses; signature match is not root-cause proof"
+      ],
+      "provenance": [
+        {
+          "source_archive_sha256": "d5c6e8987c7c71216c0c9931227779ad095fcd3884c749e8176581e560c94de6",
+          "source": "review_g014_s1.zip/gateway-journal.jsonl and sut.log",
+          "verification": "Raw request and uniquely correlated server error; producer verdicts not used"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "שגיאת עריכת PullRequest בהפניה ל־milestone חסר",
+      "related_known_bug": "GIT-C2"
+    },
+    {
+      "id": "GIT-C11",
+      "kind": "known_bug",
+      "title": "PR creator requested as reviewer produces a server error",
+      "status": "active",
+      "product": "gitea",
+      "versions": [
+        "28.1.0"
+      ],
+      "all": [
+        {
+          "fact": "entity",
+          "op": "eq",
+          "value": "pullrequest"
+        },
+        {
+          "fact": "operation",
+          "op": "eq",
+          "value": "create"
+        },
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "self_reviewer_error_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Source-linked HTTP response and all predicate witnesses; signature match is not root-cause proof"
+      ],
+      "provenance": [
+        {
+          "source_archive_sha256": "d5c6e8987c7c71216c0c9931227779ad095fcd3884c749e8176581e560c94de6",
+          "source": "review_g014_s1.zip/gateway-journal.jsonl and sut.log",
+          "verification": "Raw request and uniquely correlated server error; producer verdicts not used"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "יצירת PR עם היוצר כבודק מחזירה שגיאת שרת"
     }
   ]
 }

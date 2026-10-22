@@ -50,6 +50,8 @@ def bundle(path,meta):
    run=dict(id=runid,product='gitea',version=version,tool=tool,seed=result.get('seed'),source=source)
    data=dict(records=rows,ir=ir,sut_log=z.read('sut.log').decode('utf-8-sig') if 'sut.log' in names else '')
    values,oracles=previous.baseline.gitea_observations(run,data);previous.augment_gitea(values,rows)
+   from raw_sequences import augment as augment_raw_sequences
+   augment_raw_sequences(values,rows,json.loads(z.read('generated/plan.json')) if 'generated/plan.json' in names else None)
    for o in values:
     f=o['facts'];req=o.get('request');message=o.get('server_message','')
     if isinstance(req,dict):
