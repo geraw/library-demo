@@ -1,0 +1,14 @@
+{
+  "schema_version": "natchan-request/1",
+  "run": {
+    "id": "g018",
+    "product": "gitea",
+    "product_version": "28.1.0",
+    "tool": "mixed"
+  },
+  "evidence": {
+    "adapter": "gitea-native-tools",
+    "archive": "g018-results.zip"
+  },
+  "configuration": {}
+}

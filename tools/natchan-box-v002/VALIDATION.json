@@ -1,0 +1,86 @@
+{
+  "wrapper_version": "natchan-box/2.0.0",
+  "parent_box_commit": "2ab3ee29d3df2135f2367722c48617bd75e5d651",
+  "producer_source_commit": "0f24f1bed4e7f740989aedc0dc9665444c371375",
+  "evidence_spec_sha256": "5351e3d6f6c166f037fc4509f79fc6df1f7dc96f44d29e463b82527d65b7787b",
+  "unit_suites": [
+    {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/natchan-box-v002/tests",
+        "-q"
+      ],
+      "passed": true,
+      "summary": "----------------------------------------------------------------------\nRan 42 tests in 0.695s\n\nOK"
+    },
+    {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/natchan-v016/tests",
+        "-q"
+      ],
+      "passed": true,
+      "summary": "----------------------------------------------------------------------\nRan 10 tests in 0.027s\n\nOK"
+    },
+    {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/natchan-v015/tests",
+        "-q"
+      ],
+      "passed": true,
+      "summary": "----------------------------------------------------------------------\nRan 6 tests in 0.003s\n\nOK"
+    }
+  ],
+  "g026_regression": {
+    "passed": true,
+    "counts": {
+      "http_records": 183,
+      "failure_occurrences": 1,
+      "known_bug_occurrences": 1,
+      "known_bug_ids": [
+        "GIT-C2"
+      ]
+    }
+  },
+  "g018_regression": {
+    "passed": true,
+    "http_5xx": 190,
+    "signature_counts": {
+      "GIT-LOG-MISSING-ISSUE-COMMENTS": 133,
+      "GIT-LOG-INIT-TEMPLATE": 28,
+      "GIT-LOG-LICENSE-TEMPLATE": 13,
+      "GIT-LOG-OWNER-TEAM-MISSING": 85,
+      "GIT-LOG-TEAM-UNIT-UNIQUE": 14,
+      "GIT-C1-SIGNATURE": 1,
+      "GIT-LOG-RELEASE-OBJECT-MISSING": 1
+    }
+  },
+  "toolkit_E5_translation_test": {
+    "passed": true,
+    "description": "Original g018 log/report bytes, translated run-meta generic fields and added toolkit ENV; not original toolkit-v1 smoke evidence.",
+    "source_archive_sha256": "2fedda7c36dea5ecbf86a0a358659ecd632d6fdd3c52a7118ec53326a96fec00",
+    "derived_archive_sha256": "21cab88d5e15ef15f2f527c652380a08d1b87de43fb1cefc695c3e889ffd0943",
+    "signature_parity": true,
+    "log_signature_occurrences": 275
+  },
+  "actual_toolkit_home_smoke_archives": {
+    "available": false,
+    "reanalysis_performed": false,
+    "reason": "Only specification and public producer source/summaries supplied; no 480-request model or 433-step campaign original ZIP supplied."
+  },
+  "windows_powershell": "Not executed in this Linux environment",
+  "new_sut_requests": 0
+}
