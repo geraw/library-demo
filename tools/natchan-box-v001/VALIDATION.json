@@ -1,0 +1,83 @@
+{
+  "wrapper_version": "natchan-box/1.0.0",
+  "base_repository": "geraw/library-demo",
+  "base_commit": "30d9b7cb3ec2a151a49633513a5ffa8c6eff6175",
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "unit_suites": [
+    {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/natchan-box-v001/tests",
+        "-q"
+      ],
+      "passed": true,
+      "summary": "----------------------------------------------------------------------\nRan 24 tests in 0.884s\n\nOK"
+    },
+    {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/natchan-v016/tests",
+        "-q"
+      ],
+      "passed": true,
+      "summary": "----------------------------------------------------------------------\nRan 10 tests in 0.042s\n\nOK"
+    },
+    {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/natchan-v015/tests",
+        "-q"
+      ],
+      "passed": true,
+      "summary": "----------------------------------------------------------------------\nRan 6 tests in 0.003s\n\nOK"
+    }
+  ],
+  "real_evidence": [
+    {
+      "archive": "g026-shared-lifecycle-20261022-181151-f23113.zip",
+      "sha256": "fb5ba82f0f9d2d0692798d3d9e14522a153e4e7313d6efd0c0a36cb24497eb46",
+      "status": "COMPLETE",
+      "counts": {
+        "http_records": 183,
+        "failure_occurrences": 1,
+        "known_bug_occurrences": 1,
+        "known_bug_ids": [
+          "GIT-C2"
+        ]
+      },
+      "underlying_count_parity": true
+    },
+    {
+      "archive": "g018-gitea-baselines-20261022-142813.zip",
+      "sha256": "2fedda7c36dea5ecbf86a0a358659ecd632d6fdd3c52a7118ec53326a96fec00",
+      "tested_input": "Original ZIP with Windows member separators AND extracted EvoMaster directories; server counters and signature counts agree",
+      "status": "PARTIAL",
+      "http_5xx": 190,
+      "signature_counts": {
+        "GIT-LOG-MISSING-ISSUE-COMMENTS": 133,
+        "GIT-LOG-INIT-TEMPLATE": 28,
+        "GIT-LOG-LICENSE-TEMPLATE": 13,
+        "GIT-LOG-OWNER-TEAM-MISSING": 85,
+        "GIT-LOG-TEAM-UNIT-UNIQUE": 14,
+        "GIT-C1-SIGNATURE": 1,
+        "GIT-LOG-RELEASE-OBJECT-MISSING": 1
+      },
+      "underlying_server_and_signature_parity": true
+    }
+  ],
+  "historical_corpus_validation": "Actual v014 worker and renderer exercised by synthetic original-format journal/IR/archive; full private historical corpus not restored or rerun.",
+  "windows_powershell": "Source reviewed only; not executed in this Linux environment.",
+  "new_sut_requests": 0
+}

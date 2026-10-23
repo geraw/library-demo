@@ -1,0 +1,17 @@
+{
+  "Invoke-Natchan-Box-v001.ps1": "6ce4c4e1535bb89463805714d147b660c0c12f1e2e7ef7fba856c89f46ea9cd1",
+  "README.md": "a1b7f8c7597833113cf0168a75944666c04df3b24986c0ae60d424ee20130159",
+  "VALIDATION.json": "05d08252d627cd8455bc59d3dcc046220d6607b1e7c2939bbf31a9faba0cc7fd",
+  "examples/corpus.request.json": "7ba27cb3ac41c6cbb174ca31593d133c1bb4753a77868e7646d1a681730292ad",
+  "examples/g018.request.json": "9d870e64c09a5f85e7bda8508e5c20ecac13bb82703840bfa78dd4a5bb896642",
+  "examples/g026.request.json": "09dcdb3283f31f49a39fc61207891a56b4a149376afd4f6af1b6da1949de2731",
+  "examples/normalized.request.json": "9a2b85cf1702b7cb192500d301d94d8c95721873921a073e79effe2fbc7383a8",
+  "natchan.py": "9a09842c8218b6cca373555cadbbafd3f9d46ef08bd51e508a7703995f4ea384",
+  "schemas/coverage.schema.json": "c0e88da97d19487f3654dba81a5f960db01153c735ee4aeb1178fbc128f0d1c9",
+  "schemas/diagnostics.schema.json": "66dedd1301c93a35bdee4a41b17ba991d5b4db12fb75cd672e22242dd8fbc0e4",
+  "schemas/findings.schema.json": "a364253a6fce68b8181b28c51f7fd18e0aa57a7cd5db11c4cabc22163cc50388",
+  "schemas/provenance.schema.json": "d97e6404cc28125b906f0c0c0374556369e108d46d1eca30f5130ce6ea39e11f",
+  "schemas/request.schema.json": "c551e0804a4c87be73120bc8abf69caad43bc83586eac4a6b2765825e1274d7d",
+  "schemas/result.schema.json": "48f04422c3dd495d9771c1af1d6091ac09cde55e62e713444543f73b76f9227b",
+  "tests/test_box.py": "270be361c83be5e6e615f639fdb3c2e31ba0890b8e09e10c50762539bfb8c8af"
+}
