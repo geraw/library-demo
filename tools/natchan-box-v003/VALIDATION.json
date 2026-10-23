@@ -1,0 +1,98 @@
+{
+  "wrapper_version": "natchan-box/3.0.0",
+  "parent_commit": "e88d92de4689270a3096cc067f0dce5751211b46",
+  "unit_suites": [
+    {
+      "suite": "natchan-box-v003",
+      "passed": true,
+      "summary": "----------------------------------------------------------------------\nRan 62 tests in 0.797s\n\nOK"
+    },
+    {
+      "suite": "natchan-v016",
+      "passed": true,
+      "summary": "----------------------------------------------------------------------\nRan 10 tests in 0.030s\n\nOK"
+    },
+    {
+      "suite": "natchan-v015",
+      "passed": true,
+      "summary": "----------------------------------------------------------------------\nRan 6 tests in 0.003s\n\nOK"
+    }
+  ],
+  "g026_regression": {
+    "passed": true,
+    "counts": {
+      "http_records": 183,
+      "failure_occurrences": 1,
+      "known_bug_occurrences": 1,
+      "known_bug_ids": [
+        "GIT-C2"
+      ]
+    }
+  },
+  "g018_regression": {
+    "passed": true,
+    "http_5xx": 190,
+    "signature_counts_preserved": true
+  },
+  "toolkit_translation_regression": {
+    "passed": true,
+    "description": "g018 log bytes with toolkit-shaped generic metadata, not an original toolkit smoke package"
+  },
+  "recorded_campaign_coverage_audit": {
+    "validation_kind": "coverage reconciliation on published analyzer observations and result summaries; not original raw archive replay",
+    "producer_repository": "weissye/vikunja_study",
+    "producer_snapshot": "b110cc959bcfdad0aed6d8394ff8b52689916e6e",
+    "original_div_summary_gaps": 34,
+    "qualified_pairs_with_raw_witnesses": 26,
+    "different_response_classes": 8,
+    "resolved_pairs": [
+      1,
+      2,
+      3,
+      4,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      32,
+      33,
+      34
+    ],
+    "unresolved_pairs": [
+      5,
+      6,
+      7,
+      21,
+      22,
+      23,
+      30,
+      31
+    ],
+    "existing_raw_partial_observations": 6,
+    "original_archive_bytes_verified": false
+  },
+  "original_toolkit_archives_reanalyzed": false,
+  "limitations": [
+    "Original toolkit raw packages must be rerun locally for final acceptance.",
+    "Recorded machine-output audit is not original-byte replay.",
+    "No full atomicity snapshot collection was added.",
+    "No complete generic product-semantic adapter was added.",
+    "PowerShell wrapper not executed on Windows."
+  ],
+  "new_sut_requests": 0
+}
