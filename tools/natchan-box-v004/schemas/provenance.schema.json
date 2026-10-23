@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "provenance",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "natchan-provenance/1"
+    },
+    "wrapper_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "python": {
+      "type": "string",
+      "minLength": 1
+    },
+    "inputs": {
+      "type": "array"
+    },
+    "code": {
+      "type": "array"
+    },
+    "new_sut_requests": {
+      "const": 0
+    },
+    "request": {
+      "type": "object"
+    },
+    "engine_versions": {
+      "type": "object"
+    },
+    "engine_input_inventory": {
+      "type": "array"
+    },
+    "catalogs": {
+      "type": "array"
+    },
+    "source_locations": {
+      "type": "object"
+    },
+    "toolkit_configurations": {
+      "type": "array"
+    },
+    "toolkit_packages": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "wrapper_version",
+    "python",
+    "inputs",
+    "code",
+    "new_sut_requests"
+  ],
+  "additionalProperties": false
+}

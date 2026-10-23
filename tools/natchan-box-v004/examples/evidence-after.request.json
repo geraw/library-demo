@@ -1,0 +1,14 @@
+{
+  "schema_version": "natchan-request/1",
+  "run": {
+    "id": "evidence-sample-after",
+    "tool": "provengo",
+    "product": "gitea",
+    "product_version": "28.1.0"
+  },
+  "evidence": {
+    "adapter": "toolkit-v1",
+    "archive": "review_v1_s1.zip",
+    "sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8"
+  }
+}

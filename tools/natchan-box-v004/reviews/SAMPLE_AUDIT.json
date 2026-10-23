@@ -1,0 +1,2557 @@
+{
+  "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+  "journal_sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+  "evidence_origin": "cloud route harness, not native Provengo schedule acceptance",
+  "resolved_measurements": [
+    {
+      "family": "ATOM-1-2",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 193
+      },
+      "status": "RAW_VERIFIED",
+      "computed": {
+        "fields": {
+          "assignee": "kept",
+          "body": "applied"
+        },
+        "collateral_changed": [],
+        "verdict": "partial"
+      },
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 194
+        }
+      ],
+      "before_source": "trap_read_before_write",
+      "scope": "Recorded snapshots and request; attribution excludes neither other writers nor stale preimages.",
+      "immediate_preimage_asserted": true,
+      "before_request_identity_independently_bound": false,
+      "background_concurrency_excluded": false,
+      "skipped_absent_after_fields": []
+    },
+    {
+      "family": "ATOM-1-2",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 238
+      },
+      "status": "RAW_VERIFIED",
+      "computed": {
+        "fields": {
+          "assignee": "kept",
+          "body": "applied"
+        },
+        "collateral_changed": [],
+        "verdict": "partial"
+      },
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 239
+        }
+      ],
+      "before_source": "trap_read_before_write",
+      "scope": "Recorded snapshots and request; attribution excludes neither other writers nor stale preimages.",
+      "immediate_preimage_asserted": true,
+      "before_request_identity_independently_bound": false,
+      "background_concurrency_excluded": false,
+      "skipped_absent_after_fields": []
+    },
+    {
+      "family": "ATOM-1-2",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 356
+      },
+      "status": "RAW_VERIFIED",
+      "computed": {
+        "fields": {
+          "body": "kept",
+          "tag_name": "kept"
+        },
+        "collateral_changed": [],
+        "verdict": "rolled_back"
+      },
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 357
+        }
+      ],
+      "before_source": "trap_read_before_write",
+      "scope": "Recorded snapshots and request; attribution excludes neither other writers nor stale preimages.",
+      "immediate_preimage_asserted": true,
+      "before_request_identity_independently_bound": false,
+      "background_concurrency_excluded": false,
+      "skipped_absent_after_fields": []
+    },
+    {
+      "family": "ATOM-1-2",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 385
+      },
+      "status": "RAW_VERIFIED",
+      "computed": {
+        "fields": {
+          "body": "kept",
+          "tag_name": "kept"
+        },
+        "collateral_changed": [],
+        "verdict": "rolled_back"
+      },
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 386
+        }
+      ],
+      "before_source": "trap_read_before_write",
+      "scope": "Recorded snapshots and request; attribution excludes neither other writers nor stale preimages.",
+      "immediate_preimage_asserted": true,
+      "before_request_identity_independently_bound": false,
+      "background_concurrency_excluded": false,
+      "skipped_absent_after_fields": []
+    },
+    {
+      "family": "ATOM-1-2",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 393
+      },
+      "status": "RAW_VERIFIED",
+      "computed": {
+        "fields": {
+          "body": "applied",
+          "milestone": "kept"
+        },
+        "collateral_changed": [],
+        "verdict": "partial"
+      },
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 394
+        }
+      ],
+      "before_source": "trap_read_before_write",
+      "scope": "Recorded snapshots and request; attribution excludes neither other writers nor stale preimages.",
+      "immediate_preimage_asserted": true,
+      "before_request_identity_independently_bound": false,
+      "background_concurrency_excluded": false,
+      "skipped_absent_after_fields": []
+    },
+    {
+      "family": "ATOM-1-2",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 480
+      },
+      "status": "RAW_VERIFIED",
+      "computed": {
+        "fields": {
+          "body": "applied",
+          "milestone": "kept"
+        },
+        "collateral_changed": [],
+        "verdict": "partial"
+      },
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 481
+        }
+      ],
+      "before_source": "trap_read_before_write",
+      "scope": "Recorded snapshots and request; attribution excludes neither other writers nor stale preimages.",
+      "immediate_preimage_asserted": true,
+      "before_request_identity_independently_bound": false,
+      "background_concurrency_excluded": false,
+      "skipped_absent_after_fields": []
+    },
+    {
+      "family": "ATOM-1-2",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 488
+      },
+      "status": "RAW_VERIFIED",
+      "computed": {
+        "fields": {
+          "body": "applied",
+          "milestone": "kept"
+        },
+        "collateral_changed": [],
+        "verdict": "partial"
+      },
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 489
+        }
+      ],
+      "before_source": "trap_read_before_write",
+      "scope": "Recorded snapshots and request; attribution excludes neither other writers nor stale preimages.",
+      "immediate_preimage_asserted": true,
+      "before_request_identity_independently_bound": false,
+      "background_concurrency_excluded": false,
+      "skipped_absent_after_fields": []
+    },
+    {
+      "family": "ATOM-1-2",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 494
+      },
+      "status": "RAW_VERIFIED",
+      "computed": {
+        "fields": {
+          "body": "applied",
+          "milestone": "kept"
+        },
+        "collateral_changed": [],
+        "verdict": "partial"
+      },
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 495
+        }
+      ],
+      "before_source": "trap_read_before_write",
+      "scope": "Recorded snapshots and request; attribution excludes neither other writers nor stale preimages.",
+      "immediate_preimage_asserted": true,
+      "before_request_identity_independently_bound": false,
+      "background_concurrency_excluded": false,
+      "skipped_absent_after_fields": []
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 570
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Comment",
+      "field": "body",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 181
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 186
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 185
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 182
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 187
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 571
+      },
+      "status": "RAW_VERIFIED",
+      "entity": "Issue",
+      "field": "assignee",
+      "computed_verdict": "class_diverge",
+      "response_classes_differ": true,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": null,
+      "stored_outcomes_differ": null,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 234
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 239
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 237
+        }
+      ],
+      "readback_measurement_sources": [],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 572
+      },
+      "status": "RAW_VERIFIED",
+      "entity": "Issue",
+      "field": "assignee",
+      "computed_verdict": "class_diverge",
+      "response_classes_differ": true,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": null,
+      "stored_outcomes_differ": null,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 189
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 194
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 192
+        }
+      ],
+      "readback_measurement_sources": [],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 573
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Issue",
+      "field": "body",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 279
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 284
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 283
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 280
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 285
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 574
+      },
+      "status": "RAW_VERIFIED",
+      "entity": "Issue",
+      "field": "due_date",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": null,
+      "stored_outcomes_differ": null,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 359
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 363
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 362
+        }
+      ],
+      "readback_measurement_sources": [],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 575
+      },
+      "status": "RAW_VERIFIED",
+      "entity": "Issue",
+      "field": "due_date",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": null,
+      "stored_outcomes_differ": null,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 322
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 326
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 325
+        }
+      ],
+      "readback_measurement_sources": [],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 576
+      },
+      "status": "RAW_VERIFIED",
+      "entity": "Issue",
+      "field": "milestone",
+      "computed_verdict": "class_diverge",
+      "response_classes_differ": true,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": null,
+      "stored_outcomes_differ": null,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 388
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 394
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 392
+        }
+      ],
+      "readback_measurement_sources": [],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 577
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Issue",
+      "field": "ref",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 411
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 416
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 415
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 412
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 417
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 578
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Issue",
+      "field": "title",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 431
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 436
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 435
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 432
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 437
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 579
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Issue",
+      "field": "title",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 421
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 426
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 425
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 422
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 427
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 580
+      },
+      "status": "RAW_VERIFIED",
+      "entity": "Label",
+      "field": "color",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": null,
+      "stored_outcomes_differ": null,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 241
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 245
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 244
+        }
+      ],
+      "readback_measurement_sources": [],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 581
+      },
+      "status": "RAW_VERIFIED",
+      "entity": "Label",
+      "field": "color",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": null,
+      "stored_outcomes_differ": null,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 196
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 200
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 199
+        }
+      ],
+      "readback_measurement_sources": [],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 582
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Label",
+      "field": "description",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 287
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 292
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 291
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 288
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 293
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 583
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Label",
+      "field": "name",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 365
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 370
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 369
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 366
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 371
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 584
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Label",
+      "field": "name",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 328
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 333
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 332
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 329
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 334
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 585
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Milestone",
+      "field": "description",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 202
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 207
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 206
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 203
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 208
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 586
+      },
+      "status": "RAW_VERIFIED",
+      "entity": "Milestone",
+      "field": "due_on",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": null,
+      "stored_outcomes_differ": null,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 295
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 299
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 298
+        }
+      ],
+      "readback_measurement_sources": [],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 587
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Milestone",
+      "field": "due_on",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 247
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 252
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 251
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 248
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 253
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 588
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Milestone",
+      "field": "title",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 336
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 341
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 340
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 337
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 342
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 589
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Organization",
+      "field": "description",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 255
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 260
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 259
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 256
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 261
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 590
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Organization",
+      "field": "description",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 210
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 215
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 214
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 211
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 216
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 591
+      },
+      "status": "RAW_VERIFIED",
+      "entity": "Organization",
+      "field": "email",
+      "computed_verdict": "class_diverge",
+      "response_classes_differ": true,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": null,
+      "stored_outcomes_differ": null,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 301
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 306
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 305
+        }
+      ],
+      "readback_measurement_sources": [],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 592
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Organization",
+      "field": "full_name",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 373
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 378
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 377
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 374
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 379
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 593
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Organization",
+      "field": "full_name",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 344
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 349
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 348
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 345
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 350
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 594
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Organization",
+      "field": "location",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 396
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 401
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 400
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 397
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 402
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 595
+      },
+      "status": "RAW_VERIFIED",
+      "entity": "Organization",
+      "field": "website",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": null,
+      "stored_outcomes_differ": null,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 439
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 443
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 442
+        }
+      ],
+      "readback_measurement_sources": [],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 596
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Release",
+      "field": "body",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 263
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 268
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 267
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 264
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 269
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 597
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Release",
+      "field": "body",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 218
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 223
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 222
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 219
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 224
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 598
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Release",
+      "field": "name",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 308
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 313
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 312
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 309
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 314
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 599
+      },
+      "status": "RAW_VERIFIED",
+      "entity": "Release",
+      "field": "tag_name",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": null,
+      "stored_outcomes_differ": null,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 381
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 386
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 384
+        }
+      ],
+      "readback_measurement_sources": [],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 600
+      },
+      "status": "RAW_VERIFIED",
+      "entity": "Release",
+      "field": "tag_name",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": null,
+      "stored_outcomes_differ": null,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 352
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 357
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 355
+        }
+      ],
+      "readback_measurement_sources": [],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 601
+      },
+      "status": "RAW_VERIFIED",
+      "entity": "Release",
+      "field": "target_commitish",
+      "computed_verdict": "class_diverge",
+      "response_classes_differ": true,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": null,
+      "stored_outcomes_differ": null,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 404
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 408
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 407
+        }
+      ],
+      "readback_measurement_sources": [],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 602
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Team",
+      "field": "description",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 271
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 276
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 275
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 272
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 277
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 603
+      },
+      "status": "PRODUCER_MEASUREMENT_COMPARED",
+      "entity": "Team",
+      "field": "description",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": false,
+      "stored_outcomes_differ": false,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 226
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 231
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 230
+        }
+      ],
+      "readback_measurement_sources": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 227
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 232
+        }
+      ],
+      "controls_verified": true
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 604
+      },
+      "status": "RAW_VERIFIED",
+      "entity": "Team",
+      "field": "name",
+      "computed_verdict": "same",
+      "response_classes_differ": false,
+      "raw_write_pair_verified": true,
+      "independent_raw_state_verified": null,
+      "stored_outcomes_differ": null,
+      "witnesses": [
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 316
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 320
+        },
+        {
+          "file": "review_v1_s1.zip",
+          "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+          "members": [
+            "gateway-journal.jsonl"
+          ],
+          "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+          "record": 319
+        }
+      ],
+      "readback_measurement_sources": [],
+      "controls_verified": true
+    }
+  ],
+  "unknown_evidence": [
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 605
+      },
+      "reason": "tested_field_values_differ",
+      "status": "UNRESOLVED",
+      "reported_verdict": "class_diverge"
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 606
+      },
+      "reason": "tested_field_values_differ",
+      "status": "UNRESOLVED",
+      "reported_verdict": "class_diverge"
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 607
+      },
+      "reason": "pair_parent_context_differs",
+      "status": "UNRESOLVED",
+      "reported_verdict": "class_diverge"
+    },
+    {
+      "family": "DIV-1",
+      "source": {
+        "file": "review_v1_s1.zip",
+        "archive_sha256": "d760ad3ec395556b479f9befd7dbcb1b6fe313542d61e11d97a60c98c04a8dd8",
+        "members": [
+          "gateway-journal.jsonl"
+        ],
+        "sha256": "c7b83511a53e878fee4610d75dc4daf900d52c4967bfdf466c1d1102b7f5fb85",
+        "record": 608
+      },
+      "reason": "tested_field_values_differ",
+      "status": "UNRESOLVED",
+      "reported_verdict": "same"
+    }
+  ]
+}
