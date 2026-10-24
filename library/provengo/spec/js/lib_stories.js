@@ -350,10 +350,17 @@ bthread("tryToDeleteNonexistingHold", function () {
 // back out of sampled traces to score ensembles by how many distinct features
 // (not raw occurrences) they exercise - see STATE_FEATURES there, which must
 // stay in sync with the names marked here.
+//
+// markStateFeature requests the event with eventPriority:1010 (same convention as
+// Ctrl.markEvent in controlLib.js) instead of a plain bp.sync({request:...}) offer: a plain
+// offer competes on equal footing with every other event any other bthread offers at that sync
+// point, and loses most of the time at high-competition moments (e.g. every single loan/hold
+// create) - a measured 45-78% miss rate across all six original features. The priority makes
+// this bthread's offer win selection instead.
 //////////////////////////////////////////////////////////////////////////
 
 function markStateFeature(name) {
-  bp.sync({ request: bp.Event("StateFeature", { feature: name }) });
+  bp.sync({ request: bp.Event("StateFeature", { feature: name, eventPriority: 1010 }) });
 }
 
 ctx.bthread("markBookDeleteEligible", "Book.CanDelete", function (book) {
@@ -368,9 +375,12 @@ ctx.bthread("markLoanCreatable", "UserBook.CanCreateLoan", function (userbook) {
   markStateFeature("LOAN_CREATABLE");
 });
 
-ctx.bthread("markHoldCreatable", "UserBook.CanCreateHold", function (userbook) {
-  markStateFeature("HOLD_CREATABLE");
-});
+// HOLD_CREATABLE (UserBook.CanCreateHold) deliberately dropped from the feature list: that query
+// is `e.type === 'user-book'` with no other condition, so it's true for every user-book pair the
+// instant it exists - it measures "a user and a book exist", not any interesting/restrictive
+// state, so it can't discriminate between scenarios (confirmed: independently true in 20/20
+// traces in earlier measurements). Not replaced with a different hold-related condition - no
+// other well-defined "hold not yet possible" business concept exists in the model to measure.
 
 // Hold.WithoutLoan was previously dead code (defined, never consumed) - this is its first use.
 ctx.bthread("markHoldWithoutLoan", "Hold.WithoutLoan", function (hold) {
