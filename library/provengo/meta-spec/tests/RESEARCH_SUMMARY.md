@@ -469,3 +469,83 @@ stable across repeats, not a one-off from the single-run comparison in §8 above
 sampling has no seed control to make that practical here. Given the 0%-vs-40-100% contrast
 reproduces identically across 3 independent repeats per arm, run-to-run sampling variance is not
 a plausible alternative explanation for the result at this point.
+
+## 9. Does `provengo ensemble` actually select for state coverage? (2026-10-24)
+
+§8's unit tests proved `rankingFunction` computes the right number given a set of events; this
+checks the next question - does the real `provengo ensemble` command (GeneticOptimizer) actually
+use that number to prefer better-covering subsets, against a real sampled pool, not a synthetic
+one.
+
+**Method:** `provengo sample --overwrite --size=20 --max-length=80` against the live SUT (one
+fresh pool), then `provengo ensemble --size=5` (GeneticOptimizer, default `rankingFunction`).
+Compared the optimizer's chosen 5-trace subset against three naive 5-trace subsets drawn from
+the *same* 20-trace pool: first 5, last 5, and a deliberately worst-case subset (the single
+shortest trace in the pool, duplicated 5x - zero diversity by construction). Verified every
+score two independent ways: (a) `verify_state_features.py`'s marker-count reconstruction, (b)
+calling the real `rankingFunction` from `ensemble-code.js` directly (via Node's `vm` module) on
+each candidate file - not trusting the optimizer's self-reported number alone, per the
+methodological lesson from the earlier goals/state-param investigation (§5's "don't trust one
+opaque number" principle).
+
+| candidate | rankingFunction score | features covered |
+|---|---|---|
+| GeneticOptimizer's choice (`provengo ensemble --size=5`) | **100.0** | 6/6 |
+| naive: first 5 traces in the pool | 100.0 | 6/6 |
+| naive: last 5 traces in the pool | 83.3 | 5/6 (missing MULTI_USER_BOOK_RELATIONS) |
+| worst case: shortest trace duplicated 5x | 33.3 | 2/6 (only the two always-true features) |
+
+Both independent scoring methods (marker-count script and the real `rankingFunction` called
+directly) agreed exactly on all four numbers.
+
+**Conclusion:** the ranking does discriminate correctly - a subset missing one feature scores
+noticeably lower (83.3 vs 100), and a maximally-undiverse subset scores far lower still (33.3).
+The optimizer's claimed rank 100 is independently confirmed, not just self-reported. The fact
+that a naive first-5 pick *also* reached 100 here is the same small-pool ceiling effect already
+documented in §5/§5.7 (BOOK_DELETE_ELIGIBLE/USER_DELETE_ELIGIBLE/LOAN_CREATABLE are easy to hit
+with only 4 users/4 books) - not a flaw in the ranking function, which still correctly penalizes
+the two inferior naive picks tried here. Not yet checked: whether the optimizer outperforms naive
+selection reliably at a larger pool/ensemble size where the ceiling effect is less dominant (§5.7
+found a real GOALS-vs-coverage trade-off only appeared at `--size=20` scale, not `--size=10`) -
+this one pool/one optimizer run is a single data point, not a repeated-trial result like §8.1.
+
+Transient files from this check (`samples.json`, `ensemble_candidate.json`, three naive-subset
+files) were deleted after extracting these numbers - not kept, per the same "don't accumulate
+raw files without reason" guidance as §8.1.
+
+### 9.1 Optimizer vs. the actual distribution of naive picks, repeated, at larger scale (2026-10-24)
+
+§9 only compared against 3 fixed hand-picked naive subsets (first-5/last-5/worst-case), one pool.
+Addresses that gap: at each pool, generated 2000 random 5-subsets (or 3-subsets - see below) and
+looked at where the optimizer's score falls in that actual distribution, not just against 3
+arbitrary points. Computed efficiently in Python by pre-computing each trace's own marker-feature
+set once (via `verify_state_features.py`'s `replay_trace`), then scoring each random subset as a
+cheap set union - avoids reloading/reparsing the ~900MB-1GB raw files repeatedly, and avoids
+Node's ~536MB `fs.readFileSync` string-length ceiling hit when first attempted here.
+
+**Repeat 1** (fresh `--size=30 --max-length=80` pool, `provengo ensemble --size=5`):
+optimizer score 100.0. Random 5-subsets (N=2000): min=50.0, median=100.0, mean=93.48, max=100.0 -
+**66.0%** of random picks already reach the maximum.
+
+**Repeat 2** (fresh pool, same settings): optimizer score 100.0. Random 5-subsets (N=2000):
+min=66.7, median=100.0, mean=93.71, max=100.0 - **66.5%** reach the maximum. Near-identical to
+repeat 1 - the ceiling effect at pool=30/ensemble=5 is stable, not a one-off.
+
+**Third data point, varying the other lever (ensemble size, same pool as repeat 2):**
+`provengo ensemble --size=3` instead of 5. optimizer score 100.0. Random **3**-subsets (N=2000):
+min=50.0, **median=83.3**, mean=86.57, max=100.0 - only **38.9%** reach the maximum.
+
+**Conclusion:** at ensemble size 5, naive selection is frequently as good as the optimizer at
+this pool scale (66% tie rate) - the open question from §9 stands for that specific setting.
+Shrinking the ensemble to size 3 (same pool, more selective) surfaces a real, meaningful gap: the
+optimizer still reliably finds a maximum-score (100) ensemble, while a *typical* naive pick does
+not (median 83.3, mean 86.6) - the optimizer beats the median/mean naive pick by a clear margin,
+even though occasional lucky naive picks (~39%) still tie it. This reframes §9's open question:
+the right comparison isn't "does the optimizer ever beat naive," it's "how often, and the answer
+depends heavily on how constrained the ensemble-size/pool-size ratio is" - a smaller/more
+selective ensemble relative to the pool is where the optimizer's value is clearest.
+
+**Not yet done:** didn't test larger pool sizes (only pool=30 tried) or ensemble sizes between 3
+and 5, so the exact point where naive selection stops being competitive isn't pinned down - only
+that it's somewhere between these two ratios (5/30=1:6 vs 3/30=1:10). All raw files from this
+subsection were deleted after extracting the printed numbers above; only those numbers are kept.
