@@ -1,0 +1,8 @@
+{
+  "Invoke-Natchan-Work-v001.ps1": "1734bc65c9a9559c74f5304805872c30e33042f861bd4ae0cdbe0acf68c32811",
+  "README.md": "4c081827e34e7257db653d0d819c33701a6e106359e44d0e1cc07bc079dce962",
+  "VALIDATION.json": "b70db3fe12af170168b93664ee63b31307795bb33ed71bcbaecddda1d4435b2f",
+  "pins.json": "6bde2b3b218f9deb4aefcd56846d5b691b3845f4529630483981af8a690f4263",
+  "tests/test_work.py": "1ffab7fda82d2bd788bca79d95ab5437530801e44974bcf8ea5a271fedb9dfef",
+  "work_v001.py": "152f62c85fee255e1daf1a9869a72b7274d5352753d101e3d8bba8293270fe08"
+}

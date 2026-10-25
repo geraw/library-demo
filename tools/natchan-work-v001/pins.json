@@ -1,0 +1,17 @@
+{
+  "integration_version": "natchan-work/1.0.0",
+  "producer": {
+    "repository": "https://github.com/weissye/vikunja_study.git",
+    "branch": "main",
+    "commit": "d990657a2470d4dbf368d4d5eb592749a292f6ff",
+    "entry": "toolkit/v1/run/Run-Model.ps1",
+    "sut_config": "toolkit/v1/configs/gitea/sut.json"
+  },
+  "analyzer": {
+    "repository": "https://github.com/geraw/library-demo.git",
+    "branch": "natchan-box-v004",
+    "commit": "f1d26cf65b5ee596a2297802ed2973daf4da0c15",
+    "entry": "tools/natchan-box-v004/natchan.py"
+  },
+  "provengo_jar_sha256": "dda4be276ff517faa06b942d587cad2d342c66d83c9959f7eb3c6c77a8b2fc2b"
+}
