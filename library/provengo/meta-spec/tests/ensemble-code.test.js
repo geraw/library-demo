@@ -8,7 +8,9 @@ const path = require("path");
 
 const SRC = path.join(__dirname, "..", "ensemble-code.js");
 
-const sandbox = { console };
+// NUMBER_OF_USERS/NUMBER_OF_BOOKS are real globals lib_stories.js declares in the live Provengo
+// run - stubbed here since this harness loads ensemble-code.js standalone, without lib_stories.js.
+const sandbox = { console, NUMBER_OF_USERS: 4, NUMBER_OF_BOOKS: 4 };
 vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync(SRC, "utf8"), sandbox, { filename: SRC });
 
@@ -29,6 +31,15 @@ function stateFeatureEvent(name) {
 }
 function restEvent(verb, url, parameters) {
   return { name: verb, data: { lib: "REST", method: verb, url: "http://localhost:23242" + url, parameters } };
+}
+
+// A genuine createLoan/createHold completion, matching interfaces.library.js's valid-variant
+// shape exactly: parameters.description prefixed "Create: Loan"/"Create: Hold", userId/bookId
+// alongside it.
+function createEvent(type, userId, bookId) {
+  const label = type === "loan" ? "Loan" : "Hold";
+  const url = type === "loan" ? "/loans" : "/holds";
+  return restEvent("POST", url, { description: "Create: " + label + " " + userId + "/" + bookId, userId: userId, bookId: bookId });
 }
 
 const ALL_STATE_FEATURES = ["BOOK_DELETE_ELIGIBLE", "USER_DELETE_ELIGIBLE", "LOAN_CREATABLE", "HOLD_WITHOUT_LOAN", "MULTI_USER_BOOK_RELATIONS", "USER_WITH_TWO_BOOKS"];
@@ -95,6 +106,58 @@ const NUM_STATE_FEATURES = ALL_STATE_FEATURES.length;
     restEvent("POST", "/loans", { userId: 1, bookId: 1 }),
   ];
   assertEqual(sandbox.rankingFunction([trace]), 0, "T5c: no StateFeature markers at all -> score 0, even with real REST activity");
+}
+
+// --- Test 6: parameterCoverageFunction (2026-10-24) -------------------------------------------
+// Universe is 2 * NUMBER_OF_USERS * NUMBER_OF_BOOKS = 2*4*4 = 32 (16 loan pairs + 16 hold pairs).
+{
+  // T6a: a single genuine loan create counts for exactly 1/32.
+  const trace = [createEvent("loan", 1, 1)];
+  assertEqual(sandbox.parameterCoverageFunction([trace]), 100 * (1 / 32), "T6a: one loan pair -> 1/32");
+}
+{
+  // T6b: loan and hold pairs are separate spaces - the SAME (userId, bookId) pair counted once
+  // for loan and once for hold adds 2, not 1 (they don't share a Set).
+  const trace = [createEvent("loan", 1, 1), createEvent("hold", 1, 1)];
+  assertEqual(sandbox.parameterCoverageFunction([trace]), 100 * (2 / 32), "T6b: same pair, loan+hold, counts as 2 (separate spaces)");
+}
+{
+  // T6c: repeating the identical pair doesn't inflate the score - same Set semantics as state coverage.
+  const trace = [createEvent("loan", 2, 3), createEvent("loan", 2, 3), createEvent("loan", 2, 3)];
+  assertEqual(sandbox.parameterCoverageFunction([trace]), 100 * (1 / 32), "T6c: repeating the same loan pair counts once");
+}
+{
+  // T6d: a rejected/invalid-shape attempt (no "Create: " description, even with real-looking
+  // userId/bookId) must not count - mirrors the exact nonexistent-FK pollution bug found and
+  // fixed in the earlier (now-superseded) parameter-coverage implementation.
+  const rejected = restEvent("POST", "/loans", { userId: 1, bookId: 1 }); // no description field
+  assertEqual(sandbox.parameterCoverageFunction([[rejected]]), 0, "T6d: an event with no 'Create: ' description doesn't count, even with real-looking ids");
+}
+{
+  // T6e: an out-of-range pair (id beyond NUMBER_OF_USERS/BOOKS - the id-burning bug's artifact)
+  // must NOT inflate the main score, and must be tracked separately instead.
+  const trace = [createEvent("loan", 1, 1), createEvent("loan", 6, 1)]; // userId=6 is out of range (NUMBER_OF_USERS=4)
+  const score = sandbox.parameterCoverageFunction([trace]);
+  assertEqual(score, 100 * (1 / 32), "T6e: an out-of-range pair doesn't add to the main score");
+  const details = sandbox.parameterCoverageDetails([trace]);
+  assertEqual(details.outOfRangePairs.size, 1, "T6e: the out-of-range pair is tracked separately, not silently dropped");
+}
+{
+  // T6f: full coverage of both spaces (all 16 loan pairs + all 16 hold pairs) -> exactly 100.
+  const trace = [];
+  for (let u = 1; u <= 4; u++)
+    for (let b = 1; b <= 4; b++) {
+      trace.push(createEvent("loan", u, b));
+      trace.push(createEvent("hold", u, b));
+    }
+  assertEqual(sandbox.parameterCoverageFunction([trace]), 100, "T6f: all 16 loan + 16 hold pairs covered -> 100");
+}
+{
+  // T6g: parameterCoverageFunction must not read StateFeature events, and rankingFunction must
+  // not read REST create events - the two scores are independent, as designed.
+  const trace = [stateFeatureEvent("BOOK_DELETE_ELIGIBLE"), createEvent("loan", 1, 1)];
+  assertEqual(sandbox.parameterCoverageFunction([trace]), 100 * (1 / 32), "T6g: a StateFeature event alongside a loan create doesn't affect parameter coverage");
+  assertEqual(sandbox.rankingFunction([trace]), 100 * (1 / NUM_STATE_FEATURES), "T6g: a loan create event alongside a marker doesn't affect state coverage");
 }
 
 console.log("\n" + pass + " passed, " + fail + " failed");
