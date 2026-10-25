@@ -600,3 +600,94 @@ whenever parameter coverage is used for real test-suite selection, not just meas
 All raw files from this section (`samples.json`, both ensemble output files) were deleted after
 extracting the numbers above, per the same "don't accumulate raw files" practice as earlier
 sections.
+
+### 10.1 Repeat on a second independent pool (2026-10-25)
+
+Same method as §10, fresh `--size=20 --max-length=80` pool, independent of the first. Addresses
+§10's "only one pool tested" caveat directly.
+
+| candidate | parameterCoverageFunction score |
+|---|---|
+| GeneticOptimizer, default generations | 15.625 |
+| GeneticOptimizer, `--num-of-generations=200` | 25.0 |
+| random 5-subsets (N=2000): min / median / mean / max | 6.25 / **15.625** / 16.7 / 28.125 |
+| TRUE maximum (exhaustive C(20,5)) | **28.125** |
+
+**The core pattern reproduces exactly:** the default-generation optimizer again scored precisely
+the median of 2000 random picks (15.625 both times, on two different pools - not a coincidence
+of one unlucky run). 200 generations again closed most but not all of the gap - this time 25.0
+vs. the true max 28.125 (gap of 3.125, proportionally smaller than §10's gap of 12.5 at
+40.625 - though this pool's overall ceiling was lower too, so the two gaps aren't on identical
+scales).
+
+**What this settles vs. what it doesn't:** two independent pools now agree that
+`provengo ensemble`'s *default* generation count underperforms for `parameterCoverageFunction`,
+tying the random median rather than beating it - this specific finding is no longer a single-pool
+fluke. Still open, per H1/H2 from §10: whether the remaining gap at 200 generations is a search-
+budget issue (H2 - keeps shrinking with more generations) or a landscape issue (H1 - plateaus
+short of the optimum regardless of budget) can't be distinguished from two data points at only
+one generation-count step (default vs. 200) - that needs a sweep across several generation
+counts on the same pool, not another independent pool. Also still not tested: run-to-run
+variance from the optimizer's own randomness (no `--seed` available) holding the pool fixed -
+the two "default" and two "200-gen" numbers above each come from a different pool, not repeated
+runs on the same one, so they conflate pool-to-pool variation with the optimizer's own
+run-to-run variation.
+
+Raw files from this repeat (second `samples.json`, two ensemble output files) deleted after
+extracting the numbers above, same practice as before.
+
+### 10.2 Generation-count sweep on one fixed pool, 2 repeats each (2026-10-25)
+
+Directly targets distinguishing H1 (hard landscape) from H2 (insufficient search budget) from
+§10, by holding the pool fixed and varying only `--num-of-generations`, with 2 independent repeats
+per setting (no `--seed` available, so repeats are the only way to separate generation-count
+effect from the optimizer's own run-to-run randomness - exactly the methodological point raised
+before this experiment).
+
+One fresh `--size=20 --max-length=80` pool, reused for all 12 runs below. Reference for this pool
+(random 5-subsets, N=2000): min=3.125, median=18.75, mean=17.46, **max=25.0** (which also equals
+the exhaustive true optimum over all C(20,5) - confirmed separately). Every score below is
+independently re-scored from the CLI's own written output file (never the CLI's printed rank).
+Run durations (24s -> 34s as generations rose from default to 500) confirm `--num-of-generations`
+was genuinely honored, not silently capped.
+
+| generations | repeat 1 | repeat 2 | mean |
+|---|---|---|---|
+| default | 6.25 | 9.375 | 7.81 |
+| 10 | 15.625 | 15.625 | 15.625 |
+| 50 | **25.0** | 12.5 | 18.75 |
+| 100 | **25.0** | 12.5 | 18.75 |
+| 200 | 12.5 | 21.875 | 17.19 |
+| 500 | 21.875 | 21.875 | 21.875 |
+
+**This does not cleanly settle H1 vs. H2 - it shows a third factor dominates at this scale:
+run-to-run variance from the optimizer's own randomness is large enough to swamp any smooth
+generations trend in this range.** Within a single generation-count setting, scores swing from
+12.5 to 25.0 (50 and 100 generations both show one repeat hitting the true optimum exactly and
+the other landing at less than half that) - a bigger spread than the difference between most
+adjacent generation-count rows. The mean-per-setting column shows a rough, noisy upward drift
+(7.81 -> ~17-19 -> 21.875), consistent with H2 (more budget helps on average), but §10's
+H1-style plateau also shows up at the top end: 500 generations gave the most *consistent* result
+of the sweep (identical 21.875 both repeats - the only setting where the two repeats agreed) but
+still fell short of the true optimum (25.0) in both of its repeats, not just on average.
+
+**Honest interpretation for presenting this:** default generation count is clearly worse on
+average than higher settings (this part is solid - 7.81 vs 500's 21.875, and default never once
+got close to the optimum in either repeat here or in §10/§10.1's two single-repeat runs).
+Beyond that, the data doesn't cleanly separate "search budget" from "landscape difficulty" as
+the cause of the remaining gap to 25.0 at 500 generations, because run-to-run noise at the
+SAME setting is itself large relative to the gap being measured. A cleaner test would need many
+more repeats per setting (e.g. 5-10) to get a reliable mean/variance per generation count, or a
+search method with reproducible seeding - neither done here (cost/time tradeoff, per the
+"don't rush into hundreds of runs" guidance this experiment was already following).
+
+**Practical takeaway, unchanged in direction from §10/§10.1 but now better grounded:** don't use
+`provengo ensemble`'s default generation count for parameter-coverage-driven ensemble selection -
+it was the worst-scoring setting in each of the three pools/experiments checked so far (§10,
+§10.1, §10.2), a consistent finding within that specific sample, not a general claim about every
+possible pool or configuration. Raising generations materially helps on average in what's been
+tested, though exactly how many are "enough" remains open given the observed run-to-run variance.
+
+All 12 raw ensemble output files plus the pool's `samples.json` were deleted after extracting the
+scores above - only this table and the reference numbers are kept, per the same practice as
+every earlier experimental section.
