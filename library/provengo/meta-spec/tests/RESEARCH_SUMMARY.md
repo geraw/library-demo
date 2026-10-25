@@ -549,3 +549,54 @@ selective ensemble relative to the pool is where the optimizer's value is cleare
 and 5, so the exact point where naive selection stops being competitive isn't pinned down - only
 that it's somewhere between these two ratios (5/30=1:6 vs 3/30=1:10). All raw files from this
 subsection were deleted after extracting the printed numbers above; only those numbers are kept.
+
+## 10. Does the GeneticOptimizer actually optimize Parameter Coverage? (2026-10-25)
+
+Same question as §9/9.1, now for `parameterCoverageFunction` (added after §9.1, in a separate
+commit - see git history) instead of `rankingFunction`. Per the documented CLI rank-reporting
+quirk (see `ensemble-code.js`'s `parameterCoverageFunction` doc comment), the CLI's own printed
+"rank" was NOT trusted - every number below comes from independently re-scoring the actual
+written ensemble file (or raw pool) via a direct call to `parameterCoverageFunction`/a matching
+Python reimplementation, never from the CLI's live log line.
+
+**Method:** fresh `provengo sample --overwrite --size=20 --max-length=80` against the live SUT,
+`provengo ensemble --size=5 --ranking-function=parameterCoverageFunction`. Compared against: (a)
+2000 random 5-subsets of the same 20-trace pool (Python, precomputed per-trace pair-sets, same
+technique as §9.1), (b) the TRUE maximum achievable, found by exhaustively scoring all C(20,5) =
+15,504 possible 5-subsets (feasible to brute-force at this size, same precedent as the old grid
+search in §5.8-equivalent work).
+
+| candidate | parameterCoverageFunction score (re-scored, not CLI-reported) |
+|---|---|
+| GeneticOptimizer, default generations | 21.875 |
+| GeneticOptimizer, `--num-of-generations=200` | 28.125 |
+| random 5-subsets (N=2000): min / median / mean / max | 6.25 / **21.875** / 21.8 / 40.625 |
+| TRUE maximum (exhaustive C(20,5)) | **40.625** |
+
+**This is a materially different result from §9/9.1's state-coverage finding.** For state
+coverage, the optimizer reliably found the true maximum in every test run. Here, at default
+settings, the optimizer's chosen ensemble scored EXACTLY the median of 2000 random picks - 57.6%
+of random 5-subsets scored at least as well. Raising `--num-of-generations` from its default to
+200 improved the result (21.875 -> 28.125) but still fell well short of the true maximum (40.625)
+that genuinely exists in this exact pool (traces 1, 3, 4, 5, 14 together cover all 13 of the
+pool's 13 total distinct in-range pairs).
+
+**Interpretation:** the metric itself is not the problem - it correctly spans a wide range
+(6.25 to 40.625 depending on which 5 traces are picked), so it clearly can discriminate between
+good and bad ensembles. The GeneticOptimizer's default search specifically underperforms on this
+metric at this pool/ensemble size, in a way it did not for state coverage. Plausible reasons not
+yet distinguished: (a) genuinely harder fitness landscape for this metric (e.g. more local optima
+from 32 independent loan/hold pair "slots" vs. 6 state features), (b) the metric's wider
+dynamic range makes the optimizer's default generation count simply insufficient here even
+though it was enough for state coverage's smaller, more saturated landscape. Not yet tested:
+whether an even higher generation count (500+) closes the remaining gap to 40.625, or whether
+this pool is unusual (only one pool tested, n=1, same single-data-point caveat as §9).
+
+**Practical takeaway for now:** don't assume `provengo ensemble`'s default settings are adequate
+for parameterCoverageFunction the way they were (independently confirmed) for state coverage -
+this needs either a higher `--num-of-generations` or a documented caveat about optimizer quality
+whenever parameter coverage is used for real test-suite selection, not just measurement.
+
+All raw files from this section (`samples.json`, both ensemble output files) were deleted after
+extracting the numbers above, per the same "don't accumulate raw files" practice as earlier
+sections.
