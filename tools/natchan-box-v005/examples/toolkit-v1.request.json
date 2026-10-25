@@ -1,0 +1,16 @@
+{
+  "schema_version": "natchan-request/1",
+  "run": {
+    "id": "toolkit-v1-model-seed1",
+    "tool": "provengo",
+    "product": "gitea",
+    "product_version": "28.1.0"
+  },
+  "evidence": {
+    "adapter": "toolkit-v1",
+    "archive": "v1-gitea-model.zip"
+  },
+  "configuration": {
+    "toolkit_repo": "../vikunja_study"
+  }
+}

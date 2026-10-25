@@ -1,0 +1,17 @@
+{
+  "schema_version": "natchan-request/1",
+  "run": {
+    "id": "g026-seed1",
+    "product": "gitea",
+    "product_version": "28.1.0",
+    "tool": "provengo"
+  },
+  "evidence": {
+    "adapter": "provengo-native-lifecycle",
+    "archive": "g026-results.zip"
+  },
+  "configuration": {
+    "product_profile": "gitea-lifecycle",
+    "catalog_set": "research-catalogs-v014"
+  }
+}
