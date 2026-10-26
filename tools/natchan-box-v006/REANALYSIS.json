@@ -1,0 +1,275 @@
+[
+  {
+    "case": "mealie-stories-20261026-152627",
+    "source_repository": "weissye/vikunja_study",
+    "source_commit": "e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+    "input_kind": "repository-retained-evidence-subset; NOT original uploaded ZIP",
+    "archive_sha256": "cb37a004ea0122450b3440120c220f57b4e9b432c802d3745f46e8285213a968",
+    "source_members": [
+      {
+        "path": "results/mealie-stories-20261026-152627/CONTRIB_recipe_list/native.log",
+        "git_blob_sha1": "91263193551c328056261fa15b379de40ad82a18",
+        "sha256": "4a7d78d4712109aa016e4615b60213503173fc4fbe055df13da5cab58d939ceb"
+      },
+      {
+        "path": "results/mealie-stories-20261026-152627/COPY_recipe/native.log",
+        "git_blob_sha1": "e996e67fc223e40d3befd0b4f644778f613da0d2",
+        "sha256": "4fbfa1beb8435265c474c15ad7312384341f9c3597c80256e83eae19eeb3d0fc"
+      },
+      {
+        "path": "results/mealie-stories-20261026-152627/SUMMARY_stories.txt",
+        "git_blob_sha1": "7f14d2f7933a21a6849bbdc5f7799171fe56f079",
+        "sha256": "be4a035d64aaba51058b8c1ed1b280f5990427ef6b3bb00299cd5a79984aae4a"
+      },
+      {
+        "path": "results/mealie-stories-20261026-152627/result_stories.json",
+        "git_blob_sha1": "48a91b8f050c278a8ea8a6c81df6689e0f0eec16",
+        "sha256": "756c209eb3027717df74e830993ce485ee875d93d75aa764d45682a131aa5faa"
+      }
+    ],
+    "exit_code": 0,
+    "status": "PARTIAL",
+    "counts": {
+      "finding_occurrences": 3,
+      "known_bug_occurrences": 0,
+      "known_bug_ids": [],
+      "log_signature_occurrences": 0
+    },
+    "evidence_summary": {
+      "normalized_observations": 10,
+      "http_records": null,
+      "http_5xx_records": null,
+      "native_evidence_records": 0,
+      "measurements": 10,
+      "unclassified": 7,
+      "unknown_evidence_records": 0,
+      "normalized_http_records": 0
+    },
+    "rule_occurrences": {
+      "STORY-MEASURED-CONTRIBUTION": 1,
+      "STORY-MEASURED-INTRA-REF": 2
+    },
+    "behavior_candidates": {
+      "MEAL-F01": 1,
+      "MEAL-COPY-INTRA-REF": 2
+    },
+    "evidence_tiers": {
+      "producer_story_measurements": 10
+    },
+    "coverage_gaps": {
+      "STORIES_SUT_VERSION_NOT_RECORDED": 1,
+      "STORIES_SERVER_LOG_NOT_CORRELATED": 1,
+      "STORIES_MANIFEST_MISSING": 1,
+      "STORIES_HTTP_JOURNAL_MISSING": 1,
+      "STORIES_MEASUREMENTS_NOT_FULL_HTTP_PROOF": 1,
+      "STORIES_SEMANTIC_SCOPE_LIMITED": 1
+    },
+    "observed_versions": [
+      "None"
+    ],
+    "original_user_zip_tested": false,
+    "new_sut_requests": 0,
+    "analyst_narrative_used": false
+  },
+  {
+    "case": "mealie-stories-20261026-174809",
+    "source_repository": "weissye/vikunja_study",
+    "source_commit": "e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+    "input_kind": "repository-retained-evidence-subset; NOT original uploaded ZIP",
+    "archive_sha256": "fb8dc2febaea14eab990dd3f91170f50cec31074894184f9a545f0a8528f1f07",
+    "source_members": [
+      {
+        "path": "results/mealie-stories-20261026-174809/SUMMARY_stories.txt",
+        "git_blob_sha1": "1b0ccd440641889fa77b5ad7d45d4b7f322332c7",
+        "sha256": "a4691d2a9cfeaf55c4e88ec799b3320e84111df5a31530ffc3ffe7808704b772"
+      },
+      {
+        "path": "results/mealie-stories-20261026-174809/gateway-journal.jsonl",
+        "git_blob_sha1": "d0d8a09e7d71c4dd87d6d3163c81dac8fdf8c36d",
+        "sha256": "26424e6ed4750cba74126f9ff5907212f3242e0cf34e1d4db7bcb61e088c11b1"
+      },
+      {
+        "path": "results/mealie-stories-20261026-174809/result_stories.json",
+        "git_blob_sha1": "9662107dd6c0874cee67b7c3e1241d506676c916",
+        "sha256": "0297eef5075cde62a35ad4975d8552b1b66341a5e9e6005ef453752810df3f1e"
+      }
+    ],
+    "exit_code": 0,
+    "status": "PARTIAL",
+    "counts": {
+      "finding_occurrences": 12,
+      "known_bug_occurrences": 0,
+      "known_bug_ids": [],
+      "log_signature_occurrences": 0
+    },
+    "evidence_summary": {
+      "normalized_observations": 226,
+      "http_records": 226,
+      "http_5xx_records": 4,
+      "native_evidence_records": 0,
+      "measurements": 0,
+      "unclassified": 214,
+      "unknown_evidence_records": 0
+    },
+    "rule_occurrences": {
+      "GEN-SERVER_ERROR": 4,
+      "STORY-ABSENT-RESOURCE-5XX": 4,
+      "STORY-DANGLING-REFERENCE": 8,
+      "STORY-MISSING-REFERENCE-5XX": 1,
+      "STORY-STALE-REFERENCE": 4
+    },
+    "behavior_candidates": {
+      "M-D1": 4,
+      "M-C1": 4,
+      "M-D2": 4
+    },
+    "evidence_tiers": {
+      "recorded_http_sequence": 226
+    },
+    "coverage_gaps": {
+      "STORIES_SUT_VERSION_NOT_RECORDED": 1,
+      "STORIES_SERVER_LOG_NOT_CORRELATED": 1,
+      "STORIES_NATIVE_LOGS_MISSING": 1,
+      "STORIES_MANIFEST_MISSING": 1,
+      "STORY_REFERRER_FIXTURES_SHARE_IDENTITY": 1,
+      "STORIES_SEMANTIC_SCOPE_LIMITED": 1
+    },
+    "observed_versions": [
+      "None"
+    ],
+    "original_user_zip_tested": false,
+    "new_sut_requests": 0,
+    "analyst_narrative_used": false
+  },
+  {
+    "case": "mealie-pg-stories-20261026-180615",
+    "source_repository": "weissye/vikunja_study",
+    "source_commit": "e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+    "input_kind": "repository-retained-evidence-subset; NOT original uploaded ZIP",
+    "archive_sha256": "edf9dc96968b4d0d21895a48d976f690d50d50015a724ec7781e328f64ddaa5f",
+    "source_members": [
+      {
+        "path": "results/mealie-pg-stories-20261026-180615/SUMMARY_stories.txt",
+        "git_blob_sha1": "257225655fed27c3cd93b83414fd788b7d0de7be",
+        "sha256": "1388e2c560691d887abf2a39f7d40052a2f8fdd550aa660519b8b3188fca3cff"
+      },
+      {
+        "path": "results/mealie-pg-stories-20261026-180615/gateway-journal.jsonl",
+        "git_blob_sha1": "425bbde31d325424f9f484c1033d5f2de1829ab5",
+        "sha256": "bbc25395f20122dbf96f94fe8632b9fdd2951f6241834dc664360abbed430a36"
+      },
+      {
+        "path": "results/mealie-pg-stories-20261026-180615/result_stories.json",
+        "git_blob_sha1": "a44ecfb68dc400d40c93f16b9aced4b4babc3ed5",
+        "sha256": "fef154bf486c937489b4dff224f9d366bdc5c6cd0d858085cd1cad1e7a97cd29"
+      }
+    ],
+    "exit_code": 0,
+    "status": "PARTIAL",
+    "counts": {
+      "finding_occurrences": 5,
+      "known_bug_occurrences": 0,
+      "known_bug_ids": [],
+      "log_signature_occurrences": 0
+    },
+    "evidence_summary": {
+      "normalized_observations": 226,
+      "http_records": 226,
+      "http_5xx_records": 5,
+      "native_evidence_records": 0,
+      "measurements": 0,
+      "unclassified": 221,
+      "unknown_evidence_records": 0
+    },
+    "rule_occurrences": {
+      "GEN-SERVER_ERROR": 5,
+      "STORY-ABSENT-RESOURCE-5XX": 4,
+      "STORY-MISSING-REFERENCE-5XX": 2
+    },
+    "behavior_candidates": {
+      "M-C1": 4,
+      "M-D2": 1
+    },
+    "evidence_tiers": {
+      "recorded_http_sequence": 226
+    },
+    "coverage_gaps": {
+      "STORIES_SUT_VERSION_NOT_RECORDED": 1,
+      "STORIES_SERVER_LOG_NOT_CORRELATED": 1,
+      "STORIES_NATIVE_LOGS_MISSING": 1,
+      "STORIES_MANIFEST_MISSING": 1,
+      "STORY_REFERRER_FIXTURES_SHARE_IDENTITY": 1,
+      "STORIES_SEMANTIC_SCOPE_LIMITED": 1
+    },
+    "observed_versions": [
+      "None"
+    ],
+    "original_user_zip_tested": false,
+    "new_sut_requests": 0,
+    "analyst_narrative_used": false
+  },
+  {
+    "case": "wger-stories-20261026-181911",
+    "source_repository": "weissye/vikunja_study",
+    "source_commit": "e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+    "input_kind": "repository-retained-evidence-subset; NOT original uploaded ZIP",
+    "archive_sha256": "d998f97a55116decb33df3a7eee22c136d0efcc5f405d1b68695f9ad57aab734",
+    "source_members": [
+      {
+        "path": "results/wger-stories-20261026-181911/SUMMARY_stories.txt",
+        "git_blob_sha1": "e76da603e345947a439cbb32e60fad20ae54274b",
+        "sha256": "6eae2af48d9c7e64845db1d18d3c257e12eb1c7544939a968b701c3d091de50a"
+      },
+      {
+        "path": "results/wger-stories-20261026-181911/gateway-journal.jsonl",
+        "git_blob_sha1": "cf76bc151920142f102e784a9c36eb96ad58a8a5",
+        "sha256": "0cf6a5104a6ca84c9b7883257e6437279109d5b44ee670d78de6039b90944413"
+      },
+      {
+        "path": "results/wger-stories-20261026-181911/result_stories.json",
+        "git_blob_sha1": "cc95705e6937fe48c398386422e53074849fa261",
+        "sha256": "2d69a3c225a5beb88963a1f5fc60029dffb9533236ab0dd1c59af59bd227392c"
+      }
+    ],
+    "exit_code": 0,
+    "status": "PARTIAL",
+    "counts": {
+      "finding_occurrences": 1,
+      "known_bug_occurrences": 0,
+      "known_bug_ids": [],
+      "log_signature_occurrences": 0
+    },
+    "evidence_summary": {
+      "normalized_observations": 116,
+      "http_records": 116,
+      "http_5xx_records": 0,
+      "native_evidence_records": 0,
+      "measurements": 0,
+      "unclassified": 115,
+      "unknown_evidence_records": 0
+    },
+    "rule_occurrences": {
+      "STORY-AGGREGATE-MOVE": 1
+    },
+    "behavior_candidates": {
+      "W-F2": 1
+    },
+    "evidence_tiers": {
+      "recorded_http_sequence": 116
+    },
+    "coverage_gaps": {
+      "STORIES_SUT_VERSION_NOT_RECORDED": 1,
+      "STORIES_SERVER_LOG_NOT_CORRELATED": 1,
+      "STORIES_NATIVE_LOGS_MISSING": 1,
+      "STORIES_MANIFEST_MISSING": 1,
+      "STORY_AGGREGATION_HYPOTHESIS_NOT_QUALIFIED": 2,
+      "STORIES_SEMANTIC_SCOPE_LIMITED": 1
+    },
+    "observed_versions": [
+      "None"
+    ],
+    "original_user_zip_tested": false,
+    "new_sut_requests": 0,
+    "analyst_narrative_used": false
+  }
+]

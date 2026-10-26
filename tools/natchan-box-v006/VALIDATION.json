@@ -1,0 +1,77 @@
+{
+  "wrapper_version": "natchan-box/6.0.0",
+  "base_analyzer_commit": "350cf773652dc2bc52de0617bb6e6f385016c6e7",
+  "producer_repository": "weissye/vikunja_study",
+  "producer_commit": "e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "unit_suites": [
+    {
+      "suite": "natchan-box-v005",
+      "tests": 146,
+      "passed": true
+    },
+    {
+      "suite": "natchan-box-v006",
+      "tests": 185,
+      "passed": true,
+      "inherited_tests": 146,
+      "new_stories_tests": 39
+    }
+  ],
+  "repository_subset_reanalyses": [
+    {
+      "case": "mealie-stories-20261026-152627",
+      "exit_code": 0,
+      "status": "PARTIAL",
+      "findings": 3
+    },
+    {
+      "case": "mealie-stories-20261026-174809",
+      "exit_code": 0,
+      "status": "PARTIAL",
+      "findings": 12
+    },
+    {
+      "case": "mealie-pg-stories-20261026-180615",
+      "exit_code": 0,
+      "status": "PARTIAL",
+      "findings": 5
+    },
+    {
+      "case": "wger-stories-20261026-181911",
+      "exit_code": 0,
+      "status": "PARTIAL",
+      "findings": 1
+    }
+  ],
+  "original_user_zip_tested": false,
+  "original_login_zip_retested_here": false,
+  "producer_reported_v005_login_acceptance": {
+    "exit_code": 0,
+    "status": "PARTIAL",
+    "research": 1369,
+    "retries": 14,
+    "roundtrip": 294,
+    "research_5xx": 5,
+    "source": "User-provided producer acceptance report; not rerun here"
+  },
+  "frozen_v005_files_unchanged": true,
+  "new_sut_requests": 0,
+  "analyst_narrative_used_for_findings": false,
+  "limitations": [
+    "Reanalysis used exact Git-retained evidence subsets, not original uploaded archives.",
+    "Observed SUT versions/seeds and hash manifests are absent in these retained stories results.",
+    "Native contribution/copy projections are a weaker evidence tier than independently retained full HTTP bodies.",
+    "Some subset native logs and all corresponding server-log correlations are unavailable.",
+    "Full original ZIP and Windows producer orchestration acceptance remains with the maintainer.",
+    "Producer orchestration pins were not modified."
+  ],
+  "frozen_source_git_blob_checks": {
+    "files": 216,
+    "changed": []
+  },
+  "retained_evidence_git_blob_checks": {
+    "files": 13,
+    "mismatches": []
+  }
+}

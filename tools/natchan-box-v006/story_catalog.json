@@ -1,0 +1,194 @@
+{
+  "schema_version": "natchan-catalog/1",
+  "entries": [
+    {
+      "id": "STORY-DANGLING-REFERENCE",
+      "kind": "pattern",
+      "title": "A retained foreign key names an observed deleted target",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "story_dangling_reference",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "source-linked recomputation by stories_evidence; evidence tier is authoritative"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "toolkit/v2 stories semantics at weissye/vikunja_study@e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+          "verification": "raw HTTP or explicitly retained producer measurement; no pass flag trusted"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "STORY-STALE-REFERENCE",
+      "kind": "pattern",
+      "title": "Successful stale write leaves a reference to a deleted target",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "dangling_after_stale_write",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "source-linked recomputation by stories_evidence; evidence tier is authoritative"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "toolkit/v2 stories semantics at weissye/vikunja_study@e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+          "verification": "raw HTTP or explicitly retained producer measurement; no pass flag trusted"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "STORY-MISSING-REFERENCE-5XX",
+      "kind": "pattern",
+      "title": "Writing a deleted reference returns a server error",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "story_missing_reference_write_5xx",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "source-linked recomputation by stories_evidence; evidence tier is authoritative"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "toolkit/v2 stories semantics at weissye/vikunja_study@e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+          "verification": "raw HTTP or explicitly retained producer measurement; no pass flag trusted"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "STORY-ABSENT-RESOURCE-5XX",
+      "kind": "pattern",
+      "title": "Mutation of an observed absent resource returns a server error",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "story_write_absent_resource_5xx",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "source-linked recomputation by stories_evidence; evidence tier is authoritative"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "toolkit/v2 stories semantics at weissye/vikunja_study@e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+          "verification": "raw HTTP or explicitly retained producer measurement; no pass flag trusted"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "STORY-AGGREGATE-MOVE",
+      "kind": "pattern",
+      "title": "After moving a child the old parent aggregate differs from qualified arithmetic",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "story_aggregate_after_move_mismatch",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "source-linked recomputation by stories_evidence; evidence tier is authoritative"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "toolkit/v2 stories semantics at weissye/vikunja_study@e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+          "verification": "raw HTTP or explicitly retained producer measurement; no pass flag trusted"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "STORY-MEASURED-CONTRIBUTION",
+      "kind": "pattern",
+      "title": "Retained producer contribution measurements disagree arithmetically",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "story_contribution_mismatch_measured",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "source-linked recomputation by stories_evidence; evidence tier is authoritative"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "toolkit/v2 stories semantics at weissye/vikunja_study@e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+          "verification": "raw HTTP or explicitly retained producer measurement; no pass flag trusted"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "STORY-MEASURED-INTRA-REF",
+      "kind": "pattern",
+      "title": "Retained producer identity projections contain dangling references",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "story_internal_reference_mismatch_measured",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "source-linked recomputation by stories_evidence; evidence tier is authoritative"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "toolkit/v2 stories semantics at weissye/vikunja_study@e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+          "verification": "raw HTTP or explicitly retained producer measurement; no pass flag trusted"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    }
+  ]
+}
