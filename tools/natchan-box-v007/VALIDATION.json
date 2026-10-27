@@ -1,0 +1,58 @@
+{
+  "wrapper_version": "natchan-box/7.0.0",
+  "base_analyzer_commit": "5974f32122a990cd5b77a7006f32e7576a9e8575",
+  "producer_repository": "weissye/vikunja_study",
+  "producer_commit": "62ff20a9da589e3b4ac18189e6f8f7f46f4ccde8",
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "unit_suites": [
+    {
+      "suite": "natchan-box-v006",
+      "tests": 185,
+      "passed": true
+    },
+    {
+      "suite": "natchan-box-v007",
+      "tests": 231,
+      "passed": true,
+      "inherited_tests": 185,
+      "new_tests": 46
+    }
+  ],
+  "retrospective_cases": 29,
+  "retained_research_records": 4903,
+  "retained_evidence_members": 57,
+  "source_git_blob_checks": {
+    "files": 72,
+    "mismatches": []
+  },
+  "original_uploaded_zips_tested": false,
+  "original_login_zip_retested": false,
+  "all_18_original_model_zips_retested": false,
+  "earlier_versions_unchanged": true,
+  "new_sut_requests": 0,
+  "analyst_narrative_used_for_findings": false,
+  "validation_kind": "Retrospective development/regression corpus; not held-out independent discovery",
+  "semantic_metadata_derivation": {
+    "tool": "derive_story_semantics.py",
+    "contracts": [
+      "wger",
+      "vikunja",
+      "gitea"
+    ],
+    "default_binding": "exact producer contract SHA256",
+    "rounding": "explicit configured policy, never silently a contract guarantee"
+  },
+  "input_schema_json_parsed": true,
+  "full_jsonschema_library_validation": false,
+  "powershell_executed": false,
+  "producer_auto_integration_changed": false,
+  "limitations": [
+    "Original 34 full uploaded story ZIPs are not this Git-retained subset corpus.",
+    "Observed SUT versions and some original native/server logs are missing.",
+    "Candidate bug IDs are retrospective signature links, not version-confirmed root causes.",
+    "Projection and operation hypotheses do not establish intended business semantics.",
+    "Unspecified rounding keeps arithmetic discrepancies as candidates.",
+    "G-F1 label precondition is not established in the retained snapshot/write; its 5xx remains visible.",
+    "RESTler ingestion and complete new-product semantics are outside this release."
+  ]
+}

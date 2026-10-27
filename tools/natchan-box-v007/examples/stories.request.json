@@ -1,0 +1,5 @@
+{
+  "schema_version": "natchan-request/1",
+  "run": {"id": "mealie-stories", "tool": "provengo", "product": "mealie", "product_version": "unknown"},
+  "evidence": {"adapter": "toolkit-v1", "archive": "stories.zip"}
+}

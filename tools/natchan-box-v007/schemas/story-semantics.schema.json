@@ -1,0 +1,229 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Contract-bound story semantics",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "product",
+    "contract_sha256",
+    "entities",
+    "projections",
+    "arithmetic"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "natchan-story-semantics/1"
+    },
+    "product": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contract_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "entities": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "detail": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id_field": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "create_method": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "refs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "field",
+                "target",
+                "shape"
+              ],
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "target": {
+                  "type": "string"
+                },
+                "shape": {
+                  "enum": [
+                    "scalar",
+                    "array",
+                    "object",
+                    "array-object",
+                    "path"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "projections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "view_template",
+          "places"
+        ],
+        "properties": {
+          "view_template": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "response_array": {
+            "type": "boolean"
+          },
+          "places": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "at",
+                "parent_at",
+                "child",
+                "parent_entity",
+                "reference_field"
+              ],
+              "properties": {
+                "at": {
+                  "type": "string"
+                },
+                "parent_at": {
+                  "type": "string"
+                },
+                "child": {
+                  "type": "string"
+                },
+                "parent_entity": {
+                  "type": "string"
+                },
+                "reference_field": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "arithmetic": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "entity",
+          "parent_field",
+          "operator_field",
+          "iteration_field",
+          "value_field",
+          "view_template",
+          "items_at",
+          "item_parent_field",
+          "output_field",
+          "operators",
+          "modes"
+        ],
+        "properties": {
+          "entity": {
+            "type": "string"
+          },
+          "parent_field": {
+            "type": "string"
+          },
+          "operator_field": {
+            "type": "string"
+          },
+          "iteration_field": {
+            "type": "string"
+          },
+          "value_field": {
+            "type": "string"
+          },
+          "view_template": {
+            "type": "string"
+          },
+          "items_at": {
+            "type": "string"
+          },
+          "item_parent_field": {
+            "type": "string"
+          },
+          "output_field": {
+            "type": "string"
+          },
+          "operators": {
+            "type": "object",
+            "additionalProperties": {
+              "enum": [
+                "+",
+                "-",
+                "="
+              ]
+            }
+          },
+          "modes": {
+            "type": "object",
+            "additionalProperties": {
+              "enum": [
+                "absolute",
+                "percent"
+              ]
+            }
+          },
+          "rounding": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "enum": [
+                  "unspecified",
+                  "none",
+                  "floor",
+                  "half_up"
+                ]
+              },
+              "quantum": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "display_steps": {
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  }
+}

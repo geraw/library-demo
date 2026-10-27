@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "findings",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "natchan-findings/1"
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "occurrence_id",
+          "evidence_tier",
+          "source",
+          "tags",
+          "known_bugs",
+          "needs_human",
+          "root_cause_identity_proven"
+        ],
+        "properties": {
+          "occurrence_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_tier": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source": {
+            "type": "object"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "known_bugs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "needs_human": {
+            "type": "boolean"
+          },
+          "root_cause_identity_proven": {
+            "const": false
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "findings"
+  ],
+  "additionalProperties": false
+}
+

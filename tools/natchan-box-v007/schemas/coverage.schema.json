@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "coverage",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "natchan-coverage/1"
+    },
+    "scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scope_is_limited": {
+      "const": true
+    },
+    "gaps": {
+      "type": "array"
+    },
+    "underlying_rule_coverage": {
+      "type": "array"
+    },
+    "unknown_evidence": {
+      "type": "array"
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "coverage_audit": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "scope_is_limited",
+    "gaps"
+  ],
+  "additionalProperties": false
+}
+

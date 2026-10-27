@@ -1,0 +1,735 @@
+{
+  "schema_version": "natchan-story-semantics/1",
+  "product": "gitea",
+  "contract_sha256": "a9c7e8dc4723f53dd3268405cec1f597a6d742898fea4443e72410c27f08519f",
+  "semantics_status": "contract-derived relations and explicitly configured metamorphic hypotheses; not a product specification",
+  "entities": {
+    "runner": {
+      "path": "/user/actions/runners",
+      "detail": "/user/actions/runners/{runner_id}",
+      "id_field": "runner_id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "template": {
+      "path": "/label/templates",
+      "detail": "/label/templates/{name}",
+      "id_field": "name",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "licens": {
+      "path": "/licenses",
+      "detail": "/licenses/{name}",
+      "id_field": "name",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "variable": {
+      "path": "/user/actions/variables",
+      "detail": "/user/actions/variables/{variablename}",
+      "id_field": "variablename",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "member": {
+      "path": "/teams/{id}/members",
+      "detail": "/teams/{id}/members/{username}",
+      "id_field": "username",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "publicmember": {
+      "path": "/orgs/{org}/public_members",
+      "detail": "/orgs/{org}/public_members/{username}",
+      "id_field": "username",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "artifact": {
+      "path": "/repos/{owner}/{repo}/actions/artifacts",
+      "detail": "/repos/{owner}/{repo}/actions/artifacts/{artifact_id}",
+      "id_field": "artifact_id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "job": {
+      "path": "/repos/{owner}/{repo}/actions/jobs",
+      "detail": "/repos/{owner}/{repo}/actions/jobs/{job_id}",
+      "id_field": "job_id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "run": {
+      "path": "/repos/{owner}/{repo}/actions/runs",
+      "detail": "/repos/{owner}/{repo}/actions/runs/{run}",
+      "id_field": "run",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "workflow": {
+      "path": "/repos/{owner}/{repo}/actions/workflows",
+      "detail": "/repos/{owner}/{repo}/actions/workflows/{workflow_id}",
+      "id_field": "workflow_id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "collaborator": {
+      "path": "/repos/{owner}/{repo}/collaborators",
+      "detail": "/repos/{owner}/{repo}/collaborators/{collaborator}",
+      "id_field": "collaborator",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "ref": {
+      "path": "/repos/{owner}/{repo}/git/refs",
+      "detail": "/repos/{owner}/{repo}/git/refs/{ref}",
+      "id_field": "ref",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "git": {
+      "path": "/repos/{owner}/{repo}/hooks/git",
+      "detail": "/repos/{owner}/{repo}/hooks/git/{id}",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "following": {
+      "path": "/users/{username}/following",
+      "detail": "/users/{username}/following/{target}",
+      "id_field": "target",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "hook": {
+      "path": "/user/hooks",
+      "detail": "/user/hooks/{id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "patch",
+      "refs": []
+    },
+    "user": {
+      "path": "/admin/users",
+      "detail": "/users/{username}",
+      "id_field": "username",
+      "create_method": "post",
+      "update": null,
+      "refs": []
+    },
+    "badge": {
+      "path": "/admin/users/{username}/badges",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "post",
+      "update": null,
+      "refs": []
+    },
+    "key": {
+      "path": "/user/keys",
+      "detail": "/user/keys/{id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": null,
+      "refs": []
+    },
+    "org": {
+      "path": "/orgs",
+      "detail": "/orgs/{org}",
+      "id_field": "org",
+      "create_method": "post",
+      "update": "patch",
+      "refs": []
+    },
+    "notification": {
+      "path": "/notifications",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "put",
+      "update": null,
+      "refs": []
+    },
+    "label": {
+      "path": "/orgs/{org}/labels",
+      "detail": "/orgs/{org}/labels/{id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "patch",
+      "refs": [
+        {
+          "field": "org",
+          "target": "org",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "project": {
+      "path": "/user/projects",
+      "detail": "/user/projects/{id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "patch",
+      "refs": []
+    },
+    "column": {
+      "path": "/user/projects/{id}/columns",
+      "detail": "/user/projects/{id}/columns/{column_id}",
+      "id_field": "column_id",
+      "create_method": "post",
+      "update": "patch",
+      "refs": [
+        {
+          "field": "id",
+          "target": "project",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "repo": {
+      "path": "/user/repos",
+      "detail": "/repos/{owner}/{repo}",
+      "id_field": "repo",
+      "create_method": "post",
+      "update": "patch",
+      "refs": []
+    },
+    "team": {
+      "path": "/orgs/{org}/teams",
+      "detail": "/teams/{id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "patch",
+      "refs": [
+        {
+          "field": "org",
+          "target": "org",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "branchprotection": {
+      "path": "/repos/{owner}/{repo}/branch_protections",
+      "detail": "/repos/{owner}/{repo}/branch_protections/{name}",
+      "id_field": "name",
+      "create_method": "post",
+      "update": "patch",
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "branche": {
+      "path": "/repos/{owner}/{repo}/branches",
+      "detail": "/repos/{owner}/{repo}/branches/{branch}",
+      "id_field": "branch",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "content": {
+      "path": "/repos/{owner}/{repo}/contents",
+      "detail": "/repos/{owner}/{repo}/contents/{filepath}",
+      "id_field": "filepath",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "filecontent": {
+      "path": "/repos/{owner}/{repo}/file-contents",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "post",
+      "update": null,
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "fork": {
+      "path": "/repos/{owner}/{repo}/forks",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "post",
+      "update": null,
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "issue": {
+      "path": "/repos/{owner}/{repo}/issues",
+      "detail": "/repos/{owner}/{repo}/issues/{index}",
+      "id_field": "index",
+      "create_method": "post",
+      "update": "patch",
+      "refs": [
+        {
+          "field": "labels",
+          "target": "label",
+          "shape": "array",
+          "required": false
+        },
+        {
+          "field": "milestone",
+          "target": "milestone",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "projects",
+          "target": "project",
+          "shape": "array",
+          "required": false
+        },
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "asset": {
+      "path": "/repos/{owner}/{repo}/releases/{id}/assets",
+      "detail": "/repos/{owner}/{repo}/releases/{id}/assets/{attachment_id}",
+      "id_field": "attachment_id",
+      "create_method": "post",
+      "update": "patch",
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        },
+        {
+          "field": "id",
+          "target": "releas",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "reaction": {
+      "path": "/repos/{owner}/{repo}/issues/{index}/reactions",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "post",
+      "update": null,
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        },
+        {
+          "field": "index",
+          "target": "issue",
+          "shape": "path",
+          "required": true
+        },
+        {
+          "field": "index",
+          "target": "dependency",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "assignee": {
+      "path": "/repos/{owner}/{repo}/issues/{index}/assignees",
+      "detail": "/repos/{owner}/{repo}/issues/{index}/assignees/{assignee}",
+      "id_field": "assignee",
+      "create_method": "post",
+      "update": null,
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        },
+        {
+          "field": "index",
+          "target": "issue",
+          "shape": "path",
+          "required": true
+        },
+        {
+          "field": "index",
+          "target": "dependency",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "block": {
+      "path": "/repos/{owner}/{repo}/issues/{index}/blocks",
+      "detail": "/user/blocks/{username}",
+      "id_field": "username",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        },
+        {
+          "field": "index",
+          "target": "issue",
+          "shape": "path",
+          "required": true
+        },
+        {
+          "field": "index",
+          "target": "dependency",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "comment": {
+      "path": "/repos/{owner}/{repo}/issues/{index}/comments",
+      "detail": "/repos/{owner}/{repo}/issues/comments/{id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "patch",
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        },
+        {
+          "field": "index",
+          "target": "issue",
+          "shape": "path",
+          "required": true
+        },
+        {
+          "field": "index",
+          "target": "dependency",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "dependency": {
+      "path": "/repos/{owner}/{repo}/issues/{index}/dependencies",
+      "detail": "/repos/{owner}/{repo}/issues/{index}",
+      "id_field": "index",
+      "create_method": "post",
+      "update": "patch",
+      "refs": [
+        {
+          "field": "milestone",
+          "target": "milestone",
+          "shape": "scalar",
+          "required": false,
+          "via": "update"
+        },
+        {
+          "field": "projects",
+          "target": "project",
+          "shape": "array",
+          "required": false,
+          "via": "update"
+        },
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        },
+        {
+          "field": "index",
+          "target": "issue",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "time": {
+      "path": "/repos/{owner}/{repo}/issues/{index}/times",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "post",
+      "update": null,
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        },
+        {
+          "field": "index",
+          "target": "issue",
+          "shape": "path",
+          "required": true
+        },
+        {
+          "field": "index",
+          "target": "dependency",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "milestone": {
+      "path": "/repos/{owner}/{repo}/milestones",
+      "detail": "/repos/{owner}/{repo}/milestones/{id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "patch",
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "pull": {
+      "path": "/repos/{owner}/{repo}/pulls",
+      "detail": "/repos/{owner}/{repo}/pulls/{index}.{diffType}",
+      "id_field": "index.diffType",
+      "create_method": "post",
+      "update": null,
+      "refs": [
+        {
+          "field": "labels",
+          "target": "label",
+          "shape": "array",
+          "required": false
+        },
+        {
+          "field": "milestone",
+          "target": "milestone",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "merge": {
+      "path": "/repos/{owner}/{repo}/pulls/{index}/merge",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "post",
+      "update": null,
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "review": {
+      "path": "/repos/{owner}/{repo}/pulls/{index}/reviews",
+      "detail": "/repos/{owner}/{repo}/pulls/{index}/reviews/{id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": null,
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "pushmirror": {
+      "path": "/repos/{owner}/{repo}/push_mirrors",
+      "detail": "/repos/{owner}/{repo}/push_mirrors/{name}",
+      "id_field": "name",
+      "create_method": "post",
+      "update": null,
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "releas": {
+      "path": "/repos/{owner}/{repo}/releases",
+      "detail": "/repos/{owner}/{repo}/releases/{id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "patch",
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "subscription": {
+      "path": "/repos/{owner}/{repo}/subscription",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "put",
+      "update": null,
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "tagprotection": {
+      "path": "/repos/{owner}/{repo}/tag_protections",
+      "detail": "/repos/{owner}/{repo}/tag_protections/{id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "patch",
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "tag": {
+      "path": "/repos/{owner}/{repo}/tags",
+      "detail": "/repos/{owner}/{repo}/tags/{tag}",
+      "id_field": "tag",
+      "create_method": "post",
+      "update": null,
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "topic": {
+      "path": "/repos/{owner}/{repo}/topics",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "put",
+      "update": null,
+      "refs": [
+        {
+          "field": "repo",
+          "target": "repo",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "oauth2": {
+      "path": "/user/applications/oauth2",
+      "detail": "/user/applications/oauth2/{id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "patch",
+      "refs": []
+    },
+    "email": {
+      "path": "/user/emails",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "post",
+      "update": null,
+      "refs": []
+    },
+    "gpgkey": {
+      "path": "/user/gpg_keys",
+      "detail": "/user/gpg_keys/{id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": null,
+      "refs": []
+    },
+    "token": {
+      "path": "/users/{username}/tokens",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "post",
+      "update": null,
+      "refs": [
+        {
+          "field": "username",
+          "target": "user",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    }
+  },
+  "projections": [],
+  "arithmetic": [],
+  "derivation_sources": {
+    "contract_sha256": "a9c7e8dc4723f53dd3268405cec1f597a6d742898fea4443e72410c27f08519f",
+    "derived_stories_sha256": "f94a0e63b61f984f21a5b37d2de1ce213f9548416a80d5df69d0e6142eb11815"
+  }
+}

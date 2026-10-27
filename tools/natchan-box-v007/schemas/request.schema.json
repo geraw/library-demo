@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "request",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "natchan-request/1"
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tool": {
+          "type": "string",
+          "minLength": 1
+        },
+        "product": {
+          "type": "string",
+          "minLength": 1
+        },
+        "product_version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "tool",
+        "product",
+        "product_version"
+      ]
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "enum": [
+            "provengo-native-lifecycle",
+            "gitea-native-tools",
+            "historical-corpus",
+            "normalized-observations",
+            "toolkit-v1"
+          ]
+        },
+        "archive": {
+          "type": "string",
+          "minLength": 1
+        },
+        "directory": {
+          "type": "string",
+          "minLength": 1
+        },
+        "manifest": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observations": {
+          "type": "string",
+          "minLength": 1
+        },
+        "root": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "adapter"
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "archive"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "directory"
+                ]
+              },
+              {
+                "required": [
+                  "manifest"
+                ]
+              },
+              {
+                "required": [
+                  "observations"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "required": [
+            "directory"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "archive"
+                ]
+              },
+              {
+                "required": [
+                  "manifest"
+                ]
+              },
+              {
+                "required": [
+                  "observations"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "required": [
+            "manifest"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "archive"
+                ]
+              },
+              {
+                "required": [
+                  "directory"
+                ]
+              },
+              {
+                "required": [
+                  "observations"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "required": [
+            "observations"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "archive"
+                ]
+              },
+              {
+                "required": [
+                  "directory"
+                ]
+              },
+              {
+                "required": [
+                  "manifest"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "product_profile": {
+          "enum": [
+            "gitea-lifecycle",
+            "adapter-default"
+          ]
+        },
+        "catalog_set": {
+          "const": "research-catalogs-v014"
+        },
+        "profile": {
+          "type": "string",
+          "minLength": 1
+        },
+        "catalogs": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sut_config": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sut_config_sha256": {
+          "type": "string",
+          "minLength": 1
+        },
+        "toolkit_repo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "story_semantics": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "run",
+    "evidence"
+  ],
+  "additionalProperties": false
+}

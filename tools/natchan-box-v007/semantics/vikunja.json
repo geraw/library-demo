@@ -1,0 +1,446 @@
+{
+  "schema_version": "natchan-story-semantics/1",
+  "product": "vikunja",
+  "contract_sha256": "171e238314089ca9b1c5c6fa3f87cf7f80a7c2a55934d1d6c228b39d48b65843",
+  "semantics_status": "contract-derived relations and explicitly configured metamorphic hypotheses; not a product specification",
+  "entities": {
+    "user": {
+      "path": "/admin/users",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "post",
+      "update": null,
+      "refs": []
+    },
+    "filter": {
+      "path": "/filters",
+      "detail": "/filters/{id}",
+      "id_field": "id",
+      "create_method": "put",
+      "update": "post",
+      "refs": []
+    },
+    "label": {
+      "path": "/labels",
+      "detail": "/labels/{id}",
+      "id_field": "id",
+      "create_method": "put",
+      "update": null,
+      "refs": [
+        {
+          "field": "created_by",
+          "target": "assignee",
+          "shape": "object",
+          "required": false
+        }
+      ]
+    },
+    "notification": {
+      "path": "/notifications",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "post",
+      "update": null,
+      "refs": []
+    },
+    "project": {
+      "path": "/projects",
+      "detail": "/projects/{id}",
+      "id_field": "id",
+      "create_method": "put",
+      "update": "post",
+      "refs": [
+        {
+          "field": "owner",
+          "target": "assignee",
+          "shape": "object",
+          "required": false
+        },
+        {
+          "field": "parent_project_id",
+          "target": "project",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "views",
+          "target": "view",
+          "shape": "array-object",
+          "required": false
+        }
+      ]
+    },
+    "task": {
+      "path": "/projects/{id}/tasks",
+      "detail": "/tasks/{id}",
+      "id_field": "id",
+      "create_method": "put",
+      "update": "post",
+      "refs": [
+        {
+          "field": "assignees",
+          "target": "assignee",
+          "shape": "array-object",
+          "required": false
+        },
+        {
+          "field": "attachments",
+          "target": "attachment",
+          "shape": "array-object",
+          "required": false
+        },
+        {
+          "field": "bucket_id",
+          "target": "bucket",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "buckets",
+          "target": "bucket",
+          "shape": "array-object",
+          "required": false
+        },
+        {
+          "field": "comments",
+          "target": "comment",
+          "shape": "array-object",
+          "required": false
+        },
+        {
+          "field": "cover_image_attachment_id",
+          "target": "attachment",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "created_by",
+          "target": "assignee",
+          "shape": "object",
+          "required": false
+        },
+        {
+          "field": "labels",
+          "target": "label",
+          "shape": "array-object",
+          "required": false
+        },
+        {
+          "field": "project_id",
+          "target": "project",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "id",
+          "target": "project",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "team": {
+      "path": "/teams",
+      "detail": "/teams/{id}",
+      "id_field": "id",
+      "create_method": "put",
+      "update": "post",
+      "refs": [
+        {
+          "field": "created_by",
+          "target": "assignee",
+          "shape": "object",
+          "required": false
+        },
+        {
+          "field": "members",
+          "target": "assignee",
+          "shape": "array-object",
+          "required": false
+        }
+      ]
+    },
+    "bucket": {
+      "path": "/projects/{id}/views/{view}/buckets",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "put",
+      "update": null,
+      "refs": [
+        {
+          "field": "created_by",
+          "target": "assignee",
+          "shape": "object",
+          "required": false
+        },
+        {
+          "field": "project_view_id",
+          "target": "view",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "tasks",
+          "target": "task",
+          "shape": "array-object",
+          "required": false
+        },
+        {
+          "field": "id",
+          "target": "project",
+          "shape": "path",
+          "required": true
+        },
+        {
+          "field": "id",
+          "target": "view",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "webhook": {
+      "path": "/projects/{id}/webhooks",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "put",
+      "update": null,
+      "refs": [
+        {
+          "field": "created_by",
+          "target": "assignee",
+          "shape": "object",
+          "required": false
+        },
+        {
+          "field": "project_id",
+          "target": "project",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "user_id",
+          "target": "user",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "id",
+          "target": "project",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "share": {
+      "path": "/projects/{project}/shares",
+      "detail": "/projects/{project}/shares/{share}",
+      "id_field": "share",
+      "create_method": "put",
+      "update": null,
+      "refs": [
+        {
+          "field": "shared_by",
+          "target": "assignee",
+          "shape": "object",
+          "required": false
+        },
+        {
+          "field": "id",
+          "target": "project",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "view": {
+      "path": "/projects/{project}/views",
+      "detail": "/projects/{project}/views/{id}",
+      "id_field": "id",
+      "create_method": "put",
+      "update": "post",
+      "refs": [
+        {
+          "field": "default_bucket_id",
+          "target": "bucket",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "done_bucket_id",
+          "target": "bucket",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "project_id",
+          "target": "project",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "id",
+          "target": "project",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "attachment": {
+      "path": "/tasks/{id}/attachments",
+      "detail": "/tasks/{id}/attachments/{attachmentID}",
+      "id_field": "attachmentID",
+      "create_method": "put",
+      "update": null,
+      "refs": [
+        {
+          "field": "id",
+          "target": "task",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "assignee": {
+      "path": "/tasks/{taskID}/assignees",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "put",
+      "update": null,
+      "refs": [
+        {
+          "field": "user_id",
+          "target": "user",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "id",
+          "target": "task",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "comment": {
+      "path": "/tasks/{taskID}/comments",
+      "detail": "/tasks/{taskID}/comments/{commentID}",
+      "id_field": "commentID",
+      "create_method": "put",
+      "update": "post",
+      "refs": [
+        {
+          "field": "author",
+          "target": "assignee",
+          "shape": "object",
+          "required": false
+        },
+        {
+          "field": "id",
+          "target": "task",
+          "shape": "path",
+          "required": true
+        }
+      ]
+    },
+    "token": {
+      "path": "/tokens",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "put",
+      "update": null,
+      "refs": []
+    },
+    "avatar": {
+      "path": "/user/settings/avatar",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "post",
+      "update": null,
+      "refs": []
+    },
+    "caldav": {
+      "path": "/user/settings/token/caldav",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "put",
+      "update": null,
+      "refs": []
+    },
+    "reaction": {
+      "path": "/{kind}/{id}/reactions",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "put",
+      "update": null,
+      "refs": [
+        {
+          "field": "user",
+          "target": "assignee",
+          "shape": "object",
+          "required": false
+        }
+      ]
+    }
+  },
+  "projections": [
+    {
+      "view_template": "/projects/{id}",
+      "owner": "project",
+      "response_array": false,
+      "places": [
+        {
+          "at": "$.views[]",
+          "original_at": "$.views[]",
+          "child": "view",
+          "parent_entity": "project",
+          "parent_at": "$",
+          "reference_field": "project_id"
+        }
+      ]
+    },
+    {
+      "view_template": "/projects/{id}/views/{view}/tasks",
+      "owner": "view",
+      "response_array": true,
+      "places": [
+        {
+          "at": "$[].buckets[]",
+          "original_at": "$.buckets[]",
+          "child": "bucket",
+          "parent_entity": "view",
+          "parent_at": "$",
+          "reference_field": "project_view_id"
+        },
+        {
+          "at": "$[].buckets[].tasks[]",
+          "original_at": "$.buckets[].tasks[]",
+          "child": "task",
+          "parent_entity": "bucket",
+          "parent_at": "$[].buckets[]",
+          "reference_field": "bucket_id"
+        }
+      ]
+    },
+    {
+      "view_template": "/projects/{project}/tasks/by-index/{index}",
+      "owner": "project",
+      "response_array": false,
+      "places": [
+        {
+          "at": "$.buckets[].tasks[]",
+          "original_at": "$.buckets[].tasks[]",
+          "child": "task",
+          "parent_entity": "project",
+          "parent_at": "$",
+          "reference_field": "project_id"
+        }
+      ]
+    }
+  ],
+  "arithmetic": [],
+  "derivation_sources": {
+    "contract_sha256": "171e238314089ca9b1c5c6fa3f87cf7f80a7c2a55934d1d6c228b39d48b65843",
+    "derived_stories_sha256": "06de648b53341ec17925cd7853421fc5603c533fd612233d9de0ae3fd86e8ed1"
+  }
+}

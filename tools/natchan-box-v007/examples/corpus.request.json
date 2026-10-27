@@ -1,0 +1,16 @@
+{
+  "schema_version": "natchan-request/1",
+  "run": {
+    "id": "historical-study",
+    "product": "mixed",
+    "product_version": "mixed",
+    "tool": "mixed"
+  },
+  "evidence": {
+    "adapter": "historical-corpus",
+    "manifest": "corpus.local.json",
+    "root": "."
+  },
+  "configuration": {}
+}
+
