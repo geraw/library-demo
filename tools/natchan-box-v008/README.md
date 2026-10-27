@@ -101,6 +101,12 @@ Standalone capture formats, metadata and examples: [HTTP_EVIDENCE.md](HTTP_EVIDE
 
 Every finding remains a candidate needing context; a behavior signature is not proof of root cause or product intent. Unknown observed versions never receive version-confirmed known-bug credit.
 
+## Library: existing four-configuration route
+
+The preserved Library provider and this release were rechecked on three complete original ZIPs covering sample-10, fixed Java, RESTler and EvoMaster. No engine changes were needed: the raw Library archive stage recomputes the observations, then `normalized-observations` classifies them through v008. All 44 source-level seeded-behavior matches agree. This is a configured **two-stage** route; `toolkit-v1` does not automatically recognize these Library archives. Native baseline detection and the new raw-traffic shared-judge metrics are not inferred from that export.
+
+See [the compatibility report and exact reproduction steps](../../docs/library-study/2026-10-27/NATCHAN_V008_COMPATIBILITY.md). The original experiment's metadata profile is `library / issta-v006`; it is not a deployed product version. This check supplements the 29-story-subset acceptance above and keeps native test verdicts separate from Library domain observations.
+
 ## Product configuration and logs
 
 See [SEMANTIC_CONFIG.md](SEMANTIC_CONFIG.md) and `schemas/story-semantics.schema.json`. Use embedded `story-semantics.json` or `configuration.story_semantics`, not both. Four bundled profiles: Gitea, Vikunja, wger and a bounded Mealie profile. Exact contract binding is mandatory. Mealie's original OpenAPI bytes were not retained in the available source corpus; the profile records that gap instead of claiming contract regeneration.

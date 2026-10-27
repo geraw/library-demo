@@ -1,0 +1,123 @@
+{
+  "analyzer_commit": "9d8abd67c4d6147821e1c4339cff30cd74a3514f",
+  "code_changes_required": false,
+  "original_archives_verified": [
+    {
+      "dataset": "java-work-v012",
+      "archive": "java-fixed-split-v011-20261021-094721-5216-review.zip",
+      "sha256": "7abd54bd10a41ac0491594ca679112140d92fbe0fb5553cccc04264d5e0d0895",
+      "matches_preserved_manifest": true,
+      "trace_members": [
+        {
+          "member": "book-read-one/http.jsonl",
+          "bytes": 2370469
+        },
+        {
+          "member": "business-four/http.jsonl",
+          "bytes": 2388491
+        },
+        {
+          "member": "control/http.jsonl",
+          "bytes": 2371335
+        },
+        {
+          "member": "preflight-positive/http.jsonl",
+          "bytes": 2071
+        },
+        {
+          "member": "preflight-wrong-status/http.jsonl",
+          "bytes": 1006
+        }
+      ]
+    },
+    {
+      "dataset": "sample-v009",
+      "archive": "provengo-sample10-split-v009-20261020-143852-69796-review.zip",
+      "sha256": "45230f88bb63076795ff876c10b233f78e50249e8c93cd7ccf7e41fb75c4b182",
+      "matches_preserved_manifest": true,
+      "trace_members": [
+        {
+          "member": "book-read-one/http.jsonl",
+          "bytes": 158653
+        },
+        {
+          "member": "business-four/http.jsonl",
+          "bytes": 224208
+        },
+        {
+          "member": "control/http.jsonl",
+          "bytes": 1261740
+        }
+      ]
+    },
+    {
+      "dataset": "mutants-v008",
+      "archive": "mutants-neutral-v008-20261020-131134-37312-review.zip",
+      "sha256": "41d2e1b8369d1d552a0e1e5b55181b9f1a3c38dd0ebd2d5bd4a719cf57c90b86",
+      "matches_preserved_manifest": true,
+      "trace_members": [
+        {
+          "member": "baselines-all-v006-20261020-131134-37312/evomaster/http.jsonl",
+          "bytes": 48099658
+        },
+        {
+          "member": "baselines-all-v006-20261020-131134-37312/restler/http.jsonl",
+          "bytes": 49915941
+        }
+      ]
+    }
+  ],
+  "raw_stage": {
+    "entry_point": "tools/natchan-v014/library_study_audit.py",
+    "status": "complete",
+    "datasets": 3,
+    "runs": 8
+  },
+  "box_stage": {
+    "entry_point": "tools/natchan-box-v008/natchan.py",
+    "adapter": "normalized-observations",
+    "status": "COMPLETE",
+    "exit_code": 0,
+    "counts": {
+      "finding_occurrences": 44,
+      "known_bug_occurrences": 44,
+      "known_bug_ids": [
+        "LIB-ISSTA-BUG-1",
+        "LIB-ISSTA-BUG-3",
+        "LIB-ISSTA-BUG-4",
+        "LIB-ISSTA-BUG-5"
+      ],
+      "log_signature_occurrences": 0,
+      "common_evidence_available": false,
+      "common_semantic_occurrences": null,
+      "common_product_behavior_candidates": null,
+      "test_precondition_failures": null,
+      "producer_measurement_occurrences": 0
+    }
+  },
+  "source_level_known_classification_parity": true,
+  "by_variant": {
+    "sample-10": {
+      "LIB-ISSTA-BUG-3": 4,
+      "LIB-ISSTA-BUG-5": 5,
+      "LIB-ISSTA-BUG-1": 1,
+      "LIB-ISSTA-BUG-4": 10
+    },
+    "fixed-java": {
+      "LIB-ISSTA-BUG-5": 22
+    },
+    "evomaster": {
+      "LIB-ISSTA-BUG-4": 1
+    },
+    "restler": {
+      "LIB-ISSTA-BUG-4": 1
+    }
+  },
+  "new_sut_requests": 0,
+  "important_limits": [
+    "Two-stage configured flow; v008 does not auto-detect these Library ZIPs via toolkit-v1.",
+    "44 occurrences are not 44 bugs. Seeded bug 2 is not demonstrated in these selected runs.",
+    "RESTler/EvoMaster bug-4 context is campaign-global observer evidence, not native tool detection or independently replayed generated tests.",
+    "Native parsing in this path is qualified for fixed Java only. Unknown native counts in other variants are not zero."
+  ]
+}
