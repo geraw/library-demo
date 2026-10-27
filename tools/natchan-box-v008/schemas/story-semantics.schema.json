@@ -1,0 +1,458 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Contract-bound shared HTTP semantic metadata",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "product",
+    "contract_sha256",
+    "entities",
+    "projections",
+    "arithmetic"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "natchan-story-semantics/1"
+    },
+    "product": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contract_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "entities": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "detail": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id_field": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "create_method": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "refs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "field",
+                "target",
+                "shape"
+              ],
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "target": {
+                  "type": "string"
+                },
+                "shape": {
+                  "type": "string",
+                  "description": "Scalar, array and object references supported by general audits; nested metadata does not imply nested audit coverage."
+                }
+              }
+            }
+          },
+          "detail_key_parameter": {
+            "type": "string"
+          },
+          "create_result_items": {
+            "type": "string"
+          },
+          "scalar_create_key": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "projections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "view_template",
+          "places"
+        ],
+        "properties": {
+          "view_template": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "response_array": {
+            "type": "boolean"
+          },
+          "places": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "at",
+                "parent_at",
+                "child",
+                "parent_entity",
+                "reference_field"
+              ],
+              "properties": {
+                "at": {
+                  "type": "string"
+                },
+                "parent_at": {
+                  "type": "string"
+                },
+                "child": {
+                  "type": "string"
+                },
+                "parent_entity": {
+                  "type": "string"
+                },
+                "reference_field": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "arithmetic": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "entity",
+          "parent_field",
+          "operator_field",
+          "iteration_field",
+          "value_field",
+          "view_template",
+          "items_at",
+          "item_parent_field",
+          "output_field",
+          "operators",
+          "modes"
+        ],
+        "properties": {
+          "entity": {
+            "type": "string"
+          },
+          "parent_field": {
+            "type": "string"
+          },
+          "operator_field": {
+            "type": "string"
+          },
+          "iteration_field": {
+            "type": "string"
+          },
+          "value_field": {
+            "type": "string"
+          },
+          "view_template": {
+            "type": "string"
+          },
+          "items_at": {
+            "type": "string"
+          },
+          "item_parent_field": {
+            "type": "string"
+          },
+          "output_field": {
+            "type": "string"
+          },
+          "operators": {
+            "type": "object",
+            "additionalProperties": {
+              "enum": [
+                "+",
+                "-",
+                "="
+              ]
+            }
+          },
+          "modes": {
+            "type": "object",
+            "additionalProperties": {
+              "enum": [
+                "absolute",
+                "percent"
+              ]
+            }
+          },
+          "rounding": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "enum": [
+                  "unspecified",
+                  "none",
+                  "floor",
+                  "half_up"
+                ]
+              },
+              "quantum": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "display_steps": {
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    "contributions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "method",
+          "action_template",
+          "source_template",
+          "container_template",
+          "source_action_parameter",
+          "scale_field",
+          "quantity",
+          "source_items",
+          "container_items",
+          "container_bindings",
+          "source_bindings",
+          "source_keys",
+          "container_keys",
+          "sign"
+        ],
+        "properties": {
+          "method": {
+            "type": "string",
+            "minLength": 1
+          },
+          "action_template": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_template": {
+            "type": "string",
+            "minLength": 1
+          },
+          "container_template": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_action_parameter": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scale_field": {
+            "type": "string",
+            "minLength": 1
+          },
+          "quantity": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "container_items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_id_field": {
+            "type": "string",
+            "minLength": 1
+          },
+          "container_bindings": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "source_bindings": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "source_keys": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "container_keys": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "sign": {
+            "enum": [
+              -1,
+              1
+            ]
+          }
+        }
+      }
+    },
+    "copies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "method",
+          "action_template",
+          "source_template",
+          "identity_items",
+          "reference_items",
+          "field",
+          "source_bindings"
+        ],
+        "properties": {
+          "method": {
+            "type": "string",
+            "minLength": 1
+          },
+          "action_template": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_template": {
+            "type": "string",
+            "minLength": 1
+          },
+          "identity_items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reference_items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "field": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_bindings": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "aggregates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "child",
+          "parent",
+          "reference_field",
+          "child_view",
+          "parent_view",
+          "fields"
+        ],
+        "properties": {
+          "child": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parent": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reference_field": {
+            "type": "string",
+            "minLength": 1
+          },
+          "child_view": {
+            "type": "string",
+            "minLength": 1
+          },
+          "parent_view": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "api_base_path": {
+      "type": "string"
+    },
+    "detail_route_entities": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "entity_aliases": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "log_correlation": {
+      "type": "object",
+      "properties": {
+        "structured_regex": {
+          "type": "string"
+        },
+        "allow_time_join": {
+          "type": "boolean"
+        },
+        "window_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "signatures": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

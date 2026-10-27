@@ -1,0 +1,22 @@
+{
+  "schema_version": "natchan-http-evidence/1",
+  "sut": "my-product",
+  "tool": "evomaster",
+  "records": [
+    {
+      "method": "GET",
+      "path": "/items/17",
+      "input": null,
+      "response": {
+        "id": 17,
+        "name": "old"
+      },
+      "status": 200,
+      "actor": "account-A",
+      "epoch": 1,
+      "case_id": "case-1",
+      "request_id": "r17",
+      "t_utc": "2026-10-27T10:00:00Z"
+    }
+  ]
+}

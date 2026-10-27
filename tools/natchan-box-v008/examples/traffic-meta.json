@@ -1,0 +1,7 @@
+{
+  "sut": "my-product",
+  "tool": "restler",
+  "contract_sha256": "<SHA256 of the exact contract used by this run>",
+  "api_base_path": "/api/v1",
+  "seed": 1
+}

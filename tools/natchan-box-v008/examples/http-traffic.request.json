@@ -1,0 +1,16 @@
+{
+  "schema_version": "natchan-request/1",
+  "run": {
+    "id": "baseline-001",
+    "tool": "evomaster",
+    "product": "my-product",
+    "product_version": "unknown"
+  },
+  "evidence": {
+    "adapter": "http-traffic",
+    "archive": "baseline-http.zip"
+  },
+  "configuration": {
+    "story_semantics": "story-semantics.json"
+  }
+}

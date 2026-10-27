@@ -1,0 +1,15 @@
+{
+  "schema_version": "natchan-request/1",
+  "run": {
+    "id": "new-system-run",
+    "product": "my-product",
+    "product_version": "1.0",
+    "tool": "my-tool"
+  },
+  "evidence": {
+    "adapter": "normalized-observations",
+    "observations": "observations.json"
+  },
+  "configuration": {}
+}
+

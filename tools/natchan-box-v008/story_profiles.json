@@ -1,0 +1,112 @@
+{
+  "schema_version": "natchan-story-profiles/1",
+  "policy": "Candidates only; neither version nor common root cause is invented",
+  "product_aliases": {
+    "mealie-pg": "mealie"
+  },
+  "known_bug_candidates": [
+    {
+      "id": "M-D1",
+      "product": "mealie",
+      "facts": [
+        "story_dangling_delete_only"
+      ],
+      "path_regex": "/api/households/shopping/items/[^/]+"
+    },
+    {
+      "id": "M-D2",
+      "product": "mealie",
+      "facts": [
+        "dangling_after_stale_write"
+      ]
+    },
+    {
+      "id": "M-D2",
+      "product": "mealie",
+      "facts": [
+        "story_missing_reference_write_5xx"
+      ],
+      "path_regex": "/api/households/shopping/items/[^/]+"
+    },
+    {
+      "id": "M-C1",
+      "product": "mealie",
+      "facts": [
+        "story_write_absent_resource_5xx"
+      ],
+      "path_regex": "/api/comments/[^/]+"
+    },
+    {
+      "id": "W-F2",
+      "product": "wger",
+      "facts": [
+        "story_aggregate_after_move_mismatch",
+        "new_parent_aggregate_correct"
+      ],
+      "path_regex": "/api/v2/nutritionplan/[^/]+/nutritional_values/"
+    },
+    {
+      "id": "MEAL-F01",
+      "product": "mealie",
+      "facts": [
+        "story_contribution_mismatch_measured"
+      ]
+    },
+    {
+      "id": "MEAL-COPY-INTRA-REF",
+      "product": "mealie",
+      "facts": [
+        "story_internal_reference_mismatch_measured"
+      ]
+    },
+    {
+      "id": "W-F3",
+      "product": "wger",
+      "facts": [
+        "story_move_projection_mismatch"
+      ],
+      "path_regex": "/api/v2/routine/[^/]+/structure/"
+    },
+    {
+      "id": "W-F4",
+      "product": "wger",
+      "facts": [
+        "story_move_projection_mismatch"
+      ],
+      "path_regex": "/api/v2/routine/[^/]+/logs/"
+    },
+    {
+      "id": "V-F1",
+      "product": "vikunja",
+      "facts": [
+        "story_move_projection_mismatch"
+      ],
+      "path_regex": "/projects/[^/]+/views/[^/]+/tasks"
+    },
+    {
+      "id": "W-F5",
+      "product": "wger",
+      "facts": [
+        "story_arithmetic_discrepancy"
+      ],
+      "fact_equals": {
+        "arithmetic_entity": "setsconfig"
+      },
+      "path_regex": "/api/v2/routine/[^/]+/date-sequence(?:-gym|-display)?/"
+    },
+    {
+      "id": "MEAL-F01",
+      "product": "mealie",
+      "facts": [
+        "raw_contribution_discrepancy"
+      ]
+    },
+    {
+      "id": "MEAL-COPY-INTRA-REF",
+      "product": "mealie",
+      "facts": [
+        "raw_copy_internal_reference_discrepancy"
+      ]
+    }
+  ]
+}

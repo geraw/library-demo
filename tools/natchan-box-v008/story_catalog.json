@@ -1,0 +1,410 @@
+{
+  "schema_version": "natchan-catalog/1",
+  "entries": [
+    {
+      "id": "STORY-DANGLING-REFERENCE",
+      "kind": "pattern",
+      "title": "A retained foreign key names an observed deleted target",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "story_dangling_reference",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "source-linked recomputation by stories_evidence; evidence tier is authoritative"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "toolkit/v2 stories semantics at weissye/vikunja_study@e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+          "verification": "raw HTTP or explicitly retained producer measurement; no pass flag trusted"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "STORY-STALE-REFERENCE",
+      "kind": "pattern",
+      "title": "Successful stale write leaves a reference to a deleted target",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "dangling_after_stale_write",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "source-linked recomputation by stories_evidence; evidence tier is authoritative"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "toolkit/v2 stories semantics at weissye/vikunja_study@e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+          "verification": "raw HTTP or explicitly retained producer measurement; no pass flag trusted"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "STORY-MISSING-REFERENCE-5XX",
+      "kind": "pattern",
+      "title": "Writing a deleted reference returns a server error",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "story_missing_reference_write_5xx",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "source-linked recomputation by stories_evidence; evidence tier is authoritative"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "toolkit/v2 stories semantics at weissye/vikunja_study@e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+          "verification": "raw HTTP or explicitly retained producer measurement; no pass flag trusted"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "STORY-ABSENT-RESOURCE-5XX",
+      "kind": "pattern",
+      "title": "Mutation of an observed absent resource returns a server error",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "story_write_absent_resource_5xx",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "source-linked recomputation by stories_evidence; evidence tier is authoritative"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "toolkit/v2 stories semantics at weissye/vikunja_study@e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+          "verification": "raw HTTP or explicitly retained producer measurement; no pass flag trusted"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "STORY-AGGREGATE-MOVE",
+      "kind": "pattern",
+      "title": "After moving a child the old parent aggregate differs from qualified arithmetic",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "story_aggregate_after_move_mismatch",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "source-linked recomputation by stories_evidence; evidence tier is authoritative"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "toolkit/v2 stories semantics at weissye/vikunja_study@e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+          "verification": "raw HTTP or explicitly retained producer measurement; no pass flag trusted"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "STORY-MEASURED-CONTRIBUTION",
+      "kind": "pattern",
+      "title": "Retained producer contribution measurements disagree arithmetically",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "story_contribution_mismatch_measured",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "source-linked recomputation by stories_evidence; evidence tier is authoritative"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "toolkit/v2 stories semantics at weissye/vikunja_study@e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+          "verification": "raw HTTP or explicitly retained producer measurement; no pass flag trusted"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "STORY-MEASURED-INTRA-REF",
+      "kind": "pattern",
+      "title": "Retained producer identity projections contain dangling references",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "story_internal_reference_mismatch_measured",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "source-linked recomputation by stories_evidence; evidence tier is authoritative"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "toolkit/v2 stories semantics at weissye/vikunja_study@e54368795f0a908879d0bdc77f12e20cc8ad1a53",
+          "verification": "raw HTTP or explicitly retained producer measurement; no pass flag trusted"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "STORY-MOVE-PROJECTION",
+      "kind": "pattern",
+      "title": "Accepted move disagrees with a qualified parent projection",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "story_move_projection_mismatch",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-bound raw HTTP comparison under contract-bound semantic metadata; not proof of intended product semantics"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "natchan-box-v008 generic rules, retrospective development corpus",
+          "verification": "recomputed without producer pass flags"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "STORY-PROJECTION-UPDATE",
+      "kind": "pattern",
+      "title": "Accepted field update is not visible in a previously qualified projection",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "story_projection_update_not_visible",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-bound raw HTTP comparison under contract-bound semantic metadata; not proof of intended product semantics"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "natchan-box-v008 generic rules, retrospective development corpus",
+          "verification": "recomputed without producer pass flags"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "STORY-PROJECTION-DELETE",
+      "kind": "pattern",
+      "title": "Accepted deletion leaves a child in a previously qualified projection",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "story_deleted_child_still_projected",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-bound raw HTTP comparison under contract-bound semantic metadata; not proof of intended product semantics"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "natchan-box-v008 generic rules, retrospective development corpus",
+          "verification": "recomputed without producer pass flags"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "STORY-ARITHMETIC-DISCREPANCY",
+      "kind": "pattern",
+      "title": "Recorded computed view differs from the configured operation hypothesis",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "story_arithmetic_discrepancy",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-bound raw HTTP comparison under contract-bound semantic metadata; not proof of intended product semantics"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "natchan-box-v008 generic rules, retrospective development corpus",
+          "verification": "recomputed without producer pass flags"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "STORY-REFERENCE-PRECONDITION-FAILED",
+      "kind": "pattern",
+      "title": "A 5xx stale-reference scenario did not establish the reference precondition",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "story_reference_precondition_failed",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-bound raw HTTP comparison under contract-bound semantic metadata; not proof of intended product semantics"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "natchan-box-v008 generic rules, retrospective development corpus",
+          "verification": "recomputed without producer pass flags"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "RAW-CONTRIBUTION-DISCREPANCY",
+      "kind": "pattern",
+      "title": "Recorded quantity delta differs from the configured contribution",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "raw_contribution_discrepancy",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-bound raw HTTP precondition and response comparisons"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "shared-http-semantics/1",
+          "verification": "identical rules for all origins, no producer verdict input"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "RAW-COPY-INTERNAL-REFERENCE",
+      "kind": "pattern",
+      "title": "Copied raw body has unresolved internal references",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "raw_copy_internal_reference_discrepancy",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-bound raw HTTP precondition and response comparisons"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "shared-http-semantics/1",
+          "verification": "identical rules for all origins, no producer verdict input"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "HTTP-LOG-ERROR-CORRELATION",
+      "kind": "pattern",
+      "title": "A uniquely joined server log reports an error signature",
+      "status": "active",
+      "product": "*",
+      "versions": [],
+      "all": [
+        {
+          "fact": "server_reported_error_signature",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Unique source-bound request/log correlation and an explicitly configured signature"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "log_correlation.py",
+          "verification": "server-reported diagnostic only; root cause not proven"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    }
+  ]
+}

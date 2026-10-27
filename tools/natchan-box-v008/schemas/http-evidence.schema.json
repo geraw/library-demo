@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Normalized raw HTTP capture (canonical flat form)",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "sut",
+    "tool",
+    "records"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "natchan-http-evidence/1"
+    },
+    "sut": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tool": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sut_version": {
+      "type": "string"
+    },
+    "contract_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "api_base_path": {
+      "type": "string"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "method",
+          "path",
+          "status"
+        ],
+        "properties": {
+          "method": {
+            "type": "string",
+            "pattern": "^[A-Z]+$"
+          },
+          "path": {
+            "type": "string"
+          },
+          "status": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 599
+          },
+          "input": {},
+          "response": {},
+          "actor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "epoch": {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          "case_id": {
+            "type": "string"
+          },
+          "request_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "t_utc": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "result",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "natchan-result/1"
+    },
+    "wrapper_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "COMPLETE",
+        "PARTIAL",
+        "FAILED"
+      ]
+    },
+    "exit_code": {
+      "enum": [
+        0,
+        2,
+        3,
+        4
+      ]
+    },
+    "run": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "adapter": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "new_sut_requests": {
+      "const": 0
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "path",
+          "sha256"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "counts": {
+      "type": "object"
+    },
+    "observation": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "wrapper_version",
+    "status",
+    "exit_code",
+    "run",
+    "adapter",
+    "new_sut_requests",
+    "artifacts"
+  ],
+  "additionalProperties": false
+}
+

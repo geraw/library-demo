@@ -2,6 +2,18 @@
 
 This repository is organized as a system-by-system benchmark. The first system is the Library case study.
 
+## Natchan results analyzer
+
+The analyzer is versioned separately from the Library SUT and testing experiments. On this release branch, use **[Natchan Box v008](tools/natchan-box-v008/README.md)** in `tools/natchan-box-v008`. It analyzes retained research evidence offline and does not launch the SUT or a testing tool.
+
+- Release branch: [`natchan-box-v008`](https://github.com/geraw/library-demo/tree/natchan-box-v008); use a full checkout, since earlier analyzer directories are runtime dependencies.
+- Frozen previous release: [`natchan-box-v007`](https://github.com/geraw/library-demo/tree/natchan-box-v007/tools/natchan-box-v007), commit `5cd95f132aa11906d9e42705143f9706a866c403`.
+- [Installation, request format, outputs and exit codes](tools/natchan-box-v008/README.md).
+- [Hebrew integration handoff](tools/natchan-box-v008/HANDOFF_PROMPT_HE.md).
+- [v008 changes](tools/natchan-box-v008/CHANGES.md), [gap resolution and remaining limits](tools/natchan-box-v008/GAPS_RESOLUTION.md), [retrospective evidence results](tools/natchan-box-v008/STORIES_REANALYSIS.md).
+
+Pulling `master` or the v007 branch does not select v008. Follow the versioned release instructions above, and pin the exact analyzer commit in each new research integration. Existing frozen experiments retain their original analyzer version.
+
 ## Structure
 
 ```text

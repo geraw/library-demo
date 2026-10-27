@@ -1,0 +1,341 @@
+{
+  "schema_version": "natchan-story-semantics/1",
+  "product": "mealie",
+  "contract_sha256": "90e19aa713ab4ba15352627aca7dc37290f868b213eb65a3e1564f3b7a7ff292",
+  "entities": {
+    "recipe": {
+      "path": "/api/recipes",
+      "detail": "/api/recipes/{slug}",
+      "id_field": "slug",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "userId",
+          "target": "user",
+          "shape": "scalar"
+        },
+        {
+          "field": "householdId",
+          "target": "household",
+          "shape": "scalar"
+        },
+        {
+          "field": "groupId",
+          "target": "group",
+          "shape": "scalar"
+        },
+        {
+          "field": "recipeCategory",
+          "target": "category",
+          "shape": "array-object"
+        },
+        {
+          "field": "tags",
+          "target": "tag",
+          "shape": "array-object"
+        },
+        {
+          "field": "tools",
+          "target": "tool",
+          "shape": "array-object"
+        },
+        {
+          "field": "recipeIngredient[].unit",
+          "target": "unit",
+          "shape": "nested-object"
+        },
+        {
+          "field": "recipeIngredient[].food",
+          "target": "food",
+          "shape": "nested-object"
+        },
+        {
+          "field": "recipeIngredient[].substitutions[].substituteFoodId",
+          "target": "food",
+          "shape": "nested-nested-scalar"
+        },
+        {
+          "field": "recipeIngredient[].substitutions[].substituteFood",
+          "target": "food",
+          "shape": "nested-nested-object"
+        },
+        {
+          "field": "comments",
+          "target": "comment",
+          "shape": "array-object"
+        }
+      ],
+      "scalar_create_key": true
+    },
+    "list": {
+      "path": "/api/households/shopping/lists",
+      "detail": "/api/households/shopping/lists/{item_id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "groupId",
+          "target": "group",
+          "shape": "scalar"
+        },
+        {
+          "field": "userId",
+          "target": "user",
+          "shape": "scalar"
+        },
+        {
+          "field": "listItems",
+          "target": "item",
+          "shape": "array-object"
+        }
+      ]
+    },
+    "item": {
+      "path": "/api/households/shopping/items",
+      "detail": "/api/households/shopping/items/{item_id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "unit",
+          "target": "unit",
+          "shape": "object"
+        },
+        {
+          "field": "food",
+          "target": "food",
+          "shape": "object"
+        },
+        {
+          "field": "referencedRecipe",
+          "target": "recipe",
+          "shape": "object"
+        },
+        {
+          "field": "shoppingListId",
+          "target": "list",
+          "shape": "scalar"
+        },
+        {
+          "field": "foodId",
+          "target": "food",
+          "shape": "scalar"
+        },
+        {
+          "field": "labelId",
+          "target": "label",
+          "shape": "scalar"
+        },
+        {
+          "field": "unitId",
+          "target": "unit",
+          "shape": "scalar"
+        },
+        {
+          "field": "recipeReferences[].recipeId",
+          "target": "recipe",
+          "shape": "nested-scalar"
+        }
+      ],
+      "create_result_items": "$.createdItems[]"
+    },
+    "food": {
+      "path": "/api/foods",
+      "detail": "/api/foods/{id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "labelId",
+          "target": "label",
+          "shape": "scalar"
+        },
+        {
+          "field": "substitutions[].substituteFoodId",
+          "target": "food",
+          "shape": "nested-scalar"
+        }
+      ]
+    },
+    "unit": {
+      "path": "/api/units",
+      "detail": "/api/units/{id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": []
+    },
+    "label": {
+      "path": "/api/groups/labels",
+      "detail": "/api/groups/labels/{id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "groupId",
+          "target": "group",
+          "shape": "scalar"
+        }
+      ]
+    },
+    "comment": {
+      "path": "/api/comments",
+      "detail": "/api/comments/{id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "recipeId",
+          "target": "recipe",
+          "shape": "scalar"
+        }
+      ]
+    },
+    "mealplan": {
+      "path": "/api/households/mealplans",
+      "detail": "/api/households/mealplans/{id}",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "recipeId",
+          "target": "recipe",
+          "shape": "scalar"
+        },
+        {
+          "field": "groupId",
+          "target": "group",
+          "shape": "scalar"
+        },
+        {
+          "field": "userId",
+          "target": "user",
+          "shape": "scalar"
+        }
+      ]
+    }
+  },
+  "projections": [],
+  "arithmetic": [],
+  "contributions": [
+    {
+      "method": "POST",
+      "action_template": "/api/households/shopping/lists/{item_id}/recipe/{recipe_id}",
+      "source_template": "/api/recipes/{slug}",
+      "container_template": "/api/households/shopping/lists/{item_id}",
+      "container_bindings": {
+        "item_id": "item_id"
+      },
+      "source_bindings": {},
+      "source_action_parameter": "recipe_id",
+      "source_id_field": "id",
+      "scale_field": "recipeIncrementQuantity",
+      "quantity": "quantity",
+      "source_items": "$.recipeIngredient[]",
+      "container_items": "$.listItems[]",
+      "source_keys": [
+        [
+          "food.id",
+          "foodId"
+        ],
+        [
+          "unit.id",
+          "unitId"
+        ],
+        [
+          "referencedRecipe.id",
+          "referencedRecipeId"
+        ]
+      ],
+      "container_keys": [
+        [
+          "food.id",
+          "foodId"
+        ],
+        [
+          "unit.id",
+          "unitId"
+        ],
+        [
+          "referencedRecipe.id",
+          "referencedRecipeId"
+        ]
+      ],
+      "sign": 1
+    },
+    {
+      "method": "POST",
+      "action_template": "/api/households/shopping/lists/{item_id}/recipe/{recipe_id}/delete",
+      "source_template": "/api/recipes/{slug}",
+      "container_template": "/api/households/shopping/lists/{item_id}",
+      "container_bindings": {
+        "item_id": "item_id"
+      },
+      "source_bindings": {},
+      "source_action_parameter": "recipe_id",
+      "source_id_field": "id",
+      "scale_field": "recipeDecrementQuantity",
+      "quantity": "quantity",
+      "source_items": "$.recipeIngredient[]",
+      "container_items": "$.listItems[]",
+      "source_keys": [
+        [
+          "food.id",
+          "foodId"
+        ],
+        [
+          "unit.id",
+          "unitId"
+        ],
+        [
+          "referencedRecipe.id",
+          "referencedRecipeId"
+        ]
+      ],
+      "container_keys": [
+        [
+          "food.id",
+          "foodId"
+        ],
+        [
+          "unit.id",
+          "unitId"
+        ],
+        [
+          "referencedRecipe.id",
+          "referencedRecipeId"
+        ]
+      ],
+      "sign": -1
+    }
+  ],
+  "copies": [
+    {
+      "method": "POST",
+      "action_template": "/api/recipes/{slug}/duplicate",
+      "source_template": "/api/recipes/{slug}",
+      "source_bindings": {
+        "slug": "slug"
+      },
+      "identity_items": "$.recipeIngredient[]",
+      "reference_items": "$.recipeInstructions[].ingredientReferences[]",
+      "field": "referenceId"
+    }
+  ],
+  "aggregates": [],
+  "contract_materialization": "not_retained",
+  "derivation_sources": {
+    "ir_repository": "weissye/vikunja_study",
+    "commit": "62ff20a9da589e3b4ac18189e6f8f7f46f4ccde8",
+    "ir_path": "design/story-derive/out/stories-mealie.json",
+    "ir_sha256": "f542614616be5f4c0722702ce2c2b4640fe666bd55cb955f5def6f6477c75697",
+    "binding_policy": "Contract hash reported by original runs; original OpenAPI bytes unavailable. Route/key bindings reviewed against raw requests and public IR, not verdicts."
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": "natchan-request/1",
+  "run": {
+    "id": "new-product-stories",
+    "tool": "provengo",
+    "product": "new-product",
+    "product_version": "unknown"
+  },
+  "evidence": {
+    "adapter": "toolkit-v1",
+    "archive": "review_stories.zip"
+  },
+  "configuration": {
+    "story_semantics": "story-semantics.json"
+  }
+}

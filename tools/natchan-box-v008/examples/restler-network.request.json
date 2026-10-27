@@ -1,0 +1,17 @@
+{
+  "schema_version": "natchan-request/1",
+  "run": {
+    "id": "restler-001",
+    "tool": "restler",
+    "product": "my-product",
+    "product_version": "unknown"
+  },
+  "evidence": {
+    "adapter": "restler-network",
+    "observations": "network.testing.1.txt"
+  },
+  "configuration": {
+    "traffic_metadata": "traffic-meta.json",
+    "story_semantics": "story-semantics.json"
+  }
+}

@@ -1,0 +1,1514 @@
+{
+  "schema_version": "natchan-story-semantics/1",
+  "product": "wger",
+  "contract_sha256": "89c8aea5accbe4dc68c5b819832cd1d9db210a6dd410a74be0a27fde6808769e",
+  "semantics_status": "contract-derived relations and explicitly configured metamorphic hypotheses; not a product specification",
+  "entities": {
+    "deletionlog": {
+      "path": "/api/v2/deletion-log/",
+      "detail": "/api/v2/deletion-log/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "equipment": {
+      "path": "/api/v2/equipment/",
+      "detail": "/api/v2/equipment/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "exercisecategory": {
+      "path": "/api/v2/exercisecategory/",
+      "detail": "/api/v2/exercisecategory/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "exerciseinfo": {
+      "path": "/api/v2/exerciseinfo/",
+      "detail": "/api/v2/exerciseinfo/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "ingredient": {
+      "path": "/api/v2/ingredient/",
+      "detail": "/api/v2/ingredient/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "ingredientimage": {
+      "path": "/api/v2/ingredient-image/",
+      "detail": "/api/v2/ingredient-image/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "ingredientsync": {
+      "path": "/api/v2/ingredient-sync/",
+      "detail": "/api/v2/ingredient-sync/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "ingredientinfo": {
+      "path": "/api/v2/ingredientinfo/",
+      "detail": "/api/v2/ingredientinfo/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "ingredientweightunit": {
+      "path": "/api/v2/ingredientweightunit/",
+      "detail": "/api/v2/ingredientweightunit/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "language": {
+      "path": "/api/v2/language/",
+      "detail": "/api/v2/language/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "license": {
+      "path": "/api/v2/license/",
+      "detail": "/api/v2/license/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "muscle": {
+      "path": "/api/v2/muscle/",
+      "detail": "/api/v2/muscle/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "nutritionplaninfo": {
+      "path": "/api/v2/nutritionplaninfo/",
+      "detail": "/api/v2/nutritionplaninfo/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "publictemplate": {
+      "path": "/api/v2/public-templates/",
+      "detail": "/api/v2/public-templates/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "settingrepetitionunit": {
+      "path": "/api/v2/setting-repetitionunit/",
+      "detail": "/api/v2/setting-repetitionunit/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "settingweightunit": {
+      "path": "/api/v2/setting-weightunit/",
+      "detail": "/api/v2/setting-weightunit/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "template": {
+      "path": "/api/v2/templates/",
+      "detail": "/api/v2/templates/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "trophy": {
+      "path": "/api/v2/trophy/",
+      "detail": "/api/v2/trophy/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "userstatistic": {
+      "path": "/api/v2/user-statistics/",
+      "detail": "/api/v2/user-statistics/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "usertrophy": {
+      "path": "/api/v2/user-trophy/",
+      "detail": "/api/v2/user-trophy/{id}/",
+      "id_field": "id",
+      "create_method": null,
+      "update": null,
+      "refs": []
+    },
+    "day": {
+      "path": "/api/v2/day/",
+      "detail": "/api/v2/day/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "routine",
+          "target": "routine",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "exercise": {
+      "path": "/api/v2/exercise/",
+      "detail": "/api/v2/exercise/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "category",
+          "target": "exercisecategory",
+          "shape": "scalar",
+          "required": true
+        },
+        {
+          "field": "muscles",
+          "target": "muscle",
+          "shape": "array",
+          "required": false
+        },
+        {
+          "field": "equipment",
+          "target": "equipment",
+          "shape": "array",
+          "required": false
+        }
+      ]
+    },
+    "exercisetranslation": {
+      "path": "/api/v2/exercise-translation/",
+      "detail": "/api/v2/exercise-translation/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "exercise",
+          "target": "exercise",
+          "shape": "scalar",
+          "required": true
+        },
+        {
+          "field": "language",
+          "target": "language",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "exercisealia": {
+      "path": "/api/v2/exercisealias/",
+      "detail": "/api/v2/exercisealias/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "translation",
+          "target": "exercisetranslation",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "exercisecomment": {
+      "path": "/api/v2/exercisecomment/",
+      "detail": "/api/v2/exercisecomment/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "translation",
+          "target": "exercisetranslation",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "exerciseimage": {
+      "path": "/api/v2/exerciseimage/",
+      "detail": "/api/v2/exerciseimage/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": []
+    },
+    "gallery": {
+      "path": "/api/v2/gallery/",
+      "detail": "/api/v2/gallery/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": []
+    },
+    "maxrepetitionsconfig": {
+      "path": "/api/v2/max-repetitions-config/",
+      "detail": "/api/v2/max-repetitions-config/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "slot_entry",
+          "target": "slotentry",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "maxrestconfig": {
+      "path": "/api/v2/max-rest-config/",
+      "detail": "/api/v2/max-rest-config/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "slot_entry",
+          "target": "slotentry",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "maxrirconfig": {
+      "path": "/api/v2/max-rir-config/",
+      "detail": "/api/v2/max-rir-config/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "slot_entry",
+          "target": "slotentry",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "maxsetsconfig": {
+      "path": "/api/v2/max-sets-config/",
+      "detail": "/api/v2/max-sets-config/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "slot_entry",
+          "target": "slotentry",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "maxweightconfig": {
+      "path": "/api/v2/max-weight-config/",
+      "detail": "/api/v2/max-weight-config/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "slot_entry",
+          "target": "slotentry",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "meal": {
+      "path": "/api/v2/meal/",
+      "detail": "/api/v2/meal/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "plan",
+          "target": "nutritionplan",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "mealitem": {
+      "path": "/api/v2/mealitem/",
+      "detail": "/api/v2/mealitem/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "meal",
+          "target": "meal",
+          "shape": "scalar",
+          "required": true
+        },
+        {
+          "field": "ingredient",
+          "target": "ingredient",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "measurement": {
+      "path": "/api/v2/measurement/",
+      "detail": "/api/v2/measurement/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "category",
+          "target": "measurementcategory",
+          "shape": "scalar",
+          "required": false
+        }
+      ]
+    },
+    "measurementcategory": {
+      "path": "/api/v2/measurement-category/",
+      "detail": "/api/v2/measurement-category/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": []
+    },
+    "nutritiondiary": {
+      "path": "/api/v2/nutritiondiary/",
+      "detail": "/api/v2/nutritiondiary/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "plan",
+          "target": "nutritionplan",
+          "shape": "scalar",
+          "required": true
+        },
+        {
+          "field": "meal",
+          "target": "meal",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "ingredient",
+          "target": "ingredient",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "nutritionplan": {
+      "path": "/api/v2/nutritionplan/",
+      "detail": "/api/v2/nutritionplan/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": []
+    },
+    "repetitionsconfig": {
+      "path": "/api/v2/repetitions-config/",
+      "detail": "/api/v2/repetitions-config/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "slot_entry",
+          "target": "slotentry",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "restconfig": {
+      "path": "/api/v2/rest-config/",
+      "detail": "/api/v2/rest-config/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "slot_entry",
+          "target": "slotentry",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "rirconfig": {
+      "path": "/api/v2/rir-config/",
+      "detail": "/api/v2/rir-config/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "slot_entry",
+          "target": "slotentry",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "routine": {
+      "path": "/api/v2/routine/",
+      "detail": "/api/v2/routine/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": []
+    },
+    "setsconfig": {
+      "path": "/api/v2/sets-config/",
+      "detail": "/api/v2/sets-config/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "slot_entry",
+          "target": "slotentry",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "slot": {
+      "path": "/api/v2/slot/",
+      "detail": "/api/v2/slot/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "day",
+          "target": "day",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "slotentry": {
+      "path": "/api/v2/slot-entry/",
+      "detail": "/api/v2/slot-entry/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "slot",
+          "target": "slot",
+          "shape": "scalar",
+          "required": true
+        },
+        {
+          "field": "exercise",
+          "target": "exercise",
+          "shape": "scalar",
+          "required": true
+        },
+        {
+          "field": "repetition_unit",
+          "target": "settingrepetitionunit",
+          "shape": "scalar",
+          "required": false
+        }
+      ]
+    },
+    "userprofile": {
+      "path": "/api/v2/userprofile/",
+      "detail": null,
+      "id_field": "id",
+      "create_method": "post",
+      "update": null,
+      "refs": []
+    },
+    "video": {
+      "path": "/api/v2/video/",
+      "detail": "/api/v2/video/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": []
+    },
+    "weightconfig": {
+      "path": "/api/v2/weight-config/",
+      "detail": "/api/v2/weight-config/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "slot_entry",
+          "target": "slotentry",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "weightentry": {
+      "path": "/api/v2/weightentry/",
+      "detail": "/api/v2/weightentry/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": []
+    },
+    "workoutlog": {
+      "path": "/api/v2/workoutlog/",
+      "detail": "/api/v2/workoutlog/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "session",
+          "target": "workoutsession",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "routine",
+          "target": "routine",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "slot_entry",
+          "target": "slotentry",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "exercise",
+          "target": "exercise",
+          "shape": "scalar",
+          "required": true
+        }
+      ]
+    },
+    "workoutsession": {
+      "path": "/api/v2/workoutsession/",
+      "detail": "/api/v2/workoutsession/{id}/",
+      "id_field": "id",
+      "create_method": "post",
+      "update": "put",
+      "refs": [
+        {
+          "field": "routine",
+          "target": "routine",
+          "shape": "scalar",
+          "required": false
+        },
+        {
+          "field": "day",
+          "target": "day",
+          "shape": "scalar",
+          "required": false
+        }
+      ]
+    }
+  },
+  "projections": [
+    {
+      "view_template": "/api/v2/routine/{id}/logs/",
+      "owner": "routine",
+      "response_array": true,
+      "places": [
+        {
+          "at": "$[].logs[]",
+          "original_at": "$.logs[]",
+          "child": "workoutlog",
+          "parent_entity": "routine",
+          "parent_at": "$",
+          "reference_field": "routine"
+        }
+      ]
+    },
+    {
+      "view_template": "/api/v2/routine/{id}/structure/",
+      "owner": "routine",
+      "response_array": false,
+      "places": [
+        {
+          "at": "$.days[]",
+          "original_at": "$.days[]",
+          "child": "day",
+          "parent_entity": "routine",
+          "parent_at": "$",
+          "reference_field": "routine"
+        },
+        {
+          "at": "$.days[].slots[]",
+          "original_at": "$.days[].slots[]",
+          "child": "slot",
+          "parent_entity": "day",
+          "parent_at": "$.days[]",
+          "reference_field": "day"
+        },
+        {
+          "at": "$.days[].slots[].entries[]",
+          "original_at": "$.days[].slots[].entries[]",
+          "child": "slotentry",
+          "parent_entity": "slot",
+          "parent_at": "$.days[].slots[]",
+          "reference_field": "slot"
+        },
+        {
+          "at": "$.days[].slots[].entries[].repetitions_configs[]",
+          "original_at": "$.days[].slots[].entries[].repetitions_configs[]",
+          "child": "repetitionsconfig",
+          "parent_entity": "slotentry",
+          "parent_at": "$.days[].slots[].entries[]",
+          "reference_field": "slot_entry"
+        },
+        {
+          "at": "$.days[].slots[].entries[].max_repetitions_configs[]",
+          "original_at": "$.days[].slots[].entries[].max_repetitions_configs[]",
+          "child": "maxrepetitionsconfig",
+          "parent_entity": "slotentry",
+          "parent_at": "$.days[].slots[].entries[]",
+          "reference_field": "slot_entry"
+        },
+        {
+          "at": "$.days[].slots[].entries[].weight_configs[]",
+          "original_at": "$.days[].slots[].entries[].weight_configs[]",
+          "child": "weightconfig",
+          "parent_entity": "slotentry",
+          "parent_at": "$.days[].slots[].entries[]",
+          "reference_field": "slot_entry"
+        },
+        {
+          "at": "$.days[].slots[].entries[].max_weight_configs[]",
+          "original_at": "$.days[].slots[].entries[].max_weight_configs[]",
+          "child": "maxweightconfig",
+          "parent_entity": "slotentry",
+          "parent_at": "$.days[].slots[].entries[]",
+          "reference_field": "slot_entry"
+        },
+        {
+          "at": "$.days[].slots[].entries[].set_nr_configs[]",
+          "original_at": "$.days[].slots[].entries[].set_nr_configs[]",
+          "child": "setsconfig",
+          "parent_entity": "slotentry",
+          "parent_at": "$.days[].slots[].entries[]",
+          "reference_field": "slot_entry"
+        },
+        {
+          "at": "$.days[].slots[].entries[].max_set_nr_configs[]",
+          "original_at": "$.days[].slots[].entries[].max_set_nr_configs[]",
+          "child": "maxsetsconfig",
+          "parent_entity": "slotentry",
+          "parent_at": "$.days[].slots[].entries[]",
+          "reference_field": "slot_entry"
+        },
+        {
+          "at": "$.days[].slots[].entries[].rir_configs[]",
+          "original_at": "$.days[].slots[].entries[].rir_configs[]",
+          "child": "rirconfig",
+          "parent_entity": "slotentry",
+          "parent_at": "$.days[].slots[].entries[]",
+          "reference_field": "slot_entry"
+        },
+        {
+          "at": "$.days[].slots[].entries[].max_rir_configs[]",
+          "original_at": "$.days[].slots[].entries[].max_rir_configs[]",
+          "child": "maxrirconfig",
+          "parent_entity": "slotentry",
+          "parent_at": "$.days[].slots[].entries[]",
+          "reference_field": "slot_entry"
+        },
+        {
+          "at": "$.days[].slots[].entries[].rest_configs[]",
+          "original_at": "$.days[].slots[].entries[].rest_configs[]",
+          "child": "restconfig",
+          "parent_entity": "slotentry",
+          "parent_at": "$.days[].slots[].entries[]",
+          "reference_field": "slot_entry"
+        },
+        {
+          "at": "$.days[].slots[].entries[].max_rest_configs[]",
+          "original_at": "$.days[].slots[].entries[].max_rest_configs[]",
+          "child": "maxrestconfig",
+          "parent_entity": "slotentry",
+          "parent_at": "$.days[].slots[].entries[]",
+          "reference_field": "slot_entry"
+        }
+      ]
+    }
+  ],
+  "arithmetic": [
+    {
+      "entity": "maxrepetitionsconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-display/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "max_repetitions",
+      "value_type": "string",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "maxrepetitionsconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-gym/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "max_repetitions",
+      "value_type": "string",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "maxrestconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-display/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "max_rest",
+      "value_type": "integer",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "maxrestconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-gym/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "max_rest",
+      "value_type": "integer",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "maxrirconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-display/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "max_rir",
+      "value_type": "string",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "maxrirconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-gym/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "max_rir",
+      "value_type": "string",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "maxsetsconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-display/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "max_sets",
+      "value_type": "integer",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "maxsetsconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-gym/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "max_sets",
+      "value_type": "integer",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "maxweightconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-display/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "max_weight",
+      "value_type": "string",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "maxweightconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-gym/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "max_weight",
+      "value_type": "string",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "repetitionsconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-display/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "repetitions",
+      "value_type": "string",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "repetitionsconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-gym/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "repetitions",
+      "value_type": "string",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "restconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-display/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "rest",
+      "value_type": "integer",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "restconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-gym/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "rest",
+      "value_type": "integer",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "rirconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-display/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "rir",
+      "value_type": "string",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "rirconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-gym/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "rir",
+      "value_type": "string",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "setsconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-display/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "sets",
+      "value_type": "integer",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "setsconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-gym/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "sets",
+      "value_type": "integer",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "weightconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-display/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "weight",
+      "value_type": "string",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    },
+    {
+      "entity": "weightconfig",
+      "parent_entity": "slotentry",
+      "parent_field": "slot_entry",
+      "operator_field": "operation",
+      "operators": {
+        "+": "+",
+        "-": "-",
+        "r": "="
+      },
+      "iteration_field": "iteration",
+      "value_field": "value",
+      "step_field": "step",
+      "modes": {
+        "na": "absolute",
+        "abs": "absolute",
+        "percent": "percent"
+      },
+      "view_template": "/api/v2/routine/{id}/date-sequence-gym/",
+      "items_at": "$.slots[].sets[]",
+      "item_parent_field": "slot_entry_id",
+      "output_field": "weight",
+      "value_type": "string",
+      "rounding": {
+        "mode": "unspecified",
+        "display_steps": [
+          0.5,
+          1.0,
+          1.25,
+          2.5
+        ]
+      }
+    }
+  ],
+  "derivation_sources": {
+    "contract_sha256": "89c8aea5accbe4dc68c5b819832cd1d9db210a6dd410a74be0a27fde6808769e",
+    "derived_stories_sha256": "774afd9c9da763e4dc3d380e67324d330dce6727d1c414ae0433c938c411d519"
+  },
+  "rounding_policy_source": "Explicit tolerated producer display-rounding policy, not a contract guarantee; compatible discrepancies stay observations.",
+  "aggregates": [
+    {
+      "child": "meal",
+      "parent": "nutritionplan",
+      "reference_field": "plan",
+      "child_view": "/api/v2/meal/{id}/nutritional_values/",
+      "parent_view": "/api/v2/nutritionplan/{id}/nutritional_values/",
+      "fields": [
+        "carbohydrates",
+        "carbohydrates_sugar",
+        "energy",
+        "fat",
+        "fat_saturated",
+        "fiber",
+        "protein",
+        "sodium"
+      ]
+    },
+    {
+      "child": "mealitem",
+      "parent": "meal",
+      "reference_field": "meal",
+      "child_view": "/api/v2/mealitem/{id}/nutritional_values/",
+      "parent_view": "/api/v2/meal/{id}/nutritional_values/",
+      "fields": [
+        "carbohydrates",
+        "carbohydrates_sugar",
+        "energy",
+        "fat",
+        "fat_saturated",
+        "fiber",
+        "protein",
+        "sodium"
+      ]
+    },
+    {
+      "child": "nutritiondiary",
+      "parent": "meal",
+      "reference_field": "meal",
+      "child_view": "/api/v2/nutritiondiary/{id}/nutritional_values/",
+      "parent_view": "/api/v2/meal/{id}/nutritional_values/",
+      "fields": [
+        "carbohydrates",
+        "carbohydrates_sugar",
+        "energy",
+        "fat",
+        "fat_saturated",
+        "fiber",
+        "protein",
+        "sodium"
+      ]
+    },
+    {
+      "child": "nutritiondiary",
+      "parent": "nutritionplan",
+      "reference_field": "plan",
+      "child_view": "/api/v2/nutritiondiary/{id}/nutritional_values/",
+      "parent_view": "/api/v2/nutritionplan/{id}/nutritional_values/",
+      "fields": [
+        "carbohydrates",
+        "carbohydrates_sugar",
+        "energy",
+        "fat",
+        "fat_saturated",
+        "fiber",
+        "protein",
+        "sodium"
+      ]
+    }
+  ]
+}
