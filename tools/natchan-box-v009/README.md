@@ -1,6 +1,6 @@
-# Natchan Box v009 — independent contract context (development milestone 3)
+# Natchan Box v009 — independent contract context (development milestone 4)
 
-**Version: `009-dev.3`, not a production replacement for v008.** Python 3.10+, standard library only.
+**Version: `009-dev.4`, not a production replacement for v008.** Python 3.10+, standard library only.
 Based on repository commit `6310af7baecc25fc46692d1127c80dbc1da4247d`.
 The operational v008 directory, branch, request interface, product catalogs and existing integrations are unchanged.
 Keep using v008 in established pipelines until v009 passes the later acceptance gates.
@@ -32,7 +32,7 @@ in the same checkout, but producer-derived profiles and known-bug catalogs are n
 | Class | Milestone 1 |
 |---|---|
 | S1 read-back consistency | Same concrete item URI, scalar fields, synchronous PUT/PATCH, controlled capture |
-| S2 path consistency | Not implemented; counts/opportunities null |
+| S2 path consistency | Independent scalar create/update class differences and identity-linked readback comparisons; see S2_CREATE_UPDATE.md |
 | S3 constraint conformance | Scalar types, enum/const, lengths, numeric bounds and required declared fields; accepted invalid input needs read-back for storage credit |
 | S4 reference integrity | Ambiguities retained; judgement not implemented |
 | S5 failure atomicity | Before/after requested scalar fields; observed partial/full commit is policy observation without a contract guarantee |
@@ -91,7 +91,7 @@ The example is development evidence, not a held-out study. Run from the reposito
 ```
 
 Expected: 4 exchanges; S7: 1 consistent, 2 violations, 1 not evaluable; 1 symptom group with 2 occurrences.
-S2/S4/S6 counts are null. S1/S3/S5 have zero opportunities in this GET-only example. Output status PARTIAL. Synthetic examples are not confirmed product bugs.
+S4/S6 counts are null. S1/S3/S5 have zero opportunities in this GET-only example. Output status PARTIAL. Synthetic examples are not confirmed product bugs.
 `python -I` is supported as well.
 
 ## Pipeline interface
@@ -246,7 +246,7 @@ no server answer and receive S7 abstentions. S3 found no stored-bound violations
 counts do not mean the whole operation or business behavior was correct.
 
 The Library contract has no PUT/PATCH item updates, so S1/S5 have no applicable opportunities in this milestone.
-S2/S4/S6 and seeded Library business invariants are not covered by this new route. This does not replace v008's
+Seeded Library business invariants remain outside this route. S4/S6 are not implemented. This does not replace v008's
 existing Library domain provider or its separate 44-observation compatibility check. No new native tool bug-detection
 credit or new seeded-bug detection is claimed.
 
@@ -303,3 +303,25 @@ python tools/natchan-box-v009/validate_contracts.py --manifest contracts.json --
 ```
 
 Dev.3 acceptance: 103 development tests passed; six exact original contracts derived/froze; v008 remains unchanged.
+
+
+## Dev.4: S2 create/update comparisons
+
+S2 is implemented. See [S2_CREATE_UPDATE.md](S2_CREATE_UPDATE.md) for exact evidence requirements and verdicts.
+Contract pairing covers conventional collection/item methods and explicitly declared alternative create/update roles
+sharing a request schema; no product-name profiles select methods. Only equivalent declared scalar assertions pair.
+
+Response-class differences are policy observations, not confirmed bugs. Both accepted writes need actual readbacks
+for a storage comparison. A controlled same-created-item storage difference is a violation candidate under an explicit
+persistence-meaning assumption. Missing identity, parent scope, matching value, clean prefix or readback yields abstention.
+S2 does not guess an ID from response field names. Keep 201 Location in response headers or explicit public operation links.
+
+`coverage.json.path_consistency_audit` reports evaluated comparisons, ambiguity and bounded-history loss. The counting
+unit is update field × contract pair, not distinct bug. `findings.json` and verdicts include both public operation names.
+No new request setting is required: the same capture facts and formats apply. Existing requests need regenerated
+knowledge and freeze because the code/derivation version changed. Dev.3 and older remain reproducible at their commits.
+
+S4 and S6 remain open. The six-system S2 acceptance is contract derivation/freeze, not reanalysis of those systems' runs.
+
+Dev.4 validation: 144 tests passed, including four real loopback S2 modes; all 275 v008 tests passed unchanged.
+Six-system contract-only S2 acceptance is recorded in S2_CONTRACT_ACCEPTANCE.json. No held-out or known-bug recall is claimed.

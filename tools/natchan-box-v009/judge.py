@@ -56,7 +56,8 @@ def classify(row, op, gap):
 
 def analyze(rows, context, verdict_file, logs=None, http_id_counts=None, capture=None):
     from state_semantics import StateJudge
-    supported = {'S1', 'S3', 'S5', 'S7'}
+    from create_update import PathJudge
+    supported = {'S1', 'S2', 'S3', 'S5', 'S7'}
     index = matcher(context)
     counts = {k: Counter() for k in supported}
     reasons = {k: Counter() for k in supported}
@@ -81,6 +82,7 @@ def analyze(rows, context, verdict_file, logs=None, http_id_counts=None, capture
             groups[key] = {'id': digest(canonical(list(key))), 'property': prop, 'value': value,
                            'group_type': group_type,
                            'operation': verdict['operation'], 'fields': verdict.get('fields', []),
+                           'operations': verdict.get('operations', [verdict['operation']]),
                            'reason': verdict['reason'], 'input_class': verdict['input_class'],
                            'status': verdict['status'], 'server_signature_sha256': key[-1],
                            'occurrences': 0, 'representative_verdict_ids': [],
@@ -91,6 +93,7 @@ def analyze(rows, context, verdict_file, logs=None, http_id_counts=None, capture
             group['representative_verdict_ids'].append(verdict['id'])
 
     state = StateJudge(context, capture, emit)
+    paths = PathJudge(context, state, emit)
     for row in rows:
         total += 1
         server_errors += (row['status'] or 0) >= 500
@@ -113,13 +116,15 @@ def analyze(rows, context, verdict_file, logs=None, http_id_counts=None, capture
                 verdict['log_join_basis'] = 'unique_request_id'
                 joined += 1
         emit(verdict)
+        paths.consume(row, op, state.snapshots.get(state.scope(row)))
         state.consume(row, op)
     state_audit = state.finish()
+    path_audit = paths.finish()
     coverage = {k: {'name': name, 'implemented': k in supported,
                     'opportunities': sum(counts[k].values()) if k in supported else None,
                     'counts': {v: counts[k][v] for v in VALUES} if k in supported else {v: None for v in VALUES},
                     'abstention_reasons': dict(sorted(reasons[k].items())) if k in supported else None,
-                    'reason': 'BOUNDED_SUBSET_SEE_REPORT' if k in supported else 'PROPERTY_NOT_IMPLEMENTED_IN_DEV_3'}
+                    'reason': 'BOUNDED_SUBSET_SEE_REPORT' if k in supported else 'PROPERTY_NOT_IMPLEMENTED_IN_DEV_4'}
                 for k, name in CLASSES.items()}
     partitions = {kind: {'groups': sum(g['group_type'] == kind for g in groups.values()),
                          'occurrences': sum(g['occurrences'] for g in groups.values() if g['group_type'] == kind)}
@@ -127,5 +132,6 @@ def analyze(rows, context, verdict_file, logs=None, http_id_counts=None, capture
     return {'exchanges': total, 'groups': sorted(groups.values(), key=lambda g: g['id']),
             'finding_partitions': partitions,
             'classes': coverage, 'unique_server_log_joins': joined, 'state_audit': state_audit,
+            'path_consistency_audit': path_audit,
             'server_5xx': server_errors, 'unjoined_server_5xx': server_errors - joined,
             'distinct_bugs': None, 'producer_verdicts_used': False}

@@ -1,0 +1,21 @@
+{
+  "schema_version": "natchan-semantic-request/1",
+  "run": {
+    "id": "synthetic-s2",
+    "product": "example",
+    "tool": "provengo",
+    "start_state": "fresh_snapshot"
+  },
+  "contract": "contract.json",
+  "knowledge": "knowledge.json",
+  "freeze": "freeze.json",
+  "evidence": {
+    "format": "http-jsonl",
+    "traffic": "traffic.jsonl",
+    "capture": {
+      "complete": true,
+      "exclusive": true,
+      "ordering": "serial"
+    }
+  }
+}

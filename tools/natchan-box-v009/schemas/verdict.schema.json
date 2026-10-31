@@ -26,6 +26,7 @@
     "property": {
       "enum": [
         "S1",
+        "S2",
         "S3",
         "S5",
         "S7"
@@ -52,7 +53,10 @@
       "type": "null"
     },
     "field": {
-      "type": "null"
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "status": {
       "type": [
@@ -112,7 +116,8 @@
       "enum": [
         "http_status_only",
         "bounded_raw_http_state",
-        "supported_json_scalar_constraints"
+        "supported_json_scalar_constraints",
+        "create_update_comparison"
       ]
     },
     "root_cause_proven": {
@@ -141,6 +146,15 @@
     },
     "atomicity_guarantee": {
       "const": "not_established_from_contract"
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
     }
   }
 }

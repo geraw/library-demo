@@ -32,11 +32,14 @@ def validate(manifest, output):
             write(knowledge, context)
             write(folder / 'freeze.json', natchan.make_freeze(source, knowledge))
             bindings = context['write_read_bindings']
+            path_bindings = context.get('create_update_bindings', {})
             row = {'id': name, 'exit_code': 0, 'contract_sha256': item['sha256'],
                    'knowledge_bytes': knowledge.stat().st_size, 'operations': len(context['operations']),
                    'structural_candidates': sum(v['status'] == 'structural_candidate' for v in bindings.values()),
                    'usable_scalar_bindings': sum(v.get('usable_scalar_fields', 0) > 0 for v in bindings.values()),
                    'unknown_bindings': sum(v['status'] == 'unknown' for v in bindings.values()),
+                   's2_update_families': sum(v['status'] == 'structural_candidate' for v in path_bindings.values()),
+                   's2_contract_pairs': sum(bool(p['fields']) for v in path_bindings.values() for p in v['pairs']),
                    'gaps': len(context['gaps'])}
         except InputError as e:
             row = {'id': name, 'exit_code': e.code, 'reason': str(e), 'contract_sha256': item['sha256']}

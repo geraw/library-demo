@@ -1,4 +1,4 @@
-# Bounded independent semantic rules — 009-dev.3
+# Bounded independent semantic rules — 009-dev.4
 
 This is a development subset of the supplied requirements, not full semantic coverage.
 Same procedures for all tool names. No producer verdicts, scenario names, JS, system source or known-bug catalogs
@@ -74,7 +74,7 @@ Create/delete atomicity and collateral/server-managed changes are not certified 
 
 S7 remains status-only: matched 5xx or undeclared status -> candidate; declared non-5xx -> consistent for status only;
 missing answer/operation -> abstention. Server signatures require unique request-ID joins and do not prove root cause.
-S2 path consistency, S4 reference integrity and S6 placement/views remain unimplemented with null counts.
+S2 path consistency is implemented as documented in S2_CREATE_UPDATE.md. S4 reference integrity and S6 placement/views remain unimplemented with null counts.
 
 ## Counting and interpretation
 

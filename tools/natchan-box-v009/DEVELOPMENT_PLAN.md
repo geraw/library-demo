@@ -1,7 +1,7 @@
 # v009 implementation plan and acceptance gates
 
 Base: operational v008 at `6310af7baecc25fc46692d1127c80dbc1da4247d`. Never mutate that release.
-Current build `009-dev.3` is a development checkpoint, not the final semantic-judge release.
+Current build `009-dev.4` is a development checkpoint, not the final semantic-judge release.
 
 ## Gate 1 — independent context and bounded S7 (implemented)
 
@@ -71,3 +71,10 @@ Do not tune the next cycle on held-out evidence. New rules prompted by evaluated
 R1/R2/R3/R4/R6 are addressed in REVIEW_RESPONSE_20261101.md; six original contracts derive/freeze.
 R5 (independent S2 create/update comparison) is the next semantic priority and remains null in this version.
 No product-specific exception was added for a known false positive, and no run result was used as a judge answer.
+
+## Dev.4 S2 completion
+
+Independent scalar create/update class and readback comparisons are implemented; see S2_CREATE_UPDATE.md.
+Alternative write methods need explicit public role cues and shared schemas. Unknown identity/scope is abstention,
+status divergence is an observation, and controlled stored-value divergence is a candidate, never proven bug identity.
+General nested/array semantics and S4/S6 remain open. Older review checkpoints above describe their original versions.

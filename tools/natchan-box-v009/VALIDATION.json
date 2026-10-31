@@ -1,19 +1,19 @@
 {
-  "version": "009-dev.3",
-  "state": "development_milestone_3",
+  "version": "009-dev.4",
+  "state": "development_milestone_4_s2",
   "production_replacement": false,
   "base_commit": "6310af7baecc25fc46692d1127c80dbc1da4247d",
-  "previous_development_commit": "24d8c8e5a86fe80e81a19ceb9eae280c13e99eda",
+  "previous_development_commit": "7c0f0d2829087abda06c2c381dfd154659837560",
   "v008_regression": {
     "passed": 275,
     "source_unchanged": true
   },
   "v009_tests": {
-    "passed": 103,
+    "passed": 144,
     "command": "python -m unittest discover -s tools/natchan-box-v009/tests -q",
     "http_jsonl_stress_exchanges": 90000,
-    "loopback_http_modes": 6,
-    "loopback_http_exchanges": 18,
+    "loopback_http_modes": 10,
+    "loopback_http_exchanges": 34,
     "four_tool_label_invariance": true,
     "producer_verdict_injection_invariance": true,
     "state_guards_tested": [
@@ -35,7 +35,9 @@
       "journal-jsonl",
       "HAR 1.2",
       "observer-tool-jsonl"
-    ]
+    ],
+    "s2_new_tests": 41,
+    "s2_live_http_modes": 4
   },
   "retrospective_library": {
     "archive_sha256": "41d2e1b8369d1d552a0e1e5b55181b9f1a3c38dd0ebd2d5bd4a719cf57c90b86",
@@ -45,22 +47,23 @@
     "new_seeded_bug_credit_claimed": false,
     "details": "LIBRARY_RETROSPECTIVE.json",
     "analyzer_version": "009-dev.2",
-    "rerun_for_dev3": false
+    "rerun_for_dev3": false,
+    "rerun_for_dev4": false
   },
   "implemented_subsets": [
     "S1 same-item-URI scalar readback candidates",
+    "S2 independent scalar create/update response classes and identity-linked readback",
     "S3 bounded scalar input/storage constraints",
     "S5 requested-field after-error state observations",
     "S7 status candidates and unique log-ID signatures"
   ],
   "not_implemented": [
-    "S2",
     "S4",
     "S6",
-    "creation/read identity bindings",
     "nested/array state comparisons",
     "full JSON Schema validation",
-    "known-bug matching in the blind route"
+    "known-bug matching in the blind route",
+    "General creation identity without recorded navigation evidence"
   ],
   "not_performed": [
     "Windows PowerShell execution",
@@ -75,5 +78,17 @@
     "all_exit_zero": true,
     "details": "CONTRACT_ACCEPTANCE_20261101.json",
     "run_evidence_read": false
+  },
+  "s2_contract_acceptance": {
+    "contracts": 6,
+    "all_derive_freeze_exit_zero": true,
+    "details": "S2_CONTRACT_ACCEPTANCE.json",
+    "run_findings_claimed": false
+  },
+  "s2_cli_demo": {
+    "exit_code": 0,
+    "S2_candidates": 1,
+    "source_exchange_count": 4,
+    "evaluation": "synthetic development evidence"
   }
 }

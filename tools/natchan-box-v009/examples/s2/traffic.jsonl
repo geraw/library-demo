@@ -1,0 +1,4 @@
+{"actor": "synthetic-principal", "epoch": "demo-epoch", "method": "POST", "path": "/api/v1/items", "status": 201, "input": {"title": "probe", "owner_id": 1}, "response": {"id": 7}, "response_headers": {"Location": "/api/v1/items/7"}}
+{"actor": "synthetic-principal", "epoch": "demo-epoch", "method": "GET", "path": "/api/v1/items/7", "status": 200, "response": {"id": 7, "title": "create-value", "owner_id": 1}}
+{"actor": "synthetic-principal", "epoch": "demo-epoch", "method": "PATCH", "path": "/api/v1/items/7", "status": 200, "input": {"title": "probe"}}
+{"actor": "synthetic-principal", "epoch": "demo-epoch", "method": "GET", "path": "/api/v1/items/7", "status": 200, "response": {"id": 7, "title": "update-value", "owner_id": 1}}

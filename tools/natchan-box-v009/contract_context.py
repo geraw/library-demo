@@ -2,7 +2,7 @@
 import re
 from urllib.parse import urlsplit
 
-from common import InputError, Unsupported
+from common import InputError, Unsupported, canonical, digest
 
 METHODS = {'get', 'post', 'put', 'patch', 'delete', 'head', 'options', 'trace'}
 FIELD_KEYS = ('type', 'format', 'enum', 'minimum', 'maximum', 'exclusiveMinimum',
@@ -16,6 +16,20 @@ def esc(value):
 
 def at(pointer, name):
     return pointer + '/' + esc(name)
+
+
+def write_role(op, pointer):
+    for key in ('summary', 'description'):
+        text = op.get(key)
+        if not isinstance(text, str) or not text.strip():
+            continue
+        m = re.match(r'^\s*(creates?|updates?|edits?)\b', text, re.I)
+        return {'value': ('create' if m[1].lower().startswith('create') else 'update') if m else None,
+                'basis': 'public_contract_text_prefix', 'provenance': at(pointer, key)}
+    value = op.get('operationId')
+    m = re.match(r'^(create|update|edit)(?:[A-Z_\- ]|$)', value) if isinstance(value, str) else None
+    return {'value': ('create' if m[1] == 'create' else 'update') if m else None,
+            'basis': 'public_operation_id_prefix', 'provenance': at(pointer, 'operationId')}
 
 
 class Contract:
@@ -80,6 +94,10 @@ class Contract:
             return {'status': 'unknown', 'provenance': pointer}
         result = {'status': 'declared', 'provenance': pointer,
                   'constraints': {k: obj[k] for k in FIELD_KEYS if k in obj}}
+        if isinstance(obj.get('type'), str) and obj['type'] in ('string', 'number', 'integer', 'boolean'):
+            # Compare all scalar assertions, including ones this judge cannot validate itself.
+            annotations = {'title', 'description', 'default', 'example', 'examples', 'deprecated', 'externalDocs'}
+            result['assertion_sha256'] = digest(canonical({k: v for k, v in obj.items() if k not in annotations}))
         if any(k in obj for k in ('allOf', 'oneOf', 'anyOf', 'not', 'if', 'then', 'else')):
             result['status'] = 'ambiguous'
             result['reason'] = 'COMPOSED_SCHEMA_NOT_INTERPRETED'
@@ -145,8 +163,10 @@ def derive(doc, contract_hash):
                 for name, raw_link in sorted(raw_links.items()):
                     link, lp = c.resolve(raw_link, at(at(rp, 'links'), name))
                     links.append({'status': 'declared', 'provenance': lp,
+                                  'response_status': status,
                                   'operationId': link.get('operationId'),
                                   'operationRef': link.get('operationRef'),
+                                  'server': link.get('server'),
                                   'parameters': link.get('parameters', {}),
                                   'interpretation': 'operation_link_not_foreign_key_proof'})
             if not isinstance(item.get('parameters', []), list) or not isinstance(op.get('parameters', []), list):
@@ -192,6 +212,7 @@ def derive(doc, contract_hash):
                                'parameters': params, 'request_schema': request_schema,
                                'responses': response_schemas, 'links': links,
                                'security': op.get('security', doc.get('security', [])),
+                               'declared_write_role': write_role(op, pointer),
                                'entity': {'status': 'unknown', 'reason': 'ENTITY_IDENTITY_NOT_PROVEN'},
                                'placement_candidate': path.rsplit('/', 2)[0] if path.count('{') > 1 else None})
     security_pointer = '#/components/securitySchemes' if 'openapi' in doc else '#/securityDefinitions'
@@ -285,11 +306,14 @@ def derive(doc, contract_hash):
                        'assumption': 'SAME_NAMED_WRITABLE_READABLE_FIELD_IS_PERSISTED',
                        'atomicity_guarantee': 'unknown'}
         bindings[op['key']] = binding
+    from derive_path_bindings import derive_pairs
+    path_bindings = derive_pairs(operations)
     unique_gaps = {tuple(sorted(g.items())): g for g in c.gaps}
-    return {'schema_version': 'natchan-contract-context/1', 'derivation_version': '009-dev.3',
+    return {'schema_version': 'natchan-contract-context/1', 'derivation_version': '009-dev.4',
             'contract_sha256': contract_hash, 'knowledge_policy': 'contract-only',
             'operations': operations, 'entity_candidates': [entities[k] for k in sorted(entities)],
             'write_read_bindings': bindings,
+            'create_update_bindings': path_bindings,
             'api_base_paths': sorted(bases),
             'security_schemes': schemes,
             'session_ending_operations': {'status': 'unknown', 'reason': 'NOT_INFERRED_FROM_NAMES'},

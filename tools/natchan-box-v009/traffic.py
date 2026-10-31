@@ -131,7 +131,8 @@ def normalize(raw, source):
             'input_available': 'input' in r and request_valid,
             'response_available': 'response' in r and response_valid,
             'actor': digest(actor.encode()) if actor else None, 'epoch': epoch, 'case_id': case,
-            'started': started, 'ended': ended, 'observed': observed}
+            'started': started, 'ended': ended, 'observed': observed,
+            'location': res_h.get('location'), 'scheme': parsed.scheme}
 
 
 def har_entry(entry, source):

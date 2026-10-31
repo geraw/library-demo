@@ -152,7 +152,7 @@ def execute(doc, paths, output):
         if fmt == 'none':
             report = {'exchanges': None, 'groups': [], 'distinct_bugs': None,
                       'unique_server_log_joins': 0, 'producer_verdicts_used': False,
-                      'classes': {k: {'name': name, 'implemented': k in ('S1', 'S3', 'S5', 'S7'), 'opportunities': None,
+                      'classes': {k: {'name': name, 'implemented': k in ('S1', 'S2', 'S3', 'S5', 'S7'), 'opportunities': None,
                                       'counts': {v: None for v in VALUES}, 'abstention_reasons': None,
                                       'reason': 'HTTP_TRAFFIC_MISSING'} for k, name in CLASSES.items()}}
         else:
@@ -185,7 +185,8 @@ def execute(doc, paths, output):
              'Status: PARTIAL. This is a contract-only development milestone, not a v008 replacement.', '',
              'Implemented subsets: S1 same-URI scalar read-back, S3 scalar request constraints,',
              'S5 observed changes after errors, S7 HTTP status checks and unique request-ID log signatures.',
-             'S2/S4/S6: not implemented; their counts are null.',
+             'S2: independent scalar create/update response classes and identity-linked readback comparisons.',
+             'S4/S6: not implemented; their counts are null.',
              'S1 requires declared complete, isolated, serial capture plus recorded actor/reset epoch.',
              'S5 changed state is a policy observation; contract atomicity is not inferred.', '',
              'Captured exchanges: ' + str(report['exchanges']),
