@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "v009 independent S7 verdict",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "property",
+    "value",
+    "reason",
+    "operation",
+    "entity",
+    "field",
+    "status",
+    "input_class",
+    "evidence",
+    "knowledge",
+    "scope",
+    "root_cause_proven"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "property": {
+      "const": "S7"
+    },
+    "value": {
+      "enum": [
+        "violation",
+        "consistent",
+        "not_evaluable",
+        "policy_observation"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "operation": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "entity": {
+      "type": "null"
+    },
+    "field": {
+      "type": "null"
+    },
+    "status": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "input_class": {
+      "type": "string"
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "sha256"
+        ],
+        "properties": {
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "line_1based": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "record": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "locator": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "knowledge": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "contract_sha256",
+          "pointer"
+        ],
+        "properties": {
+          "contract_sha256": {
+            "type": "string"
+          },
+          "pointer": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "scope": {
+      "const": "http_status_only"
+    },
+    "root_cause_proven": {
+      "const": false
+    },
+    "server_signature_sha256": {
+      "type": "string"
+    },
+    "log_join_basis": {
+      "const": "unique_request_id"
+    }
+  }
+}

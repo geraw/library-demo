@@ -1,0 +1,59 @@
+{
+  "version": "009-dev.1",
+  "state": "development_milestone_1",
+  "production_replacement": false,
+  "base_commit": "6310af7baecc25fc46692d1127c80dbc1da4247d",
+  "v008_regression": {
+    "command": "python -m unittest discover -s tools/natchan-box-v008/tests -q",
+    "passed": 275,
+    "source_unchanged": true
+  },
+  "v009_tests": {
+    "command": "python -m unittest discover -s tools/natchan-box-v009/tests -q",
+    "passed": 46,
+    "large_fixture_http_exchanges": 90000,
+    "large_fixture_format": "http-jsonl",
+    "four_tool_label_invariance": true,
+    "producer_label_injection_invariance": true,
+    "raw_source_hash_changes_when_producer_annotations_change": true,
+    "repeat_output_byte_equality": true
+  },
+  "cli_synthetic_demo": {
+    "exit_code": 0,
+    "status": "PARTIAL",
+    "exchanges": 4,
+    "S7": {
+      "consistent": 1,
+      "not_evaluable": 1,
+      "policy_observation": 0,
+      "violation": 2
+    },
+    "symptom_groups": 1,
+    "occurrences": 2
+  },
+  "contract_derivation_smoke": [
+    {
+      "path": "library/reference/library_openapi.json",
+      "sha256": "50b08c7dd82f8caafa105dc6828909d03b267eb75e5163bcf9ebd814868176f6",
+      "operations": 13,
+      "entity_candidates": 4,
+      "judgement_on_library_run_evidence_performed": false
+    },
+    {
+      "path": "library/ess-experiment/campaign-v007/library_openapi_v007.json",
+      "sha256": "ac2ec5277c85cd1e7bd49b2f94623222f5005472005f69c0bbc5acd039557b6d",
+      "operations": 13,
+      "entity_candidates": 4,
+      "judgement_on_library_run_evidence_performed": false
+    }
+  ],
+  "not_performed": [
+    "Windows PowerShell execution",
+    "real new-cycle tool archive acceptance",
+    "held-out semantic evaluation",
+    "Library four-configuration business reanalysis with v009",
+    "S1-S6 semantic judgement"
+  ],
+  "new_sut_requests": 0,
+  "held_out_validation_performed": false
+}
