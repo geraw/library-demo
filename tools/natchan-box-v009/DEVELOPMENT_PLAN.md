@@ -1,7 +1,7 @@
 # v009 implementation plan and acceptance gates
 
 Base: operational v008 at `6310af7baecc25fc46692d1127c80dbc1da4247d`. Never mutate that release.
-Current build `009-dev.2` is a development checkpoint, not the final semantic-judge release.
+Current build `009-dev.3` is a development checkpoint, not the final semantic-judge release.
 
 ## Gate 1 — independent context and bounded S7 (implemented)
 
@@ -65,3 +65,9 @@ implementation interpretations, not silent edits to the study protocol:
 - Coverage denominators for future classes count defined opportunities, not every HTTP exchange seven times.
 
 Do not tune the next cycle on held-out evidence. New rules prompted by evaluated evidence belong to a subsequent freeze.
+
+## Dev.3 producer review checkpoint
+
+R1/R2/R3/R4/R6 are addressed in REVIEW_RESPONSE_20261101.md; six original contracts derive/freeze.
+R5 (independent S2 create/update comparison) is the next semantic priority and remains null in this version.
+No product-specific exception was added for a known false positive, and no run result was used as a judge answer.

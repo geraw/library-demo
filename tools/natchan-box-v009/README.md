@@ -1,6 +1,6 @@
-# Natchan Box v009 — independent contract context (development milestone 2)
+# Natchan Box v009 — independent contract context (development milestone 3)
 
-**Version: `009-dev.2`, not a production replacement for v008.** Python 3.10+, standard library only.
+**Version: `009-dev.3`, not a production replacement for v008.** Python 3.10+, standard library only.
 Based on repository commit `6310af7baecc25fc46692d1127c80dbc1da4247d`.
 The operational v008 directory, branch, request interface, product catalogs and existing integrations are unchanged.
 Keep using v008 in established pipelines until v009 passes the later acceptance gates.
@@ -224,7 +224,7 @@ subset, not full schema or business validation. See coverage for checked/unsuppo
 
 State retention is bounded to 128 snapshots, 64 KiB per state body and one pending mutation. Evictions and budget
 abstentions are explicit. Raw bodies/principal names are never copied into semantic verdicts.
-Old dev.1 freezes/knowledge must be regenerated for dev.2; the original dev.1 commit remains reproducible.
+Old dev.1/dev.2 freezes and knowledge must be regenerated for dev.3; the original dev.1 commit remains reproducible.
 
 ## Retrospective Library transport acceptance
 
@@ -262,8 +262,44 @@ The committed `LIBRARY_RETROSPECTIVE.json` contains only safe aggregates, exact 
 
 ## Validation of this checkpoint
 
-90 development tests pass, including six real loopback HTTP modes and the 90,000-exchange stress case.
+The previous dev.2 checkpoint passed 90 development tests, including six real loopback HTTP modes and the 90,000-exchange stress case.
 All 275 operational v008 tests pass unchanged. See `VALIDATION.json` and `LIBRARY_RETROSPECTIVE.json`.
 No Windows PowerShell or new Gitea/Vikunja live run or held-out evaluation is claimed.
 The legacy ingestion counter `ignored_non_http` means records outside the selected tool/research stream;
 it includes raw observer HTTP readbacks as well as producer verdict/metadata rows, not only non-HTTP records.
+
+
+## Dev.3: producer review fixes (1 Nov 2026)
+
+See [the response to R1–R6](REVIEW_RESPONSE_20261101.md) and `CONTRACT_ACCEPTANCE_20261101.json`.
+Swagger 2 parameter `required` booleans no longer enter Schema.required. Item routes may end in a slash; matching
+still preserves the contract's exact path. Every binding has diagnostic checks, unavailable reasons and schema pointers.
+Nested expansion stops beyond depth 2 because the current judge supports top-level scalars; deeper nodes are explicitly
+unknown. This bounds Dependency-Track's original contract to about 3.2 MB without raising the knowledge limit.
+Null/empty-array schema markers remain unknown instead of disabling other operations.
+
+Findings now carry a `group_type`. `group_partitions` references IDs from the authoritative `groups` array;
+`finding_partitions` in coverage and separate Markdown summaries distinguish 5xx, undeclared-status candidates,
+semantic candidates and policy observations. Do not double-count partition references or call undeclared 401s crashes.
+
+Timing provenance distinguishes full intervals from start-only and observation-only records. `observed_utc` or journal
+`t_utc` records an observation instant, not a request start/end. Start-only input can use independently established
+serial capture facts; one instant cannot itself verify serialization. Reversed recorded order or overlapping supplied
+intervals still disables cross-exchange checks. HAR's `time` is elapsed milliseconds in the format description;
+any omission by a converter needs a source-bound explanation, not a claim that HAR never has durations.
+
+The six-system acceptance reads **contracts only**, not run results. All six contracts derive and freeze, but usable
+bindings vary substantially. Mealie's reviewed file was not available for that acceptance. S2/S4/S6 are still open.
+The historical Library results above belong to dev.2; no new tool evidence was reanalyzed for dev.3.
+
+Contract acceptance manifest shape (substitute exact local files and hashes):
+
+```json
+{"schema_version":"natchan-contract-check/1","contracts":[{"id":"gitea","path":"contract.json","sha256":"<exact SHA256>"}]}
+```
+
+```text
+python tools/natchan-box-v009/validate_contracts.py --manifest contracts.json --output new-contract-check-directory
+```
+
+Dev.3 acceptance: 103 development tests passed; six exact original contracts derived/froze; v008 remains unchanged.

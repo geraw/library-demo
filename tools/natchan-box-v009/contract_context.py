@@ -58,6 +58,13 @@ class Contract:
         self.schema_nodes += 1
         if self.schema_nodes > 100_000:
             raise Unsupported('CONTRACT_DERIVATION_NODE_LIMIT_100000')
+        if obj is None:
+            self.gaps.append({'code': 'NULL_SCHEMA_UNINTERPRETABLE', 'pointer': pointer})
+            return {'status': 'unknown', 'provenance': pointer, 'reason': 'NULL_SCHEMA_UNINTERPRETABLE'}
+        if isinstance(obj, list) and not obj:
+            # Some server exports use [] as an empty-schema marker; never reinterpret it as an array schema.
+            self.gaps.append({'code': 'EMPTY_ARRAY_SCHEMA_UNINTERPRETABLE', 'pointer': pointer})
+            return {'status': 'unknown', 'provenance': pointer, 'reason': 'EMPTY_ARRAY_SCHEMA_UNINTERPRETABLE'}
         if type(obj) is bool:
             return {'status': 'unknown', 'provenance': pointer, 'reason': 'BOOLEAN_SCHEMA_NOT_INTERPRETED'}
         obj, pointer = self.resolve(obj, pointer)
@@ -65,9 +72,10 @@ class Contract:
             self.gaps.append({'code': 'RECURSIVE_SCHEMA', 'pointer': pointer})
             return {'status': 'unknown', 'provenance': pointer, 'reason': 'RECURSIVE_SCHEMA'}
         active = (*active, pointer)
-        if depth > 20:
-            self.gaps.append({'code': 'SCHEMA_DEPTH_LIMIT', 'pointer': pointer})
-            return {'status': 'unknown', 'provenance': pointer}
+        if depth > 2:
+            # Current rules compare top-level scalars, not unbounded nested object graphs.
+            self.gaps.append({'code': 'NESTED_SCHEMA_SCOPE_LIMIT', 'pointer': pointer})
+            return {'status': 'unknown', 'provenance': pointer, 'reason': 'NESTED_SCHEMA_SCOPE_LIMIT'}
         if not obj:
             return {'status': 'unknown', 'provenance': pointer}
         result = {'status': 'declared', 'provenance': pointer,
@@ -155,9 +163,14 @@ def derive(doc, contract_hash):
                 if param.get('in') == 'body':
                     request_schema = c.schema(param.get('schema', {}), at(pp, 'schema'))
                 else:
+                    if 'schema' in param:
+                        parameter_schema = param['schema']
+                    else:
+                        # Swagger 2 Parameter.required is boolean; Schema.required is a string array.
+                        parameter_schema = {k: v for k, v in param.items() if k != 'required'}
                     params.append({'name': param.get('name'), 'in': param.get('in'),
                                    'required': param.get('required', False), 'provenance': pp,
-                                   'schema': c.schema(param.get('schema', param), at(pp, 'schema') if 'schema' in param else pp)})
+                                   'schema': c.schema(parameter_schema, at(pp, 'schema') if 'schema' in param else pp)})
             if 'requestBody' in op:
                 rb, rbp = c.resolve(op['requestBody'], at(pointer, 'requestBody'))
                 request_schema = c.response_schema(rb, rbp)
@@ -165,7 +178,7 @@ def derive(doc, contract_hash):
             object_reads = [s for s in read_schemas if s.get('fields') or s.get('constraints', {}).get('type') == 'object']
             role = 'unknown'
             if method == 'get':
-                role = 'read_one_candidate' if path.endswith('}') and object_reads else 'read_many_candidate'
+                role = 'read_one_candidate' if path.rstrip('/').endswith('}') and object_reads else 'read_many_candidate'
             elif method in ('put', 'patch'):
                 role = 'update_candidate'
             elif method == 'delete':
@@ -226,8 +239,22 @@ def derive(doc, contract_hash):
         get = by_route.get(('GET', op['path']))
         req = op.get('request_schema') or {}
         res = (get or {}).get('responses', {}).get('200', {})
-        binding = {'status': 'unknown', 'reason': 'SAME_ROUTE_JSON_OBJECT_BINDING_UNAVAILABLE'}
-        if (op['path'].endswith('}') and get and req.get('status') == 'declared' and
+        checks = {
+            'item_route': op['path'].rstrip('/').endswith('}'),
+            'same_route_get': get is not None,
+            'request_schema_declared': req.get('status') == 'declared',
+            'request_object_fields': bool(req.get('fields')),
+            'get_200_schema_declared': res.get('status') == 'declared',
+            'get_200_object_fields': bool(res.get('fields'))}
+        why = {'item_route': 'NOT_AN_ITEM_ROUTE', 'same_route_get': 'SAME_ROUTE_GET_MISSING',
+               'request_schema_declared': 'REQUEST_SCHEMA_UNKNOWN_OR_COMPOSED',
+               'request_object_fields': 'REQUEST_OBJECT_FIELDS_UNAVAILABLE',
+               'get_200_schema_declared': 'GET_200_SCHEMA_UNKNOWN_OR_COMPOSED',
+               'get_200_object_fields': 'GET_200_OBJECT_FIELDS_UNAVAILABLE'}
+        diagnostics = {'checks': checks, 'unavailable_reasons': [why[k] for k, v in checks.items() if not v],
+                       'request_schema_pointer': req.get('provenance'), 'read_schema_pointer': res.get('provenance')}
+        binding = {'status': 'unknown', 'reason': 'SAME_ROUTE_JSON_OBJECT_BINDING_UNAVAILABLE', 'diagnostics': diagnostics}
+        if (checks['item_route'] and get and req.get('status') == 'declared' and
                 res.get('status') == 'declared' and req.get('fields') and res.get('fields')):
             fields = {}
             excluded = {}
@@ -248,14 +275,18 @@ def derive(doc, contract_hash):
                     continue
                 fields[name] = {'write_schema': w, 'read_schema': r,
                                 'required_in_read': name in res.get('required', [])}
+            if not fields:
+                diagnostics['unavailable_reasons'].append('NO_SUPPORTED_COMMON_SCALAR_FIELDS')
             binding = {'status': 'structural_candidate', 'read_operation': get['key'],
                        'read_status': 200, 'fields': fields, 'excluded_fields': excluded,
+                       'usable_scalar_fields': len(fields), 'diagnostics': diagnostics,
                        'identity_basis': 'same_concrete_item_uri_not_inferred_id_field',
                        'provenance': [op['provenance'], get['provenance']],
                        'assumption': 'SAME_NAMED_WRITABLE_READABLE_FIELD_IS_PERSISTED',
                        'atomicity_guarantee': 'unknown'}
         bindings[op['key']] = binding
-    return {'schema_version': 'natchan-contract-context/1', 'derivation_version': '009-dev.2',
+    unique_gaps = {tuple(sorted(g.items())): g for g in c.gaps}
+    return {'schema_version': 'natchan-contract-context/1', 'derivation_version': '009-dev.3',
             'contract_sha256': contract_hash, 'knowledge_policy': 'contract-only',
             'operations': operations, 'entity_candidates': [entities[k] for k in sorted(entities)],
             'write_read_bindings': bindings,
@@ -263,4 +294,4 @@ def derive(doc, contract_hash):
             'security_schemes': schemes,
             'session_ending_operations': {'status': 'unknown', 'reason': 'NOT_INFERRED_FROM_NAMES'},
             'references': {'status': 'unknown', 'reason': 'SCHEMA_REF_IS_NOT_A_FOREIGN_KEY'},
-            'gaps': sorted(c.gaps, key=lambda x: (x['pointer'], x['code']))}
+            'gaps': sorted(unique_gaps.values(), key=lambda x: (x['pointer'], x['code']))}

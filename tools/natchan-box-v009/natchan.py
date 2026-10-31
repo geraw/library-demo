@@ -120,16 +120,33 @@ def execute(doc, paths, output):
     ids = Counter()
     fmt = doc['evidence']['format']
     interval_conflict, latest_end, intervals = False, None, 0
+    latest_start, latest_observed = None, None
+    timing = Counter()
     if fmt != 'none':
         for row in exchanges(paths['traffic'], fmt, inputs['traffic'], {}):
             if logs and row['request_id']:
                 ids[row['request_id']] += 1
             if row['started'] is not None and latest_end is not None and row['started'] < latest_end:
                 interval_conflict = True
+            if row['started'] is not None:
+                if latest_start is not None and row['started'] < latest_start:
+                    interval_conflict = True
+                latest_start = row['started']
+            if row['observed'] is not None:
+                if latest_observed is not None and row['observed'] < latest_observed:
+                    interval_conflict = True
+                latest_observed = row['observed']
             if row['ended'] is not None:
                 latest_end = max(latest_end, row['ended']) if latest_end is not None else row['ended']
             if row['started'] is not None and row['ended'] is not None:
                 intervals += 1
+                timing['complete_intervals'] += 1
+            elif row['started'] is not None:
+                timing['start_only'] += 1
+            elif row['observed'] is not None:
+                timing['observation_only'] += 1
+            else:
+                timing['no_interval'] += 1
     capture = dict(doc['evidence'].get('capture', {}), _contradicted_serial=interval_conflict)
     with (output / 'verdicts.jsonl').open('w', encoding='utf-8', newline='\n') as f:
         if fmt == 'none':
@@ -145,7 +162,10 @@ def execute(doc, paths, output):
         raise InputError('INPUT_CHANGED_DURING_ANALYSIS')
     if engine_hashes() != frozen['engine']:
         raise InputError('ENGINE_CHANGED_DURING_ANALYSIS')
-    write(output / 'findings.json', {'schema_version': 'natchan-symptom-groups/1', 'groups': report.pop('groups'),
+    groups = report.pop('groups')
+    write(output / 'findings.json', {'schema_version': 'natchan-symptom-groups/1', 'groups': groups,
+                                     'group_partitions': {kind: [g['id'] for g in groups if g['group_type'] == kind]
+                                                          for kind in ('server_5xx', 'undeclared_status', 'semantic_candidate', 'policy_observation')},
                                      'distinct_bugs': None, 'counting_unit': 'symptom_groups_not_bugs'})
     write(output / 'coverage.json', {'schema_version': 'natchan-semantic-coverage/1', **report,
                                      'ingestion': stats, 'server_log_lines': log_lines,
@@ -156,6 +176,7 @@ def execute(doc, paths, output):
                                       'run': {k: v for k, v in doc['run'].items() if k != 'id'},
                                       'run_id_sha256': digest(doc['run']['id'].encode('utf-8')),
                                       'capture_metadata': capture, 'http_intervals_retained': intervals,
+                                      'timing_evidence': dict(sorted(timing.items())),
                                       'metadata_basis': 'caller_declaration_not_observed_server_version',
                                       'knowledge_policy': 'contract-only', 'producer_verdicts_used': False,
                                       'new_sut_requests': 0, 'chronological_freeze_verified': False})
@@ -178,6 +199,11 @@ def execute(doc, paths, output):
         lines.append('| ' + prop + ' | ' + ' | '.join('null' if n is None else str(n) for n in vals) + ' |')
     lines.extend(['', 'Group details: findings.json. Exact witnesses: verdicts.jsonl.',
                   'Unjoined 5xx: ' + str(report.get('unjoined_server_5xx')), ''])
+    lines.extend(['## Separate finding streams', '', '| Stream | Groups | Occurrences |', '|---|---:|---:|'])
+    for kind, meta in report.get('finding_partitions', {}).items():
+        lines.append('| ' + kind + ' | ' + str(meta['groups']) + ' | ' + str(meta['occurrences']) + ' |')
+    lines.extend(['', 'Undeclared statuses are contract discrepancies; they are reported separately from server 5xx.',
+                  'Partition lists reference group IDs; do not count them again as additional findings.', ''])
     (output / 'report.md').write_bytes(('\n'.join(lines)).encode('utf-8'))
     return report
 

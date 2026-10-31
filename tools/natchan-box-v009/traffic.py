@@ -13,7 +13,7 @@ MAX_LINE_BYTES = 16 * 1024 * 1024
 MAX_RECORDS = 100_000
 RAW_KEYS = {'method', 'url', 'path', 'status', 'input', 'response', 'actor',
             'epoch', 'case_id', 'request_id', 't_utc', 'request_headers', 'response_headers',
-            'started_utc', 'ended_utc'}
+            'started_utc', 'ended_utc', 'observed_utc'}
 
 
 def instant(value):
@@ -118,6 +118,7 @@ def normalize(raw, source):
     if case is not None and not isinstance(case, str):
         raise InputError('CAPTURE_CASE_INVALID')
     started, ended = instant(r.get('started_utc')), instant(r.get('ended_utc'))
+    observed = instant(r.get('observed_utc', r.get('t_utc')))
     if started is not None and ended is not None and ended < started:
         raise InputError('HTTP_INTERVAL_INVALID')
     request_body, request_valid = decode_body(r.get('input'), req_h.get('content-type', ''))
@@ -130,7 +131,7 @@ def normalize(raw, source):
             'input_available': 'input' in r and request_valid,
             'response_available': 'response' in r and response_valid,
             'actor': digest(actor.encode()) if actor else None, 'epoch': epoch, 'case_id': case,
-            'started': started, 'ended': ended}
+            'started': started, 'ended': ended, 'observed': observed}
 
 
 def har_entry(entry, source):

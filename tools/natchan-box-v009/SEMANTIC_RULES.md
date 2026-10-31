@@ -1,4 +1,4 @@
-# Bounded independent semantic rules — 009-dev.2
+# Bounded independent semantic rules — 009-dev.3
 
 This is a development subset of the supplied requirements, not full semantic coverage.
 Same procedures for all tool names. No producer verdicts, scenario names, JS, system source or known-bug catalogs
@@ -84,3 +84,6 @@ An opportunity denominator is per defined check, not seven automatic checks per 
 Zero opportunities (e.g. no PUT/PATCH in Library) is not evidence of business correctness.
 Unknown-route mutations are separately counted and invalidate state; they do not certify zero semantic defects.
 The analyzer never initiates an HTTP request. End-to-end test harnesses and retrospective archive readers are separate.
+
+Dev.3 bounds nested expansion beyond depth 2, diagnoses unavailable bindings, and separates S7 5xx/undeclared-status groups.
+Start-only/completion-observation timing does not independently verify a serial history. See REVIEW_RESPONSE_20261101.md.

@@ -1,15 +1,15 @@
 {
-  "version": "009-dev.2",
-  "state": "development_milestone_2",
+  "version": "009-dev.3",
+  "state": "development_milestone_3",
   "production_replacement": false,
   "base_commit": "6310af7baecc25fc46692d1127c80dbc1da4247d",
-  "previous_development_commit": "03a7210bb3f5d053d4fc59026397a0333003f67a",
+  "previous_development_commit": "24d8c8e5a86fe80e81a19ceb9eae280c13e99eda",
   "v008_regression": {
     "passed": 275,
     "source_unchanged": true
   },
   "v009_tests": {
-    "passed": 90,
+    "passed": 103,
     "command": "python -m unittest discover -s tools/natchan-box-v009/tests -q",
     "http_jsonl_stress_exchanges": 90000,
     "loopback_http_modes": 6,
@@ -43,7 +43,9 @@
     "evaluation": "development_post_hoc_not_held_out",
     "tool_exchanges": 81802,
     "new_seeded_bug_credit_claimed": false,
-    "details": "LIBRARY_RETROSPECTIVE.json"
+    "details": "LIBRARY_RETROSPECTIVE.json",
+    "analyzer_version": "009-dev.2",
+    "rerun_for_dev3": false
   },
   "implemented_subsets": [
     "S1 same-item-URI scalar readback candidates",
@@ -63,8 +65,15 @@
   "not_performed": [
     "Windows PowerShell execution",
     "new live Gitea/Vikunja runs",
-    "held-out evaluation"
+    "held-out evaluation",
+    "Producer handoff traffic experiments rerun for dev.3"
   ],
   "new_sut_requests_by_analyzer": 0,
-  "held_out_validation_performed": false
+  "held_out_validation_performed": false,
+  "contract_review_acceptance": {
+    "contracts_derived_and_frozen": 6,
+    "all_exit_zero": true,
+    "details": "CONTRACT_ACCEPTANCE_20261101.json",
+    "run_evidence_read": false
+  }
 }

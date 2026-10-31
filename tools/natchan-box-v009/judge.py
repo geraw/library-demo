@@ -72,10 +72,14 @@ def analyze(rows, context, verdict_file, logs=None, http_id_counts=None, capture
         verdict_file.write(json.dumps(verdict, sort_keys=True, ensure_ascii=True, allow_nan=False) + '\n')
         if value not in ('violation', 'policy_observation'):
             return
+        group_type = ('server_5xx' if prop == 'S7' and verdict['reason'] == 'SERVER_5XX_CANDIDATE' else
+                      'undeclared_status' if prop == 'S7' else
+                      'policy_observation' if value == 'policy_observation' else 'semantic_candidate')
         key = (prop, value, verdict['operation'], tuple(verdict.get('fields', [])),
                verdict['reason'], verdict['input_class'], verdict['status'], verdict.get('server_signature_sha256'))
         if key not in groups:
             groups[key] = {'id': digest(canonical(list(key))), 'property': prop, 'value': value,
+                           'group_type': group_type,
                            'operation': verdict['operation'], 'fields': verdict.get('fields', []),
                            'reason': verdict['reason'], 'input_class': verdict['input_class'],
                            'status': verdict['status'], 'server_signature_sha256': key[-1],
@@ -115,9 +119,13 @@ def analyze(rows, context, verdict_file, logs=None, http_id_counts=None, capture
                     'opportunities': sum(counts[k].values()) if k in supported else None,
                     'counts': {v: counts[k][v] for v in VALUES} if k in supported else {v: None for v in VALUES},
                     'abstention_reasons': dict(sorted(reasons[k].items())) if k in supported else None,
-                    'reason': 'BOUNDED_SUBSET_SEE_REPORT' if k in supported else 'PROPERTY_NOT_IMPLEMENTED_IN_DEV_2'}
+                    'reason': 'BOUNDED_SUBSET_SEE_REPORT' if k in supported else 'PROPERTY_NOT_IMPLEMENTED_IN_DEV_3'}
                 for k, name in CLASSES.items()}
+    partitions = {kind: {'groups': sum(g['group_type'] == kind for g in groups.values()),
+                         'occurrences': sum(g['occurrences'] for g in groups.values() if g['group_type'] == kind)}
+                  for kind in ('server_5xx', 'undeclared_status', 'semantic_candidate', 'policy_observation')}
     return {'exchanges': total, 'groups': sorted(groups.values(), key=lambda g: g['id']),
+            'finding_partitions': partitions,
             'classes': coverage, 'unique_server_log_joins': joined, 'state_audit': state_audit,
             'server_5xx': server_errors, 'unjoined_server_5xx': server_errors - joined,
             'distinct_bugs': None, 'producer_verdicts_used': False}
