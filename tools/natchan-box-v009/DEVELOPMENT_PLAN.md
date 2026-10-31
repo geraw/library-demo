@@ -1,7 +1,7 @@
 # v009 implementation plan and acceptance gates
 
 Base: operational v008 at `6310af7baecc25fc46692d1127c80dbc1da4247d`. Never mutate that release.
-Current build `009-dev.1` is a development checkpoint, not the final semantic-judge release.
+Current build `009-dev.2` is a development checkpoint, not the final semantic-judge release.
 
 ## Gate 1 — independent context and bounded S7 (implemented)
 
@@ -12,8 +12,11 @@ Current build `009-dev.1` is a development checkpoint, not the final semantic-ju
 - Determinism, malformed evidence, input mutation, freeze drift, no-producer-verdict and 90,000-record controls.
 - Legacy v008 regression unchanged. No legacy product-finding recall is claimed by this milestone.
 
-## Gate 2 — entity bindings and S1/S2/S3/S5 (not implemented)
+## Gate 2 — entity bindings and S1/S2/S3/S5 (partially implemented)
 
+- Dev.2 implements same-item-URI PUT/PATCH/GET scalar bindings, S1, bounded S3 and S5 observations.
+  Capture assumptions, mutation invalidation, missing evidence and budget limits are explicit.
+  S2, creation bindings, arrays/nested values, full schema validation and product atomicity guarantees remain open.
 - Independently derive same-resource read/write bindings and identifier extraction; evaluate only bindings
   justified by public contract declarations. Candidate relations cannot silently become facts.
 - Establish object identity, actor/authorization scope, start/reset epoch and observation ordering from raw capture.

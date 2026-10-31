@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "v009 independent S7 verdict",
+  "title": "v009 independent bounded semantic verdict",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -24,7 +24,12 @@
       "pattern": "^[a-f0-9]{64}$"
     },
     "property": {
-      "const": "S7"
+      "enum": [
+        "S1",
+        "S3",
+        "S5",
+        "S7"
+      ]
     },
     "value": {
       "enum": [
@@ -104,7 +109,11 @@
       }
     },
     "scope": {
-      "const": "http_status_only"
+      "enum": [
+        "http_status_only",
+        "bounded_raw_http_state",
+        "supported_json_scalar_constraints"
+      ]
     },
     "root_cause_proven": {
       "const": false
@@ -114,6 +123,24 @@
     },
     "log_join_basis": {
       "const": "unique_request_id"
+    },
+    "fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "details": {
+      "type": "object"
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "atomicity_guarantee": {
+      "const": "not_established_from_contract"
     }
   }
 }

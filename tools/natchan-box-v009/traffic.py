@@ -1,5 +1,8 @@
 """Whitelisted raw exchanges only. No oracle, action, logical-name or verdict inputs."""
 from pathlib import Path
+import base64
+import binascii
+from datetime import datetime
 from urllib.parse import urlsplit
 
 from common import InputError, Unsupported, digest, loads, read
@@ -9,7 +12,31 @@ MAX_HAR_BYTES = 64 * 1024 * 1024  # bounded JSON document reader; explicit refus
 MAX_LINE_BYTES = 16 * 1024 * 1024
 MAX_RECORDS = 100_000
 RAW_KEYS = {'method', 'url', 'path', 'status', 'input', 'response', 'actor',
-            'epoch', 'case_id', 'request_id', 't_utc', 'request_headers', 'response_headers'}
+            'epoch', 'case_id', 'request_id', 't_utc', 'request_headers', 'response_headers',
+            'started_utc', 'ended_utc'}
+
+
+def instant(value):
+    if value is None:
+        return None
+    if not isinstance(value, str):
+        raise InputError('HTTP_TIMESTAMP_INVALID')
+    try:
+        stamp = datetime.fromisoformat(value.replace('Z', '+00:00'))
+        if stamp.tzinfo is None:
+            raise ValueError()
+        return stamp.timestamp()
+    except (ValueError, OverflowError) as e:
+        raise InputError('HTTP_TIMESTAMP_INVALID') from e
+
+
+def decode_body(value, content_type):
+    if isinstance(value, str) and ('/json' in content_type or '+json' in content_type):
+        try:
+            return loads(value), True
+        except InputError:
+            return None, False
+    return value, True
 
 
 def headers(value):
@@ -78,11 +105,32 @@ def normalize(raw, source):
         raise InputError('REQUEST_ID_INVALID')
     if request_id and any(marker in request_id.upper() for marker in ('REDACTED', '<TOKEN>', '***')):
         request_id = None
-    # Keep only fields actually used by the independent first milestone.
-    # Request ID is internal correlation data, never copied into the share output.
+    actor = r.get('actor')
+    if actor is not None and (not isinstance(actor, str) or not actor):
+        raise InputError('CAPTURE_ACTOR_INVALID')
+    if not actor:
+        authorization = req_h.get('authorization')
+        if authorization and not any(x in authorization.upper() for x in ('REDACTED', '<TOKEN>', '***')):
+            actor = 'credential:' + digest(authorization.encode())
+    epoch, case = r.get('epoch'), r.get('case_id')
+    if epoch is not None and type(epoch) not in (str, int):
+        raise InputError('CAPTURE_EPOCH_INVALID')
+    if case is not None and not isinstance(case, str):
+        raise InputError('CAPTURE_CASE_INVALID')
+    started, ended = instant(r.get('started_utc')), instant(r.get('ended_utc'))
+    if started is not None and ended is not None and ended < started:
+        raise InputError('HTTP_INTERVAL_INVALID')
+    request_body, request_valid = decode_body(r.get('input'), req_h.get('content-type', ''))
+    response_body, response_valid = decode_body(r.get('response'), res_h.get('content-type', ''))
+    # Raw values are internal only. Verdicts emit comparison outcomes, never these bodies.
     return {'method': method, 'path': parsed.path, 'query_present': bool(parsed.query),
             'status': status or None, 'input_class': shape(r.get('input')),
-            'request_id': request_id, 'source': source}
+            'request_id': request_id, 'source': source, 'origin': parsed.netloc.lower(),
+            'input': request_body, 'response': response_body,
+            'input_available': 'input' in r and request_valid,
+            'response_available': 'response' in r and response_valid,
+            'actor': digest(actor.encode()) if actor else None, 'epoch': epoch, 'case_id': case,
+            'started': started, 'ended': ended}
 
 
 def har_entry(entry, source):
@@ -98,10 +146,34 @@ def har_entry(entry, source):
             body = loads(body)
         except InputError:
             pass  # form, multipart and plain text remain strings
-    # The first S7 milestone does not consume answer bodies, but preserves raw source references.
-    return normalize({'method': req.get('method'), 'url': req.get('url'), 'status': res.get('status'),
+    content = res.get('content', {})
+    if not isinstance(content, dict):
+        raise InputError('HAR_CONTENT_INVALID')
+    response = content.get('text')
+    if content.get('encoding') == 'base64' and isinstance(response, str):
+        try:
+            response = base64.b64decode(response, validate=True).decode('utf-8')
+        except (ValueError, UnicodeError, binascii.Error):
+            response = None
+    elif content.get('encoding') not in (None, ''):
+        response = None
+    response, response_valid = decode_body(response, str(content.get('mimeType', '')))
+    record = {'method': req.get('method'), 'url': req.get('url'), 'status': res.get('status'),
                       'input': body, 'request_headers': headers(req.get('headers', [])),
-                      'response_headers': headers(res.get('headers', []))}, source)
+                      'response_headers': headers(res.get('headers', [])),
+                      'actor': entry.get('_actor'), 'epoch': entry.get('_epoch'),
+                      'case_id': entry.get('_case_id'), 'started_utc': entry.get('startedDateTime')}
+    if response is not None and response_valid:
+        record['response'] = response
+    # HAR time is milliseconds; unavailable (-1) never proves response completion.
+    if entry.get('startedDateTime') and type(entry.get('time')) in (int, float) and entry['time'] >= 0:
+        from datetime import timedelta
+        try:
+            start = datetime.fromisoformat(entry['startedDateTime'].replace('Z', '+00:00'))
+            record['ended_utc'] = (start + timedelta(milliseconds=entry['time'])).isoformat()
+        except (ValueError, OverflowError, TypeError) as e:
+            raise InputError('HAR_INTERVAL_INVALID') from e
+    return normalize(record, source)
 
 
 def exchanges(path, fmt, source_hash, stats):
@@ -123,7 +195,7 @@ def exchanges(path, fmt, source_hash, stats):
             stats['seen'] += 1
             yield har_entry(entry, {'sha256': source_hash, 'record': i, 'locator': '/log/entries/' + str(i)})
         return
-    if fmt not in ('http-jsonl', 'journal-jsonl'):
+    if fmt not in ('http-jsonl', 'journal-jsonl', 'observer-tool-jsonl'):
         raise Unsupported('TRAFFIC_FORMAT_UNSUPPORTED')
     with path.open('rb') as stream:
         line_number = 0
@@ -143,6 +215,17 @@ def exchanges(path, fmt, source_hash, stats):
                 # Deliberately never inspect producer check/measurement contents.
                 stats['ignored_non_http'] += 1
                 continue
+            if fmt == 'observer-tool-jsonl':
+                if obj.get('role') != 'tool':
+                    stats['ignored_non_http'] += 1
+                    continue
+                # Legacy recorder transport mapping only: never consume oracle/verdict rows.
+                obj = {k: v for k, v in obj.items() if k in RAW_KEYS or k in ('request', 'request_content_type')}
+                if 'request' in obj:
+                    obj['input'] = obj.pop('request')
+                content_type = obj.pop('request_content_type', None)
+                if isinstance(content_type, str):
+                    obj['request_headers'] = {'content-type': content_type}
             stats['seen'] += 1
             if stats['seen'] > MAX_RECORDS:
                 raise Unsupported('TRAFFIC_RECORD_LIMIT_100000')

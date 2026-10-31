@@ -82,9 +82,16 @@ def request_inputs(request_path):
         raise InputError('REPETITION_INVALID')
     if doc['run']['start_state'] not in ('fresh_snapshot', 'accumulated', 'unknown'):
         raise InputError('START_STATE_INVALID')
-    keys(doc['evidence'], {'format', 'traffic', 'server_log'}, {'format'})
+    keys(doc['evidence'], {'format', 'traffic', 'server_log', 'capture'}, {'format'})
+    capture = doc['evidence'].get('capture', {})
+    keys(capture, {'complete', 'exclusive', 'ordering'})
+    for key in ('complete', 'exclusive'):
+        if key in capture and type(capture[key]) is not bool:
+            raise InputError('CAPTURE_ASSUMPTION_INVALID')
+    if 'ordering' in capture and capture['ordering'] not in ('serial', 'concurrent', 'unknown'):
+        raise InputError('CAPTURE_ORDERING_INVALID')
     fmt = doc['evidence']['format']
-    if fmt not in ('har', 'http-jsonl', 'journal-jsonl', 'none'):
+    if fmt not in ('har', 'http-jsonl', 'journal-jsonl', 'observer-tool-jsonl', 'none'):
         raise Unsupported('TRAFFIC_FORMAT_UNSUPPORTED')
     if fmt != 'none' and 'traffic' not in doc['evidence']:
         raise InputError('TRAFFIC_PATH_REQUIRED')
@@ -112,19 +119,27 @@ def execute(doc, paths, output):
     # A bounded first pass proves request IDs unique before any correlation is used.
     ids = Counter()
     fmt = doc['evidence']['format']
-    if fmt != 'none' and logs:
+    interval_conflict, latest_end, intervals = False, None, 0
+    if fmt != 'none':
         for row in exchanges(paths['traffic'], fmt, inputs['traffic'], {}):
-            if row['request_id']:
+            if logs and row['request_id']:
                 ids[row['request_id']] += 1
+            if row['started'] is not None and latest_end is not None and row['started'] < latest_end:
+                interval_conflict = True
+            if row['ended'] is not None:
+                latest_end = max(latest_end, row['ended']) if latest_end is not None else row['ended']
+            if row['started'] is not None and row['ended'] is not None:
+                intervals += 1
+    capture = dict(doc['evidence'].get('capture', {}), _contradicted_serial=interval_conflict)
     with (output / 'verdicts.jsonl').open('w', encoding='utf-8', newline='\n') as f:
         if fmt == 'none':
             report = {'exchanges': None, 'groups': [], 'distinct_bugs': None,
                       'unique_server_log_joins': 0, 'producer_verdicts_used': False,
-                      'classes': {k: {'name': name, 'implemented': k == 'S7', 'opportunities': None,
+                      'classes': {k: {'name': name, 'implemented': k in ('S1', 'S3', 'S5', 'S7'), 'opportunities': None,
                                       'counts': {v: None for v in VALUES}, 'abstention_reasons': None,
                                       'reason': 'HTTP_TRAFFIC_MISSING'} for k, name in CLASSES.items()}}
         else:
-            report = analyze(exchanges(paths['traffic'], fmt, inputs['traffic'], stats), context, f, logs, ids)
+            report = analyze(exchanges(paths['traffic'], fmt, inputs['traffic'], stats), context, f, logs, ids, capture)
     # Never accept a moving input as the input frozen in this report.
     if any(hash_file(path) != inputs[key] for key, path in paths.items()):
         raise InputError('INPUT_CHANGED_DURING_ANALYSIS')
@@ -140,23 +155,27 @@ def execute(doc, paths, output):
                                       'inputs': inputs, 'engine': engine_hashes(),
                                       'run': {k: v for k, v in doc['run'].items() if k != 'id'},
                                       'run_id_sha256': digest(doc['run']['id'].encode('utf-8')),
+                                      'capture_metadata': capture, 'http_intervals_retained': intervals,
                                       'metadata_basis': 'caller_declaration_not_observed_server_version',
                                       'knowledge_policy': 'contract-only', 'producer_verdicts_used': False,
                                       'new_sut_requests': 0, 'chronological_freeze_verified': False})
     # No raw bodies, log messages, local paths, actor names or run labels are copied out.
     lines = ['# Natchan v009 development report', '',
-             'Status: PARTIAL. This is the first contract-only milestone, not a v008 replacement.', '',
-             'Implemented: S7 HTTP status checks, operation attribution and unique request-ID log signatures.',
-             'S1–S6: not implemented; their counts are null.', '',
+             'Status: PARTIAL. This is a contract-only development milestone, not a v008 replacement.', '',
+             'Implemented subsets: S1 same-URI scalar read-back, S3 scalar request constraints,',
+             'S5 observed changes after errors, S7 HTTP status checks and unique request-ID log signatures.',
+             'S2/S4/S6: not implemented; their counts are null.',
+             'S1 requires declared complete, isolated, serial capture plus recorded actor/reset epoch.',
+             'S5 changed state is a policy observation; contract atomicity is not inferred.', '',
              'Captured exchanges: ' + str(report['exchanges']),
              'Verdicts marked consistent mean only that the HTTP status is declared.',
              'Symptom groups and log signatures are not proven root causes or distinct bugs.',
              'Contract role/entity/reference ambiguities are retained in the knowledge artifact.',
              'No producer verdicts or known-bug catalogs are used. No SUT requests are sent.', '']
-    lines.extend(['## S7 status checks', '', '| Value | Count |', '|---|---:|'])
-    for value in VALUES:
-        count = report['classes']['S7']['counts'][value]
-        lines.append('| ' + value + ' | ' + ('not evaluable' if count is None else str(count)) + ' |')
+    lines.extend(['## Per-property checks', '', '| Class | Opportunities | Violations | Consistent | Not evaluable | Policy observations |', '|---|---:|---:|---:|---:|---:|'])
+    for prop, meta in report['classes'].items():
+        vals = [meta['opportunities'], *(meta['counts'][v] for v in VALUES)]
+        lines.append('| ' + prop + ' | ' + ' | '.join('null' if n is None else str(n) for n in vals) + ' |')
     lines.extend(['', 'Group details: findings.json. Exact witnesses: verdicts.jsonl.',
                   'Unjoined 5xx: ' + str(report.get('unjoined_server_5xx')), ''])
     (output / 'report.md').write_bytes(('\n'.join(lines)).encode('utf-8'))

@@ -1,4 +1,4 @@
-"""Independent S7 judgement; all other classes are explicit unsupported capabilities."""
+"""Independent status and bounded state judgement; no producer verdict inputs."""
 from collections import Counter
 import json
 import re
@@ -54,22 +54,44 @@ def classify(row, op, gap):
     return 'consistent', 'STATUS_DECLARED_ONLY'
 
 
-def analyze(rows, context, verdict_file, logs=None, http_id_counts=None):
+def analyze(rows, context, verdict_file, logs=None, http_id_counts=None, capture=None):
+    from state_semantics import StateJudge
+    supported = {'S1', 'S3', 'S5', 'S7'}
     index = matcher(context)
-    counts = Counter()
-    reasons = Counter()
+    counts = {k: Counter() for k in supported}
+    reasons = {k: Counter() for k in supported}
     groups = {}
-    total = 0
-    joined = 0
-    server_errors = 0
+    total, joined, server_errors = 0, 0, 0
+
+    def emit(verdict):
+        prop, value = verdict['property'], verdict['value']
+        counts[prop][value] += 1
+        if value == 'not_evaluable':
+            reasons[prop][verdict['reason']] += 1
+        verdict['id'] = digest(canonical(verdict))
+        verdict_file.write(json.dumps(verdict, sort_keys=True, ensure_ascii=True, allow_nan=False) + '\n')
+        if value not in ('violation', 'policy_observation'):
+            return
+        key = (prop, value, verdict['operation'], tuple(verdict.get('fields', [])),
+               verdict['reason'], verdict['input_class'], verdict['status'], verdict.get('server_signature_sha256'))
+        if key not in groups:
+            groups[key] = {'id': digest(canonical(list(key))), 'property': prop, 'value': value,
+                           'operation': verdict['operation'], 'fields': verdict.get('fields', []),
+                           'reason': verdict['reason'], 'input_class': verdict['input_class'],
+                           'status': verdict['status'], 'server_signature_sha256': key[-1],
+                           'occurrences': 0, 'representative_verdict_ids': [],
+                           'grouping_basis': 'symptom_signature', 'root_cause_proven': False}
+        group = groups[key]
+        group['occurrences'] += 1
+        if len(group['representative_verdict_ids']) < 3:
+            group['representative_verdict_ids'].append(verdict['id'])
+
+    state = StateJudge(context, capture, emit)
     for row in rows:
         total += 1
         server_errors += (row['status'] or 0) >= 500
         op, gap = operation(row, index, context['api_base_paths'])
         value, reason = classify(row, op, gap)
-        counts[value] += 1
-        if value == 'not_evaluable':
-            reasons[reason] += 1
         verdict = {'property': 'S7', 'value': value, 'reason': reason,
                    'operation': op['key'] if op else None,
                    'entity': None, 'field': None, 'status': row['status'],
@@ -86,29 +108,16 @@ def analyze(rows, context, verdict_file, logs=None, http_id_counts=None):
                 verdict['evidence'].append(log['source'])
                 verdict['log_join_basis'] = 'unique_request_id'
                 joined += 1
-        verdict['id'] = digest(canonical(verdict))
-        verdict_file.write(json.dumps(verdict, sort_keys=True, ensure_ascii=True, allow_nan=False) + '\n')
-        if value != 'violation':
-            continue
-        key = (verdict['property'], verdict['operation'], verdict['input_class'],
-               verdict['status'], verdict.get('server_signature_sha256'))
-        if key not in groups:
-            groups[key] = {'id': digest(canonical(list(key))), 'property': 'S7',
-                           'operation': verdict['operation'], 'input_class': verdict['input_class'],
-                           'status': verdict['status'], 'server_signature_sha256': key[-1],
-                           'occurrences': 0, 'representative_verdict_ids': [],
-                           'grouping_basis': 'symptom_signature', 'root_cause_proven': False}
-        group = groups[key]
-        group['occurrences'] += 1
-        if len(group['representative_verdict_ids']) < 3:
-            group['representative_verdict_ids'].append(verdict['id'])
-    coverage = {k: {'name': name, 'implemented': k == 'S7',
-                    'opportunities': total if k == 'S7' else None,
-                    'counts': {v: counts[v] for v in VALUES} if k == 'S7' else {v: None for v in VALUES},
-                    'abstention_reasons': dict(sorted(reasons.items())) if k == 'S7' else None,
-                    'reason': None if k == 'S7' else 'PROPERTY_NOT_IMPLEMENTED_IN_DEV_1'}
+        emit(verdict)
+        state.consume(row, op)
+    state_audit = state.finish()
+    coverage = {k: {'name': name, 'implemented': k in supported,
+                    'opportunities': sum(counts[k].values()) if k in supported else None,
+                    'counts': {v: counts[k][v] for v in VALUES} if k in supported else {v: None for v in VALUES},
+                    'abstention_reasons': dict(sorted(reasons[k].items())) if k in supported else None,
+                    'reason': 'BOUNDED_SUBSET_SEE_REPORT' if k in supported else 'PROPERTY_NOT_IMPLEMENTED_IN_DEV_2'}
                 for k, name in CLASSES.items()}
     return {'exchanges': total, 'groups': sorted(groups.values(), key=lambda g: g['id']),
-            'classes': coverage, 'unique_server_log_joins': joined,
+            'classes': coverage, 'unique_server_log_joins': joined, 'state_audit': state_audit,
             'server_5xx': server_errors, 'unjoined_server_5xx': server_errors - joined,
             'distinct_bugs': None, 'producer_verdicts_used': False}

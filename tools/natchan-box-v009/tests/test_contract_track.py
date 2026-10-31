@@ -166,7 +166,9 @@ class ContractTrackTests(unittest.TestCase):
         self.assertEqual([v['value'] for v in self.verdicts(out)], ['consistent', 'consistent', 'violation', 'violation'])
         coverage = loads(read(out / 'coverage.json'))
         self.assertEqual(coverage['classes']['S7']['counts']['violation'], 2)
-        self.assertIsNone(coverage['classes']['S5']['counts']['violation'])
+        self.assertTrue(coverage['classes']['S5']['implemented'])
+        self.assertEqual(coverage['classes']['S5']['opportunities'], 0)
+        self.assertIsNone(coverage['classes']['S4']['counts']['violation'])
 
     def test_same_traffic_same_verdicts_across_four_tools(self):
         self.rows([record(500), record(200), record(None)])

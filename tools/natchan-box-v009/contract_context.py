@@ -218,9 +218,47 @@ def derive(doc, contract_hash):
                 k for k in item_schema['fields'] if k.lower() in ('id', 'uuid', 'key') or k.lower().endswith('_id'))
     for entry in entities.values():
         entry['read_operations'] = sorted(set(entry['read_operations']))
-    return {'schema_version': 'natchan-contract-context/1', 'derivation_version': '009-dev.1',
+    bindings = {}
+    by_route = {(op['method'], op['path']): op for op in operations}
+    for op in operations:
+        if op['method'] not in ('PUT', 'PATCH'):
+            continue
+        get = by_route.get(('GET', op['path']))
+        req = op.get('request_schema') or {}
+        res = (get or {}).get('responses', {}).get('200', {})
+        binding = {'status': 'unknown', 'reason': 'SAME_ROUTE_JSON_OBJECT_BINDING_UNAVAILABLE'}
+        if (op['path'].endswith('}') and get and req.get('status') == 'declared' and
+                res.get('status') == 'declared' and req.get('fields') and res.get('fields')):
+            fields = {}
+            excluded = {}
+            for name in sorted(set(req['fields']) & set(res['fields'])):
+                w, r = req['fields'][name], res['fields'][name]
+                wc, rc = w.get('constraints', {}), r.get('constraints', {})
+                if any(c.get(k) for c in (wc, rc) for k in ('readOnly', 'writeOnly')):
+                    excluded[name] = 'SERVER_MANAGED_OR_WRITE_ONLY'
+                    continue
+                if w.get('status') != 'declared' or r.get('status') != 'declared' or wc.get('type') != rc.get('type'):
+                    excluded[name] = 'FIELD_SCHEMA_AMBIGUOUS_OR_TYPES_DIFFER'
+                    continue
+                if wc.get('type') not in ('string', 'number', 'integer', 'boolean'):
+                    excluded[name] = 'COMPLEX_FIELD_NOT_YET_SUPPORTED'
+                    continue
+                if wc.get('format') != rc.get('format'):
+                    excluded[name] = 'FIELD_FORMATS_DIFFER'
+                    continue
+                fields[name] = {'write_schema': w, 'read_schema': r,
+                                'required_in_read': name in res.get('required', [])}
+            binding = {'status': 'structural_candidate', 'read_operation': get['key'],
+                       'read_status': 200, 'fields': fields, 'excluded_fields': excluded,
+                       'identity_basis': 'same_concrete_item_uri_not_inferred_id_field',
+                       'provenance': [op['provenance'], get['provenance']],
+                       'assumption': 'SAME_NAMED_WRITABLE_READABLE_FIELD_IS_PERSISTED',
+                       'atomicity_guarantee': 'unknown'}
+        bindings[op['key']] = binding
+    return {'schema_version': 'natchan-contract-context/1', 'derivation_version': '009-dev.2',
             'contract_sha256': contract_hash, 'knowledge_policy': 'contract-only',
             'operations': operations, 'entity_candidates': [entities[k] for k in sorted(entities)],
+            'write_read_bindings': bindings,
             'api_base_paths': sorted(bases),
             'security_schemes': schemes,
             'session_ending_operations': {'status': 'unknown', 'reason': 'NOT_INFERRED_FROM_NAMES'},

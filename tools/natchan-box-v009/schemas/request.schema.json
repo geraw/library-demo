@@ -82,6 +82,7 @@
             "har",
             "http-jsonl",
             "journal-jsonl",
+            "observer-tool-jsonl",
             "none"
           ]
         },
@@ -92,6 +93,25 @@
         "server_log": {
           "type": "string",
           "minLength": 1
+        },
+        "capture": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "complete": {
+              "type": "boolean"
+            },
+            "exclusive": {
+              "type": "boolean"
+            },
+            "ordering": {
+              "enum": [
+                "serial",
+                "concurrent",
+                "unknown"
+              ]
+            }
+          }
         }
       },
       "if": {

@@ -1,59 +1,70 @@
 {
-  "version": "009-dev.1",
-  "state": "development_milestone_1",
+  "version": "009-dev.2",
+  "state": "development_milestone_2",
   "production_replacement": false,
   "base_commit": "6310af7baecc25fc46692d1127c80dbc1da4247d",
+  "previous_development_commit": "03a7210bb3f5d053d4fc59026397a0333003f67a",
   "v008_regression": {
-    "command": "python -m unittest discover -s tools/natchan-box-v008/tests -q",
     "passed": 275,
     "source_unchanged": true
   },
   "v009_tests": {
+    "passed": 90,
     "command": "python -m unittest discover -s tools/natchan-box-v009/tests -q",
-    "passed": 46,
-    "large_fixture_http_exchanges": 90000,
-    "large_fixture_format": "http-jsonl",
+    "http_jsonl_stress_exchanges": 90000,
+    "loopback_http_modes": 6,
+    "loopback_http_exchanges": 18,
     "four_tool_label_invariance": true,
-    "producer_label_injection_invariance": true,
-    "raw_source_hash_changes_when_producer_annotations_change": true,
-    "repeat_output_byte_equality": true
+    "producer_verdict_injection_invariance": true,
+    "state_guards_tested": [
+      "actor",
+      "URI/origin",
+      "reset/epoch reuse",
+      "case",
+      "intervening mutation",
+      "missing snapshots",
+      "missing body",
+      "query",
+      "async",
+      "overlapping intervals",
+      "state budgets",
+      "cache eviction"
+    ],
+    "formats_tested": [
+      "http-jsonl",
+      "journal-jsonl",
+      "HAR 1.2",
+      "observer-tool-jsonl"
+    ]
   },
-  "cli_synthetic_demo": {
-    "exit_code": 0,
-    "status": "PARTIAL",
-    "exchanges": 4,
-    "S7": {
-      "consistent": 1,
-      "not_evaluable": 1,
-      "policy_observation": 0,
-      "violation": 2
-    },
-    "symptom_groups": 1,
-    "occurrences": 2
+  "retrospective_library": {
+    "archive_sha256": "41d2e1b8369d1d552a0e1e5b55181b9f1a3c38dd0ebd2d5bd4a719cf57c90b86",
+    "contract_sha256": "e63f6c2f2f070f7225dd625a019da39fd9038bea0a660225fd3c420acefffae3",
+    "evaluation": "development_post_hoc_not_held_out",
+    "tool_exchanges": 81802,
+    "new_seeded_bug_credit_claimed": false,
+    "details": "LIBRARY_RETROSPECTIVE.json"
   },
-  "contract_derivation_smoke": [
-    {
-      "path": "library/reference/library_openapi.json",
-      "sha256": "50b08c7dd82f8caafa105dc6828909d03b267eb75e5163bcf9ebd814868176f6",
-      "operations": 13,
-      "entity_candidates": 4,
-      "judgement_on_library_run_evidence_performed": false
-    },
-    {
-      "path": "library/ess-experiment/campaign-v007/library_openapi_v007.json",
-      "sha256": "ac2ec5277c85cd1e7bd49b2f94623222f5005472005f69c0bbc5acd039557b6d",
-      "operations": 13,
-      "entity_candidates": 4,
-      "judgement_on_library_run_evidence_performed": false
-    }
+  "implemented_subsets": [
+    "S1 same-item-URI scalar readback candidates",
+    "S3 bounded scalar input/storage constraints",
+    "S5 requested-field after-error state observations",
+    "S7 status candidates and unique log-ID signatures"
+  ],
+  "not_implemented": [
+    "S2",
+    "S4",
+    "S6",
+    "creation/read identity bindings",
+    "nested/array state comparisons",
+    "full JSON Schema validation",
+    "known-bug matching in the blind route"
   ],
   "not_performed": [
     "Windows PowerShell execution",
-    "real new-cycle tool archive acceptance",
-    "held-out semantic evaluation",
-    "Library four-configuration business reanalysis with v009",
-    "S1-S6 semantic judgement"
+    "new live Gitea/Vikunja runs",
+    "held-out evaluation"
   ],
-  "new_sut_requests": 0,
+  "new_sut_requests_by_analyzer": 0,
   "held_out_validation_performed": false
 }

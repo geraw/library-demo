@@ -1,11 +1,11 @@
-# Natchan Box v009 — independent contract context (development milestone 1)
+# Natchan Box v009 — independent contract context (development milestone 2)
 
-**Version: `009-dev.1`, not a production replacement for v008.** Python 3.10+, standard library only.
+**Version: `009-dev.2`, not a production replacement for v008.** Python 3.10+, standard library only.
 Based on repository commit `6310af7baecc25fc46692d1127c80dbc1da4247d`.
 The operational v008 directory, branch, request interface, product catalogs and existing integrations are unchanged.
 Keep using v008 in established pipelines until v009 passes the later acceptance gates.
 
-This is the first implementation of the supplied [research requirements](RESEARCH_REQUIREMENTS.md),
+This extends the first implementation of the supplied [research requirements](RESEARCH_REQUIREMENTS.md),
 not a claim that all seven semantic classes have been implemented.
 
 ## What this milestone does
@@ -18,7 +18,7 @@ not a claim that all seven semantic classes have been implemented.
    Supplied knowledge is recomputed from the contract and must match; handwritten overrides are not accepted.
 3. Reads raw HTTP JSONL, `research` exchanges in a journal, or bounded HAR 1.2.
    Tool labels select no rules. Producer actions, logical IDs, bug IDs, oracle categories and verdicts are not judges' inputs.
-4. Implements the **S7 status-only subset**: exact operation attribution, 5xx candidates, undeclared-status
+4. Implements bounded **S1/S3/S5** state checks (see below) and the **S7 status-only subset**: exact operation attribution, 5xx candidates, undeclared-status
    candidates, explicit abstention, symptom grouping and unique request-ID log correlation.
    Declared 5xx remain error candidates. Other declared statuses are consistent **only for this status check**.
    An error candidate does not prove a product defect, root cause, severity or business-rule violation.
@@ -31,11 +31,11 @@ in the same checkout, but producer-derived profiles and known-bug catalogs are n
 
 | Class | Milestone 1 |
 |---|---|
-| S1 read-back consistency | Not implemented; counts/opportunities null |
+| S1 read-back consistency | Same concrete item URI, scalar fields, synchronous PUT/PATCH, controlled capture |
 | S2 path consistency | Not implemented; counts/opportunities null |
-| S3 constraint conformance | Constraints retained in knowledge; judgement not implemented |
+| S3 constraint conformance | Scalar types, enum/const, lengths, numeric bounds and required declared fields; accepted invalid input needs read-back for storage credit |
 | S4 reference integrity | Ambiguities retained; judgement not implemented |
-| S5 failure atomicity | Not implemented; counts/opportunities null |
+| S5 failure atomicity | Before/after requested scalar fields; observed partial/full commit is policy observation without a contract guarantee |
 | S6 placement/view consistency | Not implemented; counts/opportunities null |
 | S7 error answers in context | Status checks, operation matching, symptom groups; coarse request-body shape only |
 
@@ -44,7 +44,7 @@ Without a unique join it does not infer a server error's cause. Same-looking sym
 All successful analyses currently have status **PARTIAL**, including clean controls.
 
 This milestone inventories entity candidates from GET response schemas, but does not yet prove their identities
-or derive an executable entity graph. Operation names/descriptions are not interpreted as business rules.
+or derive a general executable entity graph. Same-route item write/read bindings are retained separately as structural candidates. Operation names/descriptions are not interpreted as business rules.
 Composed schemas, reference siblings and external references are left ambiguous/unknown, not silently flattened.
 The context document is a conservative partial interpretation, not a complete OpenAPI validator.
 
@@ -91,7 +91,7 @@ The example is development evidence, not a held-out study. Run from the reposito
 ```
 
 Expected: 4 exchanges; S7: 1 consistent, 2 violations, 1 not evaluable; 1 symptom group with 2 occurrences.
-S1–S6 counts are null. Output status PARTIAL. Synthetic examples are not confirmed product bugs.
+S2/S4/S6 counts are null. S1/S3/S5 have zero opportunities in this GET-only example. Output status PARTIAL. Synthetic examples are not confirmed product bugs.
 `python -I` is supported as well.
 
 ## Pipeline interface
@@ -116,7 +116,7 @@ Metadata provenance makes this distinction explicit. No version-specific known-b
 The copied contract must be the registered tool contract. This milestone hashes its exact bytes;
 it does not yet validate a normalization chain back to the original server contract.
 
-Formats: `http-jsonl`, `journal-jsonl`, `har`, `none`. `none` must omit `traffic`.
+Formats: `http-jsonl`, `journal-jsonl`, `observer-tool-jsonl`, `har`, `none`. `none` must omit `traffic`.
 For evidence with no HTTP capture, use `none`: every semantic count is null, including S7.
 It is not equivalent to an empty but valid captured stream.
 The `server_log` field is optional and names a structured JSONL server log.
@@ -146,8 +146,8 @@ Unjoined 5xx counts are reported. Plain-text logs currently remain unjoined, not
 |---|---|
 | knowledge.json (derive command) | Contract-bound partial context; JSON pointers, constraints, candidates and ambiguities |
 | freeze.json (freeze command) | Engine source hashes, contract hash and exact knowledge hash |
-| verdicts.jsonl | One independently computed S7 verdict per captured exchange; exact evidence references |
-| findings.json | Symptom groups, occurrence counts and representative verdict IDs; distinct bug count null |
+| verdicts.jsonl | S7 per exchange, plus applicable S1/S3/S5 checks; exact evidence references and comparison outcomes |
+| findings.json | Separate violation/policy-observation symptom groups, occurrences and representative verdict IDs; distinct bug count null |
 | coverage.json | Supported/unsupported classes, counts, abstentions, ingestion and unjoined-error counts |
 | provenance.json | Input and engine hashes; declared run metadata; no producer verdicts used |
 | diagnostics.json | Exit/reason; no raw exceptions or source paths |
@@ -189,3 +189,81 @@ Any reanalysis of old evidence is explicitly post hoc. No new held-out evaluatio
 
 The requirements document remains unchanged. Proposed clarifications and the remaining implementation are in
 [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md). The snapshot is the supplied requirements, not evidence of implemented coverage.
+
+
+## New in 009-dev.2: controlled state checks
+
+See [SEMANTIC_RULES.md](SEMANTIC_RULES.md) for exact rules and limits.
+To enable cross-exchange S1/S5 checks, the capture must explicitly declare:
+
+```json
+"capture": {"complete": true, "exclusive": true, "ordering": "serial"}
+```
+
+This object is inside `evidence`. These are capture facts, not tool-specific rule settings. Do not set them true merely
+because a tool ran in isolation from this analyzer. The producer must establish complete capture, no outside writers
+and serial requests. An overlapping/out-of-order recorded interval overrides a false serial declaration.
+The analyzer cannot independently prove completeness or isolation from captured traffic alone.
+
+Every state-bearing record must have a stable `actor` (or an unredacted recorded authorization credential from which
+an opaque scope is computed) and a captured reset `epoch`. Optional `case_id` separates retained sequences.
+Never put scenario meanings into these fields: they are opaque scopes, not rule selectors.
+Missing metadata yields abstention. `started_utc` and `ended_utc` are optional timezone-aware intervals;
+HAR uses `startedDateTime` and `time`. Without intervals, serialization remains a declared capture assumption.
+
+Cross-exchange rules currently bind only PUT/PATCH to a GET 200 object at the same item route, with common declared
+scalar fields. Different actors, origins, IDs, reset epochs or sequences cannot supply each other's snapshots.
+Any intervening mutation invalidates pending comparisons and cached preimages, including mutations of another resource.
+Read-only/write-only, ambiguous, mismatched and complex fields are excluded. Numeric/date-time equivalence is handled;
+no language model interprets descriptions or transformations.
+
+S1 mismatches are candidates conditional on the generic persistence assumption printed in the verdict. Optional missing
+read fields are policy observations; required missing read fields are candidates. S5 reports unchanged, partial,
+committed_despite_error or other_state_change, but never invents an atomicity promise. S3 uses only its documented scalar
+subset, not full schema or business validation. See coverage for checked/unsupported fields and preconditions.
+
+State retention is bounded to 128 snapshots, 64 KiB per state body and one pending mutation. Evictions and budget
+abstentions are explicit. Raw bodies/principal names are never copied into semantic verdicts.
+Old dev.1 freezes/knowledge must be regenerated for dev.2; the original dev.1 commit remains reproducible.
+
+## Retrospective Library transport acceptance
+
+The exact old baseline archive `mutants-neutral-v008-20261020-131134-37312-review.zip`
+(SHA256 `41d2e1b8369d1d552a0e1e5b55181b9f1a3c38dd0ebd2d5bd4a719cf57c90b86`) was reprocessed.
+This is development/post-hoc evidence, not a new run or held-out evaluation.
+
+`observer-tool-jsonl` accepts the legacy recorder's `role: tool` request/answer rows, maps `request` to `input`,
+and ignores all other rows. In particular, observer GETs and producer `verdict` rows are **not** tool traffic.
+Their labels, seeded-bug switches and outcomes cannot supply the judge's answer. Exact original line numbers remain.
+
+| Capture | Tool exchanges | S7 5xx candidates | S3 consistent subset checks | S3 not evaluable |
+|---|---:|---:|---:|---:|
+| RESTler | 7,634 | 7 | 2,366 | 603 |
+| EvoMaster | 74,168 | 0 | 42,120 | 0 |
+
+RESTler's seven 5xx are one symptom group on `GET /loans`, not seven distinct bugs. Eight RESTler exchanges have
+no server answer and receive S7 abstentions. S3 found no stored-bound violations in these captures; valid-input subset
+counts do not mean the whole operation or business behavior was correct.
+
+The Library contract has no PUT/PATCH item updates, so S1/S5 have no applicable opportunities in this milestone.
+S2/S4/S6 and seeded Library business invariants are not covered by this new route. This does not replace v008's
+existing Library domain provider or its separate 44-observation compatibility check. No new native tool bug-detection
+credit or new seeded-bug detection is claimed.
+
+Reproduce in a fresh output directory:
+
+```powershell
+python .\tools\natchan-box-v009\validate_library_archive.py --archive "$env:USERPROFILE\Downloads\mutants-neutral-v008-20261020-131134-37312-review.zip" --output C:\experiment\library-v009-posthoc
+if ($LASTEXITCODE -ne 0) { throw 'Retrospective acceptance failed; inspect its results.' }
+```
+
+The utility stores raw extracted inputs locally; do not share them without the study redaction procedure.
+The committed `LIBRARY_RETROSPECTIVE.json` contains only safe aggregates, exact source hashes and symptom groups.
+
+## Validation of this checkpoint
+
+90 development tests pass, including six real loopback HTTP modes and the 90,000-exchange stress case.
+All 275 operational v008 tests pass unchanged. See `VALIDATION.json` and `LIBRARY_RETROSPECTIVE.json`.
+No Windows PowerShell or new Gitea/Vikunja live run or held-out evaluation is claimed.
+The legacy ingestion counter `ignored_non_http` means records outside the selected tool/research stream;
+it includes raw observer HTTP readbacks as well as producer verdict/metadata rows, not only non-HTTP records.
