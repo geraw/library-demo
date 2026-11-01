@@ -1,0 +1,10 @@
+{
+  "provengo_jar": "C:/Program Files/Provengo/Provengo Cli/Provengo.uber.jar",
+  "evomaster_jar": "",
+  "restler": "",
+  "java": "java",
+  "dotnet": "dotnet",
+  "analyzer_home": "",
+  "restler_python_bin": "",
+  "notes": "Setup-Library-Benchmark-v001.ps1 resolves existing user-local installations; optional native install uses the pinned v006 installer."
+}

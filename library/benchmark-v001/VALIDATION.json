@@ -1,0 +1,1245 @@
+{
+  "version": "v001",
+  "build_date": "2026-11-01",
+  "python_acceptance_test_methods": 9,
+  "ground_truth_subcases": 42,
+  "real_loopback_directed_cells": 12,
+  "real_loopback_status": "PASS",
+  "natchan_upstream_tests": 144,
+  "natchan_upstream_tests_status": "PASS",
+  "javascript_syntax": "PASS_NODE_CHECK",
+  "native_engines_executed": [],
+  "windows_powershell_executed": false,
+  "findings_are": "Directed fixture verification, not autonomous discovery results",
+  "analyzer_gap": "On the minimal directed witnesses, 009-dev.4 reports a violation only for B6; oracle confirms B1-B6.",
+  "live_checks": [
+    {
+      "target": "B1",
+      "arm": "none",
+      "oracle_ids": [],
+      "passed": true,
+      "natchan_status": "PARTIAL",
+      "natchan_classes": {
+        "S1": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "read_back_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S2": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "path_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S3": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 1,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "constraint_conformance",
+          "opportunities": 1,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S4": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "reference_integrity",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S5": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "failure_atomicity",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S6": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "placement_view_consistency",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S7": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 2,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "error_answers_in_context",
+          "opportunities": 2,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        }
+      }
+    },
+    {
+      "target": "B1",
+      "arm": "B1",
+      "oracle_ids": [
+        "B1"
+      ],
+      "passed": true,
+      "natchan_status": "PARTIAL",
+      "natchan_classes": {
+        "S1": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "read_back_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S2": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "path_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S3": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 1,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "constraint_conformance",
+          "opportunities": 1,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S4": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "reference_integrity",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S5": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "failure_atomicity",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S6": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "placement_view_consistency",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S7": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 2,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "error_answers_in_context",
+          "opportunities": 2,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        }
+      }
+    },
+    {
+      "target": "B2",
+      "arm": "none",
+      "oracle_ids": [],
+      "passed": true,
+      "natchan_status": "PARTIAL",
+      "natchan_classes": {
+        "S1": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "read_back_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S2": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "path_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S3": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 1,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "constraint_conformance",
+          "opportunities": 1,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S4": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "reference_integrity",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S5": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "failure_atomicity",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S6": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "placement_view_consistency",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S7": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 3,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "error_answers_in_context",
+          "opportunities": 3,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        }
+      }
+    },
+    {
+      "target": "B2",
+      "arm": "B2",
+      "oracle_ids": [
+        "B2"
+      ],
+      "passed": true,
+      "natchan_status": "PARTIAL",
+      "natchan_classes": {
+        "S1": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "read_back_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S2": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "path_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S3": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 1,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "constraint_conformance",
+          "opportunities": 1,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S4": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "reference_integrity",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S5": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "failure_atomicity",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S6": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "placement_view_consistency",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S7": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 3,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "error_answers_in_context",
+          "opportunities": 3,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        }
+      }
+    },
+    {
+      "target": "B3",
+      "arm": "none",
+      "oracle_ids": [],
+      "passed": true,
+      "natchan_status": "PARTIAL",
+      "natchan_classes": {
+        "S1": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "read_back_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S2": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "path_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S3": {
+          "abstention_reasons": {
+            "NO_SUPPORTED_SENT_SCALAR_CONSTRAINTS": 2
+          },
+          "counts": {
+            "consistent": 3,
+            "not_evaluable": 2,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "constraint_conformance",
+          "opportunities": 5,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S4": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "reference_integrity",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S5": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "failure_atomicity",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S6": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "placement_view_consistency",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S7": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 6,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "error_answers_in_context",
+          "opportunities": 6,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        }
+      }
+    },
+    {
+      "target": "B3",
+      "arm": "B3",
+      "oracle_ids": [
+        "B3"
+      ],
+      "passed": true,
+      "natchan_status": "PARTIAL",
+      "natchan_classes": {
+        "S1": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "read_back_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S2": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "path_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S3": {
+          "abstention_reasons": {
+            "NO_SUPPORTED_SENT_SCALAR_CONSTRAINTS": 2
+          },
+          "counts": {
+            "consistent": 3,
+            "not_evaluable": 2,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "constraint_conformance",
+          "opportunities": 5,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S4": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "reference_integrity",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S5": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "failure_atomicity",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S6": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "placement_view_consistency",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S7": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 6,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "error_answers_in_context",
+          "opportunities": 6,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        }
+      }
+    },
+    {
+      "target": "B4",
+      "arm": "none",
+      "oracle_ids": [],
+      "passed": true,
+      "natchan_status": "PARTIAL",
+      "natchan_classes": {
+        "S1": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "read_back_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S2": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "path_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S3": {
+          "abstention_reasons": {
+            "NO_SUPPORTED_SENT_SCALAR_CONSTRAINTS": 2
+          },
+          "counts": {
+            "consistent": 4,
+            "not_evaluable": 2,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "constraint_conformance",
+          "opportunities": 6,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S4": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "reference_integrity",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S5": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "failure_atomicity",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S6": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "placement_view_consistency",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S7": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 7,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "error_answers_in_context",
+          "opportunities": 7,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        }
+      }
+    },
+    {
+      "target": "B4",
+      "arm": "B4",
+      "oracle_ids": [
+        "B4"
+      ],
+      "passed": true,
+      "natchan_status": "PARTIAL",
+      "natchan_classes": {
+        "S1": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "read_back_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S2": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "path_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S3": {
+          "abstention_reasons": {
+            "NO_SUPPORTED_SENT_SCALAR_CONSTRAINTS": 2
+          },
+          "counts": {
+            "consistent": 4,
+            "not_evaluable": 2,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "constraint_conformance",
+          "opportunities": 6,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S4": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "reference_integrity",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S5": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "failure_atomicity",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S6": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "placement_view_consistency",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S7": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 7,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "error_answers_in_context",
+          "opportunities": 7,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        }
+      }
+    },
+    {
+      "target": "B5",
+      "arm": "none",
+      "oracle_ids": [],
+      "passed": true,
+      "natchan_status": "PARTIAL",
+      "natchan_classes": {
+        "S1": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "read_back_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S2": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "path_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S3": {
+          "abstention_reasons": {
+            "NO_SUPPORTED_SENT_SCALAR_CONSTRAINTS": 2
+          },
+          "counts": {
+            "consistent": 3,
+            "not_evaluable": 2,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "constraint_conformance",
+          "opportunities": 5,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S4": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "reference_integrity",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S5": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "failure_atomicity",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S6": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "placement_view_consistency",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S7": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 7,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "error_answers_in_context",
+          "opportunities": 7,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        }
+      }
+    },
+    {
+      "target": "B5",
+      "arm": "B5",
+      "oracle_ids": [
+        "B5"
+      ],
+      "passed": true,
+      "natchan_status": "PARTIAL",
+      "natchan_classes": {
+        "S1": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "read_back_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S2": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "path_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S3": {
+          "abstention_reasons": {
+            "NO_SUPPORTED_SENT_SCALAR_CONSTRAINTS": 2
+          },
+          "counts": {
+            "consistent": 3,
+            "not_evaluable": 2,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "constraint_conformance",
+          "opportunities": 5,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S4": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "reference_integrity",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S5": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "failure_atomicity",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S6": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "placement_view_consistency",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S7": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 7,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "error_answers_in_context",
+          "opportunities": 7,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        }
+      }
+    },
+    {
+      "target": "B6",
+      "arm": "none",
+      "oracle_ids": [],
+      "passed": true,
+      "natchan_status": "PARTIAL",
+      "natchan_classes": {
+        "S1": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "read_back_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S2": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "path_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S3": {
+          "abstention_reasons": {
+            "NO_SUPPORTED_SENT_SCALAR_CONSTRAINTS": 1
+          },
+          "counts": {
+            "consistent": 2,
+            "not_evaluable": 1,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "constraint_conformance",
+          "opportunities": 3,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S4": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "reference_integrity",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S5": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "failure_atomicity",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S6": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "placement_view_consistency",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S7": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 4,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "error_answers_in_context",
+          "opportunities": 4,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        }
+      }
+    },
+    {
+      "target": "B6",
+      "arm": "B6",
+      "oracle_ids": [
+        "B6"
+      ],
+      "passed": true,
+      "natchan_status": "PARTIAL",
+      "natchan_classes": {
+        "S1": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "read_back_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S2": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "path_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S3": {
+          "abstention_reasons": {
+            "NO_SUPPORTED_SENT_SCALAR_CONSTRAINTS": 1
+          },
+          "counts": {
+            "consistent": 2,
+            "not_evaluable": 1,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "constraint_conformance",
+          "opportunities": 3,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S4": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "reference_integrity",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S5": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "failure_atomicity",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S6": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "placement_view_consistency",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_4"
+        },
+        "S7": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 3,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 1
+          },
+          "implemented": true,
+          "name": "error_answers_in_context",
+          "opportunities": 4,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        }
+      }
+    }
+  ]
+}
