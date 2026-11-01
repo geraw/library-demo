@@ -1,12 +1,17 @@
 """Four configurations, original rules, isolated mutants, two independent evaluators."""
 import argparse,hashlib,json,os,re,secrets,shutil,signal,socket,subprocess,sys,time,uuid,zipfile
 from pathlib import Path
+from storage_v001 import check_space,archive_database
 from urllib.request import Request,urlopen
 from analyze_v001 import freeze,analyze,write
 HERE=Path(__file__).resolve().parent
 TOOLS=['evomaster','restler','provengo-sample10','provengo-java']
 ARMS=['none','B1','B2','B3','B4','B5','B6']
-def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+def sha(p):
+ h=hashlib.sha256()
+ with Path(p).open('rb') as stream:
+  while chunk:=stream.read(1024*1024):h.update(chunk)
+ return h.hexdigest()
 def terminate(proc):
  if proc.poll() is not None:return
  if os.name=='nt':subprocess.run(['taskkill','/PID',str(proc.pid),'/T','/F'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
@@ -21,6 +26,7 @@ def terminate(proc):
 
 def launch(command,folder,name,timeout,env=None,expected=(0,)):
  command=list(map(str,command));started=time.monotonic();folder.mkdir(parents=True,exist_ok=True)
+ check_space(folder)
  write(folder/(name+'-command.json'),command)
  with (folder/(name+'.log')).open('w',encoding='utf-8') as log:
   proc=subprocess.Popen(command,cwd=folder,env=env,stdout=log,stderr=subprocess.STDOUT,start_new_session=os.name!='nt')
@@ -29,6 +35,7 @@ def launch(command,folder,name,timeout,env=None,expected=(0,)):
    while proc.poll() is None:
     try:proc.wait(timeout=min(1,max(.01,deadline-time.monotonic())))
     except subprocess.TimeoutExpired:pass
+    check_space(folder)
     now=time.monotonic()
     if now>=next_notice:print('PROGRESS '+name+' elapsed='+str(int(now-started))+'s',flush=True);next_notice=now+30
     if now>=deadline and proc.poll() is None:timed=True;terminate(proc)
@@ -91,7 +98,7 @@ def prepare(root,config,port,seed):
  freeze(root/'openapi.json',engine,root/'frozen-analyzer')
  provenance=json.loads((HERE/'PROVENANCE.json').read_text());provenance.update({'python':sys.version,'configurations':TOOLS,'seed':seed,'port':port,'analyzer_engine':str(engine),'budget_note':'Engine-specific budgets; sample generation, Java catalog execution and fuzzing are reported separately. Not a matched-time comparison.','semantic_scoring':'Tool-origin requests only. No oracle probes injected. Flat fuzzer traces remain campaign diagnostics.'})
  write(root/'provenance.json',provenance)
- write(root/'input-hashes.json',{str(p.relative_to(HERE)):sha(p) for p in HERE.rglob('*') if p.is_file() and not {'runs','__pycache__','.venv'}.intersection(p.relative_to(HERE).parts)})
+ write(root/'input-hashes.json',{str(p.relative_to(HERE)):sha(p) for p in HERE.rglob('*') if p.is_file() and not {'runs','__pycache__','.venv','.venv-benchmark-v001','setup-logs'}.intersection(p.relative_to(HERE).parts)})
  return model,engine
 
 def preflight(root,cfg,tools):
@@ -228,6 +235,8 @@ def main(a):
      elif tool=='provengo-sample10':
       for sample in samples:
        service.boundary(sample['case']);outcomes.append(launch([cfg.get('java','java'),'-Xmx2g','-jar',native['provengo']['jar'],'run','-s',sample['file'],'--run-id','1',model],folder,'case-'+str(sample['case']).zfill(2),a.case_timeout,env,expected=(0,1)))
+       write(folder/'case-progress.json',outcomes)
+       archive_database(model,folder/('database-case-'+str(sample['case']).zfill(2)))
      else:
       env['BENCH_SERVICE_TOKEN']=service.token
       command=[cfg.get('java','java'),'-Xmx2g','-Dbench.base='+service.base,'-Dbench.java.limit='+str(a.java_limit),'-cp',cp,'BenchmarkJavaV001',model,folder/'native.jsonl',str(a.case_timeout)]
@@ -255,16 +264,16 @@ def main(a):
   write(root/'completed.json',{'status':'CAMPAIGN_CAPTURE_COMPLETE','configurations':tools,'arms':a.arms.split(','),'note':'Capture completion does not mean every case passed or every mutation was found.'})
  except Exception as exc:
   import traceback
-  error=str(exc);write(root/'failure.json',{'status':'INCOMPLETE','error':error,'traceback':traceback.format_exc()});raise
+  error=str(exc)
+  try:write(root/'failure.json',{'status':'INCOMPLETE','error':error,'traceback':traceback.format_exc()})
+  except OSError:print(traceback.format_exc(),flush=True)
+  raise
  finally:
-  write(root/'summary.json',results)
-  archive=root.with_name(root.name+'-review.zip')
-  with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED) as z:
-   for p in root.rglob('*'):
-    if p.is_file() and not {'java-classes','__pycache__','products'}.intersection(p.relative_to(root).parts):z.write(p,p.relative_to(root))
-  print('REVIEW_ZIP '+str(archive),flush=True)
-  from pack_review_v001 import pack
-  pack(root)
+  try:
+   write(root/'summary.json',results)
+   from pack_review_v001 import pack
+   pack(root)
+  except OSError as archive_error:print('ARCHIVE_FAILED '+str(archive_error)+' RUN_DIRECTORY '+str(root),flush=True)
 
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--config',type=Path,default=HERE/'tools.local.json');p.add_argument('--tools',default=','.join(TOOLS));p.add_argument('--arms',default=','.join(ARMS));p.add_argument('--seconds',type=int,default=60);p.add_argument('--seed',type=int,default=1);p.add_argument('--port',type=int,default=23443);p.add_argument('--max-length',type=int,default=500);p.add_argument('--case-timeout',type=int,default=120);p.add_argument('--java-timeout',type=int,default=7200);p.add_argument('--sample-timeout',type=int,default=240);p.add_argument('--java-limit',type=int,default=0);p.add_argument('--output',type=Path);p.add_argument('--prepare-only',action='store_true');p.add_argument('--reuse-run',type=Path);a=p.parse_args()
