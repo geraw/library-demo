@@ -124,6 +124,27 @@ def preflight(root,cfg,tools):
     result['provengo']={'jar':str(jar.resolve()),'sha256':sha(jar),'length_flag':length,'seed_flag':'--seed' if '--seed' in help_ else None}
  write(root/'native-tools.json',result);return result
 
+def reuse_samples(source,root,model,meta):
+ source=Path(source).resolve()
+ manifest=json.loads((source/'sample10/manifest.json').read_text(encoding='utf-8-sig'))
+ samples=manifest['samples']
+ if len(samples)!=10 or {x['case'] for x in samples}!=set(range(1,11)):
+  raise RuntimeError('Expected original ten sample cases')
+ old=json.loads((source/'native-tools.json').read_text())
+ if old['provengo']['sha256']!=meta['sha256']:raise RuntimeError('Provengo binary changed since sampling')
+ if json.loads((source/'openapi.json').read_text())!=json.loads((root/'openapi.json').read_text()):raise RuntimeError('Contract/port differs from original run')
+ resolved=[]
+ for item in samples:
+  path=source/'sample10'/('sample-'+str(item['case']).zfill(2)+'.json')
+  if not path.is_file() or sha(path)!=item['sha256']:raise RuntimeError('Sample missing or changed: '+str(path))
+  resolved.append(dict(item,file=str(path)))
+ # Reuse the original model inputs, excluding its mutable products database.
+ for name in ['config','data','lib','spec']:
+  if (model/name).exists():shutil.rmtree(model/name)
+  shutil.copytree(source/'model'/name,model/name)
+ write(root/'reused-samples.json',{'source_run':str(source),'samples':resolved,'sha256_verified':True})
+ return resolved
+
 def sampling(root,cfg,meta,model,args):
  folder=root/'sample10';folder.mkdir();manifest=[]
  for index in range(1,11):
@@ -180,7 +201,7 @@ def main(a):
   model,engine=prepare(root,cfg,a.port,a.seed)
   if a.prepare_only:write(root/'prepared.json',{'status':'PREPARED_NO_TOOL_EXECUTION'});return
   native=preflight(root,cfg,tools)
-  samples=sampling(root,cfg,native['provengo'],model,a) if 'provengo-sample10' in tools else None
+  samples=(reuse_samples(a.reuse_run,root,model,native['provengo']) if a.reuse_run else sampling(root,cfg,native['provengo'],model,a)) if 'provengo-sample10' in tools else None
   cp=compile_java(root,cfg,native['provengo']) if 'provengo-java' in tools else None
   if cp:java_transport_checks(root,cfg,cp,model,a)
   for tool in tools:
@@ -246,6 +267,6 @@ def main(a):
   pack(root)
 
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--config',type=Path,default=HERE/'tools.local.json');p.add_argument('--tools',default=','.join(TOOLS));p.add_argument('--arms',default=','.join(ARMS));p.add_argument('--seconds',type=int,default=60);p.add_argument('--seed',type=int,default=1);p.add_argument('--port',type=int,default=23443);p.add_argument('--max-length',type=int,default=500);p.add_argument('--case-timeout',type=int,default=120);p.add_argument('--java-timeout',type=int,default=7200);p.add_argument('--sample-timeout',type=int,default=240);p.add_argument('--java-limit',type=int,default=0);p.add_argument('--output',type=Path);p.add_argument('--prepare-only',action='store_true');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--config',type=Path,default=HERE/'tools.local.json');p.add_argument('--tools',default=','.join(TOOLS));p.add_argument('--arms',default=','.join(ARMS));p.add_argument('--seconds',type=int,default=60);p.add_argument('--seed',type=int,default=1);p.add_argument('--port',type=int,default=23443);p.add_argument('--max-length',type=int,default=500);p.add_argument('--case-timeout',type=int,default=120);p.add_argument('--java-timeout',type=int,default=7200);p.add_argument('--sample-timeout',type=int,default=240);p.add_argument('--java-limit',type=int,default=0);p.add_argument('--output',type=Path);p.add_argument('--prepare-only',action='store_true');p.add_argument('--reuse-run',type=Path);a=p.parse_args()
  if min(a.seconds,a.case_timeout,a.java_timeout,a.sample_timeout,a.max_length)<=0 or not 1024<=a.port<=65535:p.error('Invalid budget or port')
  main(a)

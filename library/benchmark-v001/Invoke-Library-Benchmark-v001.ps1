@@ -11,6 +11,7 @@ param(
     [ValidateRange(1,86400)][int]$JavaTimeout = 7200,
     [ValidateRange(0,542)][int]$JavaLimit = 0,
     [string]$ConfigPath,
+    [string]$ReuseRun,
     [switch]$PrepareOnly
 )
 $ErrorActionPreference = 'Stop'
@@ -26,6 +27,7 @@ $arguments = @((Join-Path $root 'campaign_v001.py'), '--config', $ConfigPath,
     '--seed', [string]$Seed, '--port', [string]$Port, '--max-length', [string]$MaxLength,
     '--case-timeout', [string]$CaseTimeout, '--java-timeout', [string]$JavaTimeout,
     '--java-limit', [string]$JavaLimit)
+if ($ReuseRun) { $arguments += @('--reuse-run', $ReuseRun) }
 if ($PrepareOnly) { $arguments += '--prepare-only' }
 & $python @arguments
 if ($LASTEXITCODE -ne 0) { throw 'Campaign incomplete. The printed REVIEW_ZIP preserves diagnostics and completed cells.' }

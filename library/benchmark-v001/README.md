@@ -129,3 +129,5 @@ Setup diagnostics: every tool-configuration attempt writes a timestamped log und
 The RESTler installer uses the same benchmark Python interpreter that successfully ran setup's pip and acceptance checks. It does not create a second Windows Python environment or select an interpreter from a stale manifest. Existing broken installer environments remain untouched. The chosen interpreter is recorded in `restler-python-check.log` and the tool manifest.
 
 For upload, use `python library/benchmark-v001/pack_review_v001.py --latest`. This creates a compact diagnostic ZIP with a 32 MiB payload budget, 512 KiB per-file cap, log tails and a complete file inventory; JSONL traffic and binaries stay local. Truncated JSON is named `.tail.txt`. This subset is not sufficient for full evidence replay. Future campaigns produce both archives automatically.
+
+Use `-ReuseRun PATH_TO_ORIGINAL_RUN -Configuration provengo-sample10 -Mutation all` to replay the original ten files after SHA256 verification. Original model inputs and Provengo binary identity are retained; contract/port changes are rejected. Baseline is rerun with mutants in a fresh result directory for paired scoring.
