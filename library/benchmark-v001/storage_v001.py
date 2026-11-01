@@ -24,3 +24,26 @@ def archive_database(model,output):
   if original.digest()!=restored.digest():raise RuntimeError('Database archive verification failed')
   source.unlink()
   print('DATABASE_ARCHIVED '+str(target),flush=True)
+
+
+def discard_database(model,folder,case):
+ import json
+ folder=Path(folder);stem='case-'+str(case).zfill(2)
+ required=[folder/(stem+'.log'),folder/(stem+'-execution.json'),folder/'http.jsonl',folder/'case-progress.json']
+ if not all(p.is_file() and p.stat().st_size for p in required):
+  raise RuntimeError('Refusing database removal: required case evidence missing')
+ log=(folder/(stem+'.log')).read_text(encoding='utf-8',errors='replace')
+ rows=[]
+ for source in sorted((Path(model)/'products/internal').glob('runs-db*')):
+  if not source.is_file():continue
+  h=hashlib.sha256()
+  with source.open('rb') as stream:
+   while chunk:=stream.read(1024*1024):h.update(chunk)
+  rows.append({'name':source.name,'bytes':source.stat().st_size,'sha256':h.hexdigest()})
+ record={'case':case,'policy':'discard_closed_database_after_external_evidence_capture',
+         'native_result_lines':[line for line in log.splitlines() if 'Test Result:' in line or 'FAIL:' in line],
+         'execution':json.loads((folder/(stem+'-execution.json')).read_text()),
+         'retained_evidence':[p.name for p in required],'databases':rows,
+         'limitation':'Internal Provengo database and native HTML report reconstruction are not retained.'}
+ (folder/(stem+'-retention.json')).write_text(json.dumps(record,indent=2),encoding='utf-8')
+ for row in rows:(Path(model)/'products/internal'/row['name']).unlink()

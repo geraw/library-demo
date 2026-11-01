@@ -1,7 +1,7 @@
 """Four configurations, original rules, isolated mutants, two independent evaluators."""
 import argparse,hashlib,json,os,re,secrets,shutil,signal,socket,subprocess,sys,time,uuid,zipfile
 from pathlib import Path
-from storage_v001 import check_space,archive_database
+from storage_v001 import check_space,archive_database,discard_database
 from urllib.request import Request,urlopen
 from analyze_v001 import freeze,analyze,write
 HERE=Path(__file__).resolve().parent
@@ -209,6 +209,12 @@ def main(a):
   if a.prepare_only:write(root/'prepared.json',{'status':'PREPARED_NO_TOOL_EXECUTION'});return
   native=preflight(root,cfg,tools)
   samples=(reuse_samples(a.reuse_run,root,model,native['provengo']) if a.reuse_run else sampling(root,cfg,native['provengo'],model,a)) if 'provengo-sample10' in tools else None
+  if a.cases:
+   if tools!=['provengo-sample10'] or not a.reuse_run:raise ValueError('--cases requires sample10 with --reuse-run')
+   selected={int(x) for x in a.cases.split(',')}
+   if not selected or not selected.issubset(set(range(1,11))):raise ValueError('Cases must be 1 through 10')
+   samples=[x for x in samples if x['case'] in selected]
+   write(root/'selected-cases.json',sorted(selected))
   cp=compile_java(root,cfg,native['provengo']) if 'provengo-java' in tools else None
   if cp:java_transport_checks(root,cfg,cp,model,a)
   for tool in tools:
@@ -236,7 +242,8 @@ def main(a):
       for sample in samples:
        service.boundary(sample['case']);outcomes.append(launch([cfg.get('java','java'),'-Xmx2g','-jar',native['provengo']['jar'],'run','-s',sample['file'],'--run-id','1',model],folder,'case-'+str(sample['case']).zfill(2),a.case_timeout,env,expected=(0,1)))
        write(folder/'case-progress.json',outcomes)
-       archive_database(model,folder/('database-case-'+str(sample['case']).zfill(2)))
+       if a.keep_databases:archive_database(model,folder/('database-case-'+str(sample['case']).zfill(2)))
+       else:discard_database(model,folder,sample['case'])
      else:
       env['BENCH_SERVICE_TOKEN']=service.token
       command=[cfg.get('java','java'),'-Xmx2g','-Dbench.base='+service.base,'-Dbench.java.limit='+str(a.java_limit),'-cp',cp,'BenchmarkJavaV001',model,folder/'native.jsonl',str(a.case_timeout)]
@@ -253,7 +260,7 @@ def main(a):
     analysis_result=json.loads((folder/'natchan-result/result.json').read_text())
     case_results={}
     if tool=='provengo-sample10':
-     case_results={str(i):{'execution_pass':r['exit_code']==0 and not r['watchdog_timeout']} for i,r in enumerate(outcomes,1)}
+     case_results={str(i):{'execution_pass':r['exit_code']==0 and not r['watchdog_timeout']} for i,r in zip([x['case'] for x in samples],outcomes)}
     elif tool=='provengo-java' and (folder/'native.jsonl').is_file():
      case_results={str(r['case']):{'execution_pass':r['native_pass'],'details':r} for r in [json.loads(line) for line in (folder/'native.jsonl').read_text().splitlines() if line.strip()]}
     clean=set(case_results)-{str(f['case_id']) for f in oracle['findings']}
@@ -276,6 +283,6 @@ def main(a):
   except OSError as archive_error:print('ARCHIVE_FAILED '+str(archive_error)+' RUN_DIRECTORY '+str(root),flush=True)
 
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--config',type=Path,default=HERE/'tools.local.json');p.add_argument('--tools',default=','.join(TOOLS));p.add_argument('--arms',default=','.join(ARMS));p.add_argument('--seconds',type=int,default=60);p.add_argument('--seed',type=int,default=1);p.add_argument('--port',type=int,default=23443);p.add_argument('--max-length',type=int,default=500);p.add_argument('--case-timeout',type=int,default=120);p.add_argument('--java-timeout',type=int,default=7200);p.add_argument('--sample-timeout',type=int,default=240);p.add_argument('--java-limit',type=int,default=0);p.add_argument('--output',type=Path);p.add_argument('--prepare-only',action='store_true');p.add_argument('--reuse-run',type=Path);a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--config',type=Path,default=HERE/'tools.local.json');p.add_argument('--tools',default=','.join(TOOLS));p.add_argument('--arms',default=','.join(ARMS));p.add_argument('--seconds',type=int,default=60);p.add_argument('--seed',type=int,default=1);p.add_argument('--port',type=int,default=23443);p.add_argument('--max-length',type=int,default=500);p.add_argument('--case-timeout',type=int,default=120);p.add_argument('--java-timeout',type=int,default=7200);p.add_argument('--sample-timeout',type=int,default=240);p.add_argument('--java-limit',type=int,default=0);p.add_argument('--output',type=Path);p.add_argument('--prepare-only',action='store_true');p.add_argument('--reuse-run',type=Path);p.add_argument('--cases');p.add_argument('--keep-databases',action='store_true');a=p.parse_args()
  if min(a.seconds,a.case_timeout,a.java_timeout,a.sample_timeout,a.max_length)<=0 or not 1024<=a.port<=65535:p.error('Invalid budget or port')
  main(a)
