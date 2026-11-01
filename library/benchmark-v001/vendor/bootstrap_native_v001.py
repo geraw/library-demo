@@ -66,6 +66,35 @@ def execute(args, folder, name, timeout=1200):
             raise RuntimeError('Install step failed; inspect ' + str(folder / (name + '.log')))
 
 
+def healthy_python_env(env):
+    python = env / 'Scripts/python.exe'
+    if not (env / 'pyvenv.cfg').is_file() or not python.is_file():
+        return False
+    try:
+        result = subprocess.run([str(python), '-c',
+            'import sys,pip; assert sys.prefix != sys.base_prefix'],
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=30)
+        return result.returncode == 0
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+
+
+def ensure_restler_python(home, preferred=None):
+    env = Path(preferred) if preferred else home / 'restler-python'
+    if healthy_python_env(env):
+        return env / 'Scripts/python.exe'
+    if env.exists():
+        # Preserve the broken installation; never overwrite user environments.
+        import uuid
+        print('INSTALL_REPAIR invalid Python environment: ' + str(env), flush=True)
+        env = home / ('restler-python-repaired-' + uuid.uuid4().hex[:12])
+    base_python = getattr(sys, '_base_executable', None) or sys.executable
+    execute([base_python, '-m', 'venv', env], home, 'python-venv')
+    if not healthy_python_env(env):
+        raise RuntimeError('New RESTler Python environment is not usable: ' + str(env))
+    return env / 'Scripts/python.exe'
+
+
 def activate(home):
     manifest = home / 'manifest.json'
     if not manifest.is_file(): return
@@ -105,9 +134,8 @@ def install(home, tools):
             data['dotnet_sdk_version'] = sdk['version']
         data['dotnet_bin'] = str(dotnet)
         save(); activate(home)
-        env = home / 'restler-python'
-        python = env / 'Scripts/python.exe'
-        if not python.is_file(): execute([sys.executable,'-m','venv',env],home,'python-venv')
+        preferred = Path(data['python_bin']).parent if data.get('python_bin') else None
+        python = ensure_restler_python(home, preferred)
         data['python_bin'] = str(python.parent)
         save(); activate(home)
         source = home / ('restler-fuzzer-' + RESTLER_COMMIT)

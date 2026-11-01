@@ -125,3 +125,5 @@ Use a new evidence-cell copy if outputs already exist: the independent analyzer 
 Linux verification covered Python, JS parsing, real loopback HTTP and Natchan. The three external native engines and Windows PowerShell were not available for end-to-end execution in the build environment; native Provengo sampling/replay, full Java compilation/catalog, RESTler and EvoMaster execution therefore remain to be verified on the user's installed tools. No live four-configuration discovery results are claimed by this package.
 
 Setup diagnostics: every tool-configuration attempt writes a timestamped log under `library/benchmark-v001/setup-logs/`, including the Python executable, local tool root, traceback and the failed installer step tail. These logs are local and ignored by Git. A failure stops setup; do not start a campaign until setup completes.
+
+The RESTler installer validates `pyvenv.cfg`, interpreter startup and pip before reusing its Python environment. An invalid environment is preserved and replaced with a newly created sibling; creation uses the base Python executable rather than a nested virtual-environment launcher.
