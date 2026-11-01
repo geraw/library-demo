@@ -126,4 +126,4 @@ Linux verification covered Python, JS parsing, real loopback HTTP and Natchan. T
 
 Setup diagnostics: every tool-configuration attempt writes a timestamped log under `library/benchmark-v001/setup-logs/`, including the Python executable, local tool root, traceback and the failed installer step tail. These logs are local and ignored by Git. A failure stops setup; do not start a campaign until setup completes.
 
-The RESTler installer validates `pyvenv.cfg`, interpreter startup and pip before reusing its Python environment. An invalid environment is preserved and replaced with a newly created sibling; creation uses the base Python executable rather than a nested virtual-environment launcher.
+The RESTler installer uses the same benchmark Python interpreter that successfully ran setup's pip and acceptance checks. It does not create a second Windows Python environment or select an interpreter from a stale manifest. Existing broken installer environments remain untouched. The chosen interpreter is recorded in `restler-python-check.log` and the tool manifest.
