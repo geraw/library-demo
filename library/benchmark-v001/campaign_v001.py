@@ -242,6 +242,8 @@ def main(a):
    for p in root.rglob('*'):
     if p.is_file() and not {'java-classes','__pycache__','products'}.intersection(p.relative_to(root).parts):z.write(p,p.relative_to(root))
   print('REVIEW_ZIP '+str(archive),flush=True)
+  from pack_review_v001 import pack
+  pack(root)
 
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--config',type=Path,default=HERE/'tools.local.json');p.add_argument('--tools',default=','.join(TOOLS));p.add_argument('--arms',default=','.join(ARMS));p.add_argument('--seconds',type=int,default=60);p.add_argument('--seed',type=int,default=1);p.add_argument('--port',type=int,default=23443);p.add_argument('--max-length',type=int,default=500);p.add_argument('--case-timeout',type=int,default=120);p.add_argument('--java-timeout',type=int,default=7200);p.add_argument('--sample-timeout',type=int,default=240);p.add_argument('--java-limit',type=int,default=0);p.add_argument('--output',type=Path);p.add_argument('--prepare-only',action='store_true');a=p.parse_args()

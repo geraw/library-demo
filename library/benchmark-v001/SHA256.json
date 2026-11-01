@@ -2,12 +2,12 @@
   ".gitignore": "83d0e3b9de077995c324c7a23a0410e6ba76c37bbf1a00f849d1d9a1122034d8",
   "Invoke-Library-Benchmark-v001.ps1": "aa4c6bc2e30ef76605a720c135dc70514857d0efac2c28124dbfde5f02abc62a",
   "PROVENANCE.json": "00f92c9f06df17d704af47b0c3310066f4eea15a3f057e38a0b3042c86a77d5f",
-  "README.md": "52a61bd81c4c06d7e734a0cb3b58f9182168220893526ccf5d8391ad30a0737a",
+  "README.md": "0be6bb5dae256583f5f79a9f4037897e0b8e47101beb7a2743844b8cab5d584c",
   "Setup-Library-Benchmark-v001.ps1": "0c894651b2a30f4668b172c770730090acae643efbcc155dfa37f42cdf4c7d5e",
   "VALIDATION.json": "299b572ba11396cc0d79c863286ccdf066e45e04cfca4df9010721a26d2e885f",
   "Verify-Library-Benchmark-v001.ps1": "1aaba7c4712fb1f333a6b21dccb42978faae3b1a0422cb4e8c21714e8b1f67ca",
   "analyze_v001.py": "d71fc7890c547d5a73e795b587f67322f3709e54de930ea632d6a321b64cb52f",
-  "campaign_v001.py": "408237602de22ca2f0f86ac4c0163d9b9f97ec00a2488a9cd7daa96767c56be0",
+  "campaign_v001.py": "dae7f0bbf370c3f657cfccf8f6714f0b5d97c7dc7d755a9c64e6fff453ed9ccb",
   "configure_v001.py": "22cb7b1fb07aa9a53f2cc4c7faba5d314d415afa9f95925ebd3b9912f6d02df5",
   "java/BenchmarkJavaV001.java": "f0f5378b9aeb6b078d6133839fd8ea158e62e3840e27300c935f94589787cec2",
   "java/StrictGuidedRun.java": "0ade19b3babb22035d89a735fadf4ff0486c122959f3e5091f5b5cccbb96ba54",
@@ -43,5 +43,6 @@
   "vendor/patch_runtime_v011.py": "6f40c1dbde41de670a3e541cca00f42f9b4923bf4ed17a0c3673c6fec57c7471",
   "vendor/sut_original.py": "b0fdf6c75517393664d7453211edf953178c2538fc5b9ec5a68da336b2c9ca8e",
   "verify_v001.py": "8db77e5db2488b738dac3cdbdc4163c592d04a0d2ed2cb2d75012ab2fa2a5729",
-  "tests/test_installer_v001.py": "8df0260156b8a22775fae865994ea3e5676d00d81562170f75174015f3afa60f"
+  "tests/test_installer_v001.py": "8df0260156b8a22775fae865994ea3e5676d00d81562170f75174015f3afa60f",
+  "pack_review_v001.py": "41ad51a61c836194b77a5ac7a70b7f839cdea899f6a5759577f5ae72b17aae3b"
 }
