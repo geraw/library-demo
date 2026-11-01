@@ -60,6 +60,9 @@ def execute(args, folder, name, timeout=1200):
                 proc.wait(timeout=15)
                 raise RuntimeError('Install timeout; inspect ' + str(folder / (name + '.log')))
         if proc.returncode:
+            log_path = folder / (name + '.log')
+            print('INSTALL_FAILED exit_code=' + str(proc.returncode), flush=True)
+            print(log_path.read_text(encoding='utf-8', errors='replace')[-12000:], flush=True)
             raise RuntimeError('Install step failed; inspect ' + str(folder / (name + '.log')))
 
 

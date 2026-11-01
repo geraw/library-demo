@@ -3,3 +3,5 @@ tools.local.json
 runs/
 __pycache__/
 *.pyc
+
+setup-logs/

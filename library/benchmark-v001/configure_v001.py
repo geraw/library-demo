@@ -50,4 +50,22 @@ def main():
  if missing:
   print('TOOLS_NOT_READY '+','.join(missing));print('Use setup binary parameters or -InstallNativeTools. Provengo must already be installed.');return 2
  print('ALL_FOUR_CONFIGURATIONS_HAVE_BINARY_PATHS');return 0
-if __name__=='__main__':raise SystemExit(main())
+def logged_main():
+ import contextlib,datetime,traceback,uuid
+ folder=HERE/'setup-logs';folder.mkdir(parents=True,exist_ok=True)
+ log=folder/('configure-'+datetime.datetime.now().strftime('%Y%m%d-%H%M%S')+'-'+uuid.uuid4().hex[:8]+'.log')
+ class Tee:
+  def __init__(self,terminal,file):self.terminal,self.file=terminal,file
+  def write(self,text):self.terminal.write(text);self.file.write(text);self.flush();return len(text)
+  def flush(self):self.terminal.flush();self.file.flush()
+ print('SETUP_LOG '+str(log),flush=True)
+ with log.open('w',encoding='utf-8') as stream:
+  with contextlib.redirect_stdout(Tee(sys.stdout,stream)),contextlib.redirect_stderr(Tee(sys.stderr,stream)):
+   print('PYTHON '+sys.executable,flush=True)
+   print('LOCALAPPDATA '+os.environ.get('LOCALAPPDATA','<unset>'),flush=True)
+   try:return main()
+   except Exception:
+    traceback.print_exc()
+    print('SETUP_FAILED: full diagnostic log: '+str(log),flush=True)
+    return 1
+if __name__=='__main__':raise SystemExit(logged_main())

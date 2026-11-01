@@ -30,5 +30,5 @@ if ($RestlerPath) { $arguments += @('--restler', $RestlerPath) }
 if ($AnalyzerHome) { $arguments += @('--analyzer-home', $AnalyzerHome) }
 if ($InstallNativeTools) { $arguments += '--install-native' }
 & $python @arguments
-if ($LASTEXITCODE -ne 0) { throw 'Tool configuration is incomplete; see the missing binary paths above. Re-run Setup with explicit paths or -InstallNativeTools.' }
+if ($LASTEXITCODE -ne 0) { throw 'Tool configuration failed. The actual failure is printed above and saved under library/benchmark-v001/setup-logs. No campaign was started.' }
 Write-Host 'LIBRARY_BENCHMARK_V001_SETUP_COMPLETE'
