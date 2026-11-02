@@ -9,15 +9,19 @@ const STATE_FEATURES = [
     "USER_WITH_TWO_BOOKS"
 ];
 
-// Counts how many distinct STATE_FEATURES markers (lib_stories.js's markStateFeature bthreads)
-// appeared anywhere in the ensemble - a Set, so reaching the same state many times only counts
-// once.
+// Counts how many distinct STATE_FEATURES markers (lib_stories.js's markStateFeature bthreads,
+// which call Ctrl.doMark) appeared anywhere in the ensemble - a Set, so reaching the same state
+// many times only counts once.
+//
+// Reads Ctrl.markEvent's own event shape (controlLib.js): name "marker: " + value, data
+// {lib:"Ctrl", verb:"marker", value: <feature name>, eventPriority: 1010} - not a custom
+// "StateFeature"/data.feature shape, since markStateFeature calls Ctrl.doMark directly.
 function distinctStateFeaturesHit(ensemble) {
     let hit = new Set();
     for (let test of ensemble)
         for (let event of test)
-            if (event.name === "StateFeature" && event.data && STATE_FEATURES.indexOf(event.data.feature) !== -1)
-                hit.add(event.data.feature);
+            if (event.data && event.data.lib === "Ctrl" && event.data.verb === "marker" && STATE_FEATURES.indexOf(event.data.value) !== -1)
+                hit.add(event.data.value);
     return hit.size;
 }
 
@@ -149,4 +153,121 @@ function parameterCoverageFunction(ensemble) {
     const details = parameterCoverageDetails(ensemble);
     const universe = 2 * NUMBER_OF_USERS * NUMBER_OF_BOOKS;
     return ((details.loanPairs.size + details.holdPairs.size) / universe) * 100;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Combined coverage (2026-11-02) - a weighted combination of the already-independently-
+// validated State Coverage (distinctStateFeaturesHit/STATE_FEATURES above) and Parameter
+// Coverage (parameterCoverageDetails above), as three separately-normalized components
+// (state/loan/hold, each 0-1). Reuses those functions as-is; does not duplicate marker
+// detection or parameter extraction/validation, and does not alter rankingFunction or
+// parameterCoverageFunction above - both remain independently runnable
+// (--ranking-function=rankingFunction / =parameterCoverageFunction), unaffected by this.
+//
+// Loan and Hold are each normalized over their OWN NUMBER_OF_USERS*NUMBER_OF_BOOKS=16-pair
+// space (not parameterCoverageFunction's shared 32-pair universe) specifically so a weight can
+// be assigned to each independently.
+//
+// Weights are hierarchical, not three flat independent numbers: `state` is State's share of the
+// total, and `parameter.loan`/`parameter.hold` split the REMAINING share (1 - state) between
+// Loan and Hold - parameter.loan + parameter.hold must sum to 1 on their own (a complete split
+// of "the rest"), not to (1 - state) directly. This mirrors how the question actually gets
+// discussed with the advisor as two separate decisions ("how much does Parameter matter
+// relative to State", then separately "how should Parameter's budget split between Loan and
+// Hold") rather than one three-way number pick. It's equivalent in expressiveness to a flat
+// wState+wLoan+wHold=1 scheme (wLoan = (1-wState)*parameter.loan, same for hold) - this is a
+// parameterization choice, not a different scoring capability.
+//////////////////////////////////////////////////////////////////////////
+
+// Provisional defaults only (2026-11-02) - NOT a research finding and not yet reviewed with
+// the advisor. The investigation that led here found Loan pairs structurally harder to cover
+// than Hold pairs (business-rule-serialized vs. unrestricted - see dal.js's
+// UserBook.CanCreateLoan/CanCreateHold), but per explicit instruction this is deliberately NOT
+// used to justify a larger Loan weight here - that is exactly the kind of decision reserved for
+// the advisor discussion + controlled weighting experiments this function is meant to enable,
+// not something to bake in now. 50/50 within `parameter` here resolves to the same wLoan=0.25/
+// wHold=0.25 as the flat scheme this replaced. Change these numbers for a future experiment;
+// nothing else in this section needs to change to support that.
+const COVERAGE_WEIGHTS = {
+    state: 0.50,
+    parameter: {
+        loan: 0.50,
+        hold: 0.50
+    }
+};
+
+// Hard failure, not a clamp: silently normalizing or clamping an invalid weights object would
+// hide a misconfiguration (e.g. a typo'd component name, or shares that don't sum to 1) behind
+// a plausible-looking score instead of surfacing it.
+function validateCoverageWeights(weights) {
+    if (!weights || typeof weights !== "object") {
+        throw new Error("combinedCoverageFunction: weights must be an object");
+    }
+    const state = weights.state;
+    if (typeof state !== "number" || isNaN(state) || state < 0 || state > 1) {
+        throw new Error("combinedCoverageFunction: weight 'state' must be a number in [0,1], got " + state);
+    }
+    const parameter = weights.parameter;
+    if (!parameter || typeof parameter !== "object") {
+        throw new Error("combinedCoverageFunction: weights.parameter must be an object with 'loan' and 'hold'");
+    }
+    const loanShare = parameter.loan;
+    const holdShare = parameter.hold;
+    if (typeof loanShare !== "number" || isNaN(loanShare) || loanShare < 0) {
+        throw new Error("combinedCoverageFunction: weights.parameter.loan must be a nonnegative number, got " + loanShare);
+    }
+    if (typeof holdShare !== "number" || isNaN(holdShare) || holdShare < 0) {
+        throw new Error("combinedCoverageFunction: weights.parameter.hold must be a nonnegative number, got " + holdShare);
+    }
+    if (Math.abs(loanShare + holdShare - 1) > 1e-9) {
+        throw new Error("combinedCoverageFunction: weights.parameter.loan + weights.parameter.hold must sum to 1 (a complete split of Parameter's own share), got " + (loanShare + holdShare));
+    }
+}
+
+/**
+ * The three coverage components (each 0-1) plus the combined score (0-100), computed purely by
+ * calling the existing, already-validated distinctStateFeaturesHit()/parameterCoverageDetails()
+ * - so a high combined score can be checked against its parts instead of hiding poor coverage
+ * in one component. This is the function to call for inspection/reporting;
+ * combinedCoverageFunction() below is the thin ranking-function-shaped wrapper around it.
+ *
+ * @param {Event[][]} ensemble Test suite to be measured.
+ * @param {{state:number, parameter:{loan:number, hold:number}}} [weights] Defaults to
+ *   COVERAGE_WEIGHTS. Validated the same way regardless of caller - see validateCoverageWeights.
+ * @returns {{state:number, loan:number, hold:number, combined:number}} state/loan/hold in
+ *   [0,1]; combined in [0,100].
+ */
+function coverageBreakdown(ensemble, weights) {
+    weights = weights || COVERAGE_WEIGHTS;
+    validateCoverageWeights(weights);
+
+    const state = distinctStateFeaturesHit(ensemble) / STATE_FEATURES.length;
+    const details = parameterCoverageDetails(ensemble);
+    const pairUniverse = NUMBER_OF_USERS * NUMBER_OF_BOOKS;
+    const loan = details.loanPairs.size / pairUniverse;
+    const hold = details.holdPairs.size / pairUniverse;
+
+    const parameterShare = 1 - weights.state;
+    const wLoan = parameterShare * weights.parameter.loan;
+    const wHold = parameterShare * weights.parameter.hold;
+
+    return {
+        state: state,
+        loan: loan,
+        hold: hold,
+        combined: 100 * (weights.state * state + wLoan * loan + wHold * hold)
+    };
+}
+
+/**
+ * Ranking-function-shaped entry point for `provengo ensemble --ranking-function=combinedCoverageFunction`.
+ * Always uses COVERAGE_WEIGHTS - call coverageBreakdown(ensemble, weights) directly (e.g. from a
+ * verification script) to inspect the three components or try different weights without editing
+ * this function.
+ *
+ * @param {Event[][]} ensemble Test suite to be ranked.
+ * @returns Combined coverage, 0-100.
+ */
+function combinedCoverageFunction(ensemble) {
+    return coverageBreakdown(ensemble, COVERAGE_WEIGHTS).combined;
 }
