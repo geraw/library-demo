@@ -3,6 +3,7 @@ from collections import OrderedDict
 from datetime import datetime
 
 from common import canonical, digest
+from legacy_state import failed_update, roundtrip, project_read
 
 MAX_SNAPSHOTS = 128
 MAX_STATE_BODY_BYTES = 64 * 1024
@@ -132,10 +133,10 @@ class StateJudge:
                                               for p in sorted(set(pointers))],
              'scope': 'bounded_raw_http_state' if prop != 'S3' else 'supported_json_scalar_constraints',
              'root_cause_proven': False, 'fields': fields or [], 'details': details or {}}
-        if prop == 'S1':
+        if prop == 'S1' and not (details or {}).get('lifecycle'):
             v['assumptions'] = ['SAME_NAMED_WRITABLE_READABLE_FIELD_IS_PERSISTED']
         if prop == 'S5':
-            v['atomicity_guarantee'] = 'not_established_from_contract'
+            v['atomicity_guarantee'] = (details or {}).get('semantic_guarantee') or 'not_established_from_contract'
         self.emit(v)
 
     def constraint_input(self, row, op):
@@ -218,8 +219,9 @@ class StateJudge:
         if not eligible:
             self.verdict(p['property'], row, op, 'not_evaluable', 'NO_SUPPORTED_COMPARABLE_SENT_FIELDS', witnesses, binding=binding)
             return
-        current = after['response']
+        current = project_read(after['response'], binding)
         if p['property'] == 'S1':
+            facts = roundtrip(sent, current, eligible, {f: binding['fields'][f]['read_schema']['constraints'].get('format') for f in eligible})
             changes, optional_missing, unsupported = {}, [], []
             for f in eligible:
                 meta = binding['fields'][f]
@@ -242,31 +244,32 @@ class StateJudge:
                 value, why = 'consistent', 'SENT_FIELDS_MATCH_READBACK'
             self.verdict('S1', row, op, value, why, witnesses, eligible, binding,
                          {'changes': changes, 'optional_missing': optional_missing, 'unsupported_fields': unsupported,
-                          'readback_consistency_is_candidate_not_product_intent_proof': True})
+                          'readback_consistency_is_candidate_not_product_intent_proof': True,
+                          'historical_provider': 'RT-1', 'change_subtypes': facts.get('change_subtypes', {})})
             return
-        before = p['before']['response'] if p['before'] else None
+        before = project_read(p['before']['response'], binding) if p['before'] else None
         if not isinstance(before, dict):
             self.verdict('S5', row, op, 'not_evaluable', 'PREIMAGE_NOT_RETAINED', witnesses, binding=binding)
             return
-        changed, states = [], {}
         for f in eligible:
-            meta = binding['fields'][f]
             if f not in before or f not in current:
                 self.verdict('S5', row, op, 'not_evaluable', 'BEFORE_AFTER_FIELD_MISSING', witnesses, eligible, binding)
                 return
-            if not equal(sent[f], before[f], meta['write_schema']['constraints']):
-                changed.append(f)
-                states[f] = ('applied' if equal(current[f], sent[f], meta['read_schema']['constraints']) else
-                             'kept' if equal(current[f], before[f], meta['read_schema']['constraints']) else 'other')
+        facts = failed_update(row['status'], {f:before[f] for f in eligible},
+                              {f:sent[f] for f in eligible}, {f:current[f] for f in eligible})
+        states = facts.get('field_states', {})
+        changed = list(states)
         if not changed:
             self.verdict('S5', row, op, 'not_evaluable', 'NO_OBSERVABLE_REQUESTED_CHANGE', witnesses, eligible, binding)
             return
         outcomes = set(states.values())
         outcome = ('unchanged' if outcomes == {'kept'} else 'committed_despite_error' if outcomes == {'applied'} else
                    'partial' if outcomes == {'applied', 'kept'} else 'other_state_change')
-        value = 'consistent' if outcome == 'unchanged' else 'policy_observation'
+        policy = self.context.get('semantic_policies', {}).get('failed_write_no_effect')
+        value = 'consistent' if outcome == 'unchanged' else ('violation' if policy else 'policy_observation')
         self.verdict('S5', row, op, value, 'FAILED_WRITE_' + outcome.upper(), witnesses, changed, binding,
-                     {'outcome': outcome, 'field_states': states, 'scope': 'requested_comparable_fields_only',
+                     {'outcome': outcome, 'field_states': states, 'historical_provider': 'ATOM-1-2',
+                      'semantic_guarantee': policy, 'scope': 'requested_comparable_fields_only',
                       'full_resource_atomicity_proven': False})
 
     def consume(self, row, op):

@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "v009 independent semantic request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run",
+    "contract",
+    "knowledge",
+    "freeze",
+    "evidence"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "natchan-semantic-request/1"
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "product",
+        "tool",
+        "start_state"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "product": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+        },
+        "tool": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+        },
+        "product_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "repetition": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "start_state": {
+          "enum": [
+            "fresh_snapshot",
+            "accumulated",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "contract": {
+      "type": "string",
+      "minLength": 1
+    },
+    "knowledge": {
+      "type": "string",
+      "minLength": 1
+    },
+    "freeze": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format"
+      ],
+      "properties": {
+        "format": {
+          "enum": [
+            "har",
+            "http-jsonl",
+            "journal-jsonl",
+            "observer-tool-jsonl",
+            "none"
+          ]
+        },
+        "traffic": {
+          "type": "string",
+          "minLength": 1
+        },
+        "server_log": {
+          "type": "string",
+          "minLength": 1
+        },
+        "capture": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "complete": {
+              "type": "boolean"
+            },
+            "exclusive": {
+              "type": "boolean"
+            },
+            "ordering": {
+              "enum": [
+                "serial",
+                "concurrent",
+                "unknown"
+              ]
+            }
+          }
+        }
+      },
+      "if": {
+        "properties": {
+          "format": {
+            "const": "none"
+          }
+        }
+      },
+      "then": {
+        "not": {
+          "required": [
+            "traffic"
+          ]
+        }
+      },
+      "else": {
+        "required": [
+          "traffic"
+        ]
+      }
+    }
+  }
+}

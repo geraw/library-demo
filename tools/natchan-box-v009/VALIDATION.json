@@ -1,0 +1,94 @@
+{
+  "version": "009-dev.4",
+  "state": "development_milestone_4_s2",
+  "production_replacement": false,
+  "base_commit": "6310af7baecc25fc46692d1127c80dbc1da4247d",
+  "previous_development_commit": "7c0f0d2829087abda06c2c381dfd154659837560",
+  "v008_regression": {
+    "passed": 275,
+    "source_unchanged": true
+  },
+  "v009_tests": {
+    "passed": 144,
+    "command": "python -m unittest discover -s tools/natchan-box-v009/tests -q",
+    "http_jsonl_stress_exchanges": 90000,
+    "loopback_http_modes": 10,
+    "loopback_http_exchanges": 34,
+    "four_tool_label_invariance": true,
+    "producer_verdict_injection_invariance": true,
+    "state_guards_tested": [
+      "actor",
+      "URI/origin",
+      "reset/epoch reuse",
+      "case",
+      "intervening mutation",
+      "missing snapshots",
+      "missing body",
+      "query",
+      "async",
+      "overlapping intervals",
+      "state budgets",
+      "cache eviction"
+    ],
+    "formats_tested": [
+      "http-jsonl",
+      "journal-jsonl",
+      "HAR 1.2",
+      "observer-tool-jsonl"
+    ],
+    "s2_new_tests": 41,
+    "s2_live_http_modes": 4
+  },
+  "retrospective_library": {
+    "archive_sha256": "41d2e1b8369d1d552a0e1e5b55181b9f1a3c38dd0ebd2d5bd4a719cf57c90b86",
+    "contract_sha256": "e63f6c2f2f070f7225dd625a019da39fd9038bea0a660225fd3c420acefffae3",
+    "evaluation": "development_post_hoc_not_held_out",
+    "tool_exchanges": 81802,
+    "new_seeded_bug_credit_claimed": false,
+    "details": "LIBRARY_RETROSPECTIVE.json",
+    "analyzer_version": "009-dev.2",
+    "rerun_for_dev3": false,
+    "rerun_for_dev4": false
+  },
+  "implemented_subsets": [
+    "S1 same-item-URI scalar readback candidates",
+    "S2 independent scalar create/update response classes and identity-linked readback",
+    "S3 bounded scalar input/storage constraints",
+    "S5 requested-field after-error state observations",
+    "S7 status candidates and unique log-ID signatures"
+  ],
+  "not_implemented": [
+    "S4",
+    "S6",
+    "nested/array state comparisons",
+    "full JSON Schema validation",
+    "known-bug matching in the blind route",
+    "General creation identity without recorded navigation evidence"
+  ],
+  "not_performed": [
+    "Windows PowerShell execution",
+    "new live Gitea/Vikunja runs",
+    "held-out evaluation",
+    "Producer handoff traffic experiments rerun for dev.3"
+  ],
+  "new_sut_requests_by_analyzer": 0,
+  "held_out_validation_performed": false,
+  "contract_review_acceptance": {
+    "contracts_derived_and_frozen": 6,
+    "all_exit_zero": true,
+    "details": "CONTRACT_ACCEPTANCE_20261101.json",
+    "run_evidence_read": false
+  },
+  "s2_contract_acceptance": {
+    "contracts": 6,
+    "all_derive_freeze_exit_zero": true,
+    "details": "S2_CONTRACT_ACCEPTANCE.json",
+    "run_findings_claimed": false
+  },
+  "s2_cli_demo": {
+    "exit_code": 0,
+    "S2_candidates": 1,
+    "source_exchange_count": 4,
+    "evaluation": "synthetic development evidence"
+  }
+}

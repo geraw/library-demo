@@ -101,6 +101,11 @@ class Contract:
         if any(k in obj for k in ('allOf', 'oneOf', 'anyOf', 'not', 'if', 'then', 'else')):
             result['status'] = 'ambiguous'
             result['reason'] = 'COMPOSED_SCHEMA_NOT_INTERPRETED'
+            if set(obj) <= {'oneOf', 'anyOf', 'description', 'title'}:
+                alternatives = obj.get('oneOf', obj.get('anyOf'))
+                if isinstance(alternatives,list) and alternatives and all(isinstance(a,dict) and a.get('type') in ('integer','number','string','boolean') for a in alternatives):
+                    result['scalar_alternative_types'] = sorted({a['type'] for a in alternatives})
+
         if 'required' in obj:
             if not isinstance(obj['required'], list) or not all(isinstance(x, str) for x in obj['required']):
                 raise InputError('SCHEMA_REQUIRED_INVALID')
@@ -135,6 +140,7 @@ class Contract:
 
 
 def derive(doc, contract_hash):
+    from semantic_policy import derive_policies
     c = Contract(doc)
     operations = []
     for path, raw_item in sorted(doc['paths'].items()):
@@ -213,6 +219,7 @@ def derive(doc, contract_hash):
                                'responses': response_schemas, 'links': links,
                                'security': op.get('security', doc.get('security', [])),
                                'declared_write_role': write_role(op, pointer),
+                               'collection_complete': bool(re.match(r'^\s*Return all\b', str(op.get('description','')), re.I)),
                                'entity': {'status': 'unknown', 'reason': 'ENTITY_IDENTITY_NOT_PROVEN'},
                                'placement_candidate': path.rsplit('/', 2)[0] if path.count('{') > 1 else None})
     security_pointer = '#/components/securitySchemes' if 'openapi' in doc else '#/securityDefinitions'
@@ -285,6 +292,14 @@ def derive(doc, contract_hash):
                 if any(c.get(k) for c in (wc, rc) for k in ('readOnly', 'writeOnly')):
                     excluded[name] = 'SERVER_MANAGED_OR_WRITE_ONLY'
                     continue
+                projection = None
+                if wc.get('type') in ('integer','string') and rc.get('type') == 'object':
+                    identities = [(n,v) for n,v in r.get('fields',{}).items()
+                                  if n.lower() in ('id','uuid','key') and v.get('status')=='declared'
+                                  and v.get('constraints',{}).get('type')==wc.get('type')]
+                    if len(identities)==1:
+                        projection,r = identities[0]
+                        rc = r.get('constraints',{})
                 if w.get('status') != 'declared' or r.get('status') != 'declared' or wc.get('type') != rc.get('type'):
                     excluded[name] = 'FIELD_SCHEMA_AMBIGUOUS_OR_TYPES_DIFFER'
                     continue
@@ -295,7 +310,9 @@ def derive(doc, contract_hash):
                     excluded[name] = 'FIELD_FORMATS_DIFFER'
                     continue
                 fields[name] = {'write_schema': w, 'read_schema': r,
-                                'required_in_read': name in res.get('required', [])}
+                                'required_in_read': name in res.get('required', []),
+                                'read_projection': projection,
+                                'projection_basis': 'unique_schema_identity_candidate' if projection else None}
             if not fields:
                 diagnostics['unavailable_reasons'].append('NO_SUPPORTED_COMMON_SCALAR_FIELDS')
             binding = {'status': 'structural_candidate', 'read_operation': get['key'],
@@ -309,8 +326,8 @@ def derive(doc, contract_hash):
     from derive_path_bindings import derive_pairs
     path_bindings = derive_pairs(operations)
     unique_gaps = {tuple(sorted(g.items())): g for g in c.gaps}
-    return {'schema_version': 'natchan-contract-context/1', 'derivation_version': '009-dev.4',
-            'contract_sha256': contract_hash, 'knowledge_policy': 'contract-only',
+    return {'schema_version': 'natchan-contract-context/1', 'derivation_version': '009-dev.6',
+            'contract_sha256': contract_hash, 'semantic_policies': derive_policies(doc), 'knowledge_policy': 'contract-only',
             'operations': operations, 'entity_candidates': [entities[k] for k in sorted(entities)],
             'write_read_bindings': bindings,
             'create_update_bindings': path_bindings,
