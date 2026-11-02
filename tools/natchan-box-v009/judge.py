@@ -60,7 +60,9 @@ def analyze(rows, context, verdict_file, logs=None, http_id_counts=None, capture
     from lifecycle import LifecycleJudge
     from rejected_create import RejectedCreateJudge
     from local_sequence import LocalSequenceJudge
-    supported = {'S1', 'S2', 'S3', 'S5', 'S7'}
+    from collection_semantics import CollectionJudge
+    from relational_observations import RelationalJudge
+    supported = set(CLASSES)
     index = matcher(context)
     counts = {k: Counter() for k in supported}
     reasons = {k: Counter() for k in supported}
@@ -100,6 +102,8 @@ def analyze(rows, context, verdict_file, logs=None, http_id_counts=None, capture
     lifecycle = LifecycleJudge(context, capture, state)
     rejected_create = RejectedCreateJudge(context, state)
     local_sequence = LocalSequenceJudge(state)
+    collections = CollectionJudge(context,state)
+    relational = RelationalJudge(context,state)
     for row in rows:
         total += 1
         server_errors += (row['status'] or 0) >= 500
@@ -127,8 +131,15 @@ def analyze(rows, context, verdict_file, logs=None, http_id_counts=None, capture
         lifecycle.consume(row, op)
         rejected_create.consume(row, op)
         local_sequence.consume(row, op)
+        collections.consume(row,op)
+        relational.consume(row,op)
     state_audit = state.finish()
     path_audit = paths.finish()
+    lifecycle_audit=lifecycle.finish()
+    rejected_audit=rejected_create.finish()
+    local_audit=local_sequence.finish()
+    collection_audit=collections.finish()
+    relational_audit=relational.finish()
     coverage = {k: {'name': name, 'implemented': k in supported,
                     'opportunities': sum(counts[k].values()) if k in supported else None,
                     'counts': {v: counts[k][v] for v in VALUES} if k in supported else {v: None for v in VALUES},
@@ -142,8 +153,10 @@ def analyze(rows, context, verdict_file, logs=None, http_id_counts=None, capture
             'finding_partitions': partitions,
             'classes': coverage, 'unique_server_log_joins': joined, 'state_audit': state_audit,
             'path_consistency_audit': path_audit,
-            'lifecycle_audit': lifecycle.finish(),
-            'rejected_create_audit': rejected_create.finish(),
-            'local_sequence_audit': local_sequence.finish(),
+            'lifecycle_audit': lifecycle_audit,
+            'rejected_create_audit': rejected_audit,
+            'local_sequence_audit': local_audit,
+            'collection_audit': collection_audit,
+            'relational_audit': relational_audit,
             'server_5xx': server_errors, 'unjoined_server_5xx': server_errors - joined,
             'distinct_bugs': None, 'producer_verdicts_used': False}

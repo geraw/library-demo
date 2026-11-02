@@ -3,7 +3,7 @@ from pathlib import Path
 import base64
 import binascii
 from datetime import datetime
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, parse_qsl
 
 from common import InputError, Unsupported, digest, loads, read
 
@@ -125,6 +125,7 @@ def normalize(raw, source):
     response_body, response_valid = decode_body(r.get('response'), res_h.get('content-type', ''))
     # Raw values are internal only. Verdicts emit comparison outcomes, never these bodies.
     return {'method': method, 'path': parsed.path, 'query_present': bool(parsed.query),
+            'query_pairs': parse_qsl(parsed.query, keep_blank_values=True, max_num_fields=256) if parsed.query.count('&') < 256 else [],
             'status': status or None, 'input_class': shape(r.get('input')),
             'request_id': request_id, 'source': source, 'origin': parsed.netloc.lower(),
             'input': request_body, 'response': response_body,

@@ -5,6 +5,7 @@ Unknown wording never establishes a guarantee.
 import re
 
 STATEMENTS = {
+ 'deletion_preserves_others': 'deletion preserves non-target resources',
  'creation_visible': 'creation is synchronously visible',
  'deletion_removes': 'completed deletion removes the exposed resource',
  'rejected_create_no_effect': 'rejected creations preserve business state',

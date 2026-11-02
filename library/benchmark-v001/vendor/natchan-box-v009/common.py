@@ -4,7 +4,7 @@ import json
 import math
 from pathlib import Path
 
-VERSION = '009-dev.6'
+VERSION = '009-dev.7'
 ROOT = Path(__file__).resolve().parent
 
 

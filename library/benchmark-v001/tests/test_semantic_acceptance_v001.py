@@ -25,6 +25,12 @@ class SemanticAcceptance(unittest.TestCase):
                 b=x.book('acceptance')
                 if kind=='B2':x.req('DELETE','/books/'+str(b))
                 x.req('GET','/books/'+str(b))
+            elif kind=='B4':
+                benchmark.scenario('B4',c)
+            elif kind=='B5':
+                u=x.user('a');a=x.book('a');b=x.book('b')
+                h=x.create('/holds',{'userId':u,'bookId':a});x.create('/holds',{'userId':u,'bookId':b})
+                x.req('GET','/holds');x.req('DELETE','/holds/'+str(h));x.req('GET','/holds')
             else:
                 u=x.user('a');v=x.user('b');b=x.book('acceptance')
                 x.create('/loans',{'userId':u,'bookId':b})
@@ -48,5 +54,17 @@ class SemanticAcceptance(unittest.TestCase):
                     else:
                         self.assertTrue(found[0]['details']['semantic_guarantee'])
                         self.assertGreaterEqual(len(found[0]['evidence']),2)
+
+    def test_b4_b5_and_baseline_controls(self):
+        for kind,reason,value in [('B4','CONJUNCTIVE_FILTER_VIOLATION','violation'),('B5','DELETE_REMOVED_NON_TARGET_RESOURCES','policy_observation')]:
+            for mutation in ('none',kind):
+                with self.subTest(kind=kind,mutation=mutation):
+                    result,verdicts=self.check_flow(mutation,kind)
+                    found=[v for v in verdicts if v['reason']==reason and v['value']==value]
+                    self.assertEqual(bool(found),mutation==kind,verdicts)
+                    if kind=='B5' and found:self.assertFalse(found[0]['details']['collection_completeness_declared'])
+                    if mutation=='none':
+                        self.assertEqual(result['finding_partitions']['semantic_candidate']['occurrences'],0)
+                        self.assertEqual(result['finding_partitions']['policy_observation']['occurrences'],0)
 
 if __name__=='__main__':unittest.main()

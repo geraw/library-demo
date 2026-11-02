@@ -1,0 +1,477 @@
+{
+  "version": "009-dev.7",
+  "date": "2026-11-02",
+  "engine": {
+    "acceptance_real.py": "46365e7d08ad0ac3edfdaa36bd4efd5c3976daf024accd92f04dc5b5a49ea553",
+    "acceptance_relational_real.py": "55a2c75152b176fa3befd194207c0867c7fefc763a93890b7dd763ab2151dcdf",
+    "audit_real_systems.py": "8ee7d2f152ef9ab3c2ca3f2317a0c74fdd793964cc39eb605750d4ed43d36361",
+    "collection_semantics.py": "8c49d1c735fe66e778808b887e38b20b89b02fbe16b074a5ef833a7225d0f745",
+    "common.py": "6e4b9a5c29f7deb93a67e83a8400494a78525baed46ee5c6347d1f69a767258a",
+    "contract_context.py": "2d670e8da1fddc3296b1f426a4d16968898dd1dc1c6f8d6738ecef9a625d9a97",
+    "create_update.py": "1efe31492cfd9bfb48122d430a85fd3d8e9bf153cf7bc62193e5ef584b589480",
+    "derive_path_bindings.py": "eb4454f33d4c697549eaf82ef957691f35bd293890b26c8192e2ed4a6daf133e",
+    "historical_providers.py": "d6ffda442bcad96bf1c59a20b5e1f7e20b53b0c01a14877efb280298e05125c1",
+    "judge.py": "021674c3a4902dc86a2b581dd6236a24a927f8704d5d347d82f4d2dcc9da1c18",
+    "legacy_state.py": "a26f7ff60b729f148e7e50e8316ddcd60454709c52366a702c6347eb531223ed",
+    "lifecycle.py": "0a96b61bee4405002f6fffdd502f70306d8160c4f1b7e77b2392fe81c09c876c",
+    "local_sequence.py": "75dae4ff4c34d23c9834a4e4429a774d492cbb0d74e2c30651f0cba52daeb1d7",
+    "natchan.py": "965e75437473f8cd399b814f8dd7c970aeb4fb71773bdf14e732bd4cfc6879bb",
+    "rejected_create.py": "b612b6ffd05a41c14ceb527679857ef8210a4f8e43570f77fcff8804d904374d",
+    "relational_observations.py": "e898b5b16df4faa96f4e384acc2cb07cc35ee385e695a3903e2ba073749ce4d0",
+    "replay.py": "23f7890cf3449ce2c7c26a45b7de1d280a763262af6778052e8867ab572b2cca",
+    "replay_library.py": "670df98bd2f7fdacbff2efa403eed3946af1bbb3985e05855b3643843e65f9c3",
+    "semantic_policy.py": "9a4ef38cd5d9cd1907f4217a55c075f33fee9fa57f57b379763e842b5a7282a5",
+    "state_semantics.py": "931e07e5276374e2bc1c84559257bcd6d2c772dc6fc9d2d6beda681fb60d8b68",
+    "traffic.py": "5eef965c7f6f54775459b8b689fc62f9f5fa64c578264245e1285963814073b9",
+    "validate_contracts.py": "9a8e6d1fdc9d15b809cfad6a2d3df38931de4234e5ccfdd79d5ecdc576ba7108",
+    "validate_library_archive.py": "faa3b5e4760dc0ff85c4dfc01e33e58fd91801ff9bc55f20ec3225b990003fa9"
+  },
+  "unit_tests": 183,
+  "benchmark_tests": 12,
+  "native_tool_campaigns_run": false,
+  "real_system_requests": 0,
+  "resampled": false,
+  "library_acceptance": {
+    "B1": "violation",
+    "B2": "violation",
+    "B3": "violation_extra_preimage",
+    "B4": "violation",
+    "B5": "policy_observation_extra_preimage_collection_completeness_not_declared",
+    "baseline_controls": "no_semantic_or_policy_findings"
+  },
+  "real_acceptance": {
+    "status": "PASS",
+    "new_SUT_requests": 0,
+    "resampled": false,
+    "producer_verdicts_used": false,
+    "manifest_sha256": "b050730339a87c25353be2ac5771dc3fd0fc9294f777d992d1444a77fc86844d",
+    "controls": "Synthetic repaired witnesses, not additional SUT runs",
+    "results": [
+      {
+        "system": "mealie",
+        "exchanges": 299,
+        "observations": {
+          "SCALED_ACTION_NONLINEAR_DELTA": 1,
+          "REFERENCE_TO_OBSERVED_ABSENT_RESOURCE": 7,
+          "COPY_INTERNAL_REFERENCE_NOT_IN_COPIED_TARGETS": 1
+        },
+        "counterfactual_controls_passed": 9,
+        "proven_semantic_violations": 0
+      },
+      {
+        "system": "wger",
+        "exchanges": 945,
+        "observations": {
+          "MOVE_AGGREGATE_TRANSFER_MISMATCH": 3
+        },
+        "counterfactual_controls_passed": 3,
+        "proven_semantic_violations": 0
+      },
+      {
+        "system": "vikunja",
+        "exchanges": 165,
+        "observations": {
+          "MOVED_ENTITY_REMAINS_UNDER_OTHER_PARENT": 2
+        },
+        "counterfactual_controls_passed": 2,
+        "proven_semantic_violations": 0
+      }
+    ]
+  },
+  "g014_regression": {
+    "status": "PASS",
+    "five_hundred_state_effects": 6,
+    "partial_500": 4,
+    "subset_applied_500": 2,
+    "four_hundred_state_observations": 4,
+    "counterfactual_rollback_controls": 10
+  },
+  "restler_baseline": {
+    "archive_sha256": "7b4f0276547d82cd61db912eaafb2751e7218e959cc4530b4f218d8cb109458f",
+    "http_sha256": "395c4d17b1e58d12bf511ad6a8712865a1f1b40ac16425fc65940aef53e0e3de",
+    "contract_sha256": "d29a99125ed77eea0e8325d2c243f230ac855255a15615441e678d123da7c4d2",
+    "stats": {
+      "seen": 2499,
+      "ignored_non_http": 1
+    },
+    "analysis": {
+      "exchanges": 2499,
+      "finding_partitions": {
+        "server_5xx": {
+          "groups": 1,
+          "occurrences": 5
+        },
+        "undeclared_status": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "policy_observation": {
+          "groups": 0,
+          "occurrences": 0
+        }
+      }
+    }
+  },
+  "real_audit": [
+    {
+      "system": "dtrack",
+      "run": "dtrack-c4-R2-20261029-164104",
+      "repository_path": "results/dtrack-c4-R2-20261029-164104/gateway-journal.jsonl",
+      "fetched_sha256": "50c64baf8f7fe39a6882e158d9252cd3a681f2536aac200ad3cb5a07284f258f",
+      "product_http": 37,
+      "observed_5xx": 0,
+      "producer_story_statuses": {
+        "SETUP_FAILED": 33
+      },
+      "contract_hash_matches_run": true,
+      "contract_canonical_sha256": "efa1361776b4878d68396cb1b3c1f4607dbb507077f02eb634fc1c6154512f31",
+      "finding_partitions": {
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "policy_observation": {
+          "groups": 0,
+          "occurrences": 0
+        }
+      },
+      "new_relational_observations": {}
+    },
+    {
+      "system": "gitea",
+      "run": "gitea-v22rc-20261028-072647",
+      "repository_path": "results/gitea-v22rc-20261028-072647/gateway-journal.jsonl",
+      "fetched_sha256": "bbf0241f2312310b625fc3a45c46b27fc4fb6d02e03d81cfd9f2cdfa8fcc7cb4",
+      "product_http": 132,
+      "observed_5xx": 0,
+      "producer_story_statuses": {
+        "SETUP_FAILED": 7,
+        "NOT_APPLICABLE": 2,
+        "COMPLETED": 4
+      },
+      "contract_hash_matches_run": true,
+      "contract_canonical_sha256": "2915d5f01a82feb849745903f62679921b9ba614d91f55a876495feaa03be660",
+      "finding_partitions": {
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 1,
+          "occurrences": 2
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "policy_observation": {
+          "groups": 0,
+          "occurrences": 0
+        }
+      },
+      "new_relational_observations": {}
+    },
+    {
+      "system": "kimai",
+      "run": "kimai-c3-R2-20261028-194143",
+      "repository_path": "results/kimai-c3-R2-20261028-194143/gateway-journal.jsonl",
+      "fetched_sha256": "47079dea61f5c1599032e01e48ddcb3df52bb3093f85a70f4d443270c81062ea",
+      "product_http": 46,
+      "observed_5xx": 0,
+      "producer_story_statuses": {
+        "SETUP_FAILED": 17
+      },
+      "contract_hash_matches_run": true,
+      "contract_canonical_sha256": "32bfc74f0e345db00034df391defa1119ca9cb39026a4d33cb3a79b2d6d44cb7",
+      "finding_partitions": {
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 1,
+          "occurrences": 34
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "policy_observation": {
+          "groups": 0,
+          "occurrences": 0
+        }
+      },
+      "new_relational_observations": {}
+    },
+    {
+      "system": "mealie",
+      "run": "mealie-v22rc2-20261028-075118",
+      "repository_path": "results/mealie-v22rc2-20261028-075118/gateway-journal.jsonl",
+      "fetched_sha256": "04e97f695034f05e828d68d832d850639d2ee8c1b86b420a1b761304ec0934f5",
+      "product_http": 299,
+      "observed_5xx": 4,
+      "producer_story_statuses": {
+        "COMPLETED": 20
+      },
+      "contract_hash_matches_run": true,
+      "contract_canonical_sha256": "d0d6d6efe819172edaf2f838367c1597e4b1221ff56cb16b9f84b29b7c9be6ad",
+      "finding_partitions": {
+        "server_5xx": {
+          "groups": 2,
+          "occurrences": 4
+        },
+        "undeclared_status": {
+          "groups": 18,
+          "occurrences": 52
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "policy_observation": {
+          "groups": 4,
+          "occurrences": 9
+        }
+      },
+      "new_relational_observations": {
+        "SCALED_ACTION_NONLINEAR_DELTA": 1,
+        "REFERENCE_TO_OBSERVED_ABSENT_RESOURCE": 7,
+        "COPY_INTERNAL_REFERENCE_NOT_IN_COPIED_TARGETS": 1
+      }
+    },
+    {
+      "system": "tandoor",
+      "run": "tandoor-c2-R2-20261027-215202",
+      "repository_path": "results/tandoor-c2-R2-20261027-215202/gateway-journal.jsonl",
+      "fetched_sha256": "d55b3632e2e0e97740d4337029180de6d6277a2410b0fe168e3ad83a731b5878",
+      "product_http": 141,
+      "observed_5xx": 0,
+      "producer_story_statuses": {
+        "COMPLETED": 7,
+        "SETUP_FAILED": 4,
+        "NOT_APPLICABLE": 1
+      },
+      "contract_hash_matches_run": true,
+      "contract_canonical_sha256": "622e774bb93aac40f8fa36271a24cf645aae4be5a2a8c1d224f0a1c8676fd948",
+      "finding_partitions": {
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 17,
+          "occurrences": 41
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "policy_observation": {
+          "groups": 10,
+          "occurrences": 34
+        }
+      },
+      "new_relational_observations": {}
+    },
+    {
+      "system": "vikunja",
+      "run": "vikunja-v22rc3-fresh-20261028-085526",
+      "repository_path": "results/vikunja-v22rc3-fresh-20261028-085526/gateway-journal.jsonl",
+      "fetched_sha256": "b17163f7535491903d042ca0d2495fc579167d65c66b62d0ed1e365c3affbfb2",
+      "product_http": 165,
+      "observed_5xx": 0,
+      "producer_story_statuses": {
+        "COMPLETED": 9
+      },
+      "contract_hash_matches_run": true,
+      "contract_canonical_sha256": "c81a3387e21c8b6e86f02d39d0b8501a2aced8a1da43629370819beeda85d977",
+      "finding_partitions": {
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 7,
+          "occurrences": 19
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "policy_observation": {
+          "groups": 1,
+          "occurrences": 2
+        }
+      },
+      "new_relational_observations": {
+        "MOVED_ENTITY_REMAINS_UNDER_OTHER_PARENT": 2
+      }
+    },
+    {
+      "system": "wger",
+      "run": "wger-stories-20261026-205327",
+      "repository_path": "results/wger-stories-20261026-205327/gateway-journal.jsonl",
+      "fetched_sha256": "1c4bce9f56067b221014d22eb11248a5277fbc653e25776d7356fe02df47fa23",
+      "product_http": 190,
+      "observed_5xx": 0,
+      "producer_story_statuses": {
+        "COMPLETED": 10
+      },
+      "contract_hash_matches_run": true,
+      "contract_canonical_sha256": "70941110d5651c579d591610d44b28acc4e65b8401f54d3c18fd1b129db79a4c",
+      "finding_partitions": {
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "policy_observation": {
+          "groups": 0,
+          "occurrences": 0
+        }
+      },
+      "new_relational_observations": {}
+    },
+    {
+      "system": "wger",
+      "run": "wger-v22rc-20261028-071809",
+      "repository_path": "results/wger-v22rc-20261028-071809/gateway-journal.jsonl",
+      "fetched_sha256": "0c88aba569fb8c1fe6b64f61aa2eab828b4d2dab1620c00ec20979fc8da8970c",
+      "product_http": 945,
+      "observed_5xx": 0,
+      "producer_story_statuses": {
+        "COMPLETED": 45,
+        "NOT_APPLICABLE": 9
+      },
+      "contract_hash_matches_run": true,
+      "contract_canonical_sha256": "70941110d5651c579d591610d44b28acc4e65b8401f54d3c18fd1b129db79a4c",
+      "finding_partitions": {
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 52,
+          "occurrences": 147
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "policy_observation": {
+          "groups": 2,
+          "occurrences": 3
+        }
+      },
+      "new_relational_observations": {
+        "MOVE_AGGREGATE_TRANSFER_MISMATCH": 3
+      }
+    }
+  ],
+  "four_configuration_replay": {
+    "status": "INCOMPLETE_MISSING_RAW_HTTP",
+    "full_raw_available": "RESTler baseline only",
+    "adapter_dispatch_test": "synthetic four-tool directories, not native campaigns",
+    "compact_archive_inventory": [
+      {
+        "archive": "benchmark-v001-20261101-180029-305afb-compact-review.zip",
+        "sha256": "889a1fda922046ababff1b3a010b01decb4bf4559b9aa671fcf453d5c581d29f",
+        "configurations": [
+          "provengo-sample10"
+        ],
+        "raw_http_files": 0
+      },
+      {
+        "archive": "benchmark-v001-20261101-195318-155d7a-compact-review.zip",
+        "sha256": "84a40db37e2bfe8c8ae060bdc26b6760a4c2f11120442a22a21b4a1b1d8f0bd0",
+        "configurations": [
+          "provengo-sample10"
+        ],
+        "raw_http_files": 0
+      },
+      {
+        "archive": "benchmark-v001-20261101-233425-14e824-compact-review.zip",
+        "sha256": "cc18e9acb8a243316638eaf92dc70e720f9c4f84ef741c7e144df6483f651f50",
+        "configurations": [
+          "provengo-sample10"
+        ],
+        "raw_http_files": 0
+      },
+      {
+        "archive": "benchmark-v001-20261102-004354-eccb5d-compact-review.zip",
+        "sha256": "4c9638509704ddf9a1dadaf7d1b23ca1b3bb2f67f4498db6e035de01935a76c3",
+        "configurations": [
+          "provengo-sample10"
+        ],
+        "raw_http_files": 0
+      },
+      {
+        "archive": "benchmark-v001-20261102-040359-d5a33d-compact-review.zip",
+        "sha256": "d837a1d185664e7b5c5f7d695a70f6f71f6920eb1016c0752c5def2783c93635",
+        "configurations": [
+          "provengo-sample10"
+        ],
+        "raw_http_files": 0
+      },
+      {
+        "archive": "benchmark-v001-20261102-094422-2d2e86-compact-review.zip",
+        "sha256": "e79e10c1e1374a4947b700a852a77a03850d331617aa67070aff8c791924325b",
+        "configurations": [
+          "evomaster"
+        ],
+        "raw_http_files": 0
+      },
+      {
+        "archive": "benchmark-v001-20261102-102627-98500c-compact-review.zip",
+        "sha256": "53ddb405027ee07ecce3aec1a4ec81125e9f7cb081ca328f6e58a8baeb8fdac8",
+        "configurations": [
+          "restler"
+        ],
+        "raw_http_files": 0
+      },
+      {
+        "archive": "benchmark-v001-20261102-110320-3ef0d6-compact-review.zip",
+        "sha256": "b3071ad2e6426ed7bd38045061eb3584d6fdd1a7b0fe0958d44aa4175a43305c",
+        "configurations": [
+          "provengo-java"
+        ],
+        "raw_http_files": 0
+      },
+      {
+        "archive": "benchmark-v001-20261102-125046-8bddf3-compact-review.zip",
+        "sha256": "0f63a1a55fe4e17fda707426d6ac68dd39836cf050724fcf0474a77672ee8789",
+        "configurations": [
+          "restler"
+        ],
+        "raw_http_files": 0
+      },
+      {
+        "archive": "benchmark-v001-20261102-130601-c24d70-compact-review.zip",
+        "sha256": "2481c39f040789f8187744d4d71e66fd5b32e32d93cf937c39eaefe5e01e86c8",
+        "configurations": [
+          "restler"
+        ],
+        "raw_http_files": 0
+      }
+    ]
+  }
+}

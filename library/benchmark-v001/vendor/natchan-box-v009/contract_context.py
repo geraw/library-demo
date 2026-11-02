@@ -219,6 +219,8 @@ def derive(doc, contract_hash):
                                'responses': response_schemas, 'links': links,
                                'security': op.get('security', doc.get('security', [])),
                                'declared_write_role': write_role(op, pointer),
+                               'conjunctive_equality_filters': bool(re.fullmatch(r'\s*Return all [^.]+ satisfying every supplied filter \(logical AND\)\.\s*', str(op.get('description','')), re.I)),
+                               'semantic_action': ('copy' if re.match(r'^\s*(copy|duplicate)\b', str(op.get('summary','')), re.I) else None),
                                'collection_complete': bool(re.match(r'^\s*Return all\b', str(op.get('description','')), re.I)),
                                'entity': {'status': 'unknown', 'reason': 'ENTITY_IDENTITY_NOT_PROVEN'},
                                'placement_candidate': path.rsplit('/', 2)[0] if path.count('{') > 1 else None})
@@ -262,7 +264,7 @@ def derive(doc, contract_hash):
     bindings = {}
     by_route = {(op['method'], op['path']): op for op in operations}
     for op in operations:
-        if op['method'] not in ('PUT', 'PATCH'):
+        if op['method'] not in ('PUT', 'PATCH') and not (op['method']=='POST' and op['declared_write_role']['value']=='update'):
             continue
         get = by_route.get(('GET', op['path']))
         req = op.get('request_schema') or {}
@@ -326,7 +328,7 @@ def derive(doc, contract_hash):
     from derive_path_bindings import derive_pairs
     path_bindings = derive_pairs(operations)
     unique_gaps = {tuple(sorted(g.items())): g for g in c.gaps}
-    return {'schema_version': 'natchan-contract-context/1', 'derivation_version': '009-dev.6',
+    return {'schema_version': 'natchan-contract-context/1', 'derivation_version': '009-dev.7',
             'contract_sha256': contract_hash, 'semantic_policies': derive_policies(doc), 'knowledge_policy': 'contract-only',
             'operations': operations, 'entity_candidates': [entities[k] for k in sorted(entities)],
             'write_read_bindings': bindings,

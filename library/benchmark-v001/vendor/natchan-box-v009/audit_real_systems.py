@@ -8,7 +8,7 @@ sys.path.insert(0,str(engine))
 from contract_context import derive
 from traffic import normalize
 from judge import analyze
-contracts={'wger':'cycles/1-wger/config/contract.json','tandoor':'cycles/2-tandoor/config/tandoor-openapi.2.7.2.json','kimai':'cycles/3-kimai/config/kimai-openapi.2.70.0.json','dtrack':'cycles/4-dtrack/config/dtrack-openapi.5.2.1.json','vikunja':'toolkit/v2.7/configs/vikunja/contract.json','gitea':'toolkit/v2.7/configs/gitea/contract.json'}
+contracts={'mealie':'mealie-contract.json','wger':'cycles/1-wger/config/contract.json','tandoor':'cycles/2-tandoor/config/tandoor-openapi.2.7.2.json','kimai':'cycles/3-kimai/config/kimai-openapi.2.70.0.json','dtrack':'cycles/4-dtrack/config/dtrack-openapi.5.2.1.json','vikunja':'toolkit/v2.7/configs/vikunja/contract.json','gitea':'toolkit/v2.7/configs/gitea/contract.json'}
 allout=[]
 for path in sorted((evidence_root/'results').glob('*/gateway-journal.jsonl')):
  system=path.parent.name.split('-')[0]; raw=path.read_bytes(); rows=[json.loads(x) for x in raw.splitlines() if x.strip()]
