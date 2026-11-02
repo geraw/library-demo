@@ -1,0 +1,704 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Library benchmark v001",
+    "version": "1.0.0",
+    "description": "Strict original Library rules. One active loan per user and book; multiple holds are allowed. Rejected creations preserve business state. Creation is synchronously visible; completed deletion removes the exposed resource. Compound loan filters are conjunctive. Deletion preserves non-target resources."
+  },
+  "paths": {
+    "/users": {
+      "post": {
+        "summary": "Create a user",
+        "operationId": "createUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request; business state is unchanged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Create the declared resource only if all existing-resource and business preconditions hold; otherwise reject without a business-state change."
+      },
+      "get": {
+        "summary": "List/search users",
+        "operationId": "listUsers",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "Free-text search query (e.g., name or id fragment)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}": {
+      "delete": {
+        "summary": "Delete a user",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deletion complete. No response body."
+          },
+          "400": {
+            "description": "Rejected request; business state is unchanged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected request; business state is unchanged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Delete only the identified resource; reject deletion of a book/user with active loans or holds."
+      }
+    },
+    "/books": {
+      "post": {
+        "summary": "Create a book",
+        "operationId": "createBook",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request; business state is unchanged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Create the declared resource only if all existing-resource and business preconditions hold; otherwise reject without a business-state change."
+      },
+      "get": {
+        "summary": "List/search books",
+        "operationId": "listBooks",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "type": "string"
+            },
+            "required": false,
+            "description": "Free-text search query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/books/{book_id}": {
+      "get": {
+        "summary": "Get book by id",
+        "operationId": "getBook",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Rejected request; business state is unchanged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Return the existing book with 200; return 404 when that identity does not exist. Creation is immediately visible."
+      },
+      "delete": {
+        "summary": "Delete a book",
+        "operationId": "deleteBook",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deletion complete. No response body."
+          },
+          "400": {
+            "description": "Rejected request; business state is unchanged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected request; business state is unchanged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Delete only the identified resource; reject deletion of a book/user with active loans or holds."
+      }
+    },
+    "/loans": {
+      "post": {
+        "summary": "Create a loan",
+        "operationId": "createLoan",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoanCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Loan"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request; business state is unchanged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Create the declared resource only if all existing-resource and business preconditions hold; otherwise reject without a business-state change."
+      },
+      "get": {
+        "summary": "List/search loans",
+        "operationId": "listLoans",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "userId",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "bookId",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Loan"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request; business state is unchanged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Return all loans satisfying every supplied filter (logical AND)."
+      }
+    },
+    "/loans/{user_id}/{book_id}": {
+      "delete": {
+        "summary": "Delete a loan by composite id",
+        "operationId": "deleteLoan",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "path",
+            "name": "book_id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deletion complete. No response body."
+          },
+          "400": {
+            "description": "Rejected request; business state is unchanged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected request; business state is unchanged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Delete only the identified resource; reject deletion of a book/user with active loans or holds."
+      }
+    },
+    "/holds": {
+      "post": {
+        "summary": "Create a hold",
+        "operationId": "createHold",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HoldCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Hold"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request; business state is unchanged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Create the declared resource only if all existing-resource and business preconditions hold; otherwise reject without a business-state change."
+      },
+      "get": {
+        "summary": "List holds",
+        "operationId": "listHolds",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Hold"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/holds/{hold_id}": {
+      "delete": {
+        "summary": "Delete a hold",
+        "operationId": "deleteHold",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "hold_id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deletion complete. No response body."
+          },
+          "400": {
+            "description": "Rejected request; business state is unchanged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Rejected request; business state is unchanged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Delete only the identified resource; reject deletion of a book/user with active loans or holds."
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserCreate": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "required": [
+          "name",
+          "id"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "BookCreate": {
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "Book": {
+        "type": "object",
+        "required": [
+          "title",
+          "id"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "LoanCreate": {
+        "type": "object",
+        "required": [
+          "userId",
+          "bookId"
+        ],
+        "properties": {
+          "userId": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "string",
+                "pattern": "^ *0*[1-9][0-9]* *$"
+              }
+            ]
+          },
+          "bookId": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "string",
+                "pattern": "^ *0*[1-9][0-9]* *$"
+              }
+            ]
+          }
+        }
+      },
+      "Loan": {
+        "type": "object",
+        "required": [
+          "id",
+          "userId",
+          "bookId"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "userId": {
+            "type": "integer"
+          },
+          "bookId": {
+            "type": "integer"
+          },
+          "loanedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "HoldCreate": {
+        "type": "object",
+        "required": [
+          "userId",
+          "bookId"
+        ],
+        "properties": {
+          "userId": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "string",
+                "pattern": "^ *0*[1-9][0-9]* *$"
+              }
+            ]
+          },
+          "bookId": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "string",
+                "pattern": "^ *0*[1-9][0-9]* *$"
+              }
+            ]
+          }
+        }
+      },
+      "Hold": {
+        "type": "object",
+        "required": [
+          "userId",
+          "bookId",
+          "id"
+        ],
+        "properties": {
+          "userId": {
+            "type": "integer"
+          },
+          "bookId": {
+            "type": "integer"
+          },
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:23443"
+    }
+  ]
+}

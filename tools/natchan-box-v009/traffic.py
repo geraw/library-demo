@@ -217,6 +217,20 @@ def exchanges(path, fmt, source_hash, stats):
                 # Deliberately never inspect producer check/measurement contents.
                 stats['ignored_non_http'] += 1
                 continue
+            if fmt == 'journal-jsonl':
+                if str(obj.get('path', '')).startswith('/__sbt/'):
+                    stats['ignored_non_http'] += 1
+                    continue
+                # Transport fields only. Never use story/check/producer verdicts.
+                obj = dict(obj)
+                if 'actor' not in obj and isinstance(obj.get('session'), str) and obj['session']:
+                    obj['actor'] = obj['session']
+                for body in ('input', 'response'):
+                    if isinstance(obj.get(body), str):
+                        try:
+                            obj[body] = loads(obj[body])
+                        except InputError:
+                            pass
             if fmt == 'observer-tool-jsonl':
                 if obj.get('role') != 'tool':
                     stats['ignored_non_http'] += 1

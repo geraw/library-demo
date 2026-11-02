@@ -1,0 +1,91 @@
+{
+  "version": "009-dev.6",
+  "scope": "Execution steps 1 and 2 only",
+  "platform": "Linux; Windows native tool campaigns not rerun",
+  "unit_tests": {
+    "passed": 166,
+    "note": "165 full suite plus added frozen-evidence test; final full rerun recorded before publication"
+  },
+  "benchmark_tests": {
+    "passed": 11,
+    "live_in_process_cases": 6
+  },
+  "library_acceptance": {
+    "B1": "PASS",
+    "B2": "PASS",
+    "B3": "PASS with explicit collection preimage",
+    "baseline_controls": "3/3 PASS"
+  },
+  "restler_baseline": {
+    "exchanges": 2499,
+    "findings": {
+      "server_5xx": {
+        "groups": 1,
+        "occurrences": 5
+      },
+      "undeclared_status": {
+        "groups": 0,
+        "occurrences": 0
+      },
+      "semantic_candidate": {
+        "groups": 0,
+        "occurrences": 0
+      },
+      "policy_observation": {
+        "groups": 0,
+        "occurrences": 0
+      }
+    },
+    "source": "uploaded restler-baseline-full-evidence.zip"
+  },
+  "g014": {
+    "status": "PASS",
+    "source_repository": "weissye/vikunja_study",
+    "source_commit": "d378389226c1af05e767ddb0db895fcc41bd368d",
+    "archive_git_blob": "75ac336228bd5929bf438d98694ea41982393b09",
+    "journal_sha256": "642344f57b5e1434af830346d6730a5b14d3605a9bff37a6be3e9fe48352eb18",
+    "contract_sha256": "a9c7e8dc4723f53dd3268405cec1f597a6d742898fea4443e72410c27f08519f",
+    "raw_stats": {
+      "seen": 433,
+      "ignored_non_http": 539
+    },
+    "five_hundred_state_effects": 6,
+    "partial_500": 4,
+    "subset_applied_500": 2,
+    "four_hundred_state_observations": 4,
+    "counterfactual_rollback_controls": 10,
+    "control_state_observations": 0,
+    "producer_verdicts_used": false,
+    "new_SUT_requests": 0,
+    "isolation_proven": false,
+    "scope": "requested comparable fields; not full-resource commit; observations are not new distinct bugs"
+  },
+  "engine": {
+    "acceptance_real.py": "46365e7d08ad0ac3edfdaa36bd4efd5c3976daf024accd92f04dc5b5a49ea553",
+    "audit_real_systems.py": "5c3731b04b8e76aaeed5cd95b4fbbd4ae1204da686dec557970b2e5eb8f1682b",
+    "common.py": "7b4a4f81ae78a14cb5770b0cf3f3ee30dbbbdd82cd6d5b234d7b8f6cc4422d39",
+    "contract_context.py": "619ca081ec6c46152b647a8e8b94474ec914bd43bd14ee5c813df179f5475805",
+    "create_update.py": "1efe31492cfd9bfb48122d430a85fd3d8e9bf153cf7bc62193e5ef584b589480",
+    "derive_path_bindings.py": "eb4454f33d4c697549eaf82ef957691f35bd293890b26c8192e2ed4a6daf133e",
+    "historical_providers.py": "d6ffda442bcad96bf1c59a20b5e1f7e20b53b0c01a14877efb280298e05125c1",
+    "judge.py": "075be15bc1a8643177d9e68b7e2010aaa78fbf9680cfea2e0714f1ba8ae6a599",
+    "legacy_state.py": "a26f7ff60b729f148e7e50e8316ddcd60454709c52366a702c6347eb531223ed",
+    "lifecycle.py": "0a96b61bee4405002f6fffdd502f70306d8160c4f1b7e77b2392fe81c09c876c",
+    "local_sequence.py": "75dae4ff4c34d23c9834a4e4429a774d492cbb0d74e2c30651f0cba52daeb1d7",
+    "natchan.py": "601cfc24c1cab64c23742b50e46eda3cb6c086ee0cf492764d1078207d833ab8",
+    "rejected_create.py": "b612b6ffd05a41c14ceb527679857ef8210a4f8e43570f77fcff8804d904374d",
+    "replay.py": "23f7890cf3449ce2c7c26a45b7de1d280a763262af6778052e8867ab572b2cca",
+    "semantic_policy.py": "1c05da6ea820dcc777ecde46e22b8075024d23e94be9af3a587f0f2a0575cf29",
+    "state_semantics.py": "e5348f87e0b398e6b8e330b178d9705b6039e7a26d86094d633819c3e8449c85",
+    "traffic.py": "ace3b15cf0dcbf246d47aa932f0f248dd6920372f4f6d251e835192884c3bc5d",
+    "validate_contracts.py": "9a8e6d1fdc9d15b809cfad6a2d3df38931de4234e5ccfdd79d5ecdc576ba7108",
+    "validate_library_archive.py": "faa3b5e4760dc0ff85c4dfc01e33e58fd91801ff9bc55f20ec3225b990003fa9"
+  },
+  "remaining": [
+    "S4 references",
+    "S6 views",
+    "aggregates/scaling/copy",
+    "Native-tool campaigns with new recording if needed"
+  ],
+  "research_status": "post-hoc development acceptance; not held-out or preregistered"
+}

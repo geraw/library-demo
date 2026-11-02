@@ -1,3 +1,16 @@
+# Natchan Box v009 — state evidence milestone 6
+
+**Current version: `009-dev.6`.** Steps 1–2 acceptance and limitations are in
+[STEP2_ACCEPTANCE.md](STEP2_ACCEPTANCE.md). The Library benchmark uses an identical
+vendored runtime. This remains a bounded semantic analyzer, not a general
+replacement for the historical analyzer. No resampling is needed for replay.
+
+The material below records milestone 4 and its earlier scope. Current lifecycle,
+failed-create, legacy-provider integration and old-journal observation behavior
+are described in the milestone 6 document above.
+
+---
+
 # Natchan Box v009 — independent contract context (development milestone 4)
 
 **Version: `009-dev.4`, not a production replacement for v008.** Python 3.10+, standard library only.
