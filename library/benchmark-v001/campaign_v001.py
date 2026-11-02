@@ -230,7 +230,7 @@ def main(a):
      driver=native[tool]['driver'];r=launch(driver+['compile','--api_spec',root/'openapi.json'],folder,'compile',180,env);require(r,folder,'compile')
      grammar=folder/'Compile/grammar.py';dictionary=folder/'Compile/dict.json'
      if not grammar.is_file() or not dictionary.is_file():raise RuntimeError('RESTler compiler outputs missing')
-     settings={'target_ip':'127.0.0.1','target_port':a.port,'host':'127.0.0.1:'+str(a.port),'no_ssl':True,'time_budget':a.seconds/3600,'fuzzing_mode':'bfs-cheap','random_seed':a.seed,'garbage_collector_cleanup_time':5,'max_request_execution_time':10}
+     settings={'target_ip':'127.0.0.1','target_port':a.port,'host':'127.0.0.1:'+str(a.port),'no_ssl':True,'time_budget':a.seconds/3600,'fuzzing_mode':'bfs-cheap','random_seed':a.seed,'garbage_collector_cleanup_time':5,'max_request_execution_time':10,'reconnect_on_every_request':True}
      if (folder/'Compile/grammar.json').is_file():settings['grammar_schema']=str(folder/'Compile/grammar.json')
      write(folder/'settings.json',settings);command=driver+['fuzz','--grammar_file',grammar,'--dictionary_file',dictionary,'--settings',folder/'settings.json','--no_ssl']
     elif tool=='evomaster':

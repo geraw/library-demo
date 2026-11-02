@@ -48,7 +48,7 @@ def evaluate(rows,scope='sequence-local'):
             if pair[1] in s['deleted'] and pair[0] in s['users']:
                 checked['B6']+=1
                 if status==500:finding('B6',row,'Missing deleted book causes server error',s['deleted'][pair[1]])
-        if method=='GET' and path.startswith('/books/'):
+        if method=='GET' and len(path.split('/'))==3 and path.split('/')[1]=='books':
             id_=ident(path.rsplit('/',1)[1])
             if id_ in s['books']:
                 checked['B1']+=1
