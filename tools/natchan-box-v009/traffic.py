@@ -202,6 +202,7 @@ def exchanges(path, fmt, source_hash, stats):
         raise Unsupported('TRAFFIC_FORMAT_UNSUPPORTED')
     with path.open('rb') as stream:
         line_number = 0
+        journal_gap = 0
         while True:
             raw = stream.readline(MAX_LINE_BYTES + 1)
             if not raw:
@@ -215,15 +216,24 @@ def exchanges(path, fmt, source_hash, stats):
             if not isinstance(obj, dict):
                 raise InputError('HTTP_RECORD_OBJECT_REQUIRED')
             if fmt == 'journal-jsonl' and obj.get('category') != 'research':
+                # A missing server answer breaks causal continuity; it is not an HTTP 408/500.
+                category=obj.get('category')
+                if category in ('infrastructure-error','request-timeout'):
+                    journal_gap += 1
+                    stats[category] = stats.get(category,0)+1
                 # Deliberately never inspect producer check/measurement contents.
                 stats['ignored_non_http'] += 1
                 continue
             if fmt == 'journal-jsonl':
-                if str(obj.get('path', '')).startswith('/__sbt/'):
+                if obj.get('action')=='authenticate' or str(obj.get('path', '')).startswith('/__sbt/'):
                     stats['ignored_non_http'] += 1
                     continue
                 # Transport fields only. Never use story/check/producer verdicts.
                 obj = dict(obj)
+                # IDs define opaque execution boundaries only, never expected behavior.
+                boundary=[obj.get('case_id'),obj.get('story_id'),obj.get('attempt_id'),journal_gap]
+                if any(x is not None for x in boundary[:3]) or journal_gap:
+                    obj['case_id']='journal-scope:'+digest(__import__('json').dumps(boundary,sort_keys=True).encode())
                 if 'actor' not in obj and isinstance(obj.get('session'), str) and obj['session']:
                     obj['actor'] = obj['session']
                 for body in ('input', 'response'):

@@ -46,10 +46,14 @@ class LifecycleJudge:
     def emit(self, row, op, value, reason, witnesses=(), binding=None, details=None):
         policy_key = 'creation_visible' if reason.startswith('CREATED_') else 'deletion_removes'
         policy = self.context.get('semantic_policies', {}).get(policy_key)
+        uncertain_query=any(r.get('query_present') for r in (row,*witnesses))
+        if value=='violation' and (uncertain_query or not policy):value='policy_observation'
         self.state.verdict('S1', row, op, value, reason, witnesses,
                            binding={'provenance': (binding or {}).get('provenance', []) + ([policy['pointer']] if policy else [])},
                            details={'lifecycle': True, 'semantic_status': 'contract_violation' if policy and value == 'violation' else 'conditional_lifecycle_candidate',
                                     'semantic_guarantee': policy,
+                                    'query_semantics_established':not uncertain_query,
+                                    'query_names':sorted({k for r in (row,*witnesses) for k,v in r.get('query_pairs',[])}),
                                     'assumptions': ['synchronous_resource_lifecycle',
                                                     'stable_identity_and_visibility',
                                                     'no_intervening_mutation'],
@@ -61,6 +65,10 @@ class LifecycleJudge:
             self.records.clear()
             self.scope = scope
         gap = self.state.precondition(row)
+        declared_query={p['name'] for p in (op or {}).get('parameters',[]) if p['in']=='query'}
+        # Unknown query semantics permit an observation, never a proved lifecycle violation.
+        if gap=='QUERY_SEMANTICS_NOT_INTERPRETED' and op and not declared_query:
+            gap=self.state.precondition(dict(row,query_present=False))
         if gap:
             self.records.clear()
             if op and any(op['key'] in (b['create'],b['delete']) for b in self.bindings):
@@ -80,7 +88,7 @@ class LifecycleJudge:
             self.audit['invalidations'] += len(self.records)
             self.records.clear()
             return
-        if row.get('query_present'):
+        if row.get('query_present') and declared_query:
             if row['method'] not in SAFE:
                 self.records.clear()
             return

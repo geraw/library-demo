@@ -67,4 +67,20 @@ class SemanticAcceptance(unittest.TestCase):
                         self.assertEqual(result['finding_partitions']['semantic_candidate']['occurrences'],0)
                         self.assertEqual(result['finding_partitions']['policy_observation']['occurrences'],0)
 
+    def test_actual_sut_flows_with_extra_query_parameters(self):
+        from unittest.mock import patch
+        original=Exchange.req
+        def tagged(x,method,path,body=None):
+            return original(x,method,path+('&' if '?' in path else '?')+'description=transport-label&id=99',body)
+        with patch.object(Exchange,'req',tagged):
+            for kind,reason,value in [('B1','CREATED_RESOURCE_NOT_READABLE','policy_observation'),('B2','DELETED_RESOURCE_STILL_READABLE','policy_observation'),('B4','CONJUNCTIVE_FILTER_VIOLATION','violation')]:
+                for mutation in ('none',kind):
+                    with self.subTest(kind=kind,mutation=mutation):
+                        result,verdicts=self.check_flow(mutation,kind)
+                        found=[v for v in verdicts if v['reason']==reason and v['value']==value]
+                        self.assertEqual(bool(found),mutation==kind)
+                        if mutation=='none':
+                            self.assertEqual(result['finding_partitions']['semantic_candidate']['occurrences'],0)
+                            self.assertEqual(result['finding_partitions']['policy_observation']['occurrences'],0)
+
 if __name__=='__main__':unittest.main()

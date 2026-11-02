@@ -1,0 +1,245 @@
+{
+  "version": "009-dev.8",
+  "date": "2026-11-02",
+  "engine": {
+    "acceptance_cycle5.py": "0be3ca99fa6ee544ae9b8903ac11d75329a9fbb22f7f6532023d1c56043b670e",
+    "acceptance_real.py": "46365e7d08ad0ac3edfdaa36bd4efd5c3976daf024accd92f04dc5b5a49ea553",
+    "acceptance_relational_real.py": "55a2c75152b176fa3befd194207c0867c7fefc763a93890b7dd763ab2151dcdf",
+    "audit_real_systems.py": "8ee7d2f152ef9ab3c2ca3f2317a0c74fdd793964cc39eb605750d4ed43d36361",
+    "collect_replay_raw.py": "90b43ec3e7051d41bbf2823016e80314100589739069b59863323efbc4e6fadb",
+    "collection_semantics.py": "19c1812163ad160c51dc72ca332f4cd4fae5ccf3d5c98f694d45a776fe11bac9",
+    "common.py": "0152bceb327906f3e3597ef2a5b34ae14542b0b510524406e9192c925bc78233",
+    "contract_context.py": "d4a00520f05a3d902733faf7b8c474b23d76e611eb1265809d01af3371f5c808",
+    "create_update.py": "1efe31492cfd9bfb48122d430a85fd3d8e9bf153cf7bc62193e5ef584b589480",
+    "derive_path_bindings.py": "eb4454f33d4c697549eaf82ef957691f35bd293890b26c8192e2ed4a6daf133e",
+    "historical_providers.py": "d6ffda442bcad96bf1c59a20b5e1f7e20b53b0c01a14877efb280298e05125c1",
+    "judge.py": "021674c3a4902dc86a2b581dd6236a24a927f8704d5d347d82f4d2dcc9da1c18",
+    "legacy_state.py": "a26f7ff60b729f148e7e50e8316ddcd60454709c52366a702c6347eb531223ed",
+    "lifecycle.py": "b8aaac617d6c5cbff5b94b9515d0d826b405fa8113935fc3fdfbfb50fc38cfc0",
+    "local_sequence.py": "75dae4ff4c34d23c9834a4e4429a774d492cbb0d74e2c30651f0cba52daeb1d7",
+    "natchan.py": "965e75437473f8cd399b814f8dd7c970aeb4fb71773bdf14e732bd4cfc6879bb",
+    "rejected_create.py": "b612b6ffd05a41c14ceb527679857ef8210a4f8e43570f77fcff8804d904374d",
+    "relational_observations.py": "02a72d26335731ab62890c60b55b2bbefde12d0e462edfbd393bcb139e86a100",
+    "replay.py": "23f7890cf3449ce2c7c26a45b7de1d280a763262af6778052e8867ab572b2cca",
+    "replay_library.py": "670df98bd2f7fdacbff2efa403eed3946af1bbb3985e05855b3643843e65f9c3",
+    "review_stories.py": "fc9a3c5d7401d9073e17047cbad9cbdfd449b197f834e61734fac2df40f82b60",
+    "semantic_policy.py": "9a4ef38cd5d9cd1907f4217a55c075f33fee9fa57f57b379763e842b5a7282a5",
+    "state_semantics.py": "931e07e5276374e2bc1c84559257bcd6d2c772dc6fc9d2d6beda681fb60d8b68",
+    "traffic.py": "54609beb4a1d9f12b5da0ff69b133917b9e404d4abffccbdfefc546a72e3495d",
+    "validate_contracts.py": "9a8e6d1fdc9d15b809cfad6a2d3df38931de4234e5ccfdd79d5ecdc576ba7108",
+    "validate_library_archive.py": "faa3b5e4760dc0ff85c4dfc01e33e58fd91801ff9bc55f20ec3225b990003fa9"
+  },
+  "unit_tests": 192,
+  "benchmark_tests": 13,
+  "native_tool_campaigns_run": false,
+  "real_system_requests": 0,
+  "resampled": false,
+  "query_acceptance": {
+    "method": "in-process Library HTTP with representative extra query parameters",
+    "B1": "policy_observation",
+    "B2": "policy_observation",
+    "B4": "violation",
+    "baseline": "no semantic or policy findings"
+  },
+  "original_provengo_recovery": {
+    "status": "PENDING_RAW_HTTP",
+    "prior_oracle_occurrences": {
+      "B1": 10,
+      "B2": 8,
+      "B4": 19
+    },
+    "recovered_counts_claimed": false
+  },
+  "real_acceptance": {
+    "status": "PASS",
+    "new_SUT_requests": 0,
+    "resampled": false,
+    "producer_verdicts_used": false,
+    "engine": {
+      "acceptance_cycle5.py": "0be3ca99fa6ee544ae9b8903ac11d75329a9fbb22f7f6532023d1c56043b670e",
+      "acceptance_real.py": "46365e7d08ad0ac3edfdaa36bd4efd5c3976daf024accd92f04dc5b5a49ea553",
+      "acceptance_relational_real.py": "55a2c75152b176fa3befd194207c0867c7fefc763a93890b7dd763ab2151dcdf",
+      "audit_real_systems.py": "8ee7d2f152ef9ab3c2ca3f2317a0c74fdd793964cc39eb605750d4ed43d36361",
+      "collect_replay_raw.py": "90b43ec3e7051d41bbf2823016e80314100589739069b59863323efbc4e6fadb",
+      "collection_semantics.py": "19c1812163ad160c51dc72ca332f4cd4fae5ccf3d5c98f694d45a776fe11bac9",
+      "common.py": "0152bceb327906f3e3597ef2a5b34ae14542b0b510524406e9192c925bc78233",
+      "contract_context.py": "d4a00520f05a3d902733faf7b8c474b23d76e611eb1265809d01af3371f5c808",
+      "create_update.py": "1efe31492cfd9bfb48122d430a85fd3d8e9bf153cf7bc62193e5ef584b589480",
+      "derive_path_bindings.py": "eb4454f33d4c697549eaf82ef957691f35bd293890b26c8192e2ed4a6daf133e",
+      "historical_providers.py": "d6ffda442bcad96bf1c59a20b5e1f7e20b53b0c01a14877efb280298e05125c1",
+      "judge.py": "021674c3a4902dc86a2b581dd6236a24a927f8704d5d347d82f4d2dcc9da1c18",
+      "legacy_state.py": "a26f7ff60b729f148e7e50e8316ddcd60454709c52366a702c6347eb531223ed",
+      "lifecycle.py": "b8aaac617d6c5cbff5b94b9515d0d826b405fa8113935fc3fdfbfb50fc38cfc0",
+      "local_sequence.py": "75dae4ff4c34d23c9834a4e4429a774d492cbb0d74e2c30651f0cba52daeb1d7",
+      "natchan.py": "965e75437473f8cd399b814f8dd7c970aeb4fb71773bdf14e732bd4cfc6879bb",
+      "rejected_create.py": "b612b6ffd05a41c14ceb527679857ef8210a4f8e43570f77fcff8804d904374d",
+      "relational_observations.py": "02a72d26335731ab62890c60b55b2bbefde12d0e462edfbd393bcb139e86a100",
+      "replay.py": "23f7890cf3449ce2c7c26a45b7de1d280a763262af6778052e8867ab572b2cca",
+      "replay_library.py": "670df98bd2f7fdacbff2efa403eed3946af1bbb3985e05855b3643843e65f9c3",
+      "review_stories.py": "fc9a3c5d7401d9073e17047cbad9cbdfd449b197f834e61734fac2df40f82b60",
+      "semantic_policy.py": "9a4ef38cd5d9cd1907f4217a55c075f33fee9fa57f57b379763e842b5a7282a5",
+      "state_semantics.py": "931e07e5276374e2bc1c84559257bcd6d2c772dc6fc9d2d6beda681fb60d8b68",
+      "traffic.py": "54609beb4a1d9f12b5da0ff69b133917b9e404d4abffccbdfefc546a72e3495d",
+      "validate_contracts.py": "9a8e6d1fdc9d15b809cfad6a2d3df38931de4234e5ccfdd79d5ecdc576ba7108",
+      "validate_library_archive.py": "faa3b5e4760dc0ff85c4dfc01e33e58fd91801ff9bc55f20ec3225b990003fa9"
+    },
+    "manifest_sha256": "b050730339a87c25353be2ac5771dc3fd0fc9294f777d992d1444a77fc86844d",
+    "controls": "Synthetic repaired witnesses, not additional SUT runs",
+    "results": [
+      {
+        "system": "mealie",
+        "exchanges": 299,
+        "observations": {
+          "SCALED_ACTION_NONLINEAR_DELTA": 1,
+          "REFERENCE_TO_OBSERVED_ABSENT_RESOURCE": 7,
+          "COPY_INTERNAL_REFERENCE_NOT_IN_COPIED_TARGETS": 1
+        },
+        "counterfactual_controls_passed": 9,
+        "proven_semantic_violations": 0
+      },
+      {
+        "system": "wger",
+        "exchanges": 945,
+        "observations": {
+          "MOVE_AGGREGATE_TRANSFER_MISMATCH": 3
+        },
+        "counterfactual_controls_passed": 3,
+        "proven_semantic_violations": 0
+      },
+      {
+        "system": "vikunja",
+        "exchanges": 165,
+        "observations": {
+          "MOVED_ENTITY_REMAINS_UNDER_OTHER_PARENT": 2
+        },
+        "counterfactual_controls_passed": 2,
+        "proven_semantic_violations": 0
+      }
+    ]
+  },
+  "g014_regression": {
+    "status": "PASS",
+    "source_repository": "weissye/vikunja_study",
+    "source_commit": "d378389226c1af05e767ddb0db895fcc41bd368d",
+    "archive_git_blob": "75ac336228bd5929bf438d98694ea41982393b09",
+    "journal_sha256": "642344f57b5e1434af830346d6730a5b14d3605a9bff37a6be3e9fe48352eb18",
+    "contract_sha256": "a9c7e8dc4723f53dd3268405cec1f597a6d742898fea4443e72410c27f08519f",
+    "engine": {
+      "acceptance_real.py": "46365e7d08ad0ac3edfdaa36bd4efd5c3976daf024accd92f04dc5b5a49ea553",
+      "acceptance_relational_real.py": "55a2c75152b176fa3befd194207c0867c7fefc763a93890b7dd763ab2151dcdf",
+      "audit_real_systems.py": "8ee7d2f152ef9ab3c2ca3f2317a0c74fdd793964cc39eb605750d4ed43d36361",
+      "collect_replay_raw.py": "90b43ec3e7051d41bbf2823016e80314100589739069b59863323efbc4e6fadb",
+      "collection_semantics.py": "19c1812163ad160c51dc72ca332f4cd4fae5ccf3d5c98f694d45a776fe11bac9",
+      "common.py": "0152bceb327906f3e3597ef2a5b34ae14542b0b510524406e9192c925bc78233",
+      "contract_context.py": "d4a00520f05a3d902733faf7b8c474b23d76e611eb1265809d01af3371f5c808",
+      "create_update.py": "1efe31492cfd9bfb48122d430a85fd3d8e9bf153cf7bc62193e5ef584b589480",
+      "derive_path_bindings.py": "eb4454f33d4c697549eaf82ef957691f35bd293890b26c8192e2ed4a6daf133e",
+      "historical_providers.py": "d6ffda442bcad96bf1c59a20b5e1f7e20b53b0c01a14877efb280298e05125c1",
+      "judge.py": "021674c3a4902dc86a2b581dd6236a24a927f8704d5d347d82f4d2dcc9da1c18",
+      "legacy_state.py": "a26f7ff60b729f148e7e50e8316ddcd60454709c52366a702c6347eb531223ed",
+      "lifecycle.py": "b8aaac617d6c5cbff5b94b9515d0d826b405fa8113935fc3fdfbfb50fc38cfc0",
+      "local_sequence.py": "75dae4ff4c34d23c9834a4e4429a774d492cbb0d74e2c30651f0cba52daeb1d7",
+      "natchan.py": "965e75437473f8cd399b814f8dd7c970aeb4fb71773bdf14e732bd4cfc6879bb",
+      "rejected_create.py": "b612b6ffd05a41c14ceb527679857ef8210a4f8e43570f77fcff8804d904374d",
+      "relational_observations.py": "e898b5b16df4faa96f4e384acc2cb07cc35ee385e695a3903e2ba073749ce4d0",
+      "replay.py": "23f7890cf3449ce2c7c26a45b7de1d280a763262af6778052e8867ab572b2cca",
+      "replay_library.py": "670df98bd2f7fdacbff2efa403eed3946af1bbb3985e05855b3643843e65f9c3",
+      "review_stories.py": "fc9a3c5d7401d9073e17047cbad9cbdfd449b197f834e61734fac2df40f82b60",
+      "semantic_policy.py": "9a4ef38cd5d9cd1907f4217a55c075f33fee9fa57f57b379763e842b5a7282a5",
+      "state_semantics.py": "931e07e5276374e2bc1c84559257bcd6d2c772dc6fc9d2d6beda681fb60d8b68",
+      "traffic.py": "54609beb4a1d9f12b5da0ff69b133917b9e404d4abffccbdfefc546a72e3495d",
+      "validate_contracts.py": "9a8e6d1fdc9d15b809cfad6a2d3df38931de4234e5ccfdd79d5ecdc576ba7108",
+      "validate_library_archive.py": "faa3b5e4760dc0ff85c4dfc01e33e58fd91801ff9bc55f20ec3225b990003fa9"
+    },
+    "raw_stats": {
+      "seen": 433,
+      "ignored_non_http": 539
+    },
+    "five_hundred_state_effects": 6,
+    "partial_500": 4,
+    "subset_applied_500": 2,
+    "four_hundred_state_observations": 4,
+    "counterfactual_rollback_controls": 10,
+    "control_state_observations": 0,
+    "producer_verdicts_used": false,
+    "new_SUT_requests": 0,
+    "isolation_proven": false,
+    "scope": "requested comparable fields; not full-resource commit; observations are not new distinct bugs"
+  },
+  "cycle5_reproductions": {
+    "status": "PASS",
+    "source_repository": "weissye/vikunja_study",
+    "source_commit": "dc79b7a",
+    "results": [
+      {
+        "system": "homebox",
+        "source_sha256": "a5bcc9d3f84332050e6a47e48d700abfabfe4c0843dcb52e683f625152fc2bc5",
+        "contract_sha256": "85e6b053f75236e8458505dffa5ece1d11a568b2eef099202a39ba4150c0a810",
+        "pairs": 6,
+        "exchanges": 12,
+        "findings": {
+          "server_5xx": {
+            "groups": 2,
+            "occurrences": 6
+          },
+          "undeclared_status": {
+            "groups": 0,
+            "occurrences": 0
+          },
+          "semantic_candidate": {
+            "groups": 0,
+            "occurrences": 0
+          },
+          "policy_observation": {
+            "groups": 0,
+            "occurrences": 0
+          }
+        },
+        "control_5xx": 0,
+        "test_5xx": 6,
+        "producer_verdicts_used": false
+      },
+      {
+        "system": "paperless",
+        "source_sha256": "ff39b70ed2179c9db2e7168db7224da6cde7fab659555c1ac5b44d86903cb390",
+        "contract_sha256": "9884ef676af11a42cf2cef327f6fedbb9a0ffb04b0bfa3af76fee3752266a240",
+        "pairs": 2,
+        "exchanges": 4,
+        "findings": {
+          "server_5xx": {
+            "groups": 2,
+            "occurrences": 2
+          },
+          "undeclared_status": {
+            "groups": 0,
+            "occurrences": 0
+          },
+          "semantic_candidate": {
+            "groups": 0,
+            "occurrences": 0
+          },
+          "policy_observation": {
+            "groups": 0,
+            "occurrences": 0
+          }
+        },
+        "control_5xx": 0,
+        "test_5xx": 2,
+        "producer_verdicts_used": false
+      }
+    ],
+    "scope": "preserved direct reproduction pairs; not complete story packages; no new SUT requests"
+  },
+  "cycle5_labelstudio": {
+    "journals": 2,
+    "per_journal": {
+      "product_http": 38,
+      "infrastructure_error_records": 67,
+      "semantic_findings": 0,
+      "policy_observations": 0,
+      "server_5xx": 0,
+      "undeclared_status_occurrences": 17
+    },
+    "extra_run_is_protocol_replication": false
+  }
+}
