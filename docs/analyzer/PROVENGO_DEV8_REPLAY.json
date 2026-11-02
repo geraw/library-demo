@@ -1,0 +1,214 @@
+{
+  "version": "009-dev.8",
+  "engine_commit": "a8d763d1119763f2de1091ce9e176cabed656f73",
+  "archive_sha256": "767bac9e22b44c20e690c3dc862f1015b7756f986b9bd9b2156ac8054daa25ef",
+  "all_manifest_hashes_verified": true,
+  "new_SUT_requests": 0,
+  "resampled": false,
+  "cells": [
+    {
+      "source": "benchmark-v001-20261101-233425-14e824/provengo-sample10/none/http.jsonl",
+      "http_sha256": "c3d94d6c887cc6ca180404c1a46cebdbc559e635e90a8c1323ecc5f1ac7ad718",
+      "exchanges": 16324,
+      "finding_partitions": {
+        "policy_observation": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 0,
+          "occurrences": 0
+        }
+      },
+      "collection_audit": {
+        "delete_checks": 0,
+        "filter_checks": 168,
+        "missing_evidence": 255
+      },
+      "lifecycle_audit": {
+        "bindings": [
+          {
+            "binding_basis": "structural_route_and_unique_scalar_identity_candidate",
+            "collection": "/books",
+            "create": "POST /books",
+            "delete": "DELETE /books/{book_id}",
+            "identity": "id",
+            "item": "/books/{book_id}",
+            "parameter": "book_id",
+            "provenance": [
+              "#/paths/~1books~1{book_id}/get",
+              "#/paths/~1books/post",
+              "#/paths/~1books~1{book_id}/delete"
+            ],
+            "read": "GET /books/{book_id}"
+          }
+        ],
+        "budget_evictions": 0,
+        "invalidations": 80,
+        "tracked_creations": 50,
+        "tracked_deletions": 37
+      }
+    },
+    {
+      "source": "benchmark-v001-20261102-040359-d5a33d/provengo-sample10/B1/http.jsonl",
+      "http_sha256": "fe80cb9ba7acf7cd1feee804757bd88ddeafbfa23c9f81457c5ac0b89b16502b",
+      "exchanges": 3358,
+      "finding_partitions": {
+        "policy_observation": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 0,
+          "occurrences": 0
+        }
+      },
+      "collection_audit": {
+        "delete_checks": 0,
+        "filter_checks": 12,
+        "missing_evidence": 43
+      },
+      "lifecycle_audit": {
+        "bindings": [
+          {
+            "binding_basis": "structural_route_and_unique_scalar_identity_candidate",
+            "collection": "/books",
+            "create": "POST /books",
+            "delete": "DELETE /books/{book_id}",
+            "identity": "id",
+            "item": "/books/{book_id}",
+            "parameter": "book_id",
+            "provenance": [
+              "#/paths/~1books~1{book_id}/get",
+              "#/paths/~1books/post",
+              "#/paths/~1books~1{book_id}/delete"
+            ],
+            "read": "GET /books/{book_id}"
+          }
+        ],
+        "budget_evictions": 0,
+        "invalidations": 45,
+        "tracked_creations": 39,
+        "tracked_deletions": 7
+      }
+    },
+    {
+      "source": "benchmark-v001-20261102-040359-d5a33d/provengo-sample10/B2/http.jsonl",
+      "http_sha256": "fdc23d8e4c83c63ab340c1bc52f3c74ebac02c8c1b5f0db1d330c197b5606b74",
+      "exchanges": 14619,
+      "finding_partitions": {
+        "policy_observation": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 0,
+          "occurrences": 0
+        }
+      },
+      "collection_audit": {
+        "delete_checks": 0,
+        "filter_checks": 101,
+        "missing_evidence": 219
+      },
+      "lifecycle_audit": {
+        "bindings": [
+          {
+            "binding_basis": "structural_route_and_unique_scalar_identity_candidate",
+            "collection": "/books",
+            "create": "POST /books",
+            "delete": "DELETE /books/{book_id}",
+            "identity": "id",
+            "item": "/books/{book_id}",
+            "parameter": "book_id",
+            "provenance": [
+              "#/paths/~1books~1{book_id}/get",
+              "#/paths/~1books/post",
+              "#/paths/~1books~1{book_id}/delete"
+            ],
+            "read": "GET /books/{book_id}"
+          }
+        ],
+        "budget_evictions": 0,
+        "invalidations": 68,
+        "tracked_creations": 50,
+        "tracked_deletions": 22
+      }
+    },
+    {
+      "source": "benchmark-v001-20261102-040359-d5a33d/provengo-sample10/B4/http.jsonl",
+      "http_sha256": "ec9e1fea150cb7f7b558cbdf413824515e8644b5f629c34eeecba1f3a729256e",
+      "exchanges": 16324,
+      "finding_partitions": {
+        "policy_observation": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "semantic_candidate": {
+          "groups": 1,
+          "occurrences": 19
+        },
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 0,
+          "occurrences": 0
+        }
+      },
+      "collection_audit": {
+        "delete_checks": 0,
+        "filter_checks": 168,
+        "missing_evidence": 255
+      },
+      "lifecycle_audit": {
+        "bindings": [
+          {
+            "binding_basis": "structural_route_and_unique_scalar_identity_candidate",
+            "collection": "/books",
+            "create": "POST /books",
+            "delete": "DELETE /books/{book_id}",
+            "identity": "id",
+            "item": "/books/{book_id}",
+            "parameter": "book_id",
+            "provenance": [
+              "#/paths/~1books~1{book_id}/get",
+              "#/paths/~1books/post",
+              "#/paths/~1books~1{book_id}/delete"
+            ],
+            "read": "GET /books/{book_id}"
+          }
+        ],
+        "budget_evictions": 0,
+        "invalidations": 80,
+        "tracked_creations": 50,
+        "tracked_deletions": 37
+      }
+    }
+  ]
+}
