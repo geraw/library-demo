@@ -28,6 +28,7 @@ def derive_lifecycle(context):
         delete = [o for o in operations if o['method'] == 'DELETE' and o['path'] == read['path']]
         result.append({'read': read['key'], 'item': read['path'], 'collection': collection,
                        'parameter': parameter, 'identity': identity,
+                       'integer_identity': bool(identity and fields[identity].get('constraints', {}).get('type') == 'integer' and any(p['in']=='path' and p['name']==parameter and p['schema'].get('constraints',{}).get('type')=='integer' for p in read['parameters'])),
                        'create': create[0]['key'] if len(create) == 1 else None,
                        'delete': delete[0]['key'] if len(delete) == 1 else None,
                        'provenance': [read['provenance'], *[o['provenance'] for o in create + delete]],
@@ -41,13 +42,14 @@ class LifecycleJudge:
         self.records = {}
         self.scope = None
         self.audit = {'bindings': self.bindings, 'tracked_creations': 0,
-                      'tracked_deletions': 0, 'invalidations': 0, 'budget_evictions': 0}
+                      'tracked_deletions': 0, 'invalidations': 0, 'budget_evictions': 0, 'conditional_interference': 0}
 
     def emit(self, row, op, value, reason, witnesses=(), binding=None, details=None):
         policy_key = 'creation_visible' if reason.startswith('CREATED_') else 'deletion_removes'
         policy = self.context.get('semantic_policies', {}).get(policy_key)
         uncertain_query=any(r.get('query_present') for r in (row,*witnesses))
-        if value=='violation' and (uncertain_query or not policy):value='policy_observation'
+        interference=(details or {}).get('intervening_mutations',0)
+        if value=='violation' and (uncertain_query or not policy or interference):value='policy_observation'
         self.state.verdict('S1', row, op, value, reason, witnesses,
                            binding={'provenance': (binding or {}).get('provenance', []) + ([policy['pointer']] if policy else [])},
                            details={'lifecycle': True, 'semantic_status': 'contract_violation' if policy and value == 'violation' else 'conditional_lifecycle_candidate',
@@ -56,48 +58,68 @@ class LifecycleJudge:
                                     'query_names':sorted({k for r in (row,*witnesses) for k,v in r.get('query_pairs',[])}),
                                     'assumptions': ['synchronous_resource_lifecycle',
                                                     'stable_identity_and_visibility',
-                                                    'no_intervening_mutation'],
+                                                    'no_unobserved_side_effects' if interference else 'no_intervening_mutation'],
                                     **(details or {})})
+
+    @staticmethod
+    def identity_path(path, binding):
+        # Only a declared integer path parameter AND integer response identity
+        # permit numeric canonicalization. String IDs remain byte-distinct.
+        if binding.get('integer_identity'):
+            prefix, sep, value = path.rpartition('/')
+            if sep and re.fullmatch(r'[+-]?[0-9]{1,256}', value):
+                return prefix + '/' + str(int(value))
+        return path
 
     def consume(self, row, op):
         scope = (row.get('origin'), row.get('actor'), type(row.get('epoch')).__name__, row.get('epoch'), row.get('case_id'))
         if scope != self.scope:
             self.records.clear()
             self.scope = scope
-        gap = self.state.precondition(row)
-        declared_query={p['name'] for p in (op or {}).get('parameters',[]) if p['in']=='query'}
-        # Unknown query semantics permit an observation, never a proved lifecycle violation.
-        if gap=='QUERY_SEMANTICS_NOT_INTERPRETED' and op and not declared_query:
-            gap=self.state.precondition(dict(row,query_present=False))
-        if gap:
+        matching = [b for b in self.bindings if op and op['key'] in (b['read'], b['create'], b['delete'])]
+        mutation = row['method'] not in SAFE
+        # An unrelated filtered read does not erase resource history. Global
+        # capture/actor/epoch guards still apply to every exchange.
+        gap = self.state.precondition(dict(row, query_present=False))
+        if gap or row['status'] is None:
             self.records.clear()
-            if op and any(op['key'] in (b['create'],b['delete']) for b in self.bindings):
-                self.emit(row, op, 'not_evaluable', gap)
+            if op and matching and mutation:
+                self.emit(row, op, 'not_evaluable', gap or 'SERVER_ANSWER_MISSING')
             return
-        if row['method'] not in SAFE:
-            self.audit['invalidations'] += len(self.records)
+        declared_query = {p['name'] for p in (op or {}).get('parameters', []) if p['in']=='query'}
+        if matching and row.get('query_present') and declared_query:
             self.records.clear()
+            return
+        if mutation:
+            status = row['status']
+            # Unknown successful actions, asynchronous effects and server failures
+            # are hard barriers. Their possible write set cannot be bounded.
+            if status >= 500 or status == 202 or (200 <= status < 300 and not op):
+                self.audit['invalidations'] += len(self.records)
+                self.records.clear()
+            else:
+                for key, previous in list(self.records.items()):
+                    target = self.identity_path(row['path'], previous['binding'])
+                    if 200 <= status < 300 and target == key:
+                        self.records.pop(key)
+                        self.audit['invalidations'] += 1
+                    elif 200 <= status < 300 and row['path'].rstrip('/') == previous['binding']['collection'] and not any(op and op['key']==b['create'] for b in matching):
+                        self.records.pop(key)
+                        self.audit['invalidations'] += 1
+                    else:
+                        # Retain an explicit hypothesis, NOT a proved frame rule.
+                        # Rejected writes and other-resource writes may have side
+                        # effects; a later contradiction is only an observation.
+                        previous['intervening_mutations'] = previous.get('intervening_mutations', 0) + 1
+                        sources = previous.setdefault('interference_sources', [])
+                        if len(sources) < 4: sources.append(row['source'])
+                        self.audit['conditional_interference'] += 1
         if not op:
-            if row['method'] not in SAFE:
-                self.records.clear()
-            return
-        path = row['path']
-        # Use an exact contract operation match supplied by judge.operation.
-        matching = [b for b in self.bindings if op['key'] in (b['read'], b['create'], b['delete'])]
-        if row['method'] not in SAFE and not matching:
-            self.audit['invalidations'] += len(self.records)
-            self.records.clear()
-            return
-        if row.get('query_present') and declared_query:
-            if row['method'] not in SAFE:
-                self.records.clear()
             return
         for b in matching:
+            path = self.identity_path(row['path'], b)
             if op['key'] == b['create']:
-                # Re-creation can invalidate any previous deletion identity.
-                self.records = {k:v for k,v in self.records.items() if v['binding']['read'] != b['read'] or v['state'] != 'deleted'}
                 if row['status'] != 201:
-                    self.records = {k:v for k,v in self.records.items() if v['binding']['read'] != b['read']}
                     continue
                 target = None
                 location = row.get('location')
@@ -113,29 +135,30 @@ class LifecycleJudge:
                     if ((declared.get('constraints', {}).get('type') == 'integer' and type(identity) is int) or (declared.get('constraints', {}).get('type') == 'string' and isinstance(identity,str))) and str(identity) and len(str(identity)) <= 256:
                         target = path.rstrip('/') + '/' + quote(str(identity), safe='') + ('/' if b['item'].endswith('/') else '')
                 if target:
+                    target = self.identity_path(target, b)
                     self.records[target] = {'state':'created', 'row':row, 'binding':b}
                     self.audit['tracked_creations'] += 1
                 else:
+                    # An unbound successful creation could recreate a deleted ID.
+                    self.records = {k:v for k,v in self.records.items() if v['binding']['read'] != b['read']}
                     self.emit(row, op, 'not_evaluable', 'CREATE_RESOURCE_IDENTITY_UNAVAILABLE', binding=b)
             elif op['key'] == b['delete']:
                 if row['status'] in (200, 204):
                     self.records[path] = {'state':'deleted', 'row':row, 'binding':b}
                     self.audit['tracked_deletions'] += 1
-                else:
-                    self.records.pop(path, None)
             elif op['key'] == b['read'] and path in self.records:
                 previous = self.records[path]
                 status = row['status']
                 if previous['state'] == 'created' and status in (200, 404, 410):
                     self.emit(row, op, 'violation' if status in (404,410) else 'consistent',
                               'CREATED_RESOURCE_NOT_READABLE' if status in (404,410) else 'CREATED_RESOURCE_READABLE',
-                              [previous['row']], b)
+                              [previous['row']], b, details={'intervening_mutations':previous.get('intervening_mutations',0), 'interference_sources':previous.get('interference_sources',[])})
                 elif previous['state'] == 'deleted' and status in (200,404,410):
                     self.emit(row, op, 'violation' if status == 200 else 'consistent',
                               'DELETED_RESOURCE_STILL_READABLE' if status == 200 else 'DELETED_RESOURCE_NOT_READABLE',
-                              [previous['row']], b)
+                              [previous['row']], b, details={'intervening_mutations':previous.get('intervening_mutations',0), 'interference_sources':previous.get('interference_sources',[])})
                 else:
-                    self.emit(row, op, 'not_evaluable', 'LIFECYCLE_READ_STATUS_INCONCLUSIVE', [previous['row']], b)
+                    self.emit(row, op, 'not_evaluable', 'LIFECYCLE_READ_STATUS_INCONCLUSIVE', [previous['row']], b, details={'intervening_mutations':previous.get('intervening_mutations',0), 'interference_sources':previous.get('interference_sources',[])})
             while len(self.records) > MAX_ENTITIES:
                 self.records.pop(next(iter(self.records)))
                 self.audit['budget_evictions'] += 1

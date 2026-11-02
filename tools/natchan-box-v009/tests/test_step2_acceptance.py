@@ -38,11 +38,13 @@ class Step2Acceptance(unittest.TestCase):
             {'method':'POST','status':201,'response':{'id':7}},
             {'suffix':'/7','status':404}],capture={'complete':True,'exclusive':True,'ordering':'serial','_contradicted_serial':True}),[])
 
-    def test_intervening_mutation_invalidates_lifecycle(self):
-        self.assertEqual(lifecycle_tests.LifecycleTests().run_flow([
+    def test_intervening_mutation_downgrades_lifecycle(self):
+        result=lifecycle_tests.LifecycleTests().run_flow([
             {'method':'POST','status':201,'response':{'id':7}},
             {'method':'POST','status':201,'response':{'id':8}},
-            {'suffix':'/7','status':404}]),[])
+            {'suffix':'/7','status':404}])
+        self.assertEqual(result[0]['value'],'policy_observation')
+        self.assertEqual(result[0]['details']['intervening_mutations'],1)
 
     def test_policy_requires_affirmative_whole_sentence(self):
         from semantic_policy import derive_policies

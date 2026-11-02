@@ -328,7 +328,7 @@ def derive(doc, contract_hash):
     from derive_path_bindings import derive_pairs
     path_bindings = derive_pairs(operations)
     unique_gaps = {tuple(sorted(g.items())): g for g in c.gaps}
-    return {'schema_version': 'natchan-contract-context/1', 'derivation_version': '009-dev.8',
+    return {'schema_version': 'natchan-contract-context/1', 'derivation_version': '009-dev.9',
             'contract_sha256': contract_hash, 'semantic_policies': derive_policies(doc), 'knowledge_policy': 'contract-only',
             'operations': operations, 'entity_candidates': [entities[k] for k in sorted(entities)],
             'write_read_bindings': bindings,

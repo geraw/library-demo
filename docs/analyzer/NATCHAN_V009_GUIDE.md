@@ -1,16 +1,16 @@
 # Natchan v009: capabilities, changes, validation and operation
 
-**Version:** 009-dev.8. **Date:** 2 November 2026.  
-**Engine commit:** `a8d763d1119763f2de1091ce9e176cabed656f73`.  
+**Version:** 009-dev.9. **Date:** 2 November 2026.  
+**Engine provenance:** see `tools/natchan-box-v009/VALIDATION_DEV9.json` for exact code hashes.  
 **Scope:** independent offline analysis of retained REST traffic and its API contract.
 
 ## 1. Purpose and current conclusion
 
 Natchan is an offline test oracle: it examines recorded requests and responses, relates them to the API contract, and reports errors, semantic contradictions, conditional observations and reasons why a check could not be evaluated. It does not generate test scenarios or send requests to the system under test (SUT). The same independent analysis path accepts traffic produced by Provengo, EvoMaster and RESTler; a tool name does not choose the semantic rules.
 
-Version 009-dev.8 is a bounded research implementation, not a universal business oracle or a drop-in replacement for every v008 integration. It can support a common evaluation layer for the four Library configurations, but equal analysis rules do not imply equal test coverage. Comparisons must separately report server calls, evaluable opportunities and findings.
+Version 009-dev.9 is a bounded research implementation, not a universal business oracle or a drop-in replacement for every v008 integration. It can support a common evaluation layer for the four Library configurations, but equal analysis rules do not imply equal test coverage. Comparisons must separately report server calls, evaluable opportunities and findings.
 
-**Latest acceptance result on the newly supplied original Provengo traffic:** all 19 previously reported B4 occurrences are recovered; the baseline produces no semantic findings; B1 and B2 are still missed. The passing focused tests did not establish recovery on these long, interleaved scenarios. This remaining limitation is part of the release's measured behavior.
+**Latest acceptance result:** all B1 (10), B2 (8) and B4 (19) detection request IDs match the dedicated Library oracle on the unchanged original traffic, with no extra target findings. The baseline remains clean. B1/B2 are conditional observations; B4 is a filter violation. Synthetic repaired-response controls remove all 37 detections. See [dev.9 validation](../../tools/natchan-box-v009/LIFECYCLE_HISTORY_DEV9.md) for scope, controls and remaining real-system parity gaps.
 
 ## 2. Inputs and processing
 
@@ -63,7 +63,7 @@ The comparison is based on the checked-in v008 README, CHANGES and implementatio
 | Interface | `natchan-request/1`, legacy pipeline/ZIP/native adapters | `natchan-semantic-request/1`, derive/freeze/analyze; dedicated Library replay and story-package readers |
 | Coverage | Broader legacy adapter and configured-product support | Greater independence from producer semantics in this route, but incomplete functional parity |
 
-The v008 release documented 275 tests, including inherited tests. The current v009 suite has 192 analyzer tests plus 13 benchmark tests. These totals cover different code and scopes; their size is not evidence that one release is better.
+The v008 release documented 275 tests, including inherited tests. The current v009 suite has 204 analyzer tests plus 13 benchmark tests. These totals cover different code and scopes; their size is not evidence that one release is better.
 
 ### Specific dev.8 repairs
 
@@ -77,7 +77,7 @@ The v008 release documented 275 tests, including inherited tests. The current v0
 
 | Validation layer | Result | What it does not establish |
 |---|---|---|
-| Analyzer regression suite | 192 tests passed | General correctness on arbitrary APIs |
+| Analyzer regression suite | 204 tests passed | General correctness on arbitrary APIs |
 | Library benchmark suite | 13 tests passed | Successful completion of all four native campaigns |
 | Focused Library query acceptance | B1/B2 conditional observations, B4 violation; matching baselines clean | Recovery in long interleaved traces |
 | Retained real-system witnesses | 14 observations reproduced: Mealie 9, wger 3, Vikunja 2; 14 repaired controls suppress the corresponding findings | 14 distinct confirmed bugs; controls are synthetic repaired evidence |
@@ -91,26 +91,24 @@ Cycle 5's recorded triage identifies six root causes across the direct reproduct
 
 Input: `provengo-raw-20261102-193151-793.zip`. Every file hash listed in its evidence manifest was verified before analysis. The original contract and recorder declarations were used. No SUT requests or resampling occurred.
 
-| Cell | Retained HTTP exchanges | Prior dedicated Oracle occurrences | dev.8 semantic occurrences | dev.8 policy observations |
+| Cell | Retained HTTP exchanges | Prior dedicated Oracle occurrences | dev.9 semantic occurrences | dev.9 policy observations |
 |---|---:|---:|---:|---:|
 | Baseline | 16,324 | — | 0 | 0 |
-| B1 | 3,358 | 10 | 0 | 0 |
-| B2 | 14,619 | 8 | 0 | 0 |
+| B1 | 3,358 | 10 | 0 | 10 |
+| B2 | 14,619 | 8 | 0 | 8 |
 | B4 | 16,324 | 19 | 19 | 0 |
 
-B4 has 168 evaluated filter checks: 19 contradictions and 149 consistent results. The baseline has 168 consistent filter checks. The numerical recovery is established; one-to-one matching to the old Oracle's witness records was not performed. All four cells have zero 5xx findings. Ten non-HTTP records per cell are excluded from HTTP counts.
+B4 has 168 evaluated filter checks: 19 contradictions and 149 consistent results. The baseline has 168 consistent filter checks. All 37 detection request IDs match the independently recomputed reference oracle, not just the numerical totals. All four cells have zero 5xx findings. Ten non-HTTP records per cell are excluded from HTTP counts.
 
 The baseline comes from run `benchmark-v001-20261101-233425-14e824`; the mutants come from `benchmark-v001-20261102-040359-d5a33d`. These different runs are explicitly retained rather than described as one newly executed campaign.
 
 Actual query names include `description`, `id`, `q`, `userId`, `bookId` and `loanNumber`. The presence of such names does not prove they are semantically irrelevant.
 
-### Why B1/B2 remain open
+### How B1/B2 were recovered
 
-The lifecycle checker tracks 39 creations and 7 deletions in B1, and 50 creations and 22 deletions in B2, but emits no completed lifecycle comparisons. Its conservative global invalidation discards pending state on intervening mutations, including failed or unsupported writes that might still have affected state. The traces contain many such operations between a successful create/delete and its later verification.
+The checker now retains per-resource lifecycle hypotheses. Contract-declared integer identifiers are canonicalized, including leading zeros; string IDs are not. Unrelated reads do not erase history. Rejected and other-resource writes retain the hypothesis but force conditional classification because their side effects are not proven absent. Successful same-target changes, ambiguous creation, unknown successful actions, 500s, 202s, missing responses and scope changes remain barriers. The analyzer never consumes Oracle labels; the acceptance harness compares outputs afterward.
 
-One concrete B1 sequence creates book `621271`, performs additional writes, and later reads `/books/00621271`. Exact-URI correlation also fails across this leading-zero representation. A collection query can occur in the interval, but a filtered collection is not automatically a complete identity readback. B2 likewise includes invalid writes after successful deletion and before later reads.
-
-These are observed blocking mechanisms, not a claim that all missed witnesses have one identical cause. Recovery requires contract-aware typed identity handling and a justified dependency/invalidation model, followed by replay and negative controls. Silently removing all intervening-write guards would risk false positives.
+The original B1/B2 detection gap is closed on this evidence. Generic parity with all producer checks remains incomplete: wger's percent-preview rounding and Mealie's standalone inverse-action roundtrip are explicit gaps, not successful checks. This distinction is essential when reporting the research result.
 
 ## 7. Running from the existing checkout
 
@@ -190,4 +188,4 @@ Primary implementation and evidence sources in this repository:
 - `EVIDENCE_FORMATS_STORIES.md`: supplied evidence-format specification, retained verbatim.
 - `docs/analyzer/PROVENGO_DEV8_REPLAY.json`: machine-readable results and input hashes for the latest uploaded evidence.
 
-The next acceptance gate is to recover B1/B2 on these unchanged traces with explicit, generic identity and interference rules, while retaining clean baseline and adversarial controls. Full semantic parity with v008 and full replay of all real-system story packages remain separate work. No claim of a complete generic business oracle is justified yet.
+The next acceptance gates are full retained mutant replay for the other Library configurations and explicit handling of the remaining real-system producer semantics. The current repair closes B1/B2 on the supplied traces and preserves the established real-evidence regressions; it does not justify a claim of a complete generic business oracle.
