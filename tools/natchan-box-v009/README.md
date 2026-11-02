@@ -1,3 +1,9 @@
+# Natchan Box v009 — query and story evidence repair
+
+**Current version: `009-dev.8`.** See [QUERY_AND_STORY_EVIDENCE_DEV8.md](QUERY_AND_STORY_EVIDENCE_DEV8.md) for changes, validated results and the still-pending full Provengo trace replay.
+
+---
+
 # Natchan Box v009 — collections and relationships milestone 7
 
 **Current version: `009-dev.7`.** Steps 3–4 implementation, evidence levels,

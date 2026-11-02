@@ -23,15 +23,17 @@ class LifecycleTests(unittest.TestCase):
  def create(self):return {'method':'POST','status':201,'response':{'id':7,'name':'x'}}
  def test_create_missing_generic_names(self):
   for name in ['widgets','tasks','projects','documents']:
-   v=self.run_flow([self.create(),{'suffix':'/7','status':404}],name);self.assertEqual(v[0]['value'],'violation')
+   v=self.run_flow([self.create(),{'suffix':'/7','status':404}],name);self.assertEqual(v[0]['value'],'policy_observation')
  def test_create_control(self):self.assertEqual(self.run_flow([self.create(),{'suffix':'/7'}])[0]['value'],'consistent')
- def test_delete_violation(self):self.assertEqual(self.run_flow([{'suffix':'/7','method':'DELETE','status':204},{'suffix':'/7'}])[0]['value'],'violation')
+ def test_delete_violation(self):self.assertEqual(self.run_flow([{'suffix':'/7','method':'DELETE','status':204},{'suffix':'/7'}])[0]['value'],'policy_observation')
  def test_delete_control(self):self.assertEqual(self.run_flow([{'suffix':'/7','method':'DELETE','status':204},{'suffix':'/7','status':404}])[0]['value'],'consistent')
  def test_malformed_route(self):self.assertEqual(self.run_flow([self.create(),{'suffix':'/7/7','status':404}]),[])
  def test_reset(self):self.assertEqual(self.run_flow([self.create(),{'suffix':'/7','status':404,'epoch':2}]),[])
  def test_actor(self):self.assertEqual(self.run_flow([self.create(),{'suffix':'/7','status':404,'actor':'other'}]),[])
  def test_async(self):self.assertEqual(self.run_flow([{'suffix':'/7','method':'DELETE','status':202},{'suffix':'/7'}]),[])
  def test_recreate(self):self.assertEqual(self.run_flow([{'suffix':'/7','method':'DELETE','status':204},self.create(),{'suffix':'/7'}])[0]['value'],'consistent')
- def test_query(self):self.assertEqual(self.run_flow([self.create(),{'suffix':'/7?view=other','status':404}]),[])
+ def test_query(self):
+  v=self.run_flow([self.create(),{'suffix':'/7?view=other','status':404}])
+  self.assertEqual(v[0]['value'],'policy_observation');self.assertFalse(v[0]['details']['query_semantics_established'])
  def test_concurrency(self):self.assertEqual(self.run_flow([self.create(),{'suffix':'/7','status':404}],capture={'complete':True,'exclusive':True,'ordering':'concurrent'}),[])
 if __name__=='__main__':unittest.main()

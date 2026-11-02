@@ -105,6 +105,10 @@ class RelationalJudge:
                 for obj,path,_ in walk(body):
                     fields=[k for k,v in obj.items() if k.lower()!='id' and norm(k)==typ and type(v) in (int,str) and str(v)==identity]
                     for f in fields:
+                        schema=cop['responses'].get(str(current['status']),{})
+                        for part in path+(f,):
+                            schema=schema.get('items',{}) if part=='*' else schema.get('fields',{}).get(part,{})
+                        if 'enum' in schema.get('constraints',{}):continue
                         key=(target,current['path'],'/'.join(path+(f,)))
                         if key in getattr(self,'ref_seen',set()):continue
                         if len(self.ref_seen)>=MAX_NODES:return

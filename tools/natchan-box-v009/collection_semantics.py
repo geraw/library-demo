@@ -63,11 +63,14 @@ class CollectionJudge:
                        'collection_completeness_declared':bool(get.get('collection_complete'))})
         if not op:self.previous=row;return
         if row['method']=='GET' and row['query_present'] and op.get('conjunctive_equality_filters'):
-            pairs=row.get('query_pairs',[]);names=[k for k,v in pairs]
+            all_pairs=row.get('query_pairs',[])
             fields=op['responses'].get('200',{}).get('items',{}).get('fields',{})
             params={p['name']:p['schema'] for p in op['parameters'] if p['in']=='query'}
+            pairs=[(k,v) for k,v in all_pairs if k in params and k in fields]
+            names=[k for k,v in pairs]
+            extra=sorted({k for k,v in all_pairs if k not in names})
             if row['status']==200 and isinstance(row.get('response'),list) and row.get('response_available'):
-                if not pairs or len(names)!=len(set(names)) or any(k not in params or k not in fields for k in names):
+                if not pairs or len(names)!=len(set(names)):
                     self.emit('S6',row,op,'not_evaluable','FILTER_BINDING_OR_DUPLICATE_QUERY_UNSUPPORTED')
                 elif len(canonical(row['response']))>MAX_STATE_BODY_BYTES:self.emit('S6',row,op,'not_evaluable','COLLECTION_BODY_BUDGET')
                 else:
@@ -78,7 +81,7 @@ class CollectionJudge:
                         wrong=sum(any(type(x[k]) is not type(v) or x[k]!=v for k,v in values.items()) for x in row['response'])
                         self.audit['filter_checks']+=1
                         self.emit('S6',row,op,'violation' if wrong else 'consistent','CONJUNCTIVE_FILTER_VIOLATION' if wrong else 'RETURNED_ITEMS_SATISFY_FILTERS',
-                          details={'mismatching_items':wrong,'filter_fields':sorted(values),'scope':'returned_items_only_not_completeness'})
+                          details={'mismatching_items':wrong,'filter_fields':sorted(values),'scope':'returned_items_only_not_completeness','additional_query_names':extra,'basis':'explicit_conjunction_requires_each_known_predicate_even_with_additional_parameters'})
         if row['method']=='DELETE' and row['status'] in (200,204):
             m=re.fullmatch(r'(.*)/\{[^/{}]+\}/?',op['path'])
             get=self.reads.get(m[1]) if m else None
