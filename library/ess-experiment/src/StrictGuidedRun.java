@@ -5778,7 +5778,46 @@ expectBlocked("sample-derived-blocked-116 (7 prefix steps, deleteBook should be 
         );
     }
 
+    /**
+     * Checks whether a single user can end up with more than one active loan at once, by
+     * pre-arming several user-book pairs (all books created before any loan exists, so
+     * UserBook.CanCreateLoan is true for every pair at ctx.bthread spawn time) and then trying to
+     * fire createLoan for each pair in turn for the SAME user. Lib_Rule.MD: "A user cannot have
+     * more than one active loan" -- so only the first createLoan should ever reach; the rest are
+     * expected to be BLOCKED (REACHED past step 1 is the bug).
+     *
+     * loanCap-2 is the control: same assertion, but the second book is created only AFTER the
+     * first loan already exists, so its pair's ctx.bthread spawns with CanCreateLoan already
+     * false and should never even be offered. If loanCap-1 reaches further than loanCap-2, that
+     * isolates the cause to stale pre-armed live copies (see 9c423cb's removal of the
+     * stillRelevant recheck c37722b had added), not to the SUT itself lacking a cap.
+     */
+    private static List<Scenario> scenarios19() {
+        return List.of(
+            expectBlocked("loanCap-1 user pre-armed with 4 eligible pairs, tries all 4 loans", List.of(
+                    step("createUser").bind("user", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createBook").bindDistinctFrom("book2", "id", "book1"),
+                    step("createBook").bindDistinctFrom("book3", "id", "book1", "book2"),
+                    step("createBook").bindDistinctFrom("book4", "id", "book1", "book2", "book3"),
+                    step("createLoan").require("user", "userId").require("book1", "bookId"),
+                    step("createLoan").require("user", "userId").require("book2", "bookId"),
+                    step("createLoan").require("user", "userId").require("book3", "bookId"),
+                    step("createLoan").require("user", "userId").require("book4", "bookId")
+            )),
+
+            expectBlocked("loanCap-2 control: second book created AFTER first loan exists", List.of(
+                    step("createUser").bind("user", "id"),
+                    step("createBook").bind("book1", "id"),
+                    step("createLoan").require("user", "userId").require("book1", "bookId"),
+                    step("createBook").bindDistinctFrom("book2", "id", "book1"),
+                    step("createLoan").require("user", "userId").require("book2", "bookId")
+            ))
+        );
+    }
+
     private static final List<Scenario> SCENARIOS = java.util.stream.Stream.of(
+            scenarios19(),
             scenarios18(),
             scenarios1(),
             scenarios2(),
@@ -5974,13 +6013,15 @@ expectBlocked("sample-derived-blocked-116 (7 prefix steps, deleteBook should be 
 
     public static void main(String[] args) throws Exception {
         if (args.length == 0) {
-            System.err.println("Usage: java StrictGuidedRun <path-to-library/provengo-project>");
+            System.err.println("Usage: java StrictGuidedRun <path-to-library/provengo-project> [name-substring-filter]");
             System.exit(1);
         }
         String projectPath = args[0];
+        String filter = args.length > 1 ? args[1] : null;
 
         List<String> results = new ArrayList<>();
         for (Scenario scenario : SCENARIOS) {
+            if (filter != null && !scenario.name.contains(filter)) continue;
             resetSut();
             RunResult result = runScenario(projectPath, scenario);
             String verdict;
