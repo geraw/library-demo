@@ -1,13 +1,13 @@
-# Natchan Box v009 — state evidence milestone 6
+# Natchan Box v009 — collections and relationships milestone 7
 
-**Current version: `009-dev.6`.** Steps 1–2 acceptance and limitations are in
-[STEP2_ACCEPTANCE.md](STEP2_ACCEPTANCE.md). The Library benchmark uses an identical
-vendored runtime. This remains a bounded semantic analyzer, not a general
-replacement for the historical analyzer. No resampling is needed for replay.
+**Current version: `009-dev.7`.** Steps 3–4 implementation, evidence levels,
+results and replay commands are in [STEP34_ACCEPTANCE.md](STEP34_ACCEPTANCE.md).
+Steps 1–2 remain documented in [STEP2_ACCEPTANCE.md](STEP2_ACCEPTANCE.md).
+The Library benchmark uses an identical vendored runtime. Structural observations
+are distinguished from contract-proven violations. No resampling is needed.
 
-The material below records milestone 4 and its earlier scope. Current lifecycle,
-failed-create, legacy-provider integration and old-journal observation behavior
-are described in the milestone 6 document above.
+The material below records milestone 4 and its historical scope; the milestone
+7 document describes the current bounded support and outstanding evidence gaps.
 
 ---
 

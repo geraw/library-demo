@@ -304,7 +304,7 @@ class StateJudge:
                 reason = reason or 'REDIRECTED_WRITE_NOT_INTERPRETED'
             if not status:
                 reason = reason or 'WRITE_ANSWER_MISSING'
-            if row['method'] == 'POST':
+            if row['method'] == 'POST' and binding.get('status') != 'structural_candidate':
                 self.constraints(row, op, check)
                 return
             deferred_s3 = bool(not reason and check.get('invalid') and 200 <= status < 300)
