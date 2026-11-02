@@ -1,3 +1,11 @@
+# Current release: 009-dev.9
+
+[Lifecycle repair and full validation scope](LIFECYCLE_HISTORY_DEV9.md): exact B1/B2/B4 oracle request-ID recovery (10/8/19), clean baseline, 204 analyzer tests and 13 benchmark tests. B1/B2 remain conditional observations. All ten available real systems checked; remaining producer-parity gaps are explicit.
+
+The sections below are historical milestone notes; the linked dev.9 document supersedes their current-status statements.
+
+---
+
 # Natchan Box v009 — query and story evidence repair
 
 **Current version: `009-dev.8`.** See [QUERY_AND_STORY_EVIDENCE_DEV8.md](QUERY_AND_STORY_EVIDENCE_DEV8.md) for changes, validated results and the still-pending full Provengo trace replay.
