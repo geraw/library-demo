@@ -25,9 +25,11 @@ function assertTrue(cond, label) {
   if (cond) pass++; else fail++;
 }
 
-// Matches lib_stories.js's markStateFeature(): bp.sync({request: bp.Event("StateFeature", {feature: name})}).
+// Matches lib_stories.js's markStateFeature(): Ctrl.doMark(name), which requests Ctrl.markEvent's
+// own shape (controlLib.js): name "marker: " + name, data {lib:"Ctrl", verb:"marker", value:
+// name, eventPriority: 1010}.
 function stateFeatureEvent(name) {
-  return { name: "StateFeature", data: { feature: name } };
+  return { name: "marker: " + name, data: { lib: "Ctrl", verb: "marker", value: name, eventPriority: 1010 } };
 }
 function restEvent(verb, url, parameters) {
   return { name: verb, data: { lib: "REST", method: verb, url: "http://localhost:23242" + url, parameters } };

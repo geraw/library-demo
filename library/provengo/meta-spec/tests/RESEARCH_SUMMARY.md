@@ -691,3 +691,55 @@ tested, though exactly how many are "enough" remains open given the observed run
 All 12 raw ensemble output files plus the pool's `samples.json` were deleted after extracting the
 scores above - only this table and the reference numbers are kept, per the same practice as
 every earlier experimental section.
+
+## 11. Switched to the real `Ctrl.doMark` API, per Gera's original suggestion (2026-10-25)
+
+§8's fix added `eventPriority: 1010` directly onto the existing custom `bp.Event("StateFeature",
+{feature: name, eventPriority: 1010})` - it matched `Ctrl.markEvent`'s priority value, but wasn't
+actually calling Ctrl's API. Gera's original advice (start of this investigation) was
+specifically to use `Ctrl.markEvent`/`Ctrl.doMark`, not just copy its priority number. Switched
+`markStateFeature()` to `Ctrl.doMark(name)` directly (`//@provengo summon ctrl` added to
+`lib_stories.js`). This changes the marker event's shape: name becomes `"marker: " + name`, data
+becomes `{lib:"Ctrl", verb:"marker", value:name, eventPriority:1010}` instead of the old custom
+`"StateFeature"`/`data.feature` shape - `distinctStateFeaturesHit` in `ensemble-code.js` and
+`verify_state_features.py`'s marker detection were both updated to match. All 19 unit tests still
+pass after updating the test fixtures to the new shape.
+
+**Re-validated against the live SUT, 3 fresh `--size=10 --max-length=80` repeats (same
+methodology as §8.1):**
+
+| feature | miss rate (pooled, 3 repeats) |
+|---|---|
+| BOOK_DELETE_ELIGIBLE | 0.0% (0/30) |
+| USER_DELETE_ELIGIBLE | 0.0% (0/30) |
+| LOAN_CREATABLE | 0.0% (0/30) |
+| HOLD_WITHOUT_LOAN | 0.0% (0/17) |
+| MULTI_USER_BOOK_RELATIONS | **11.1%** (1/9) |
+| USER_WITH_TWO_BOOKS | **10.0%** (1/10) |
+
+**This is a real, measurable difference from §8.1's result for the manual eventPriority-copy
+approach, which measured 0% miss on every one of these same six features, pooled across an
+equivalent 3×10-trace repeat set.** The real `Ctrl.doMark` API is not quite as reliable as the
+manual copy in this specific respect - still far better than the original no-priority mechanism
+(45-78% miss), but not a clean 0% either.
+
+**Notably, the two features with a miss are exactly the two "dual-trigger" features** - each is
+the only one of the six marked from *two separate* `ctx.bthread`s (`...ViaLoan`/`...ViaHold`),
+unlike the other four which each have exactly one triggering bthread. The four single-trigger
+features had zero misses across all three repeats; both dual-trigger features had exactly one
+miss each. This pattern (not a random scatter across all six) suggests the small residual gap is
+specifically about two independent bthreads racing to call `Ctrl.doMark` for the *same* feature
+name at the same synchronization step, not a general weakness of `Ctrl.doMark`/`eventPriority`
+itself - though this is an observation from n=3 repeats, not a confirmed root cause.
+
+**Not yet investigated:** why two bthreads both calling `Ctrl.doMark(sameName)` at the same sync
+point would occasionally lose the event, when `eventPriority` should still make it win against
+*other* (non-marker) competing offers. Possible explanation needing further checking: BPjs/COBP
+semantics for two b-threads simultaneously requesting the identical event name+data may differ
+subtly from one b-thread's offer competing against unrelated events - not confirmed here.
+
+**Decision:** kept `Ctrl.doMark` (matches the advisor's actual suggestion, and the residual gap
+is small and localized, not a regression back toward the original 45-78% problem). Documented
+honestly rather than silently treating it as equivalent to the manual-copy approach.
+
+Raw sample files from all three repeats were deleted after extracting the miss-rate table above.

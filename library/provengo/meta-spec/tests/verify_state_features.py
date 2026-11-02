@@ -99,8 +99,10 @@ def replay_trace(events):
         if not isinstance(d, dict):
             continue
 
-        feat = d.get("feature")
-        if ev.get("name") == "StateFeature" and feat in marker_fired:
+        # markStateFeature calls Ctrl.doMark(name), which requests Ctrl.markEvent's own shape
+        # (controlLib.js): data {lib:"Ctrl", verb:"marker", value:<name>, eventPriority:1010}.
+        feat = d.get("value")
+        if d.get("lib") == "Ctrl" and d.get("verb") == "marker" and feat in marker_fired:
             marker_fired[feat] = True
 
         url = d.get("url") or ""

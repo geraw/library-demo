@@ -1,3 +1,5 @@
+//@provengo summon ctrl
+
 const NUMBER_OF_USERS = 4;
 const NUMBER_OF_BOOKS = 4;
 
@@ -351,16 +353,21 @@ bthread("tryToDeleteNonexistingHold", function () {
 // (not raw occurrences) they exercise - see STATE_FEATURES there, which must
 // stay in sync with the names marked here.
 //
-// markStateFeature requests the event with eventPriority:1010 (same convention as
-// Ctrl.markEvent in controlLib.js) instead of a plain bp.sync({request:...}) offer: a plain
-// offer competes on equal footing with every other event any other bthread offers at that sync
-// point, and loses most of the time at high-competition moments (e.g. every single loan/hold
-// create) - a measured 45-78% miss rate across all six original features. The priority makes
-// this bthread's offer win selection instead.
+// markStateFeature uses Ctrl.doMark (per Gera's suggestion) instead of a plain
+// bp.sync({request:...}) offer: a plain offer competes on equal footing with every other event
+// any other bthread offers at that sync point, and loses most of the time at high-competition
+// moments (e.g. every single loan/hold create) - a measured 45-78% miss rate across all six
+// original features. Ctrl.doMark requests its event with eventPriority:1010 (controlLib.js),
+// which wins selection instead of competing as an equal offer.
+//
+// This changes the marker event's shape from the old bp.Event("StateFeature", {feature: name})
+// to Ctrl.markEvent's own: name "marker: " + name, data {lib:"Ctrl", verb:"marker", value: name,
+// eventPriority: 1010} - ensemble-code.js's distinctStateFeaturesHit reads this shape (data.lib
+// === "Ctrl" && data.verb === "marker", feature name in data.value), not the old one.
 //////////////////////////////////////////////////////////////////////////
 
 function markStateFeature(name) {
-  bp.sync({ request: bp.Event("StateFeature", { feature: name, eventPriority: 1010 }) });
+  Ctrl.doMark(name);
 }
 
 ctx.bthread("markBookDeleteEligible", "Book.CanDelete", function (book) {
