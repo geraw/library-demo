@@ -51,10 +51,16 @@ def canonical(rows):
         entity = parts[0]
         method, status = row['method'], row['status']
         body, response = row['input'], row['response']
+        if isinstance(body, str):
+            try:
+                body = json.loads(body)
+            except ValueError:
+                pass
         if method == 'POST' and status == 201 and isinstance(response, dict) and type(response.get('id')) is int:
             ids[entity].setdefault(response['id'], f'{entity}#{len(ids[entity]) + 1}')
         kinds = ['users', 'books'] if entity == 'loans' else [entity]
-        path = [entity, *(ident(kind, item) for kind, item in zip(kinds, parts[1:]))]
+        path = [entity, *(ident(kinds[index], item) if index < len(kinds) else item
+                          for index, item in enumerate(parts[1:]))]
         query = []
         for key, value in parse_qsl(url.query, keep_blank_values=True):
             kind = {'userId': 'users', 'bookId': 'books', 'q': entity}.get(key)
@@ -72,12 +78,50 @@ def compare_controls(left, right):
     return differences
 
 
+
+def relocate_sample(source, target, port):
+    """Stream a transport-only URL replacement, keeping all event data otherwise intact."""
+    old = b'"url":"http://127.0.0.1:23443/'
+    new = f'"url":"http://127.0.0.1:{port}/'.encode()
+    source_hash = hashlib.sha256()
+    runtime_hash = hashlib.sha256()
+    pending = b''
+    replacements = 0
+    with source.open('rb') as reader, target.open('xb') as writer:
+        while True:
+            chunk = reader.read(1024 * 1024)
+            source_hash.update(chunk)
+            pending += chunk
+            if chunk:
+                split = max(0, len(pending) - len(old) + 1)
+                # Keep any token beginning before the boundary whole.
+                start = pending.find(old, max(0, split - len(old) + 1))
+                if start >= 0 and start + len(old) > split:
+                    split = start
+                ready, pending = pending[:split], pending[split:]
+            else:
+                ready, pending = pending, b''
+            replacements += ready.count(old)
+            relocated = ready.replace(old, new)
+            writer.write(relocated)
+            runtime_hash.update(relocated)
+            if not chunk:
+                break
+    if replacements == 0:
+        target.unlink()
+        raise ValueError('No sampled endpoint found for port relocation')
+    return source_hash.hexdigest(), runtime_hash.hexdigest(), replacements
+
+
 def execute(args):
     sys.path.insert(0, str(args.benchmark))
     import campaign_v001 as bench
     from oracle_v001 import evaluate, read_trace
     from storage_v001 import discard_database
 
+    selected_cases = sorted({int(value) for value in args.cases.split(',')}) if args.cases else None
+    if selected_cases is not None and (not selected_cases or min(selected_cases) < 1):
+        raise ValueError('Case numbers must be positive')
     if hashlib.sha256(args.original.read_bytes().replace(b"\r\n", b"\n")).hexdigest() != ORIGINAL_SHA:
         raise ValueError('Original SUT SHA-256 differs from the frozen source. Use the original used to build these mutants.')
     cfg = bench.tool_config(args.config)
@@ -89,11 +133,12 @@ def execute(args):
     frozen.mkdir()
     original = Path(shutil.copy2(args.original, frozen / 'original.py'))
     mutants = Path(shutil.copy2(args.mutants, frozen / 'mutants.py'))
-    write(root / 'pilot.json', {'arms': ARMS, 'sample_size': args.sample_size,
+    write(root / 'pilot.json', {'arms': ('original', 'baseline') if args.controls_only else ARMS, 'sample_size': args.sample_size,
                                'max_length': args.max_length, 'seed': args.seed,
                                'sut_sha256': {p.name: bench.sha(p) for p in (original, mutants)},
                                'B6': 'BLOCKED_BY_SERIAL_GATEWAY'})
     summary = {}
+    arms = ('original', 'baseline') if args.controls_only else ARMS
     try:
         model, _ = bench.prepare(root, cfg, args.port, args.seed)
         interfaces = model / 'spec/js/interfaces.library.js'
@@ -116,23 +161,61 @@ def execute(args):
         samples = []
         java = cfg.get('java', 'java')
         java_command = [java, '-Xmx2g', '-jar', meta['jar']]
-        for case in range(1, args.sample_size + 1):
-            name = f'sample-{case:03d}'
-            file = sample_dir / (name + '.json')
-            seed = args.seed + case - 1 if meta['seed_flag'] else None
-            command = java_command + ['sample', '--overwrite', '--size', '1', meta['length_flag'],
-                                      str(args.max_length), '-o', file, model]
-            if seed is not None:
-                command += [meta['seed_flag'], str(seed)]
-            print(f'SAMPLE {case}/{args.sample_size}', flush=True)
-            bench.require(bench.launch(command, sample_dir, name, args.sample_timeout), sample_dir, name)
-            data = json.loads(file.read_text(encoding='utf-8-sig'))
-            scenarios = data if isinstance(data, list) else next(
-                (data[key] for key in ('scenarios', 'runs', 'samples') if isinstance(data.get(key), list)), [])
-            if len(scenarios) != 1:
-                raise ValueError(f'{name} must contain exactly one scenario')
-            samples.append({'case': case, 'file': str(file), 'sha256': bench.sha(file), 'seed': seed})
-            write(sample_dir / 'manifest.json', samples)
+        if args.reuse_run:
+            source = args.reuse_run
+            prior = json.loads((source / 'native-tools.json').read_text(encoding='utf-8-sig'))
+            if prior['provengo']['sha256'] != meta['sha256']:
+                raise ValueError('The Provengo binary differs from the sampled binary')
+            old_manifest = json.loads((source / 'samples/manifest.json').read_text(encoding='utf-8-sig'))
+            if len({item['case'] for item in old_manifest}) != len(old_manifest):
+                raise ValueError('Duplicate sample numbers in the manifest')
+            if len(old_manifest) != args.sample_size:
+                raise ValueError('The sample count differs from --sample-size')
+            available = {item['case'] for item in old_manifest}
+            if selected_cases is not None and not set(selected_cases).issubset(available):
+                raise ValueError('Selected sample is missing')
+            for item in old_manifest:
+                if selected_cases is not None and item['case'] not in selected_cases:
+                    continue
+                file = source / 'samples' / f"sample-{item['case']:03d}.json"
+                if bench.sha(file) != item['sha256']:
+                    raise ValueError(f"Source sample changed: {file}")
+                samples.append(dict(item, file=str(file)))
+            for name in ('config', 'data', 'lib', 'spec'):
+                shutil.rmtree(model / name)
+                shutil.copytree(source / 'model' / name, model / name)
+            endpoint = model / 'data/00_endpoint.js'
+            endpoint.write_text(endpoint.read_text(encoding='utf-8').replace(
+                'var port=23443;', f'var port={args.port};'), encoding='utf-8')
+            old_contract = json.loads((source / 'openapi.json').read_text(encoding='utf-8-sig'))
+            old_contract['servers'] = contract['servers']
+            if old_contract != contract:
+                raise ValueError('Contract differs beyond server address')
+            source_pilot = json.loads((source / 'pilot.json').read_text())
+            for file in (original, mutants):
+                if bench.sha(file) != source_pilot['sut_sha256'][file.name]:
+                    raise ValueError(f'Frozen SUT differs: {file.name}')
+            write(root / 'reused-samples.json', samples)
+        else:
+            for case in range(1, args.sample_size + 1):
+                name = f'sample-{case:03d}'
+                file = sample_dir / (name + '.json')
+                seed = args.seed + case - 1 if meta['seed_flag'] else None
+                command = java_command + ['sample', '--overwrite', '--size', '1', meta['length_flag'],
+                                          str(args.max_length), '-o', file, model]
+                if seed is not None:
+                    command += [meta['seed_flag'], str(seed)]
+                print(f'SAMPLE {case}/{args.sample_size}', flush=True)
+                bench.require(bench.launch(command, sample_dir, name, args.sample_timeout), sample_dir, name)
+                data = json.loads(file.read_text(encoding='utf-8-sig'))
+                scenarios = data if isinstance(data, list) else next(
+                    (data[key] for key in ('scenarios', 'runs', 'samples') if isinstance(data.get(key), list)), [])
+                if len(scenarios) != 1:
+                    raise ValueError(f'{name} must contain exactly one scenario')
+                samples.append({'case': case, 'file': str(file), 'sha256': bench.sha(file), 'seed': seed})
+                write(sample_dir / 'manifest.json', samples)
+        if selected_cases is not None and not args.reuse_run:
+            raise ValueError('--cases requires --reuse-run')
 
         class Service:
             def __init__(self,folder,contract,port,sut,env):
@@ -159,7 +242,7 @@ def execute(args):
 
         control = {}
         baseline = {}
-        for arm in ARMS:
+        for arm in arms:
             folder = root / arm
             folder.mkdir()
             print(f'START {arm}', flush=True)
@@ -170,25 +253,43 @@ def execute(args):
                     case = sample['case']
                     if bench.sha(sample['file']) != sample['sha256']:
                         raise ValueError(f'Frozen sample changed: {case}')
+                    runtime_file = Path(sample['file'])
+                    if args.port != 23443:
+                        runtime_file = sample_dir / f'replay-{case:03d}.json'
+                        source_hash, runtime_hash, replacements = relocate_sample(
+                            Path(sample['file']), runtime_file, args.port)
+                        if source_hash != sample['sha256']:
+                            raise ValueError('Source sample changed during transport relocation')
+                        write(folder / f'case-{case:02d}-transport.json', {
+                            'source_sha256': source_hash, 'runtime_sha256': runtime_hash,
+                            'url_replacements': replacements, 'port': args.port})
                     service.boundary(case)
                     name = 'case-' + str(case).zfill(2)
-                    outcomes.append(bench.launch(java_command + ['run', '-s', sample['file'], '--run-id', '1', model],
+                    outcomes.append(bench.launch(java_command + ['run', '-s', runtime_file, '--run-id', '1', model],
                                                  folder, name, args.case_timeout, env, expected=(0, 1)))
                     write(folder / 'case-progress.json', outcomes)
                     discard_database(model, folder, case)
+                    if runtime_file != Path(sample['file']):
+                        runtime_file.unlink()
+                    if not outcomes[-1]['expected_exit']:
+                        raise RuntimeError(f'{arm} case {case} did not complete; stopping this worker immediately')
             rows = read_trace(folder / 'http.jsonl')
             by_case = defaultdict(list)
             for row in rows:
                 if row['role'] == 'tool':
                     by_case[row['case_id']].append(row)
             cases = {}
-            for case, outcome in enumerate(outcomes, 1):
+            for sample, outcome in zip(samples, outcomes):
+                case = sample["case"]
                 key = str(case)
                 case_rows = by_case[key]
                 trace = canonical(case_rows)
                 status = ('INCOMPLETE' if not outcome['expected_exit'] or not case_rows
                           else 'PASS' if outcome['exit_code'] == 0 else 'NATIVE_FAIL')
                 cases[key] = {'status': status, 'http_requests': len(case_rows), 'trace': trace}
+            if arm in ('original', 'baseline') and any(value['status'] != 'PASS' for value in cases.values()):
+                write(folder / 'control-failure.json', {key: value['status'] for key, value in cases.items()})
+                raise RuntimeError(f'{arm} has a native failure; inspect its log before scoring mutants')
             oracle_rows = [dict(row, status=204) if row.get('method') == 'DELETE' and row['status'] == 200
                            else row for row in rows]
             oracle = evaluate(oracle_rows)
@@ -199,7 +300,10 @@ def execute(args):
                 baseline = cases
                 differences = compare_controls(control, baseline)
                 incomplete = [key for key in baseline if 'INCOMPLETE' in (control[key]['status'], baseline[key]['status'])]
-                write(root / 'controls.json', {'different_cases': differences, 'incomplete_cases': incomplete})
+                write(root / 'controls.json', {'different_cases': differences, 'incomplete_cases': incomplete,
+                                               'native_failed_cases': [key for key in baseline if baseline[key]['status'] != 'PASS']})
+                if any(value['status'] != 'PASS' for value in baseline.values()):
+                    raise RuntimeError('A control has a native failure; inspect its log before scoring mutants')
             if arm == 'B3':
                 witnesses = []
                 for key, result in cases.items():
@@ -227,7 +331,7 @@ def execute(args):
                            if any(case['status'] == 'INCOMPLETE' for case in report['cases'].values())]
         if incomplete_arms:
             raise RuntimeError('Incomplete replay cases in: ' + ', '.join(incomplete_arms))
-        write(root / 'completed.json', {'replays': len(ARMS) * args.sample_size, 'B6': 'BLOCKED_BY_SERIAL_GATEWAY'})
+        write(root / 'completed.json', {'replays': len(arms) * len(samples), 'B6': 'BLOCKED_BY_SERIAL_GATEWAY'})
     except Exception as exc:
         write(root / 'failure.json', {'error': str(exc)})
         raise
@@ -238,9 +342,13 @@ if __name__ == '__main__':
     for name in ('benchmark', 'original', 'mutants', 'config', 'output'):
         parser.add_argument('--' + name, type=lambda value: Path(value).resolve(), required=name != 'output')
     for name, default in [('sample-size', 100), ('max-length', 2000), ('seed', 1), ('port', 23443),
-                          ('sample-timeout', 300), ('case-timeout', 300)]:
+                          ('sample-timeout', 300), ('case-timeout', 7200)]:
         parser.add_argument('--' + name, type=int, default=default)
+    parser.add_argument('--reuse-run', type=lambda value: Path(value).resolve())
+    parser.add_argument('--cases')
+    parser.add_argument('--controls-only', action='store_true')
     args = parser.parse_args()
     if min(args.sample_size, args.max_length, args.sample_timeout, args.case_timeout) < 1 or not 1024 <= args.port <= 65535:
         parser.error('Invalid campaign parameters')
     execute(args)
+
