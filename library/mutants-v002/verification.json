@@ -1,0 +1,38 @@
+{
+  "B1": {
+    "original": "PASS",
+    "baseline": "PASS",
+    "mutant": "DETECTED",
+    "assertion": "('/loans', 400, {'error': 'Book already has an active loan'})"
+  },
+  "B2": {
+    "original": "PASS",
+    "baseline": "PASS",
+    "mutant": "DETECTED",
+    "assertion": ""
+  },
+  "B3": {
+    "original": "PASS",
+    "baseline": "PASS",
+    "mutant": "DETECTED",
+    "assertion": ""
+  },
+  "B4": {
+    "original": "PASS",
+    "baseline": "PASS",
+    "mutant": "DETECTED",
+    "assertion": ""
+  },
+  "B5": {
+    "original": "PASS",
+    "baseline": "PASS",
+    "mutant": "DETECTED",
+    "assertion": ""
+  },
+  "B6": {
+    "original": "PASS",
+    "baseline": "PASS",
+    "mutant": "DETECTED",
+    "assertion": ""
+  }
+}

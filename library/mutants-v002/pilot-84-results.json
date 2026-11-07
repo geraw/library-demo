@@ -1,0 +1,4162 @@
+{
+  "case-001": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "b07f6b7508e6b21c4a3d7c9aabf2c3cd789b784697c955f36f4bf88851b46885",
+    "source_requests": 426,
+    "retained_requests": 68,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 68
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 68
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 68
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 68
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 48,
+        "source_order": 302,
+        "http_requests": 48
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 41,
+        "source_order": 272,
+        "http_requests": 41
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 51,
+        "source_order": 358,
+        "http_requests": 51
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 60,
+        "source_order": 414,
+        "http_requests": 60
+      }
+    },
+    "seconds": 0.11409498299997267
+  },
+  "case-002": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "346b35b0dac8f5f4a1591d9054356413664b7cbfffd0e56ab659721a6f569dce",
+    "source_requests": 2000,
+    "retained_requests": 149,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 146,
+        "source_order": 1977,
+        "http_requests": 146
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 35,
+        "source_order": 378,
+        "http_requests": 35
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 71,
+        "source_order": 1074,
+        "http_requests": 71
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 149
+      }
+    },
+    "seconds": 0.20746157499996798
+  },
+  "case-003": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "5b4db3ecf8d092f575f919089921c8304416e937ca9659ba356568ecd8709f99",
+    "source_requests": 1062,
+    "retained_requests": 105,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 105
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 105
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 105
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 79,
+        "source_order": 936,
+        "http_requests": 79
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 43,
+        "source_order": 447,
+        "http_requests": 43
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 105
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 81,
+        "source_order": 948,
+        "http_requests": 81
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 102,
+        "source_order": 1057,
+        "http_requests": 102
+      }
+    },
+    "seconds": 0.14034341699999686
+  },
+  "case-004": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "fef979234de70dc6e2494f4c4245179c217aa01460576c811b92b3a1607fd153",
+    "source_requests": 1358,
+    "retained_requests": 142,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 27,
+        "source_order": 274,
+        "http_requests": 27
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 44,
+        "source_order": 529,
+        "http_requests": 44
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 134,
+        "source_order": 1339,
+        "http_requests": 134
+      }
+    },
+    "seconds": 0.16973112499999843
+  },
+  "case-005": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "ca551b0ea969dc2e990dcde14964dfa5bfe3a92a4704ce34e4c1c71296bc9a59",
+    "source_requests": 1499,
+    "retained_requests": 130,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 109,
+        "source_order": 1344,
+        "http_requests": 109
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 64,
+        "source_order": 907,
+        "http_requests": 64
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 59,
+        "source_order": 790,
+        "http_requests": 59
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 122,
+        "source_order": 1485,
+        "http_requests": 122
+      }
+    },
+    "seconds": 0.16787163899999769
+  },
+  "case-006": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "bcc46bd9779ca2e6229904b3266e26ab3a4fc7c5ddfceafbb86b8bd0b601386f",
+    "source_requests": 1859,
+    "retained_requests": 165,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 34,
+        "source_order": 372,
+        "http_requests": 34
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 116,
+        "source_order": 1575,
+        "http_requests": 116
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 82,
+        "source_order": 1171,
+        "http_requests": 82
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 162,
+        "source_order": 1854,
+        "http_requests": 162
+      }
+    },
+    "seconds": 0.21365180999998756
+  },
+  "case-007": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "6056e19bfb2b99d978e11a341fba0903d5f999d9c7e4778303c9cfc8eb675dbf",
+    "source_requests": 1929,
+    "retained_requests": 154,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 41,
+        "source_order": 531,
+        "http_requests": 41
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 91,
+        "source_order": 1313,
+        "http_requests": 91
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 131,
+        "source_order": 1824,
+        "http_requests": 131
+      }
+    },
+    "seconds": 0.19688424499997836
+  },
+  "case-008": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "51aacc1693de42143dc35d787f7548ed5b9181e59372a0422a833df6452aa8f5",
+    "source_requests": 2000,
+    "retained_requests": 133,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 68,
+        "source_order": 990,
+        "http_requests": 68
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 39,
+        "source_order": 554,
+        "http_requests": 39
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 133
+      }
+    },
+    "seconds": 0.18258870199997546
+  },
+  "case-009": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "e50e0e55c5d6aaed4c4ba9b231139c06ba8a78b2ef1ad5e3245a898b77e16015",
+    "source_requests": 1482,
+    "retained_requests": 123,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 123
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 123
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 123
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 123
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 72,
+        "source_order": 1093,
+        "http_requests": 72
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 123
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 68,
+        "source_order": 1009,
+        "http_requests": 68
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 119,
+        "source_order": 1475,
+        "http_requests": 119
+      }
+    },
+    "seconds": 0.16932685899996613
+  },
+  "case-010": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "6fa270797596019da00799c12081a71725fc8a5d278149332a9ce676dfb189b8",
+    "source_requests": 1834,
+    "retained_requests": 139,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 139
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 139
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 111,
+        "source_order": 1624,
+        "http_requests": 111
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 105,
+        "source_order": 1516,
+        "http_requests": 105
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 81,
+        "source_order": 1106,
+        "http_requests": 81
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 139
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 94,
+        "source_order": 1421,
+        "http_requests": 94
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 139
+      }
+    },
+    "seconds": 0.19793662199998607
+  },
+  "case-011": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "509fe43797f4f5b25bbb045b9ff8d9f0972c0ef555de28e1f7cc0a2f19c0e537",
+    "source_requests": 1544,
+    "retained_requests": 137,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 137
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 137
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 137
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 71,
+        "source_order": 953,
+        "http_requests": 71
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 66,
+        "source_order": 865,
+        "http_requests": 66
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 137
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 86,
+        "source_order": 1179,
+        "http_requests": 86
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 127,
+        "source_order": 1520,
+        "http_requests": 127
+      }
+    },
+    "seconds": 0.17837572899998122
+  },
+  "case-012": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "d32333b2f77d308c2165ce9dc26ece52b0a1c8e2b3c131376abcb51ccbcdfa57",
+    "source_requests": 1681,
+    "retained_requests": 156,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 156
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 156
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 156
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 125,
+        "source_order": 1516,
+        "http_requests": 125
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 69,
+        "source_order": 916,
+        "http_requests": 69
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 156
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 66,
+        "source_order": 788,
+        "http_requests": 66
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 110,
+        "source_order": 1410,
+        "http_requests": 110
+      }
+    },
+    "seconds": 0.20092272799996636
+  },
+  "case-013": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "9919aa906c0b0832cd26cafe26397db346bea84f8010bfc02b78179e678dd9e0",
+    "source_requests": 1558,
+    "retained_requests": 147,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 136,
+        "source_order": 1533,
+        "http_requests": 136
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 62,
+        "source_order": 867,
+        "http_requests": 62
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 95,
+        "source_order": 1240,
+        "http_requests": 95
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 129,
+        "source_order": 1505,
+        "http_requests": 129
+      }
+    },
+    "seconds": 0.21766725200001247
+  },
+  "case-014": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "e9c50e627bdd45c50c7d2f2d1c91ab777410c026276de8932f85350a4d6ee296",
+    "source_requests": 1891,
+    "retained_requests": 161,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 56,
+        "source_order": 717,
+        "http_requests": 56
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 97,
+        "source_order": 1479,
+        "http_requests": 97
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 45,
+        "source_order": 566,
+        "http_requests": 45
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 116,
+        "source_order": 1651,
+        "http_requests": 116
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 106,
+        "source_order": 1581,
+        "http_requests": 106
+      }
+    },
+    "seconds": 0.19927395600001319
+  },
+  "case-015": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "d3bf0586d7b62c1e7ca436fe9a4add8c5e3e7796df15cddaef6d6a79a2d085b2",
+    "source_requests": 1554,
+    "retained_requests": 146,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 82,
+        "source_order": 1161,
+        "http_requests": 82
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 126,
+        "source_order": 1468,
+        "http_requests": 126
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 78,
+        "source_order": 1128,
+        "http_requests": 78
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 51,
+        "source_order": 673,
+        "http_requests": 51
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 116,
+        "source_order": 1376,
+        "http_requests": 116
+      }
+    },
+    "seconds": 0.21062409500001422
+  },
+  "case-016": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "9c20a0c62f7b6b23e6586930c475c210f3c4f3ca7533b5a1335c7a72d0b78310",
+    "source_requests": 648,
+    "retained_requests": 87,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 87
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 87
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 87
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 87
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 59,
+        "source_order": 515,
+        "http_requests": 59
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 81,
+        "source_order": 639,
+        "http_requests": 81
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 49,
+        "source_order": 404,
+        "http_requests": 49
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 82,
+        "source_order": 640,
+        "http_requests": 82
+      }
+    },
+    "seconds": 0.15707154500000797
+  },
+  "case-017": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "b1c21d8618eb31182794b23f9a9d0a11e359517af772498a637e97d9b137fad7",
+    "source_requests": 2000,
+    "retained_requests": 140,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 29,
+        "source_order": 277,
+        "http_requests": 29
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 37,
+        "source_order": 361,
+        "http_requests": 37
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 81,
+        "source_order": 1196,
+        "http_requests": 81
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 140
+      }
+    },
+    "seconds": 0.20336860000003298
+  },
+  "case-018": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "0e5f70c48f83e47b2aa7644cfaa39abd6d5a4c03e99eb49abc10d2d9320841bc",
+    "source_requests": 2000,
+    "retained_requests": 166,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 166
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 166
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 112,
+        "source_order": 1561,
+        "http_requests": 112
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 156,
+        "source_order": 1942,
+        "http_requests": 156
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 86,
+        "source_order": 1188,
+        "http_requests": 86
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 163,
+        "source_order": 1978,
+        "http_requests": 163
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 73,
+        "source_order": 1018,
+        "http_requests": 73
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 145,
+        "source_order": 1881,
+        "http_requests": 145
+      }
+    },
+    "seconds": 0.2639166179999961
+  },
+  "case-019": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "fd94e569e356af1a400600cbd3bd4fb060e5c837e71b5f69fc2b5a3b4edaa069",
+    "source_requests": 796,
+    "retained_requests": 92,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 92
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 92
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 92
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 92
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 56,
+        "source_order": 615,
+        "http_requests": 56
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 82,
+        "source_order": 770,
+        "http_requests": 82
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 44,
+        "source_order": 410,
+        "http_requests": 44
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 92
+      }
+    },
+    "seconds": 0.13118210900000804
+  },
+  "case-020": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "83996231b88b7ddcd952b9794468bce66337754d99afe8c783c713a10a8f2c79",
+    "source_requests": 1136,
+    "retained_requests": 133,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 95,
+        "source_order": 937,
+        "http_requests": 95
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 128,
+        "source_order": 1128,
+        "http_requests": 128
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 68,
+        "source_order": 680,
+        "http_requests": 68
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 108,
+        "source_order": 1037,
+        "http_requests": 108
+      }
+    },
+    "seconds": 0.17277502599995387
+  },
+  "case-021": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "12d850c399ff72f43c9de007dfd2e393ba05ed3a8ad2f405e6a60460762e5c74",
+    "source_requests": 1086,
+    "retained_requests": 114,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 114
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 114
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 78,
+        "source_order": 855,
+        "http_requests": 78
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 114
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 70,
+        "source_order": 805,
+        "http_requests": 70
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 98,
+        "source_order": 1009,
+        "http_requests": 98
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 65,
+        "source_order": 763,
+        "http_requests": 65
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 25,
+        "source_order": 261,
+        "http_requests": 25
+      }
+    },
+    "seconds": 0.15209326499996223
+  },
+  "case-022": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "255e726e44f6def38006463fe38488e0e813270e7aa1e0359217314238f48854",
+    "source_requests": 939,
+    "retained_requests": 108,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 83,
+        "source_order": 806,
+        "http_requests": 83
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 94,
+        "source_order": 888,
+        "http_requests": 94
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 55,
+        "source_order": 495,
+        "http_requests": 55
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 41,
+        "source_order": 348,
+        "http_requests": 41
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 93,
+        "source_order": 879,
+        "http_requests": 93
+      }
+    },
+    "seconds": 0.16076646099998015
+  },
+  "case-023": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "c0b5fed093ea1a2f95728782a14035faa71a2963bc14874eb0185c5e13a5a7d9",
+    "source_requests": 1176,
+    "retained_requests": 131,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 131
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 131
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 131
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 131
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 26,
+        "source_order": 165,
+        "http_requests": 26
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 125,
+        "source_order": 1167,
+        "http_requests": 125
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 40,
+        "source_order": 368,
+        "http_requests": 40
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 112,
+        "source_order": 1059,
+        "http_requests": 112
+      }
+    },
+    "seconds": 0.19237155599995504
+  },
+  "case-024": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "069cb71044305ba0098820bd25705ebeb0ed04a80bcd0c89d1f912b887f87c60",
+    "source_requests": 1145,
+    "retained_requests": 98,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 82,
+        "source_order": 1036,
+        "http_requests": 82
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 43,
+        "source_order": 539,
+        "http_requests": 43
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 67,
+        "source_order": 891,
+        "http_requests": 67
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 98
+      }
+    },
+    "seconds": 0.1466068929999551
+  },
+  "case-025": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "2a1e6043e3667822a29b65690da6da6bce215b9ba4c365f16d8e48314d7f87fa",
+    "source_requests": 1846,
+    "retained_requests": 173,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 173
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 173
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 109,
+        "source_order": 1371,
+        "http_requests": 109
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 117,
+        "source_order": 1462,
+        "http_requests": 117
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 60,
+        "source_order": 790,
+        "http_requests": 60
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 173
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 92,
+        "source_order": 1189,
+        "http_requests": 92
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 118,
+        "source_order": 1465,
+        "http_requests": 118
+      }
+    },
+    "seconds": 0.21645570900000166
+  },
+  "case-026": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "c45c68f08799add508a4abfe655b921601e3fa5bdf116f3908b17f9b17080b25",
+    "source_requests": 1429,
+    "retained_requests": 140,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 50,
+        "source_order": 660,
+        "http_requests": 50
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 93,
+        "source_order": 1164,
+        "http_requests": 93
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 129,
+        "source_order": 1406,
+        "http_requests": 129
+      }
+    },
+    "seconds": 0.19943351000000575
+  },
+  "case-027": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "16608ec206e5fc69dc220a9c31d82b650ed25f74664d371fdad47be1bbcd4f67",
+    "source_requests": 617,
+    "retained_requests": 75,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 75
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 75
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 75
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 57,
+        "source_order": 527,
+        "http_requests": 57
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 60,
+        "source_order": 560,
+        "http_requests": 60
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 75
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 51,
+        "source_order": 444,
+        "http_requests": 51
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 64,
+        "source_order": 591,
+        "http_requests": 64
+      }
+    },
+    "seconds": 0.1170130479999898
+  },
+  "case-028": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "b94254096d67ef956b211bc8fe8cd65b235c6d45c72bc05cb17c84d3b8f239ac",
+    "source_requests": 1567,
+    "retained_requests": 133,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 82,
+        "source_order": 1201,
+        "http_requests": 82
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 55,
+        "source_order": 815,
+        "http_requests": 55
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 127,
+        "source_order": 1551,
+        "http_requests": 127
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 53,
+        "source_order": 777,
+        "http_requests": 53
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 122,
+        "source_order": 1532,
+        "http_requests": 122
+      }
+    },
+    "seconds": 0.19603046000003133
+  },
+  "case-029": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "54cbb1080a2298f3dc4b0fbb07ee39627c3680c1fac8b538f1866c3cbcf1d0c1",
+    "source_requests": 1796,
+    "retained_requests": 150,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 150
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 150
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 150
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 150
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 56,
+        "source_order": 719,
+        "http_requests": 56
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 128,
+        "source_order": 1677,
+        "http_requests": 128
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 73,
+        "source_order": 1119,
+        "http_requests": 73
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 142,
+        "source_order": 1784,
+        "http_requests": 142
+      }
+    },
+    "seconds": 0.21026003399998672
+  },
+  "case-030": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "550cf2481bc4fdd69abca7338ca35365fa36bcd3964b0752bed1ce4a22b3fa87",
+    "source_requests": 2000,
+    "retained_requests": 141,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 62,
+        "source_order": 851,
+        "http_requests": 62
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 76,
+        "source_order": 1115,
+        "http_requests": 76
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 141
+      }
+    },
+    "seconds": 0.21402712899998733
+  },
+  "case-031": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "19f6ccd0c946525fcd757b614f7871c0308311d7f18467defdff23fdc7c7b8d7",
+    "source_requests": 2000,
+    "retained_requests": 154,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 123,
+        "source_order": 1637,
+        "http_requests": 123
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 141,
+        "source_order": 1852,
+        "http_requests": 141
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 25,
+        "source_order": 296,
+        "http_requests": 25
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 59,
+        "source_order": 709,
+        "http_requests": 59
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 130,
+        "source_order": 1766,
+        "http_requests": 130
+      }
+    },
+    "seconds": 0.21196280200001638
+  },
+  "case-032": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "f30db73ec21e216bc6d8d9b99c33789a4a6248518b21e973a4cd691cc6e56fd1",
+    "source_requests": 1204,
+    "retained_requests": 112,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 112
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 112
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 112
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 112
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 65,
+        "source_order": 779,
+        "http_requests": 65
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 112
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 73,
+        "source_order": 932,
+        "http_requests": 73
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 112
+      }
+    },
+    "seconds": 0.17340420900001163
+  },
+  "case-033": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "f49244af77be698847e516a76e9a1ebacc524a1a485d3de70426991127f03df9",
+    "source_requests": 865,
+    "retained_requests": 104,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 104
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 104
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 104
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 104
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 57,
+        "source_order": 495,
+        "http_requests": 57
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 95,
+        "source_order": 846,
+        "http_requests": 95
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 45,
+        "source_order": 369,
+        "http_requests": 45
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 100,
+        "source_order": 859,
+        "http_requests": 100
+      }
+    },
+    "seconds": 0.15975972800004
+  },
+  "case-034": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "35e8e83cf9d5b9dc3c9ec6cfe32d9a47bfa09fc5f4a50a593d5f33bb93622145",
+    "source_requests": 584,
+    "retained_requests": 73,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 49,
+        "source_order": 414,
+        "http_requests": 49
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 19,
+        "source_order": 64,
+        "http_requests": 19
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 57,
+        "source_order": 499,
+        "http_requests": 57
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 70,
+        "source_order": 578,
+        "http_requests": 70
+      }
+    },
+    "seconds": 0.10576754100003427
+  },
+  "case-035": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "bd60afba1f5aa503d3209ca77ea4762edcec240d7ae53b973a6c70f61a53b25f",
+    "source_requests": 1347,
+    "retained_requests": 133,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 93,
+        "source_order": 1143,
+        "http_requests": 93
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 115,
+        "source_order": 1302,
+        "http_requests": 115
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 52,
+        "source_order": 670,
+        "http_requests": 52
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 107,
+        "source_order": 1224,
+        "http_requests": 107
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 73,
+        "source_order": 984,
+        "http_requests": 73
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 117,
+        "source_order": 1305,
+        "http_requests": 117
+      }
+    },
+    "seconds": 0.1651471839999772
+  },
+  "case-036": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "7c8f2987f6a13eed145f0cbb075e40fb14dbc5d0e1c5d479dcd0723e71d695db",
+    "source_requests": 2000,
+    "retained_requests": 157,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 157
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 157
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 105,
+        "source_order": 1518,
+        "http_requests": 105
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 112,
+        "source_order": 1599,
+        "http_requests": 112
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 56,
+        "source_order": 864,
+        "http_requests": 56
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 157
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 89,
+        "source_order": 1309,
+        "http_requests": 89
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 120,
+        "source_order": 1685,
+        "http_requests": 120
+      }
+    },
+    "seconds": 0.20493926800003237
+  },
+  "case-037": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "ffab6172c603caf39ded07ac9d62ff219a2377eb84a9d7844cc0b55c78349225",
+    "source_requests": 2000,
+    "retained_requests": 149,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 123,
+        "source_order": 1752,
+        "http_requests": 123
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 33,
+        "source_order": 424,
+        "http_requests": 33
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 100,
+        "source_order": 1517,
+        "http_requests": 100
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 132,
+        "source_order": 1847,
+        "http_requests": 132
+      }
+    },
+    "seconds": 0.2042060889999675
+  },
+  "case-038": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "1fe2db72f1e3e240972bae6e66894ca1b947110a9973b71af6b3b0985ebea4d2",
+    "source_requests": 1061,
+    "retained_requests": 107,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 107
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 107
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 77,
+        "source_order": 872,
+        "http_requests": 77
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 90,
+        "source_order": 970,
+        "http_requests": 90
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 83,
+        "source_order": 932,
+        "http_requests": 83
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 107
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 80,
+        "source_order": 901,
+        "http_requests": 80
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 107
+      }
+    },
+    "seconds": 0.17197909600002959
+  },
+  "case-039": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "eb7782201978b3d82688148db4e392f4aaa4b395f196d2183d61555b1e11e036",
+    "source_requests": 1535,
+    "retained_requests": 145,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 89,
+        "source_order": 1216,
+        "http_requests": 89
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 35,
+        "source_order": 417,
+        "http_requests": 35
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 82,
+        "source_order": 1109,
+        "http_requests": 82
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 106,
+        "source_order": 1306,
+        "http_requests": 106
+      }
+    },
+    "seconds": 0.18095482600000423
+  },
+  "case-040": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "2b23f05e1af776252a5ae56850f4769a3ad3f2b9a8600ec63c042ef382b456f6",
+    "source_requests": 2000,
+    "retained_requests": 129,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 116,
+        "source_order": 1888,
+        "http_requests": 116
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 80,
+        "source_order": 1422,
+        "http_requests": 80
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 77,
+        "source_order": 1383,
+        "http_requests": 77
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 129
+      }
+    },
+    "seconds": 0.20960431600002494
+  },
+  "case-041": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "e7efeca2b3d9e805df29080150c0c4d8d603caf3cd1a56b203ec38496f05e649",
+    "source_requests": 1491,
+    "retained_requests": 128,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 128
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 128
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 128
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 105,
+        "source_order": 1384,
+        "http_requests": 105
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 24,
+        "source_order": 198,
+        "http_requests": 24
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 128
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 72,
+        "source_order": 1008,
+        "http_requests": 72
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 94,
+        "source_order": 1332,
+        "http_requests": 94
+      }
+    },
+    "seconds": 0.16457076700004336
+  },
+  "case-042": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "55678f9ddbb12d00192491311b131db6f63ba4d440a2893c59cb150aa2bdb68d",
+    "source_requests": 896,
+    "retained_requests": 97,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 97
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 97
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 97
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 73,
+        "source_order": 805,
+        "http_requests": 73
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 25,
+        "source_order": 213,
+        "http_requests": 25
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 97
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 57,
+        "source_order": 616,
+        "http_requests": 57
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 94,
+        "source_order": 890,
+        "http_requests": 94
+      }
+    },
+    "seconds": 0.13886479000001373
+  },
+  "case-043": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "0317b2c502410db3ed8ac314f6e2e6b1ea90bc3416b3f9a1804c45fa199b6213",
+    "source_requests": 1258,
+    "retained_requests": 108,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 28,
+        "source_order": 339,
+        "http_requests": 28
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 108,
+        "source_order": 1257,
+        "http_requests": 108
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 35,
+        "source_order": 465,
+        "http_requests": 35
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 80,
+        "source_order": 1097,
+        "http_requests": 80
+      }
+    },
+    "seconds": 0.14396117500001537
+  },
+  "case-044": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "4b6f08d8c7ed9d0e92c068ca3a8adaa72efa883969dafbe5488821b1555c2b5d",
+    "source_requests": 1614,
+    "retained_requests": 151,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 73,
+        "source_order": 905,
+        "http_requests": 73
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 132,
+        "source_order": 1493,
+        "http_requests": 132
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 40,
+        "source_order": 413,
+        "http_requests": 40
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 14,
+        "source_order": 101,
+        "http_requests": 14
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 131,
+        "source_order": 1491,
+        "http_requests": 131
+      }
+    },
+    "seconds": 0.17456341600001224
+  },
+  "case-045": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "6b61a8ac5c7043879083663ea8c0bf743ebbf2b63c5b45d2fb54c36e299a0922",
+    "source_requests": 1937,
+    "retained_requests": 177,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 177
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 177
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 177
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 122,
+        "source_order": 1553,
+        "http_requests": 122
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 42,
+        "source_order": 450,
+        "http_requests": 42
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 177
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 76,
+        "source_order": 1071,
+        "http_requests": 76
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 121,
+        "source_order": 1551,
+        "http_requests": 121
+      }
+    },
+    "seconds": 0.21538616899999852
+  },
+  "case-046": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "ad3fe364ef9a807630331710e486587a956086748259df46b3c917e09d473e94",
+    "source_requests": 1576,
+    "retained_requests": 164,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 164
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 164
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 79,
+        "source_order": 957,
+        "http_requests": 79
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 164
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 46,
+        "source_order": 478,
+        "http_requests": 46
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 155,
+        "source_order": 1553,
+        "http_requests": 155
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 64,
+        "source_order": 776,
+        "http_requests": 64
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 135,
+        "source_order": 1445,
+        "http_requests": 135
+      }
+    },
+    "seconds": 0.21588136099995836
+  },
+  "case-047": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "7c6b6500e8e74f1357cb8a534b55c9a93879c7b7f122b75e433b80efadfbff06",
+    "source_requests": 1763,
+    "retained_requests": 154,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 67,
+        "source_order": 927,
+        "http_requests": 67
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 123,
+        "source_order": 1615,
+        "http_requests": 123
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 53,
+        "source_order": 735,
+        "http_requests": 53
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 139,
+        "source_order": 1683,
+        "http_requests": 139
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 109,
+        "source_order": 1400,
+        "http_requests": 109
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 118,
+        "source_order": 1603,
+        "http_requests": 118
+      }
+    },
+    "seconds": 0.22938718099999278
+  },
+  "case-048": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "de8b0e7dbdb9e804966a797da4bb4a85eba20db067b0e6494c8d4a82c22e53fa",
+    "source_requests": 1445,
+    "retained_requests": 146,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 55,
+        "source_order": 617,
+        "http_requests": 55
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 64,
+        "source_order": 716,
+        "http_requests": 64
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 48,
+        "source_order": 552,
+        "http_requests": 48
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 142,
+        "source_order": 1438,
+        "http_requests": 142
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 74,
+        "source_order": 814,
+        "http_requests": 74
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 143,
+        "source_order": 1439,
+        "http_requests": 143
+      }
+    },
+    "seconds": 0.17169726999998147
+  },
+  "case-049": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "6e0d86578f0dce1b6db3d18ef2a81e1902b094cd67590bdca8a1eb39c61ba2d8",
+    "source_requests": 1239,
+    "retained_requests": 120,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 120
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 120
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 96,
+        "source_order": 1136,
+        "http_requests": 96
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 83,
+        "source_order": 1044,
+        "http_requests": 83
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 68,
+        "source_order": 917,
+        "http_requests": 68
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 95,
+        "source_order": 1135,
+        "http_requests": 95
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 52,
+        "source_order": 592,
+        "http_requests": 52
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 105,
+        "source_order": 1190,
+        "http_requests": 105
+      }
+    },
+    "seconds": 0.1719940649999785
+  },
+  "case-050": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "a618c5b660d5921eff6d0aff5acc34944af6cd1ea737f7338d954903d379ead9",
+    "source_requests": 705,
+    "retained_requests": 80,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 80
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 80
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 80
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 80
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 40,
+        "source_order": 407,
+        "http_requests": 40
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 72,
+        "source_order": 692,
+        "http_requests": 72
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 48,
+        "source_order": 491,
+        "http_requests": 48
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 76,
+        "source_order": 699,
+        "http_requests": 76
+      }
+    },
+    "seconds": 0.13078914999999824
+  },
+  "case-051": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "4ef5e09e5d5642fa92c16ef7f08cbf1f84795d89cadbf550a340a0727c35bbe2",
+    "source_requests": 671,
+    "retained_requests": 77,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 77
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 77
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 77
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 64,
+        "source_order": 632,
+        "http_requests": 64
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 53,
+        "source_order": 565,
+        "http_requests": 53
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 77
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 58,
+        "source_order": 590,
+        "http_requests": 58
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 77
+      }
+    },
+    "seconds": 0.13347459099998105
+  },
+  "case-052": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "c6ac895f97fccc54bedb71ace91755d1d6f65cb494be2ccda79c3d8415c1507e",
+    "source_requests": 605,
+    "retained_requests": 78,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 78
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 78
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 78
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 78
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 56,
+        "source_order": 477,
+        "http_requests": 56
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 39,
+        "source_order": 200,
+        "http_requests": 39
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 26,
+        "source_order": 149,
+        "http_requests": 26
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 72,
+        "source_order": 595,
+        "http_requests": 72
+      }
+    },
+    "seconds": 0.11529964599998266
+  },
+  "case-053": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "e47c111e51a9baa99e9e923eda726dffcb64186dffa101d1fcfd3dd191f152f4",
+    "source_requests": 1359,
+    "retained_requests": 130,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 99,
+        "source_order": 1183,
+        "http_requests": 99
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 108,
+        "source_order": 1247,
+        "http_requests": 108
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 76,
+        "source_order": 853,
+        "http_requests": 76
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 9,
+        "source_order": 49,
+        "http_requests": 9
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 16,
+        "source_order": 108,
+        "http_requests": 16
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 126,
+        "source_order": 1351,
+        "http_requests": 126
+      }
+    },
+    "seconds": 0.16505855000002612
+  },
+  "case-054": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "5d64d6669a904daa43c4d53eba151d0dd7e3669abffcdcb0291f76d0d056c169",
+    "source_requests": 1470,
+    "retained_requests": 129,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 57,
+        "source_order": 724,
+        "http_requests": 57
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 103,
+        "source_order": 1378,
+        "http_requests": 103
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 31,
+        "source_order": 360,
+        "http_requests": 31
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 119,
+        "source_order": 1455,
+        "http_requests": 119
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 107,
+        "source_order": 1410,
+        "http_requests": 107
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 95,
+        "source_order": 1325,
+        "http_requests": 95
+      }
+    },
+    "seconds": 0.16684679900004085
+  },
+  "case-055": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "ec85b0aceff3045f640adeebf85b75ffa18dc1937e0459e755c9435d75c503d6",
+    "source_requests": 1549,
+    "retained_requests": 151,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 98,
+        "source_order": 1186,
+        "http_requests": 98
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 51,
+        "source_order": 557,
+        "http_requests": 51
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 121,
+        "source_order": 1423,
+        "http_requests": 121
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 89,
+        "source_order": 1144,
+        "http_requests": 89
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 128,
+        "source_order": 1481,
+        "http_requests": 128
+      }
+    },
+    "seconds": 0.19832035700000006
+  },
+  "case-056": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "170492a31baa728d015b7ed5449e009e1c8f6258a3bd372061028710eae3945d",
+    "source_requests": 1924,
+    "retained_requests": 160,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 106,
+        "source_order": 1547,
+        "http_requests": 106
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 70,
+        "source_order": 1052,
+        "http_requests": 70
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 75,
+        "source_order": 1103,
+        "http_requests": 75
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 99,
+        "source_order": 1493,
+        "http_requests": 99
+      }
+    },
+    "seconds": 0.20140194700002212
+  },
+  "case-057": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "e8b665aa790ee8b554239eb83756526ffa4fb3c9d69a209485566ff4289093d2",
+    "source_requests": 1733,
+    "retained_requests": 142,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 66,
+        "source_order": 1085,
+        "http_requests": 66
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 91,
+        "source_order": 1315,
+        "http_requests": 91
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 60,
+        "source_order": 979,
+        "http_requests": 60
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 134,
+        "source_order": 1715,
+        "http_requests": 134
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 110,
+        "source_order": 1514,
+        "http_requests": 110
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 120,
+        "source_order": 1621,
+        "http_requests": 120
+      }
+    },
+    "seconds": 0.17512879399998837
+  },
+  "case-058": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "b696d51a9b4d4949bbd1d7c7db5927542ab14064cae0326deda31347f66baade",
+    "source_requests": 1724,
+    "retained_requests": 165,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 117,
+        "source_order": 1452,
+        "http_requests": 117
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 115,
+        "source_order": 1447,
+        "http_requests": 115
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 65,
+        "source_order": 852,
+        "http_requests": 65
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 157,
+        "source_order": 1711,
+        "http_requests": 157
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 81,
+        "source_order": 1066,
+        "http_requests": 81
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 113,
+        "source_order": 1404,
+        "http_requests": 113
+      }
+    },
+    "seconds": 0.22841510000000653
+  },
+  "case-059": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "0da4869a697fb5828a31dd0313a9b5a0f1976b7528dc344d879ae340e0cf9e35",
+    "source_requests": 2000,
+    "retained_requests": 135,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 135
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 135
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 135
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 135
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 33,
+        "source_order": 422,
+        "http_requests": 33
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 135
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 104,
+        "source_order": 1777,
+        "http_requests": 104
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 114,
+        "source_order": 1867,
+        "http_requests": 114
+      }
+    },
+    "seconds": 0.19606920399996852
+  },
+  "case-060": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "07010f75468c35c97b60c5d447698f0c0e426cfc87785e35a7fa6a1fd5c154eb",
+    "source_requests": 1807,
+    "retained_requests": 165,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 85,
+        "source_order": 1217,
+        "http_requests": 85
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 88,
+        "source_order": 1236,
+        "http_requests": 88
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 45,
+        "source_order": 563,
+        "http_requests": 45
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 80,
+        "source_order": 1169,
+        "http_requests": 80
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 90,
+        "source_order": 1276,
+        "http_requests": 90
+      }
+    },
+    "seconds": 0.18782934699999032
+  },
+  "case-061": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "496a5f742af90ddaa858fa030ff16f0f19141a0866d4f4371b7b8413a4250c9d",
+    "source_requests": 1240,
+    "retained_requests": 116,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 116
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 116
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 116
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 81,
+        "source_order": 938,
+        "http_requests": 81
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 55,
+        "source_order": 695,
+        "http_requests": 55
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 116
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 42,
+        "source_order": 544,
+        "http_requests": 42
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 111,
+        "source_order": 1233,
+        "http_requests": 111
+      }
+    },
+    "seconds": 0.15139388599999393
+  },
+  "case-062": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "c120837615123a565f03f202cda879e6e24114d0c98e381ba36eccc12cbf07e4",
+    "source_requests": 1523,
+    "retained_requests": 138,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 138
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 138
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 138
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 122,
+        "source_order": 1445,
+        "http_requests": 122
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 49,
+        "source_order": 676,
+        "http_requests": 49
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 138
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 58,
+        "source_order": 822,
+        "http_requests": 58
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 114,
+        "source_order": 1367,
+        "http_requests": 114
+      }
+    },
+    "seconds": 0.1854442869999957
+  },
+  "case-063": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "bab4c201d8b86ce2e0e2d9589cc50dab4a76460d6a7138f7edb5ce274d241f8b",
+    "source_requests": 712,
+    "retained_requests": 94,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 94
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 94
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 94
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 94
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 66,
+        "source_order": 575,
+        "http_requests": 66
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 93,
+        "source_order": 708,
+        "http_requests": 93
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 27,
+        "source_order": 229,
+        "http_requests": 27
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 89,
+        "source_order": 704,
+        "http_requests": 89
+      }
+    },
+    "seconds": 0.144915860000026
+  },
+  "case-064": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "fa0409f5eee0a732da3c9a039bd7f1c3382c3fcd1e72f357d4c859c688c79358",
+    "source_requests": 2000,
+    "retained_requests": 147,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 111,
+        "source_order": 1606,
+        "http_requests": 111
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 109,
+        "source_order": 1584,
+        "http_requests": 109
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 79,
+        "source_order": 1131,
+        "http_requests": 79
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 57,
+        "source_order": 784,
+        "http_requests": 57
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 119,
+        "source_order": 1698,
+        "http_requests": 119
+      }
+    },
+    "seconds": 0.1989953289999562
+  },
+  "case-065": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "a5257864f99c84e0dc74c4a4dc219a94c35fb512a0efb12df21e06ea3a036dc2",
+    "source_requests": 1507,
+    "retained_requests": 134,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 134
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 134
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 134
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 134
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 65,
+        "source_order": 1000,
+        "http_requests": 65
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 102,
+        "source_order": 1306,
+        "http_requests": 102
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 95,
+        "source_order": 1260,
+        "http_requests": 95
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 110,
+        "source_order": 1341,
+        "http_requests": 110
+      }
+    },
+    "seconds": 0.1938318489999915
+  },
+  "case-066": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "c38f77227920d4618a5a81bb6a4517e9b9d706b24be2543d97a480d23faba07f",
+    "source_requests": 2000,
+    "retained_requests": 141,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 70,
+        "source_order": 900,
+        "http_requests": 70
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 100,
+        "source_order": 1590,
+        "http_requests": 100
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 110,
+        "source_order": 1676,
+        "http_requests": 110
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 141
+      }
+    },
+    "seconds": 0.2214601090000201
+  },
+  "case-067": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "e57728cd538feb1b3853cc1c282e82b1943bccffc835eb9d897331f7790e395c",
+    "source_requests": 586,
+    "retained_requests": 73,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 41,
+        "source_order": 307,
+        "http_requests": 41
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 66,
+        "source_order": 572,
+        "http_requests": 66
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 55,
+        "source_order": 426,
+        "http_requests": 55
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 65,
+        "source_order": 568,
+        "http_requests": 65
+      }
+    },
+    "seconds": 0.12502566899996737
+  },
+  "case-068": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "e05fe279e27cf483518b0ff14512cfd16ed21866be200f2ea81c3f297e7e75e8",
+    "source_requests": 895,
+    "retained_requests": 96,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 96
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 96
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 96
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 96
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 32,
+        "source_order": 273,
+        "http_requests": 32
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 81,
+        "source_order": 838,
+        "http_requests": 81
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 58,
+        "source_order": 622,
+        "http_requests": 58
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 85,
+        "source_order": 873,
+        "http_requests": 85
+      }
+    },
+    "seconds": 0.1310255700000198
+  },
+  "case-069": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "31a42c84bd85f305f3cbcb1090baa767db528eb7f8c510f476fecb2e0400b1d7",
+    "source_requests": 2000,
+    "retained_requests": 154,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 128,
+        "source_order": 1780,
+        "http_requests": 128
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 55,
+        "source_order": 713,
+        "http_requests": 55
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 97,
+        "source_order": 1419,
+        "http_requests": 97
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 124,
+        "source_order": 1765,
+        "http_requests": 124
+      }
+    },
+    "seconds": 0.211814889999971
+  },
+  "case-070": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "c03b3b8a5dfe6894db5fe05794ed5fcc6fac9adf5084a182777d38c552584339",
+    "source_requests": 1385,
+    "retained_requests": 146,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 105,
+        "source_order": 1192,
+        "http_requests": 105
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 92,
+        "source_order": 1075,
+        "http_requests": 92
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 53,
+        "source_order": 766,
+        "http_requests": 53
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 138,
+        "source_order": 1374,
+        "http_requests": 138
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 78,
+        "source_order": 930,
+        "http_requests": 78
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 117,
+        "source_order": 1270,
+        "http_requests": 117
+      }
+    },
+    "seconds": 0.17470134100000223
+  },
+  "case-071": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "a4dcaea590db5dffd7e5ce6852c9cf93a580c00a8567125e9d5d0161dee1a919",
+    "source_requests": 1920,
+    "retained_requests": 159,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 159
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 159
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 159
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 105,
+        "source_order": 1526,
+        "http_requests": 105
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 47,
+        "source_order": 521,
+        "http_requests": 47
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 159
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 78,
+        "source_order": 1245,
+        "http_requests": 78
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 147,
+        "source_order": 1880,
+        "http_requests": 147
+      }
+    },
+    "seconds": 0.22172237699999187
+  },
+  "case-072": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "9487e32efffac8feefb4e42ac356162876d26633f7b782dcc0b040f1b0aa07ad",
+    "source_requests": 2000,
+    "retained_requests": 152,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 152
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 152
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 133,
+        "source_order": 1862,
+        "http_requests": 133
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 140,
+        "source_order": 1906,
+        "http_requests": 140
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 90,
+        "source_order": 1381,
+        "http_requests": 90
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 152
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 115,
+        "source_order": 1699,
+        "http_requests": 115
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 143,
+        "source_order": 1935,
+        "http_requests": 143
+      }
+    },
+    "seconds": 0.24174028900000621
+  },
+  "case-073": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "a1046d8c2cecc956acc3f7333ae09956f0de31d65cc983e088b447be7b62ace8",
+    "source_requests": 1708,
+    "retained_requests": 160,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 90,
+        "source_order": 1147,
+        "http_requests": 90
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 82,
+        "source_order": 1067,
+        "http_requests": 82
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 63,
+        "source_order": 697,
+        "http_requests": 63
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 95,
+        "source_order": 1213,
+        "http_requests": 95
+      }
+    },
+    "seconds": 0.2354434619999779
+  },
+  "case-074": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "3f40596872278b47cd72ff1d7fb14e72c0f5889be3389ab4dc25218b7f92050c",
+    "source_requests": 1459,
+    "retained_requests": 145,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 110,
+        "source_order": 1263,
+        "http_requests": 110
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 66,
+        "source_order": 789,
+        "http_requests": 66
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 101,
+        "source_order": 1181,
+        "http_requests": 101
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 67,
+        "source_order": 799,
+        "http_requests": 67
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 122,
+        "source_order": 1373,
+        "http_requests": 122
+      }
+    },
+    "seconds": 0.2110340990000168
+  },
+  "case-075": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "3836ae34e865fa8c6a09217e688f5fd7e3d4b08833993e0c2dc2b9187954f93f",
+    "source_requests": 2000,
+    "retained_requests": 132,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 132
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 132
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 132
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 132
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 76,
+        "source_order": 1153,
+        "http_requests": 76
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 132
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 99,
+        "source_order": 1480,
+        "http_requests": 99
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 132
+      }
+    },
+    "seconds": 0.2308545879999997
+  },
+  "case-076": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "84b435164c4ee693ce255e87ea0c7befa42b1d86b4539f69bde46e2af9358100",
+    "source_requests": 1704,
+    "retained_requests": 161,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 128,
+        "source_order": 1471,
+        "http_requests": 128
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 39,
+        "source_order": 497,
+        "http_requests": 39
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 146,
+        "source_order": 1643,
+        "http_requests": 146
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 109,
+        "source_order": 1383,
+        "http_requests": 109
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 117,
+        "source_order": 1421,
+        "http_requests": 117
+      }
+    },
+    "seconds": 0.21969440700001996
+  },
+  "case-077": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "2d4b9c137962ec6aed6d628c54bc400d4f2f3c92a342ab86794a2ae384e1eccd",
+    "source_requests": 1922,
+    "retained_requests": 165,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 119,
+        "source_order": 1627,
+        "http_requests": 119
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 157,
+        "source_order": 1894,
+        "http_requests": 157
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 56,
+        "source_order": 581,
+        "http_requests": 56
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 164,
+        "source_order": 1917,
+        "http_requests": 164
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 88,
+        "source_order": 1173,
+        "http_requests": 88
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 152,
+        "source_order": 1850,
+        "http_requests": 152
+      }
+    },
+    "seconds": 0.23029575599997543
+  },
+  "case-078": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "987e790f13144fe16d1597013f56ee2846427987a935eb22f18f0b0e1e2d9739",
+    "source_requests": 1564,
+    "retained_requests": 153,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 153
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 153
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 153
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 153
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 69,
+        "source_order": 899,
+        "http_requests": 69
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 136,
+        "source_order": 1519,
+        "http_requests": 136
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 59,
+        "source_order": 779,
+        "http_requests": 59
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 119,
+        "source_order": 1359,
+        "http_requests": 119
+      }
+    },
+    "seconds": 0.20781357800001388
+  },
+  "case-079": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "d3edb62b977dee7789434897a971e85fffec380f364ddfe01bee642407d5f5ed",
+    "source_requests": 1022,
+    "retained_requests": 110,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 110
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 110
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 110
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 110
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 66,
+        "source_order": 689,
+        "http_requests": 66
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 103,
+        "source_order": 1012,
+        "http_requests": 103
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 67,
+        "source_order": 709,
+        "http_requests": 67
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 31,
+        "source_order": 216,
+        "http_requests": 31
+      }
+    },
+    "seconds": 0.16335075399996413
+  },
+  "case-080": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "b83d87f23bd4203315d1ba60d75e11f6c98701b26aea608dcecae4ddd44f4870",
+    "source_requests": 954,
+    "retained_requests": 98,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 83,
+        "source_order": 861,
+        "http_requests": 83
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 45,
+        "source_order": 479,
+        "http_requests": 45
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 79,
+        "source_order": 850,
+        "http_requests": 79
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 98
+      }
+    },
+    "seconds": 0.14700320699995473
+  },
+  "case-081": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "2eeaafa8640bce44dfcb65a952403b279f7e95483cfaac6678ebe3346bcd8f30",
+    "source_requests": 1590,
+    "retained_requests": 148,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 148
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 148
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 91,
+        "source_order": 1179,
+        "http_requests": 91
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 148
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 59,
+        "source_order": 714,
+        "http_requests": 59
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 125,
+        "source_order": 1468,
+        "http_requests": 125
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 67,
+        "source_order": 853,
+        "http_requests": 67
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 145,
+        "source_order": 1586,
+        "http_requests": 145
+      }
+    },
+    "seconds": 0.1995723549999866
+  },
+  "case-082": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "c79a0de2b61baab289a70ad5dd481801432df925dc954f8645f068ba84c355ec",
+    "source_requests": 1999,
+    "retained_requests": 183,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 183
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 183
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 79,
+        "source_order": 1092,
+        "http_requests": 79
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 141,
+        "source_order": 1761,
+        "http_requests": 141
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 38,
+        "source_order": 469,
+        "http_requests": 38
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 139,
+        "source_order": 1733,
+        "http_requests": 139
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 42,
+        "source_order": 504,
+        "http_requests": 42
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 115,
+        "source_order": 1451,
+        "http_requests": 115
+      }
+    },
+    "seconds": 0.18786384600002748
+  },
+  "case-083": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "9c62c0534fbc4e4fa9ba4e42a0914b0a76d1bb9e20faac17a04ec04998039405",
+    "source_requests": 1571,
+    "retained_requests": 142,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 82,
+        "source_order": 1069,
+        "http_requests": 82
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 94,
+        "source_order": 1181,
+        "http_requests": 94
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 32,
+        "source_order": 309,
+        "http_requests": 32
+      },
+      "B4": {
+        "status": "DIFFERENT",
+        "first_difference": 136,
+        "source_order": 1555,
+        "http_requests": 136
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 53,
+        "source_order": 692,
+        "http_requests": 53
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 127,
+        "source_order": 1512,
+        "http_requests": 127
+      }
+    },
+    "seconds": 0.1841433750000192
+  },
+  "case-084": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "9213001a7eee00d28f9d7c265add89529bfff8309c3ea98448e77f0456ee9298",
+    "source_requests": 2000,
+    "retained_requests": 151,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B2": {
+        "status": "DIFFERENT",
+        "first_difference": 123,
+        "source_order": 1625,
+        "http_requests": 123
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 55,
+        "source_order": 810,
+        "http_requests": 55
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 71,
+        "source_order": 1050,
+        "http_requests": 71
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 131,
+        "source_order": 1747,
+        "http_requests": 131
+      }
+    },
+    "seconds": 0.21444398699998146
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "status": "REJECTED_FOR_RARITY_TARGET",
+  "engine": "flask-test-client-projected-replay",
+  "cases": 84,
+  "original_and_baseline_passed": 84,
+  "source_requests": 124481,
+  "retained_requests": 11154,
+  "local_elapsed_case_seconds": 15.446376307999685,
+  "different_cases": {
+    "B1": 33,
+    "B2": 47,
+    "B3": 84,
+    "B4": 40,
+    "B5": 84,
+    "B6": 70
+  },
+  "warning": "These candidates fail the requested rarity target. Do not run a long campaign or claim rare faults."
+}
