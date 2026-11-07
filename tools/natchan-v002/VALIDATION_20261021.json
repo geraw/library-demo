@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-21",
+  "python": "3.12.14",
+  "unit_tests": {
+    "command": "python -m unittest discover -s tools/natchan-v002/tests -q",
+    "passed": 26,
+    "failed": 0
+  },
+  "real_archive": {
+    "source": {
+      "filename": "java-fixed-split-v011-20261021-094721-5216-review.zip",
+      "sha256": "7abd54bd10a41ac0491594ca679112140d92fbe0fb5553cccc04264d5e0d0895"
+    },
+    "ingestion_status": "complete",
+    "summary": {
+      "run_count": 3,
+      "artifact_count": 77,
+      "event_count": 30678,
+      "issue_count": 0,
+      "finding_count": null,
+      "note": "Ingestion only. No findings were evaluated."
+    },
+    "runs": [
+      {
+        "id": "control",
+        "tool_gateway": "provengo-fixed-java-v011",
+        "product_gateway": "library-issta-v006",
+        "status": "complete",
+        "native_records": 542
+      },
+      {
+        "id": "business-four",
+        "tool_gateway": "provengo-fixed-java-v011",
+        "product_gateway": "library-issta-v006",
+        "status": "complete",
+        "native_records": 542
+      },
+      {
+        "id": "book-read-one",
+        "tool_gateway": "provengo-fixed-java-v011",
+        "product_gateway": "library-issta-v006",
+        "status": "complete",
+        "native_records": 542
+      }
+    ]
+  },
+  "limitations": [
+    "No SUT or generator executed",
+    "PowerShell wrapper source-reviewed; not run on Windows in this environment",
+    "RESTler/EvoMaster native gateway migration pending",
+    "Semantic reports recomputed offline; candidate occurrences are not newly confirmed unique bugs"
+  ],
+  "gateway_contract_api": "natchan-gateway/1",
+  "stage_1_contract_acceptance": [
+    "Declared and enforced capabilities/required artifacts",
+    "Independent tool/product registration and all four built-in combinations",
+    "Invalid gateway output preserves raw evidence and marks incomplete",
+    "Real archive reimport complete with 30678 events and no issues"
+  ],
+  "connected_evaluation": "See CONNECTION_VALIDATION_20261021.json for exact legacy parity on all three arms"
+}

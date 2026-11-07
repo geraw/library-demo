@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "runs": [
+    {"id":"library-provengo-seed1","tool":"provengo","system":"library","variant":"buggy","profile":"library-issta-v006",
+     "artifacts":{"trace":"runs/provengo/http.jsonl","native_jsonl":"runs/provengo/native.jsonl","execution_json":"runs/provengo/java-suite-execution.json"}},
+    {"id":"garage-restler-seed1","tool":"restler","system":"garage","variant":"buggy","profile":"garage-v38",
+     "artifacts":{"trace":"runs/restler/http.jsonl","bug_buckets":"runs/restler/bug_buckets"}},
+    {"id":"netbox-evomaster-seed1","tool":"evomaster","system":"netbox","variant":"buggy","profile":"netbox-a2a-v38",
+     "artifacts":{"trace":"runs/evomaster/http.jsonl","log":"runs/evomaster/evomaster.log"}}
+  ]
+}

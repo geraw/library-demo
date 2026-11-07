@@ -1,0 +1,256 @@
+{
+  "analyzer_version": "009-dev.2",
+  "archive_sha256": "41d2e1b8369d1d552a0e1e5b55181b9f1a3c38dd0ebd2d5bd4a719cf57c90b86",
+  "contract_sha256": "e63f6c2f2f070f7225dd625a019da39fd9038bea0a660225fd3c420acefffae3",
+  "evaluation": "development_post_hoc_not_held_out",
+  "new_sut_requests": 0,
+  "oracle_and_producer_verdict_rows_used": false,
+  "runs": [
+    {
+      "classes": {
+        "S1": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "read_back_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S2": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "path_consistency",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_2"
+        },
+        "S3": {
+          "abstention_reasons": {
+            "REQUEST_JSON_OBJECT_NOT_RETAINED": 603
+          },
+          "counts": {
+            "consistent": 2366,
+            "not_evaluable": 603,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "constraint_conformance",
+          "opportunities": 2969,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S4": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "reference_integrity",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_2"
+        },
+        "S5": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "failure_atomicity",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S6": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "placement_view_consistency",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_2"
+        },
+        "S7": {
+          "abstention_reasons": {
+            "OPERATION_NOT_IN_CONTRACT": 8
+          },
+          "counts": {
+            "consistent": 7619,
+            "not_evaluable": 8,
+            "policy_observation": 0,
+            "violation": 7
+          },
+          "implemented": true,
+          "name": "error_answers_in_context",
+          "opportunities": 7634,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        }
+      },
+      "ingestion": {
+        "ignored_non_http": 10073,
+        "seen": 7634
+      },
+      "member": "baselines-all-v006-20261020-131134-37312/restler/http.jsonl",
+      "member_bytes": 49915941,
+      "member_sha256": "335c4193a64f0764c8a50902d73a2363cc973399e5c5bbe81401ffd324dffd41",
+      "result": {
+        "exchanges": 7634,
+        "exit_code": 0,
+        "status": "PARTIAL"
+      },
+      "server_5xx": 7,
+      "symptom_groups": [
+        {
+          "fields": [],
+          "grouping_basis": "symptom_signature",
+          "id": "f3959be567e3e82d7e05441e384329fc77ed906980733bc1042c20b1a74ee79f",
+          "input_class": "unavailable_or_null",
+          "occurrences": 7,
+          "operation": "GET /loans",
+          "property": "S7",
+          "reason": "SERVER_5XX_CANDIDATE",
+          "representative_verdict_ids": [
+            "4f7c3db032680d96f7743518fa2ba4dc68cb0e1aacc77baf72c5080f23b532cf",
+            "06e0d4b3efe8a4c312d7d17d3b770083eff4da4dfc4bd2692585ad91ef26a241",
+            "974defd6da8f508aa7756cfc24a8f86dc957172a0b4429015aa7b4c2e62d7665"
+          ],
+          "root_cause_proven": false,
+          "server_signature_sha256": null,
+          "status": 500,
+          "value": "violation"
+        }
+      ],
+      "tool": "restler"
+    },
+    {
+      "classes": {
+        "S1": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "read_back_consistency",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S2": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "path_consistency",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_2"
+        },
+        "S3": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 42120,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "constraint_conformance",
+          "opportunities": 42120,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S4": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "reference_integrity",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_2"
+        },
+        "S5": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 0,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "failure_atomicity",
+          "opportunities": 0,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        },
+        "S6": {
+          "abstention_reasons": null,
+          "counts": {
+            "consistent": null,
+            "not_evaluable": null,
+            "policy_observation": null,
+            "violation": null
+          },
+          "implemented": false,
+          "name": "placement_view_consistency",
+          "opportunities": null,
+          "reason": "PROPERTY_NOT_IMPLEMENTED_IN_DEV_2"
+        },
+        "S7": {
+          "abstention_reasons": {},
+          "counts": {
+            "consistent": 74168,
+            "not_evaluable": 0,
+            "policy_observation": 0,
+            "violation": 0
+          },
+          "implemented": true,
+          "name": "error_answers_in_context",
+          "opportunities": 74168,
+          "reason": "BOUNDED_SUBSET_SEE_REPORT"
+        }
+      },
+      "ingestion": {
+        "ignored_non_http": 135273,
+        "seen": 74168
+      },
+      "member": "baselines-all-v006-20261020-131134-37312/evomaster/http.jsonl",
+      "member_bytes": 48099658,
+      "member_sha256": "e9e9c79d2b7badc9513e49aa2d85fc1d501fa898c04f9ce23ac60aac76dba021",
+      "result": {
+        "exchanges": 74168,
+        "exit_code": 0,
+        "status": "PARTIAL"
+      },
+      "server_5xx": 0,
+      "symptom_groups": [],
+      "tool": "evomaster"
+    }
+  ],
+  "schema_version": "natchan-library-retrospective/1",
+  "seeded_bug_detection_or_native_tool_bug_credit_claimed": false
+}

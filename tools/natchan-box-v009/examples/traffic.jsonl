@@ -1,0 +1,4 @@
+{"method": "GET", "path": "/api/v1/items/7", "status": 200}
+{"method": "GET", "path": "/api/v1/items/7", "status": 500}
+{"method": "GET", "path": "/api/v1/items/7", "status": 500}
+{"method": "GET", "path": "/api/v1/items/7", "status": null}

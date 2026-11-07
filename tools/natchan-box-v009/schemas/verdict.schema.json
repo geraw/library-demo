@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "v009 independent bounded semantic verdict",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "property",
+    "value",
+    "reason",
+    "operation",
+    "entity",
+    "field",
+    "status",
+    "input_class",
+    "evidence",
+    "knowledge",
+    "scope",
+    "root_cause_proven"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "property": {
+      "enum": [
+        "S1",
+        "S2",
+        "S3",
+        "S5",
+        "S7"
+      ]
+    },
+    "value": {
+      "enum": [
+        "violation",
+        "consistent",
+        "not_evaluable",
+        "policy_observation"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "operation": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "entity": {
+      "type": "null"
+    },
+    "field": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "input_class": {
+      "type": "string"
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "sha256"
+        ],
+        "properties": {
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "line_1based": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "record": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "locator": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "knowledge": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "contract_sha256",
+          "pointer"
+        ],
+        "properties": {
+          "contract_sha256": {
+            "type": "string"
+          },
+          "pointer": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "scope": {
+      "enum": [
+        "http_status_only",
+        "bounded_raw_http_state",
+        "supported_json_scalar_constraints",
+        "create_update_comparison"
+      ]
+    },
+    "root_cause_proven": {
+      "const": false
+    },
+    "server_signature_sha256": {
+      "type": "string"
+    },
+    "log_join_basis": {
+      "const": "unique_request_id"
+    },
+    "fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "details": {
+      "type": "object"
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "atomicity_guarantee": {
+      "const": "not_established_from_contract"
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    }
+  }
+}

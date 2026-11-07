@@ -1,0 +1,21 @@
+{
+  "schema_version": "natchan-catalog/1",
+  "entries": [
+    {
+      "id": "PRODUCT-BUG-001",
+      "kind": "known_bug",
+      "title": "Replace with a precise description",
+      "status": "draft",
+      "product": "replace-product",
+      "versions": [],
+      "all": [
+        {"fact": "replace_with_required_evidence_fact", "op": "eq", "value": true}
+      ],
+      "exclusions": [],
+      "evidence_requirements": ["Describe exact identities, state evidence and scope required"],
+      "provenance": [{"source": "Replace with issue/code/report reference", "verification": "Not yet verified"}],
+      "severity": "requires_context",
+      "human_review": true
+    }
+  ]
+}

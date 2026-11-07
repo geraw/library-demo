@@ -1,0 +1,344 @@
+{
+  "schema_version": "natchan-coverage-summary/1",
+  "source_repository": "weissye/vikunja_study",
+  "source_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+  "http_records": 11854,
+  "known_signature_occurrences": {
+    "GIT-C1": 16,
+    "GIT-C2": 13,
+    "GIT-C3": 4,
+    "GIT-C8": 4,
+    "GIT-O1": 4,
+    "GIT-O2": 6,
+    "VIK-F01": 8,
+    "VIK-F02": 8,
+    "VIK-F03": 6,
+    "VIK-F04": 6,
+    "VIK-F05": 28,
+    "VIK-F06": 60,
+    "VIK-O04": 8,
+    "VIK-O05": 4,
+    "VIK-O06": 12,
+    "VIK-O08": 1
+  },
+  "partial_candidates": {
+    "GIT-C4": 10,
+    "GIT-C5": 2,
+    "GIT-C6": 3,
+    "GIT-C7": 5
+  },
+  "provider_families": {
+    "RESPONSE": {
+      "evaluated": 11854
+    },
+    "EDGE-1": {
+      "evaluated": 6
+    },
+    "RT-1": {
+      "evaluated": 555
+    },
+    "ATOM-1-2": {
+      "not_evaluable": 51
+    },
+    "EDGE-U": {
+      "not_evaluable": 196
+    },
+    "KNOWN": {},
+    "CASCADE-1": {
+      "not_evaluable": 140
+    },
+    "ADJ": {
+      "not_evaluable": 504
+    },
+    "IDEM": {},
+    "VIEW": {},
+    "LINK": {
+      "evaluated": 68
+    }
+  },
+  "provider_missing_measurements": {
+    "ADJ: trigger_time": 504,
+    "ADJ: request_time": 504,
+    "ADJ: window_seconds": 504,
+    "ADJ: context": 504,
+    "CASCADE-1: parent_delete_status": 140,
+    "CASCADE-1: cascade_required": 140,
+    "CASCADE-1: context": 140,
+    "ATOM-1-2: before": 51,
+    "ATOM-1-2: after": 51,
+    "ATOM-1-2: request": 51,
+    "ATOM-1-2: context": 51,
+    "EDGE-U: context": 196
+  },
+  "provider_classification_groups": [
+    {
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "occurrence_count": 29
+    },
+    {
+      "catalog_id": "GITEA-SERVER_ERROR",
+      "kind": "pattern",
+      "occurrence_count": 29
+    },
+    {
+      "catalog_id": "GEN-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 14
+    },
+    {
+      "catalog_id": "GEN-SILENT-TIME-CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 10
+    },
+    {
+      "catalog_id": "GITEA-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 14
+    },
+    {
+      "catalog_id": "GEN-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 20
+    },
+    {
+      "catalog_id": "GITEA-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 20
+    },
+    {
+      "catalog_id": "GEN-SILENT-TRUNCATION",
+      "kind": "pattern",
+      "occurrence_count": 4
+    },
+    {
+      "catalog_id": "GEN-SILENT-NORMALIZATION",
+      "kind": "pattern",
+      "occurrence_count": 2
+    },
+    {
+      "catalog_id": "GEN-SILENT-NORMALIZATION",
+      "kind": "pattern",
+      "occurrence_count": 4
+    },
+    {
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "occurrence_count": 4
+    },
+    {
+      "catalog_id": "GITEA-SERVER_ERROR",
+      "kind": "pattern",
+      "occurrence_count": 4
+    },
+    {
+      "catalog_id": "GEN-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 91
+    },
+    {
+      "catalog_id": "GEN-SILENT-TRUNCATION",
+      "kind": "pattern",
+      "occurrence_count": 9
+    },
+    {
+      "catalog_id": "VIKUNJA-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 91
+    },
+    {
+      "catalog_id": "GEN-SILENT-NORMALIZATION",
+      "kind": "pattern",
+      "occurrence_count": 1
+    },
+    {
+      "catalog_id": "GEN-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 147
+    },
+    {
+      "catalog_id": "GEN-SILENT-TRUNCATION",
+      "kind": "pattern",
+      "occurrence_count": 9
+    },
+    {
+      "catalog_id": "VIKUNJA-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 147
+    },
+    {
+      "catalog_id": "GEN-SILENT-NORMALIZATION",
+      "kind": "pattern",
+      "occurrence_count": 7
+    },
+    {
+      "catalog_id": "GEN-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 111
+    },
+    {
+      "catalog_id": "GEN-SILENT-TRUNCATION",
+      "kind": "pattern",
+      "occurrence_count": 2
+    },
+    {
+      "catalog_id": "VIKUNJA-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 111
+    },
+    {
+      "catalog_id": "GEN-SILENT-NORMALIZATION",
+      "kind": "pattern",
+      "occurrence_count": 1
+    },
+    {
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "occurrence_count": 33
+    },
+    {
+      "catalog_id": "VIKUNJA-SERVER_ERROR",
+      "kind": "pattern",
+      "occurrence_count": 33
+    },
+    {
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "occurrence_count": 3
+    },
+    {
+      "catalog_id": "VIKUNJA-SERVER_ERROR",
+      "kind": "pattern",
+      "occurrence_count": 3
+    },
+    {
+      "catalog_id": "GEN-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 4
+    },
+    {
+      "catalog_id": "GEN-SILENT-TRUNCATION",
+      "kind": "pattern",
+      "occurrence_count": 3
+    },
+    {
+      "catalog_id": "VIKUNJA-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 4
+    },
+    {
+      "catalog_id": "GEN-SILENT-NORMALIZATION",
+      "kind": "pattern",
+      "occurrence_count": 1
+    },
+    {
+      "catalog_id": "GEN-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 6
+    },
+    {
+      "catalog_id": "GEN-SILENT-TRUNCATION",
+      "kind": "pattern",
+      "occurrence_count": 3
+    },
+    {
+      "catalog_id": "VIKUNJA-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 6
+    },
+    {
+      "catalog_id": "GEN-SILENT-NORMALIZATION",
+      "kind": "pattern",
+      "occurrence_count": 1
+    },
+    {
+      "catalog_id": "GEN-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 19
+    },
+    {
+      "catalog_id": "GEN-SILENT-TRUNCATION",
+      "kind": "pattern",
+      "occurrence_count": 2
+    },
+    {
+      "catalog_id": "VIKUNJA-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 19
+    },
+    {
+      "catalog_id": "GEN-SILENT-NORMALIZATION",
+      "kind": "pattern",
+      "occurrence_count": 1
+    },
+    {
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "occurrence_count": 30
+    },
+    {
+      "catalog_id": "VIKUNJA-SERVER_ERROR",
+      "kind": "pattern",
+      "occurrence_count": 30
+    },
+    {
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "occurrence_count": 1
+    },
+    {
+      "catalog_id": "VIKUNJA-SERVER_ERROR",
+      "kind": "pattern",
+      "occurrence_count": 1
+    },
+    {
+      "catalog_id": "GEN-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 82
+    },
+    {
+      "catalog_id": "VIKUNJA-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 82
+    },
+    {
+      "catalog_id": "GEN-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 61
+    },
+    {
+      "catalog_id": "VIKUNJA-SILENT_CHANGE",
+      "kind": "pattern",
+      "occurrence_count": 61
+    },
+    {
+      "catalog_id": "GEN-SERVER_ERROR",
+      "kind": "pattern",
+      "occurrence_count": 1
+    },
+    {
+      "catalog_id": "VIKUNJA-SERVER_ERROR",
+      "kind": "pattern",
+      "occurrence_count": 1
+    }
+  ],
+  "do_not_sum_primary_provider_or_native_counts_as_unique_bugs": true,
+  "unit_tests": {
+    "v002": 26,
+    "v003": 25,
+    "v004": 13,
+    "v005": 17,
+    "total": 81
+  },
+  "local_gitea_reader_smoke": "PASS on original g009 work seed 1, C1/C2/C8 matched",
+  "generic_measurement_cli_smoke": "PASS on declared synthetic ATOM example; excluded from historical counts",
+  "powershell_execution": "not executed; source reviewed; Python CLI executed",
+  "manifest_sha256": "71f0f428b30d7f1324e94cded34aca93e4dd91909926c80fcd9fd9019e04aa43",
+  "library_regression": {
+    "known_bug_ids": [
+      "LIB-ISSTA-BUG-5"
+    ],
+    "observations": 22,
+    "status": "PASS"
+  }
+}

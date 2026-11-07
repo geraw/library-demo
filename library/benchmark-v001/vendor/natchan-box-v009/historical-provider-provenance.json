@@ -1,0 +1,5 @@
+{
+  "source": "tools/natchan-v005/providers.py",
+  "sha256": "d6ffda442bcad96bf1c59a20b5e1f7e20b53b0c01a14877efb280298e05125c1",
+  "policy": "verbatim source; no known-signature rules invoked by state adapter"
+}

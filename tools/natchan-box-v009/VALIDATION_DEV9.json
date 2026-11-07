@@ -1,0 +1,1212 @@
+{
+  "version": "009-dev.9",
+  "unit_tests": 204,
+  "benchmark_tests": 13,
+  "new_SUT_requests": 0,
+  "resampled": false,
+  "engine": {
+    "acceptance_cycle5.py": "0be3ca99fa6ee544ae9b8903ac11d75329a9fbb22f7f6532023d1c56043b670e",
+    "acceptance_library_oracle.py": "825f66ceee26574597f6757d9cddb0ee4e39d6276ef5dfe8d470769439f87047",
+    "acceptance_real.py": "46365e7d08ad0ac3edfdaa36bd4efd5c3976daf024accd92f04dc5b5a49ea553",
+    "acceptance_relational_real.py": "55a2c75152b176fa3befd194207c0867c7fefc763a93890b7dd763ab2151dcdf",
+    "audit_real_systems.py": "8ee7d2f152ef9ab3c2ca3f2317a0c74fdd793964cc39eb605750d4ed43d36361",
+    "collect_replay_raw.py": "90b43ec3e7051d41bbf2823016e80314100589739069b59863323efbc4e6fadb",
+    "collection_semantics.py": "19c1812163ad160c51dc72ca332f4cd4fae5ccf3d5c98f694d45a776fe11bac9",
+    "common.py": "8e3d4b528e20c8e8a3c242362ee01ff130839d54fadb05eff31af31c0ca1894f",
+    "contract_context.py": "a54dd8597e1c04cdd79c70eb38b865912cefa95b901e374912fc277b24a643c9",
+    "create_update.py": "1efe31492cfd9bfb48122d430a85fd3d8e9bf153cf7bc62193e5ef584b589480",
+    "derive_path_bindings.py": "eb4454f33d4c697549eaf82ef957691f35bd293890b26c8192e2ed4a6daf133e",
+    "historical_providers.py": "d6ffda442bcad96bf1c59a20b5e1f7e20b53b0c01a14877efb280298e05125c1",
+    "judge.py": "021674c3a4902dc86a2b581dd6236a24a927f8704d5d347d82f4d2dcc9da1c18",
+    "legacy_state.py": "a26f7ff60b729f148e7e50e8316ddcd60454709c52366a702c6347eb531223ed",
+    "lifecycle.py": "c46eec50d6c32f58eadc06943effb9749a8bc4f1ad4ac7563309101a284f0187",
+    "local_sequence.py": "75dae4ff4c34d23c9834a4e4429a774d492cbb0d74e2c30651f0cba52daeb1d7",
+    "natchan.py": "965e75437473f8cd399b814f8dd7c970aeb4fb71773bdf14e732bd4cfc6879bb",
+    "rejected_create.py": "b612b6ffd05a41c14ceb527679857ef8210a4f8e43570f77fcff8804d904374d",
+    "relational_observations.py": "02a72d26335731ab62890c60b55b2bbefde12d0e462edfbd393bcb139e86a100",
+    "replay.py": "23f7890cf3449ce2c7c26a45b7de1d280a763262af6778052e8867ab572b2cca",
+    "replay_library.py": "670df98bd2f7fdacbff2efa403eed3946af1bbb3985e05855b3643843e65f9c3",
+    "review_stories.py": "fc9a3c5d7401d9073e17047cbad9cbdfd449b197f834e61734fac2df40f82b60",
+    "review_study.py": "37e5ebf5f4d914eb2bad1b5d9d508084965edf797bde48d22c07fc412cbfc37c",
+    "semantic_policy.py": "9a4ef38cd5d9cd1907f4217a55c075f33fee9fa57f57b379763e842b5a7282a5",
+    "state_semantics.py": "931e07e5276374e2bc1c84559257bcd6d2c772dc6fc9d2d6beda681fb60d8b68",
+    "traffic.py": "54609beb4a1d9f12b5da0ff69b133917b9e404d4abffccbdfefc546a72e3495d",
+    "validate_contracts.py": "9a8e6d1fdc9d15b809cfad6a2d3df38931de4234e5ccfdd79d5ecdc576ba7108",
+    "validate_library_archive.py": "faa3b5e4760dc0ff85c4dfc01e33e58fd91801ff9bc55f20ec3225b990003fa9"
+  },
+  "library_oracle_acceptance": {
+    "contract_sha256": "26a77217374dd76d5a90b0a26a603154c023cc3461f7431ad1f0fa5482004858",
+    "controls": "Synthetic corrected responses; not independent successful SUT runs",
+    "engine": {
+      "acceptance_cycle5.py": "0be3ca99fa6ee544ae9b8903ac11d75329a9fbb22f7f6532023d1c56043b670e",
+      "acceptance_library_oracle.py": "825f66ceee26574597f6757d9cddb0ee4e39d6276ef5dfe8d470769439f87047",
+      "acceptance_real.py": "46365e7d08ad0ac3edfdaa36bd4efd5c3976daf024accd92f04dc5b5a49ea553",
+      "acceptance_relational_real.py": "55a2c75152b176fa3befd194207c0867c7fefc763a93890b7dd763ab2151dcdf",
+      "audit_real_systems.py": "8ee7d2f152ef9ab3c2ca3f2317a0c74fdd793964cc39eb605750d4ed43d36361",
+      "collect_replay_raw.py": "90b43ec3e7051d41bbf2823016e80314100589739069b59863323efbc4e6fadb",
+      "collection_semantics.py": "19c1812163ad160c51dc72ca332f4cd4fae5ccf3d5c98f694d45a776fe11bac9",
+      "common.py": "8e3d4b528e20c8e8a3c242362ee01ff130839d54fadb05eff31af31c0ca1894f",
+      "contract_context.py": "a54dd8597e1c04cdd79c70eb38b865912cefa95b901e374912fc277b24a643c9",
+      "create_update.py": "1efe31492cfd9bfb48122d430a85fd3d8e9bf153cf7bc62193e5ef584b589480",
+      "derive_path_bindings.py": "eb4454f33d4c697549eaf82ef957691f35bd293890b26c8192e2ed4a6daf133e",
+      "historical_providers.py": "d6ffda442bcad96bf1c59a20b5e1f7e20b53b0c01a14877efb280298e05125c1",
+      "judge.py": "021674c3a4902dc86a2b581dd6236a24a927f8704d5d347d82f4d2dcc9da1c18",
+      "legacy_state.py": "a26f7ff60b729f148e7e50e8316ddcd60454709c52366a702c6347eb531223ed",
+      "lifecycle.py": "c46eec50d6c32f58eadc06943effb9749a8bc4f1ad4ac7563309101a284f0187",
+      "local_sequence.py": "75dae4ff4c34d23c9834a4e4429a774d492cbb0d74e2c30651f0cba52daeb1d7",
+      "natchan.py": "965e75437473f8cd399b814f8dd7c970aeb4fb71773bdf14e732bd4cfc6879bb",
+      "rejected_create.py": "b612b6ffd05a41c14ceb527679857ef8210a4f8e43570f77fcff8804d904374d",
+      "relational_observations.py": "02a72d26335731ab62890c60b55b2bbefde12d0e462edfbd393bcb139e86a100",
+      "replay.py": "23f7890cf3449ce2c7c26a45b7de1d280a763262af6778052e8867ab572b2cca",
+      "replay_library.py": "670df98bd2f7fdacbff2efa403eed3946af1bbb3985e05855b3643843e65f9c3",
+      "review_stories.py": "fc9a3c5d7401d9073e17047cbad9cbdfd449b197f834e61734fac2df40f82b60",
+      "review_study.py": "37e5ebf5f4d914eb2bad1b5d9d508084965edf797bde48d22c07fc412cbfc37c",
+      "semantic_policy.py": "9a4ef38cd5d9cd1907f4217a55c075f33fee9fa57f57b379763e842b5a7282a5",
+      "state_semantics.py": "931e07e5276374e2bc1c84559257bcd6d2c772dc6fc9d2d6beda681fb60d8b68",
+      "traffic.py": "54609beb4a1d9f12b5da0ff69b133917b9e404d4abffccbdfefc546a72e3495d",
+      "validate_contracts.py": "9a8e6d1fdc9d15b809cfad6a2d3df38931de4234e5ccfdd79d5ecdc576ba7108",
+      "validate_library_archive.py": "faa3b5e4760dc0ff85c4dfc01e33e58fd91801ff9bc55f20ec3225b990003fa9"
+    },
+    "new_SUT_requests": 0,
+    "oracle_sha256": "19ecffc1e9c21f089e2cd4ea0c316c006166f585086b2b59c7a34be805e3d38e",
+    "resampled": false,
+    "results": [
+      {
+        "analyzer_request_ids": [],
+        "exact_request_id_match": true,
+        "exchanges": 16324,
+        "finding_partitions": {
+          "policy_observation": {
+            "groups": 0,
+            "occurrences": 0
+          },
+          "semantic_candidate": {
+            "groups": 0,
+            "occurrences": 0
+          },
+          "server_5xx": {
+            "groups": 0,
+            "occurrences": 0
+          },
+          "undeclared_status": {
+            "groups": 0,
+            "occurrences": 0
+          }
+        },
+        "http_sha256": "c3d94d6c887cc6ca180404c1a46cebdbc559e635e90a8c1323ecc5f1ac7ad718",
+        "oracle_request_ids": [],
+        "source": "benchmark-v001-20261101-233425-14e824/provengo-sample10/none/http.jsonl",
+        "synthetic_repaired_control_target_findings": 0
+      },
+      {
+        "analyzer_request_ids": [
+          [
+            "B1",
+            "r17-c80e57890427"
+          ],
+          [
+            "B1",
+            "r181-c7be8e021739"
+          ],
+          [
+            "B1",
+            "r199-8ef5d28d2a73"
+          ],
+          [
+            "B1",
+            "r261-d9915a807461"
+          ],
+          [
+            "B1",
+            "r291-e975b5e42aeb"
+          ],
+          [
+            "B1",
+            "r344-39941ff9af09"
+          ],
+          [
+            "B1",
+            "r410-6b05f2efdb97"
+          ],
+          [
+            "B1",
+            "r53-a4f383b3c390"
+          ],
+          [
+            "B1",
+            "r714-8d4cbf5f1078"
+          ],
+          [
+            "B1",
+            "r888-a0d305d4fefd"
+          ]
+        ],
+        "exact_request_id_match": true,
+        "exchanges": 3358,
+        "finding_partitions": {
+          "policy_observation": {
+            "groups": 1,
+            "occurrences": 10
+          },
+          "semantic_candidate": {
+            "groups": 0,
+            "occurrences": 0
+          },
+          "server_5xx": {
+            "groups": 0,
+            "occurrences": 0
+          },
+          "undeclared_status": {
+            "groups": 0,
+            "occurrences": 0
+          }
+        },
+        "http_sha256": "fe80cb9ba7acf7cd1feee804757bd88ddeafbfa23c9f81457c5ac0b89b16502b",
+        "oracle_request_ids": [
+          [
+            "B1",
+            "r17-c80e57890427"
+          ],
+          [
+            "B1",
+            "r181-c7be8e021739"
+          ],
+          [
+            "B1",
+            "r199-8ef5d28d2a73"
+          ],
+          [
+            "B1",
+            "r261-d9915a807461"
+          ],
+          [
+            "B1",
+            "r291-e975b5e42aeb"
+          ],
+          [
+            "B1",
+            "r344-39941ff9af09"
+          ],
+          [
+            "B1",
+            "r410-6b05f2efdb97"
+          ],
+          [
+            "B1",
+            "r53-a4f383b3c390"
+          ],
+          [
+            "B1",
+            "r714-8d4cbf5f1078"
+          ],
+          [
+            "B1",
+            "r888-a0d305d4fefd"
+          ]
+        ],
+        "source": "benchmark-v001-20261102-040359-d5a33d/provengo-sample10/B1/http.jsonl",
+        "synthetic_repaired_control_target_findings": 0
+      },
+      {
+        "analyzer_request_ids": [
+          [
+            "B2",
+            "r1132-2a873b536d26"
+          ],
+          [
+            "B2",
+            "r1159-a20094ccaf57"
+          ],
+          [
+            "B2",
+            "r1215-b48ac8bc9275"
+          ],
+          [
+            "B2",
+            "r1556-67bd1ede3087"
+          ],
+          [
+            "B2",
+            "r1592-9ca09098ea0b"
+          ],
+          [
+            "B2",
+            "r1642-e9ed36c8d14a"
+          ],
+          [
+            "B2",
+            "r1867-2a3f3c6010ca"
+          ],
+          [
+            "B2",
+            "r456-8433bd858e93"
+          ]
+        ],
+        "exact_request_id_match": true,
+        "exchanges": 14619,
+        "finding_partitions": {
+          "policy_observation": {
+            "groups": 1,
+            "occurrences": 8
+          },
+          "semantic_candidate": {
+            "groups": 0,
+            "occurrences": 0
+          },
+          "server_5xx": {
+            "groups": 0,
+            "occurrences": 0
+          },
+          "undeclared_status": {
+            "groups": 0,
+            "occurrences": 0
+          }
+        },
+        "http_sha256": "fdc23d8e4c83c63ab340c1bc52f3c74ebac02c8c1b5f0db1d330c197b5606b74",
+        "oracle_request_ids": [
+          [
+            "B2",
+            "r1132-2a873b536d26"
+          ],
+          [
+            "B2",
+            "r1159-a20094ccaf57"
+          ],
+          [
+            "B2",
+            "r1215-b48ac8bc9275"
+          ],
+          [
+            "B2",
+            "r1556-67bd1ede3087"
+          ],
+          [
+            "B2",
+            "r1592-9ca09098ea0b"
+          ],
+          [
+            "B2",
+            "r1642-e9ed36c8d14a"
+          ],
+          [
+            "B2",
+            "r1867-2a3f3c6010ca"
+          ],
+          [
+            "B2",
+            "r456-8433bd858e93"
+          ]
+        ],
+        "source": "benchmark-v001-20261102-040359-d5a33d/provengo-sample10/B2/http.jsonl",
+        "synthetic_repaired_control_target_findings": 0
+      },
+      {
+        "analyzer_request_ids": [
+          [
+            "B4",
+            "r1024-3fd611baaa27"
+          ],
+          [
+            "B4",
+            "r1036-94556abac3a4"
+          ],
+          [
+            "B4",
+            "r1262-1edf3748feba"
+          ],
+          [
+            "B4",
+            "r1277-32889fe06467"
+          ],
+          [
+            "B4",
+            "r1504-826acce8b680"
+          ],
+          [
+            "B4",
+            "r1508-54d1d7f1f01a"
+          ],
+          [
+            "B4",
+            "r1603-cc446e101bfc"
+          ],
+          [
+            "B4",
+            "r1709-df70cd9a516c"
+          ],
+          [
+            "B4",
+            "r1717-0aed18912b49"
+          ],
+          [
+            "B4",
+            "r1762-19ffd5d7b197"
+          ],
+          [
+            "B4",
+            "r1803-a74ed6efb1d3"
+          ],
+          [
+            "B4",
+            "r1890-2e2f02a9c9e7"
+          ],
+          [
+            "B4",
+            "r191-35d2097dd2ac"
+          ],
+          [
+            "B4",
+            "r1919-b5d71dfb4fb5"
+          ],
+          [
+            "B4",
+            "r1985-05cdd5604c6a"
+          ],
+          [
+            "B4",
+            "r288-40dd9623dd9f"
+          ],
+          [
+            "B4",
+            "r685-990fc57005f2"
+          ],
+          [
+            "B4",
+            "r726-ba76967f616b"
+          ],
+          [
+            "B4",
+            "r919-c26034ed28e0"
+          ]
+        ],
+        "exact_request_id_match": true,
+        "exchanges": 16324,
+        "finding_partitions": {
+          "policy_observation": {
+            "groups": 0,
+            "occurrences": 0
+          },
+          "semantic_candidate": {
+            "groups": 1,
+            "occurrences": 19
+          },
+          "server_5xx": {
+            "groups": 0,
+            "occurrences": 0
+          },
+          "undeclared_status": {
+            "groups": 0,
+            "occurrences": 0
+          }
+        },
+        "http_sha256": "ec9e1fea150cb7f7b558cbdf413824515e8644b5f629c34eeecba1f3a729256e",
+        "oracle_request_ids": [
+          [
+            "B4",
+            "r1024-3fd611baaa27"
+          ],
+          [
+            "B4",
+            "r1036-94556abac3a4"
+          ],
+          [
+            "B4",
+            "r1262-1edf3748feba"
+          ],
+          [
+            "B4",
+            "r1277-32889fe06467"
+          ],
+          [
+            "B4",
+            "r1504-826acce8b680"
+          ],
+          [
+            "B4",
+            "r1508-54d1d7f1f01a"
+          ],
+          [
+            "B4",
+            "r1603-cc446e101bfc"
+          ],
+          [
+            "B4",
+            "r1709-df70cd9a516c"
+          ],
+          [
+            "B4",
+            "r1717-0aed18912b49"
+          ],
+          [
+            "B4",
+            "r1762-19ffd5d7b197"
+          ],
+          [
+            "B4",
+            "r1803-a74ed6efb1d3"
+          ],
+          [
+            "B4",
+            "r1890-2e2f02a9c9e7"
+          ],
+          [
+            "B4",
+            "r191-35d2097dd2ac"
+          ],
+          [
+            "B4",
+            "r1919-b5d71dfb4fb5"
+          ],
+          [
+            "B4",
+            "r1985-05cdd5604c6a"
+          ],
+          [
+            "B4",
+            "r288-40dd9623dd9f"
+          ],
+          [
+            "B4",
+            "r685-990fc57005f2"
+          ],
+          [
+            "B4",
+            "r726-ba76967f616b"
+          ],
+          [
+            "B4",
+            "r919-c26034ed28e0"
+          ]
+        ],
+        "source": "benchmark-v001-20261102-040359-d5a33d/provengo-sample10/B4/http.jsonl",
+        "synthetic_repaired_control_target_findings": 0
+      }
+    ],
+    "scope": "All supplied raw cells; exact B1/B2/B4 detection-request comparison, not all four configurations",
+    "status": "PASS"
+  },
+  "real_relational": {
+    "status": "PASS",
+    "new_SUT_requests": 0,
+    "resampled": false,
+    "producer_verdicts_used": false,
+    "engine": {
+      "acceptance_cycle5.py": "0be3ca99fa6ee544ae9b8903ac11d75329a9fbb22f7f6532023d1c56043b670e",
+      "acceptance_real.py": "46365e7d08ad0ac3edfdaa36bd4efd5c3976daf024accd92f04dc5b5a49ea553",
+      "acceptance_relational_real.py": "55a2c75152b176fa3befd194207c0867c7fefc763a93890b7dd763ab2151dcdf",
+      "audit_real_systems.py": "8ee7d2f152ef9ab3c2ca3f2317a0c74fdd793964cc39eb605750d4ed43d36361",
+      "collect_replay_raw.py": "90b43ec3e7051d41bbf2823016e80314100589739069b59863323efbc4e6fadb",
+      "collection_semantics.py": "19c1812163ad160c51dc72ca332f4cd4fae5ccf3d5c98f694d45a776fe11bac9",
+      "common.py": "8e3d4b528e20c8e8a3c242362ee01ff130839d54fadb05eff31af31c0ca1894f",
+      "contract_context.py": "a54dd8597e1c04cdd79c70eb38b865912cefa95b901e374912fc277b24a643c9",
+      "create_update.py": "1efe31492cfd9bfb48122d430a85fd3d8e9bf153cf7bc62193e5ef584b589480",
+      "derive_path_bindings.py": "eb4454f33d4c697549eaf82ef957691f35bd293890b26c8192e2ed4a6daf133e",
+      "historical_providers.py": "d6ffda442bcad96bf1c59a20b5e1f7e20b53b0c01a14877efb280298e05125c1",
+      "judge.py": "021674c3a4902dc86a2b581dd6236a24a927f8704d5d347d82f4d2dcc9da1c18",
+      "legacy_state.py": "a26f7ff60b729f148e7e50e8316ddcd60454709c52366a702c6347eb531223ed",
+      "lifecycle.py": "b287fea3d80b6fd7564c3d6f22690382759fb170bc66f9e7ad8fe9837b1f346f",
+      "local_sequence.py": "75dae4ff4c34d23c9834a4e4429a774d492cbb0d74e2c30651f0cba52daeb1d7",
+      "natchan.py": "965e75437473f8cd399b814f8dd7c970aeb4fb71773bdf14e732bd4cfc6879bb",
+      "rejected_create.py": "b612b6ffd05a41c14ceb527679857ef8210a4f8e43570f77fcff8804d904374d",
+      "relational_observations.py": "02a72d26335731ab62890c60b55b2bbefde12d0e462edfbd393bcb139e86a100",
+      "replay.py": "23f7890cf3449ce2c7c26a45b7de1d280a763262af6778052e8867ab572b2cca",
+      "replay_library.py": "670df98bd2f7fdacbff2efa403eed3946af1bbb3985e05855b3643843e65f9c3",
+      "review_stories.py": "fc9a3c5d7401d9073e17047cbad9cbdfd449b197f834e61734fac2df40f82b60",
+      "semantic_policy.py": "9a4ef38cd5d9cd1907f4217a55c075f33fee9fa57f57b379763e842b5a7282a5",
+      "state_semantics.py": "931e07e5276374e2bc1c84559257bcd6d2c772dc6fc9d2d6beda681fb60d8b68",
+      "traffic.py": "54609beb4a1d9f12b5da0ff69b133917b9e404d4abffccbdfefc546a72e3495d",
+      "validate_contracts.py": "9a8e6d1fdc9d15b809cfad6a2d3df38931de4234e5ccfdd79d5ecdc576ba7108",
+      "validate_library_archive.py": "faa3b5e4760dc0ff85c4dfc01e33e58fd91801ff9bc55f20ec3225b990003fa9"
+    },
+    "manifest_sha256": "b050730339a87c25353be2ac5771dc3fd0fc9294f777d992d1444a77fc86844d",
+    "controls": "Synthetic repaired witnesses, not additional SUT runs",
+    "results": [
+      {
+        "system": "mealie",
+        "exchanges": 299,
+        "observations": {
+          "SCALED_ACTION_NONLINEAR_DELTA": 1,
+          "REFERENCE_TO_OBSERVED_ABSENT_RESOURCE": 7,
+          "COPY_INTERNAL_REFERENCE_NOT_IN_COPIED_TARGETS": 1
+        },
+        "counterfactual_controls_passed": 9,
+        "proven_semantic_violations": 0
+      },
+      {
+        "system": "wger",
+        "exchanges": 945,
+        "observations": {
+          "MOVE_AGGREGATE_TRANSFER_MISMATCH": 3
+        },
+        "counterfactual_controls_passed": 3,
+        "proven_semantic_violations": 0
+      },
+      {
+        "system": "vikunja",
+        "exchanges": 165,
+        "observations": {
+          "MOVED_ENTITY_REMAINS_UNDER_OTHER_PARENT": 2
+        },
+        "counterfactual_controls_passed": 2,
+        "proven_semantic_violations": 0
+      }
+    ]
+  },
+  "g014": {
+    "status": "PASS",
+    "source_repository": "weissye/vikunja_study",
+    "source_commit": "d378389226c1af05e767ddb0db895fcc41bd368d",
+    "archive_git_blob": "75ac336228bd5929bf438d98694ea41982393b09",
+    "journal_sha256": "642344f57b5e1434af830346d6730a5b14d3605a9bff37a6be3e9fe48352eb18",
+    "contract_sha256": "a9c7e8dc4723f53dd3268405cec1f597a6d742898fea4443e72410c27f08519f",
+    "engine": {
+      "acceptance_cycle5.py": "0be3ca99fa6ee544ae9b8903ac11d75329a9fbb22f7f6532023d1c56043b670e",
+      "acceptance_real.py": "46365e7d08ad0ac3edfdaa36bd4efd5c3976daf024accd92f04dc5b5a49ea553",
+      "acceptance_relational_real.py": "55a2c75152b176fa3befd194207c0867c7fefc763a93890b7dd763ab2151dcdf",
+      "audit_real_systems.py": "8ee7d2f152ef9ab3c2ca3f2317a0c74fdd793964cc39eb605750d4ed43d36361",
+      "collect_replay_raw.py": "90b43ec3e7051d41bbf2823016e80314100589739069b59863323efbc4e6fadb",
+      "collection_semantics.py": "19c1812163ad160c51dc72ca332f4cd4fae5ccf3d5c98f694d45a776fe11bac9",
+      "common.py": "8e3d4b528e20c8e8a3c242362ee01ff130839d54fadb05eff31af31c0ca1894f",
+      "contract_context.py": "a54dd8597e1c04cdd79c70eb38b865912cefa95b901e374912fc277b24a643c9",
+      "create_update.py": "1efe31492cfd9bfb48122d430a85fd3d8e9bf153cf7bc62193e5ef584b589480",
+      "derive_path_bindings.py": "eb4454f33d4c697549eaf82ef957691f35bd293890b26c8192e2ed4a6daf133e",
+      "historical_providers.py": "d6ffda442bcad96bf1c59a20b5e1f7e20b53b0c01a14877efb280298e05125c1",
+      "judge.py": "021674c3a4902dc86a2b581dd6236a24a927f8704d5d347d82f4d2dcc9da1c18",
+      "legacy_state.py": "a26f7ff60b729f148e7e50e8316ddcd60454709c52366a702c6347eb531223ed",
+      "lifecycle.py": "c46eec50d6c32f58eadc06943effb9749a8bc4f1ad4ac7563309101a284f0187",
+      "local_sequence.py": "75dae4ff4c34d23c9834a4e4429a774d492cbb0d74e2c30651f0cba52daeb1d7",
+      "natchan.py": "965e75437473f8cd399b814f8dd7c970aeb4fb71773bdf14e732bd4cfc6879bb",
+      "rejected_create.py": "b612b6ffd05a41c14ceb527679857ef8210a4f8e43570f77fcff8804d904374d",
+      "relational_observations.py": "02a72d26335731ab62890c60b55b2bbefde12d0e462edfbd393bcb139e86a100",
+      "replay.py": "23f7890cf3449ce2c7c26a45b7de1d280a763262af6778052e8867ab572b2cca",
+      "replay_library.py": "670df98bd2f7fdacbff2efa403eed3946af1bbb3985e05855b3643843e65f9c3",
+      "review_stories.py": "fc9a3c5d7401d9073e17047cbad9cbdfd449b197f834e61734fac2df40f82b60",
+      "semantic_policy.py": "9a4ef38cd5d9cd1907f4217a55c075f33fee9fa57f57b379763e842b5a7282a5",
+      "state_semantics.py": "931e07e5276374e2bc1c84559257bcd6d2c772dc6fc9d2d6beda681fb60d8b68",
+      "traffic.py": "54609beb4a1d9f12b5da0ff69b133917b9e404d4abffccbdfefc546a72e3495d",
+      "validate_contracts.py": "9a8e6d1fdc9d15b809cfad6a2d3df38931de4234e5ccfdd79d5ecdc576ba7108",
+      "validate_library_archive.py": "faa3b5e4760dc0ff85c4dfc01e33e58fd91801ff9bc55f20ec3225b990003fa9"
+    },
+    "raw_stats": {
+      "seen": 433,
+      "ignored_non_http": 539
+    },
+    "five_hundred_state_effects": 6,
+    "partial_500": 4,
+    "subset_applied_500": 2,
+    "four_hundred_state_observations": 4,
+    "counterfactual_rollback_controls": 10,
+    "control_state_observations": 0,
+    "producer_verdicts_used": false,
+    "new_SUT_requests": 0,
+    "isolation_proven": false,
+    "scope": "requested comparable fields; not full-resource commit; observations are not new distinct bugs"
+  },
+  "cycle5": {
+    "status": "PASS",
+    "source_repository": "weissye/vikunja_study",
+    "source_commit": "dc79b7a",
+    "results": [
+      {
+        "system": "homebox",
+        "source_sha256": "a5bcc9d3f84332050e6a47e48d700abfabfe4c0843dcb52e683f625152fc2bc5",
+        "contract_sha256": "85e6b053f75236e8458505dffa5ece1d11a568b2eef099202a39ba4150c0a810",
+        "pairs": 6,
+        "exchanges": 12,
+        "findings": {
+          "server_5xx": {
+            "groups": 2,
+            "occurrences": 6
+          },
+          "undeclared_status": {
+            "groups": 0,
+            "occurrences": 0
+          },
+          "semantic_candidate": {
+            "groups": 0,
+            "occurrences": 0
+          },
+          "policy_observation": {
+            "groups": 0,
+            "occurrences": 0
+          }
+        },
+        "control_5xx": 0,
+        "test_5xx": 6,
+        "producer_verdicts_used": false
+      },
+      {
+        "system": "paperless",
+        "source_sha256": "ff39b70ed2179c9db2e7168db7224da6cde7fab659555c1ac5b44d86903cb390",
+        "contract_sha256": "9884ef676af11a42cf2cef327f6fedbb9a0ffb04b0bfa3af76fee3752266a240",
+        "pairs": 2,
+        "exchanges": 4,
+        "findings": {
+          "server_5xx": {
+            "groups": 2,
+            "occurrences": 2
+          },
+          "undeclared_status": {
+            "groups": 0,
+            "occurrences": 0
+          },
+          "semantic_candidate": {
+            "groups": 0,
+            "occurrences": 0
+          },
+          "policy_observation": {
+            "groups": 0,
+            "occurrences": 0
+          }
+        },
+        "control_5xx": 0,
+        "test_5xx": 2,
+        "producer_verdicts_used": false
+      }
+    ],
+    "scope": "preserved direct reproduction pairs; not complete story packages; no new SUT requests"
+  },
+  "story_audit": [
+    {
+      "run": "dtrack-c4-R2-20261029-164104",
+      "journal_sha256": "50c64baf8f7fe39a6882e158d9252cd3a681f2536aac200ad3cb5a07284f258f",
+      "contract_sha256": "2989c53e5523f776df3adea13d2f9666d99edc6db095c9a7a487bdde57cd064c",
+      "exchanges": 37,
+      "ingestion": {
+        "ignored_non_http": 33,
+        "seen": 37
+      },
+      "partitions": {
+        "policy_observation": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 0,
+          "occurrences": 0
+        }
+      },
+      "producer": {
+        "story_statuses": {
+          "SETUP_FAILED": 33
+        },
+        "producer_check_candidates": [],
+        "excluded_checks": [],
+        "producer_observations_not_failures": 0,
+        "checks_used_by_independent_judge": false,
+        "attempt_scope": "producer summary describes last attempt; independent analysis retains raw attempts separately",
+        "reference_warning": "Names and producer reference bindings do not prove relationships; enum fields require contract validation"
+      }
+    },
+    {
+      "run": "gitea-v22rc-20261028-072647",
+      "journal_sha256": "bbf0241f2312310b625fc3a45c46b27fc4fb6d02e03d81cfd9f2cdfa8fcc7cb4",
+      "contract_sha256": "a9c7e8dc4723f53dd3268405cec1f597a6d742898fea4443e72410c27f08519f",
+      "exchanges": 132,
+      "ingestion": {
+        "ignored_non_http": 13,
+        "seen": 132
+      },
+      "partitions": {
+        "policy_observation": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 1,
+          "occurrences": 2
+        }
+      },
+      "producer": {
+        "story_statuses": {
+          "SETUP_FAILED": 7,
+          "NOT_APPLICABLE": 2,
+          "COMPLETED": 4
+        },
+        "producer_check_candidates": [],
+        "excluded_checks": [],
+        "producer_observations_not_failures": 4,
+        "checks_used_by_independent_judge": false,
+        "attempt_scope": "producer summary describes last attempt; independent analysis retains raw attempts separately",
+        "reference_warning": "Names and producer reference bindings do not prove relationships; enum fields require contract validation"
+      }
+    },
+    {
+      "run": "kimai-c3-R2-20261028-194143",
+      "journal_sha256": "47079dea61f5c1599032e01e48ddcb3df52bb3093f85a70f4d443270c81062ea",
+      "contract_sha256": "ca97f881cf817eb5f884bc457c796a26a3b058791ea0a2f1bdc5cf001402ad11",
+      "exchanges": 46,
+      "ingestion": {
+        "ignored_non_http": 34,
+        "seen": 46
+      },
+      "partitions": {
+        "policy_observation": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 1,
+          "occurrences": 34
+        }
+      },
+      "producer": {
+        "story_statuses": {
+          "SETUP_FAILED": 17
+        },
+        "producer_check_candidates": [],
+        "excluded_checks": [],
+        "producer_observations_not_failures": 0,
+        "checks_used_by_independent_judge": false,
+        "attempt_scope": "producer summary describes last attempt; independent analysis retains raw attempts separately",
+        "reference_warning": "Names and producer reference bindings do not prove relationships; enum fields require contract validation"
+      }
+    },
+    {
+      "run": "mealie-v22rc2-20261028-075118",
+      "journal_sha256": "04e97f695034f05e828d68d832d850639d2ee8c1b86b420a1b761304ec0934f5",
+      "contract_sha256": "90e19aa713ab4ba15352627aca7dc37290f868b213eb65a3e1564f3b7a7ff292",
+      "exchanges": 299,
+      "ingestion": {
+        "ignored_non_http": 20,
+        "seen": 299
+      },
+      "partitions": {
+        "policy_observation": {
+          "groups": 4,
+          "occurrences": 9
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "server_5xx": {
+          "groups": 2,
+          "occurrences": 4
+        },
+        "undeclared_status": {
+          "groups": 18,
+          "occurrences": 52
+        }
+      },
+      "producer": {
+        "story_statuses": {
+          "COMPLETED": 20
+        },
+        "producer_check_candidates": [
+          {
+            "story": "CONTRIB_recipe_list",
+            "check": "add recipeIncrementQuantity x0.5 (read by A)",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "CONTRIB_recipe_list",
+            "check": "round trip: added and removed back to the start",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "DELREF_item_foodId",
+            "check": "referrer 0 after the delete",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "DELREF_item_foodId",
+            "check": "referrer 1 after the delete",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "DELREF_item_unitId",
+            "check": "referrer 0 after the delete",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "DELREF_item_unitId",
+            "check": "referrer 1 after the delete",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "STALE_item_foodId",
+            "check": "stale write: no dangling reference",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "STALE_item_labelId",
+            "check": "stale write: no dangling reference",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "STALE_item_unitId",
+            "check": "stale write: no dangling reference",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "STALE_comment_recipeId",
+            "check": "write back the snapshot taken before the delete: never 5xx",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "STALE_food_labelId",
+            "check": "stale write: no dangling reference",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "COPY_recipe",
+            "check": "copy response INTRA-REF $.recipeInstructions[].ingredientReferences[].referenceId in $.recipeIngredient[]",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "COPY_recipe",
+            "check": "copy readback by A INTRA-REF $.recipeInstructions[].ingredientReferences[].referenceId in $.recipeIngredient[]",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          }
+        ],
+        "excluded_checks": [],
+        "producer_observations_not_failures": 16,
+        "checks_used_by_independent_judge": false,
+        "attempt_scope": "producer summary describes last attempt; independent analysis retains raw attempts separately",
+        "reference_warning": "Names and producer reference bindings do not prove relationships; enum fields require contract validation"
+      }
+    },
+    {
+      "run": "tandoor-c2-R2-20261027-215202",
+      "journal_sha256": "d55b3632e2e0e97740d4337029180de6d6277a2410b0fe168e3ad83a731b5878",
+      "contract_sha256": "4d2120c28c97164564d86cd469193544297bc021b9dd7fdb203e572ef0aa2452",
+      "exchanges": 141,
+      "ingestion": {
+        "ignored_non_http": 14,
+        "seen": 141
+      },
+      "partitions": {
+        "policy_observation": {
+          "groups": 10,
+          "occurrences": 34
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 17,
+          "occurrences": 41
+        }
+      },
+      "producer": {
+        "story_statuses": {
+          "COMPLETED": 7,
+          "SETUP_FAILED": 4,
+          "NOT_APPLICABLE": 1
+        },
+        "producer_check_candidates": [],
+        "excluded_checks": [],
+        "producer_observations_not_failures": 7,
+        "checks_used_by_independent_judge": false,
+        "attempt_scope": "producer summary describes last attempt; independent analysis retains raw attempts separately",
+        "reference_warning": "Names and producer reference bindings do not prove relationships; enum fields require contract validation"
+      }
+    },
+    {
+      "run": "vikunja-v22rc3-fresh-20261028-085526",
+      "journal_sha256": "b17163f7535491903d042ca0d2495fc579167d65c66b62d0ed1e365c3affbfb2",
+      "contract_sha256": "171e238314089ca9b1c5c6fa3f87cf7f80a7c2a55934d1d6c228b39d48b65843",
+      "exchanges": 165,
+      "ingestion": {
+        "ignored_non_http": 10,
+        "seen": 165
+      },
+      "partitions": {
+        "policy_observation": {
+          "groups": 1,
+          "occurrences": 2
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 7,
+          "occurrences": 19
+        }
+      },
+      "producer": {
+        "story_statuses": {
+          "COMPLETED": 9
+        },
+        "producer_check_candidates": [
+          {
+            "story": "PROJNEST_view_tasks_kanban",
+            "check": "MOVE level 2: N1_0 gone from the old root view",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "PROJNEST_view_tasks_kanban",
+            "check": "MOVE level 2: N1_0 under B1 in the new root view",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          }
+        ],
+        "excluded_checks": [],
+        "producer_observations_not_failures": 8,
+        "checks_used_by_independent_judge": false,
+        "attempt_scope": "producer summary describes last attempt; independent analysis retains raw attempts separately",
+        "reference_warning": "Names and producer reference bindings do not prove relationships; enum fields require contract validation"
+      }
+    },
+    {
+      "run": "wger-stories-20261026-205327",
+      "journal_sha256": "1c4bce9f56067b221014d22eb11248a5277fbc653e25776d7356fe02df47fa23",
+      "contract_sha256": "89c8aea5accbe4dc68c5b819832cd1d9db210a6dd410a74be0a27fde6808769e",
+      "exchanges": 190,
+      "ingestion": {
+        "ignored_non_http": 10,
+        "seen": 190
+      },
+      "partitions": {
+        "policy_observation": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 0,
+          "occurrences": 0
+        }
+      },
+      "producer": {
+        "story_statuses": {
+          "COMPLETED": 10
+        },
+        "producer_check_candidates": [
+          {
+            "story": "OPENUM_setsconfig_percent",
+            "check": "iteration 4 (percent: r 10 at 1, + 10 at 2, none at 3, - 10 at 4, r 7 at 5)",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          }
+        ],
+        "excluded_checks": [],
+        "producer_observations_not_failures": 3,
+        "checks_used_by_independent_judge": false,
+        "attempt_scope": "producer summary describes last attempt; independent analysis retains raw attempts separately",
+        "reference_warning": "Names and producer reference bindings do not prove relationships; enum fields require contract validation"
+      }
+    },
+    {
+      "run": "wger-v22rc-20261028-071809",
+      "journal_sha256": "0c88aba569fb8c1fe6b64f61aa2eab828b4d2dab1620c00ec20979fc8da8970c",
+      "contract_sha256": "89c8aea5accbe4dc68c5b819832cd1d9db210a6dd410a74be0a27fde6808769e",
+      "exchanges": 945,
+      "ingestion": {
+        "ignored_non_http": 48,
+        "seen": 945
+      },
+      "partitions": {
+        "policy_observation": {
+          "groups": 2,
+          "occurrences": 3
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 52,
+          "occurrences": 147
+        }
+      },
+      "producer": {
+        "story_statuses": {
+          "COMPLETED": 45,
+          "NOT_APPLICABLE": 9
+        },
+        "producer_check_candidates": [
+          {
+            "story": "PROJNEST_routine_logs",
+            "check": "MOVE level 1: N0_0 gone from the old root view",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "PROJNEST_routine_logs",
+            "check": "MOVE level 1: N0_0 in the new root view",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "PROJNEST_routine_structure",
+            "check": "MOVE level 2: N1_0 gone from the old root view",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "PROJNEST_routine_structure",
+            "check": "MOVE level 1: N0_0 gone from the old root view",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "AGG_meal_nutritionplan",
+            "check": "after moving C2 away: P1 = baseline + C1",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          },
+          {
+            "story": "OPENUM_setsconfig_percent",
+            "check": "iteration 4 (percent: r 10 at 1, + 10 at 2, none at 3, - 10 at 4, r 7 at 5)",
+            "source": "producer_last_attempt_only",
+            "independently_confirmed": false
+          }
+        ],
+        "excluded_checks": [],
+        "producer_observations_not_failures": 34,
+        "checks_used_by_independent_judge": false,
+        "attempt_scope": "producer summary describes last attempt; independent analysis retains raw attempts separately",
+        "reference_warning": "Names and producer reference bindings do not prove relationships; enum fields require contract validation"
+      }
+    },
+    {
+      "run": "labelstudio-150711",
+      "journal_sha256": "5024f3ed6fb87d4cfbf616b7f00bc2d30a8b7cb0c3880a24019600d05843bfa3",
+      "contract_sha256": "5f96c26b5fe1cfe81bdc997560190d2f818d0ececf34147dd2483fe5f01013a0",
+      "exchanges": 38,
+      "ingestion": {
+        "ignored_non_http": 146,
+        "infrastructure-error": 67,
+        "seen": 38
+      },
+      "partitions": {
+        "policy_observation": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 9,
+          "occurrences": 17
+        }
+      },
+      "producer": {
+        "story_statuses": {
+          "SETUP_FAILED": 72,
+          "COMPLETED": 1
+        },
+        "producer_check_candidates": [],
+        "excluded_checks": [],
+        "producer_observations_not_failures": 1,
+        "checks_used_by_independent_judge": false,
+        "attempt_scope": "producer summary describes last attempt; independent analysis retains raw attempts separately",
+        "reference_warning": "Names and producer reference bindings do not prove relationships; enum fields require contract validation"
+      }
+    },
+    {
+      "run": "labelstudio-152215",
+      "journal_sha256": "c6fbac3358324556e569345266905295bd50c886c03c5454f44e4c4dfac34645",
+      "contract_sha256": "5f96c26b5fe1cfe81bdc997560190d2f818d0ececf34147dd2483fe5f01013a0",
+      "exchanges": 38,
+      "ingestion": {
+        "ignored_non_http": 146,
+        "infrastructure-error": 67,
+        "seen": 38
+      },
+      "partitions": {
+        "policy_observation": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "semantic_candidate": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "server_5xx": {
+          "groups": 0,
+          "occurrences": 0
+        },
+        "undeclared_status": {
+          "groups": 9,
+          "occurrences": 17
+        }
+      },
+      "producer": {
+        "story_statuses": {
+          "SETUP_FAILED": 72,
+          "COMPLETED": 1
+        },
+        "producer_check_candidates": [],
+        "excluded_checks": [],
+        "producer_observations_not_failures": 1,
+        "checks_used_by_independent_judge": false,
+        "attempt_scope": "producer summary describes last attempt; independent analysis retains raw attempts separately",
+        "reference_warning": "Names and producer reference bindings do not prove relationships; enum fields require contract validation"
+      }
+    }
+  ],
+  "full_real_producer_parity": false,
+  "remaining_gaps": [
+    "wger percent preview arithmetic/rounding",
+    "Mealie standalone zero-net action roundtrip",
+    "Other Library configurations full mutant raw replay not supplied"
+  ]
+}

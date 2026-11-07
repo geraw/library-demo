@@ -1,0 +1,256 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Natchan normalized measurements",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "measurements"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "natchan-measurements/1"
+    },
+    "measurements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "product",
+          "product_version",
+          "run_id",
+          "source",
+          "family"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "product": {
+            "type": "string"
+          },
+          "product_version": {
+            "type": "string"
+          },
+          "run_id": {
+            "type": "string"
+          },
+          "source": {
+            "type": "object"
+          },
+          "family": {
+            "enum": [
+              "RESPONSE",
+              "EDGE-1",
+              "RT-1",
+              "ATOM-1-2",
+              "EDGE-U",
+              "KNOWN",
+              "CASCADE-1",
+              "ADJ",
+              "IDEM",
+              "VIEW",
+              "LINK"
+            ]
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "boolean"
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "family": {
+                  "const": "RESPONSE"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "status"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "family": {
+                  "const": "EDGE-1"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "status",
+                "value",
+                "constraints"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "family": {
+                  "const": "RT-1"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "status",
+                "sent",
+                "readback",
+                "readable_fields",
+                "context"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "family": {
+                  "const": "ATOM-1-2"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "status",
+                "operation",
+                "before",
+                "after",
+                "request",
+                "context"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "family": {
+                  "const": "EDGE-U"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "create",
+                "update",
+                "context"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "family": {
+                  "const": "KNOWN"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "status",
+                "response",
+                "operation",
+                "trigger_time",
+                "request_time",
+                "definition"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "family": {
+                  "const": "CASCADE-1"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "parent_delete_status",
+                "child_read_status",
+                "cascade_required",
+                "context"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "family": {
+                  "const": "ADJ"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "status",
+                "trigger_time",
+                "request_time",
+                "window_seconds",
+                "context"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "family": {
+                  "const": "IDEM"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "first_request",
+                "second_request",
+                "status",
+                "context"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "family": {
+                  "const": "VIEW"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "expected_ids",
+                "actual_ids",
+                "membership_required",
+                "context"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "family": {
+                  "const": "LINK"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "operation",
+                "target_id",
+                "actual_ids",
+                "context"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

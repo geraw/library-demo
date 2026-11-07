@@ -1,0 +1,848 @@
+{
+  "schema_version": "natchan-events/1",
+  "synthetic": true,
+  "capture_complete": true,
+  "tool": "synthetic-recorder",
+  "profile": {
+    "id": "synthetic-product",
+    "version": "test-only",
+    "families": {
+      "RESPONSE": {
+        "request_path": [
+          "title"
+        ],
+        "constraints": {
+          "maxLength": 2
+        }
+      },
+      "EDGE-1": {
+        "request_path": [
+          "title"
+        ],
+        "constraints": {
+          "maxLength": 2
+        }
+      },
+      "RT-1": {
+        "readable_fields": [
+          "title"
+        ]
+      },
+      "ATOM-1-2": {
+        "operation": "update"
+      },
+      "EDGE-U": {
+        "comparable_preconditions": true
+      },
+      "KNOWN": {
+        "trigger_operation": "create-parent",
+        "window_seconds": 10,
+        "definition": {
+          "statuses": [
+            500
+          ],
+          "operations": [
+            "write-child"
+          ],
+          "window_seconds": 10,
+          "response_regex": "locked"
+        }
+      },
+      "CASCADE-1": {},
+      "ADJ": {
+        "trigger_operation": "create-parent",
+        "window_seconds": 10,
+        "definition": {
+          "statuses": [
+            500
+          ],
+          "operations": [
+            "write-child"
+          ],
+          "window_seconds": 10,
+          "response_regex": "locked"
+        }
+      },
+      "IDEM": {},
+      "VIEW": {
+        "expected_path": [
+          "ids"
+        ],
+        "response_path": [
+          "ids"
+        ],
+        "membership_required": true
+      },
+      "LINK": {
+        "operation": "add",
+        "target_path": [
+          "target"
+        ],
+        "response_path": [
+          "ids"
+        ]
+      },
+      "REF-1": {
+        "request_path": [
+          "ids"
+        ],
+        "response_path": [
+          "ids"
+        ],
+        "semantics": "exact_set"
+      },
+      "LINK-2": {
+        "request_path": [
+          "ids"
+        ],
+        "response_path": [
+          "ids"
+        ],
+        "semantics": "exact_set"
+      },
+      "DIV-1": {
+        "comparable_preconditions": true
+      }
+    },
+    "relationships": [
+      {
+        "id": "p-c",
+        "parent": "parent",
+        "child": "child",
+        "cascade_required": true
+      }
+    ]
+  },
+  "events": [
+    {
+      "id": "RESPONSE:0",
+      "run_id": "run1",
+      "case_id": "RESPONSE",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 500,
+      "response": {},
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "RESPONSE",
+        "role": "request"
+      },
+      "request": {
+        "title": "long"
+      }
+    },
+    {
+      "id": "EDGE-1:0",
+      "run_id": "run1",
+      "case_id": "EDGE-1",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 201,
+      "response": {},
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "EDGE-1",
+        "role": "request"
+      },
+      "request": {
+        "title": "long"
+      }
+    },
+    {
+      "id": "RT-1:0",
+      "run_id": "run1",
+      "case_id": "RT-1",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 200,
+      "response": {
+        "title": "old",
+        "x": 0,
+        "y": 0,
+        "ids": [
+          1
+        ]
+      },
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "RT-1",
+        "role": "before"
+      }
+    },
+    {
+      "id": "RT-1:1",
+      "run_id": "run1",
+      "case_id": "RT-1",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "PATCH",
+      "status": 200,
+      "response": {},
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "RT-1",
+        "role": "write"
+      },
+      "request": {
+        "title": "sent",
+        "x": 1,
+        "y": 1,
+        "ids": [
+          2
+        ],
+        "target": 2
+      }
+    },
+    {
+      "id": "RT-1:2",
+      "run_id": "run1",
+      "case_id": "RT-1",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 200,
+      "response": {
+        "title": "sen",
+        "x": 1,
+        "y": 0,
+        "ids": []
+      },
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "RT-1",
+        "role": "after"
+      }
+    },
+    {
+      "id": "ATOM-1-2:0",
+      "run_id": "run1",
+      "case_id": "ATOM-1-2",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 200,
+      "response": {
+        "title": "old",
+        "x": 0,
+        "y": 0,
+        "ids": [
+          1
+        ]
+      },
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "ATOM-1-2",
+        "role": "before"
+      }
+    },
+    {
+      "id": "ATOM-1-2:1",
+      "run_id": "run1",
+      "case_id": "ATOM-1-2",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "PATCH",
+      "status": 500,
+      "response": {},
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "ATOM-1-2",
+        "role": "write"
+      },
+      "request": {
+        "title": "sent",
+        "x": 1,
+        "y": 1,
+        "ids": [
+          2
+        ],
+        "target": 2
+      }
+    },
+    {
+      "id": "ATOM-1-2:2",
+      "run_id": "run1",
+      "case_id": "ATOM-1-2",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 200,
+      "response": {
+        "title": "sen",
+        "x": 1,
+        "y": 0,
+        "ids": []
+      },
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "ATOM-1-2",
+        "role": "after"
+      }
+    },
+    {
+      "id": "EDGE-U:0",
+      "run_id": "run1",
+      "case_id": "EDGE-U",
+      "actor": "A",
+      "resource": "item:created",
+      "method": "POST",
+      "status": 201,
+      "response": {},
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "EDGE-U",
+        "role": "create",
+        "field": "title"
+      },
+      "parent_scope": "parent:1",
+      "request": {
+        "title": "x"
+      }
+    },
+    {
+      "id": "EDGE-U:1",
+      "run_id": "run1",
+      "case_id": "EDGE-U",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 200,
+      "response": {
+        "title": "old"
+      },
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "EDGE-U",
+        "role": "update_before"
+      }
+    },
+    {
+      "id": "EDGE-U:2",
+      "run_id": "run1",
+      "case_id": "EDGE-U",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "PATCH",
+      "status": 400,
+      "response": {},
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "EDGE-U",
+        "role": "update",
+        "field": "title"
+      },
+      "parent_scope": "parent:1",
+      "request": {
+        "title": "x"
+      }
+    },
+    {
+      "id": "KNOWN:0",
+      "run_id": "run1",
+      "case_id": "KNOWN",
+      "actor": "A",
+      "resource": "parent:1",
+      "method": "POST",
+      "status": 200,
+      "response": {},
+      "time": "2026-10-21T00:00:00Z",
+      "probe": {
+        "id": "p1",
+        "family": "KNOWN",
+        "role": "trigger"
+      },
+      "operation": "create-parent"
+    },
+    {
+      "id": "KNOWN:1",
+      "run_id": "run1",
+      "case_id": "KNOWN",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "PATCH",
+      "status": 500,
+      "response": "locked",
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "KNOWN",
+        "role": "request"
+      },
+      "operation": "write-child"
+    },
+    {
+      "id": "CASCADE-1:0",
+      "run_id": "run1",
+      "case_id": "CASCADE-1",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 200,
+      "response": {},
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "CASCADE-1",
+        "role": "child_before"
+      },
+      "entity": "child",
+      "parent_resource": "parent:1"
+    },
+    {
+      "id": "CASCADE-1:1",
+      "run_id": "run1",
+      "case_id": "CASCADE-1",
+      "actor": "A",
+      "resource": "parent:1",
+      "method": "DELETE",
+      "status": 204,
+      "response": {},
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "CASCADE-1",
+        "role": "parent_delete"
+      },
+      "entity": "parent"
+    },
+    {
+      "id": "CASCADE-1:2",
+      "run_id": "run1",
+      "case_id": "CASCADE-1",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 200,
+      "response": {},
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "CASCADE-1",
+        "role": "child_after",
+        "relationship": "p-c"
+      }
+    },
+    {
+      "id": "ADJ:0",
+      "run_id": "run1",
+      "case_id": "ADJ",
+      "actor": "A",
+      "resource": "parent:1",
+      "method": "POST",
+      "status": 200,
+      "response": {},
+      "time": "2026-10-21T00:00:00Z",
+      "probe": {
+        "id": "p1",
+        "family": "ADJ",
+        "role": "trigger"
+      },
+      "operation": "create-parent"
+    },
+    {
+      "id": "ADJ:1",
+      "run_id": "run1",
+      "case_id": "ADJ",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "PATCH",
+      "status": 500,
+      "response": "locked",
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "ADJ",
+        "role": "request"
+      },
+      "operation": "write-child"
+    },
+    {
+      "id": "IDEM:0",
+      "run_id": "run1",
+      "case_id": "IDEM",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "PATCH",
+      "status": 200,
+      "response": {},
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "IDEM",
+        "role": "first"
+      },
+      "request": {
+        "title": "x"
+      }
+    },
+    {
+      "id": "IDEM:1",
+      "run_id": "run1",
+      "case_id": "IDEM",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "PATCH",
+      "status": 500,
+      "response": {},
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "IDEM",
+        "role": "second"
+      },
+      "request": {
+        "title": "x"
+      }
+    },
+    {
+      "id": "VIEW:0",
+      "run_id": "run1",
+      "case_id": "VIEW",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 200,
+      "response": {
+        "title": "old",
+        "x": 0,
+        "y": 0,
+        "ids": [
+          1
+        ]
+      },
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "VIEW",
+        "role": "before"
+      }
+    },
+    {
+      "id": "VIEW:1",
+      "run_id": "run1",
+      "case_id": "VIEW",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "PATCH",
+      "status": 200,
+      "response": {},
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "VIEW",
+        "role": "write"
+      },
+      "request": {
+        "title": "sent",
+        "x": 1,
+        "y": 1,
+        "ids": [
+          2
+        ],
+        "target": 2
+      }
+    },
+    {
+      "id": "VIEW:2",
+      "run_id": "run1",
+      "case_id": "VIEW",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 200,
+      "response": {
+        "title": "sen",
+        "x": 1,
+        "y": 0,
+        "ids": []
+      },
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "VIEW",
+        "role": "after"
+      }
+    },
+    {
+      "id": "LINK:0",
+      "run_id": "run1",
+      "case_id": "LINK",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 200,
+      "response": {
+        "title": "old",
+        "x": 0,
+        "y": 0,
+        "ids": [
+          1
+        ]
+      },
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "LINK",
+        "role": "before"
+      }
+    },
+    {
+      "id": "LINK:1",
+      "run_id": "run1",
+      "case_id": "LINK",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "PATCH",
+      "status": 200,
+      "response": {},
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "LINK",
+        "role": "write"
+      },
+      "request": {
+        "title": "sent",
+        "x": 1,
+        "y": 1,
+        "ids": [
+          2
+        ],
+        "target": 2
+      }
+    },
+    {
+      "id": "LINK:2",
+      "run_id": "run1",
+      "case_id": "LINK",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 200,
+      "response": {
+        "title": "sen",
+        "x": 1,
+        "y": 0,
+        "ids": []
+      },
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "LINK",
+        "role": "after"
+      }
+    },
+    {
+      "id": "REF-1:0",
+      "run_id": "run1",
+      "case_id": "REF-1",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 200,
+      "response": {
+        "title": "old",
+        "x": 0,
+        "y": 0,
+        "ids": [
+          1
+        ]
+      },
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "REF-1",
+        "role": "before"
+      }
+    },
+    {
+      "id": "REF-1:1",
+      "run_id": "run1",
+      "case_id": "REF-1",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "PATCH",
+      "status": 200,
+      "response": {},
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "REF-1",
+        "role": "write"
+      },
+      "request": {
+        "title": "sent",
+        "x": 1,
+        "y": 1,
+        "ids": [
+          2
+        ],
+        "target": 2
+      }
+    },
+    {
+      "id": "REF-1:2",
+      "run_id": "run1",
+      "case_id": "REF-1",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 200,
+      "response": {
+        "title": "sen",
+        "x": 1,
+        "y": 0,
+        "ids": []
+      },
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "REF-1",
+        "role": "after"
+      }
+    },
+    {
+      "id": "LINK-2:0",
+      "run_id": "run1",
+      "case_id": "LINK-2",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 200,
+      "response": {
+        "title": "old",
+        "x": 0,
+        "y": 0,
+        "ids": [
+          1
+        ]
+      },
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "LINK-2",
+        "role": "before"
+      }
+    },
+    {
+      "id": "LINK-2:1",
+      "run_id": "run1",
+      "case_id": "LINK-2",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "PATCH",
+      "status": 200,
+      "response": {},
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "LINK-2",
+        "role": "write"
+      },
+      "request": {
+        "title": "sent",
+        "x": 1,
+        "y": 1,
+        "ids": [
+          2
+        ],
+        "target": 2
+      }
+    },
+    {
+      "id": "LINK-2:2",
+      "run_id": "run1",
+      "case_id": "LINK-2",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 200,
+      "response": {
+        "title": "sen",
+        "x": 1,
+        "y": 0,
+        "ids": []
+      },
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "LINK-2",
+        "role": "after"
+      }
+    },
+    {
+      "id": "DIV-1:0",
+      "run_id": "run1",
+      "case_id": "DIV-1",
+      "actor": "A",
+      "resource": "item:created",
+      "method": "POST",
+      "status": 201,
+      "response": {},
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "DIV-1",
+        "role": "create",
+        "field": "title"
+      },
+      "parent_scope": "parent:1",
+      "request": {
+        "title": "x"
+      }
+    },
+    {
+      "id": "DIV-1:1",
+      "run_id": "run1",
+      "case_id": "DIV-1",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "GET",
+      "status": 200,
+      "response": {
+        "title": "old"
+      },
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "DIV-1",
+        "role": "update_before"
+      }
+    },
+    {
+      "id": "DIV-1:2",
+      "run_id": "run1",
+      "case_id": "DIV-1",
+      "actor": "A",
+      "resource": "item:1",
+      "method": "PATCH",
+      "status": 400,
+      "response": {},
+      "time": "2026-10-21T00:00:01Z",
+      "probe": {
+        "id": "p1",
+        "family": "DIV-1",
+        "role": "update",
+        "field": "title"
+      },
+      "parent_scope": "parent:1",
+      "request": {
+        "title": "x"
+      }
+    }
+  ]
+}

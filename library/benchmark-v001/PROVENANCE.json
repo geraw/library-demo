@@ -1,0 +1,19 @@
+{
+  "version": "v001",
+  "source_repo": "geraw/library-demo",
+  "sut_ref": "30d9b7cb3ec2a151a49633513a5ffa8c6eff6175",
+  "analyzer_ref": "e4f97dc81b0997578593c67c90aec123a7a87c16",
+  "analyzer_version": "009-dev.4",
+  "mutations": {
+    "B1": "created_book_unavailable",
+    "B2": "delete_no_effect",
+    "B3": "rejected_loan_persists",
+    "B4": "filter_or",
+    "B5": "hold_collateral_delete",
+    "B6": "missing_book_500"
+  },
+  "baseline_changes": [
+    "Four successful DELETE handlers now return an empty 204 response. No loan/hold rule changed."
+  ],
+  "original_sha256": "b0fdf6c75517393664d7453211edf953178c2538fc5b9ec5a68da336b2c9ca8e"
+}

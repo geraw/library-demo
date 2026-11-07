@@ -1,0 +1,546 @@
+{
+  "schema_version": "natchan-catalog/1",
+  "entries": [
+    {
+      "id": "VIKUNJA-SERVER_ERROR",
+      "kind": "pattern",
+      "title": "Server error response",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "VIKUNJA-PARTIAL_WRITE",
+      "kind": "pattern",
+      "title": "Some requested changes applied and others kept after error",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "atomicity",
+          "op": "eq",
+          "value": "partial"
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "VIKUNJA-COMMITTED_DESPITE_ERROR",
+      "kind": "pattern",
+      "title": "Requested changes persisted despite error",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "atomicity",
+          "op": "eq",
+          "value": "committed_despite_error"
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "VIKUNJA-SILENT_CHANGE",
+      "kind": "pattern",
+      "title": "Qualified readback differs from requested writable/readable fields",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "silent_change",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "VIKUNJA-BOUND_NOT_ENFORCED",
+      "kind": "pattern",
+      "title": "Explicit schema bound accepted",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "explicit_bound_violated",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "request_accepted",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "VIKUNJA-UNDOCUMENTED_RESTRICTION",
+      "kind": "pattern",
+      "title": "Observed restriction absent from documented boundary",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "restriction_observed",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "restriction_documented",
+          "op": "eq",
+          "value": false
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "VIKUNJA-CREATE_UPDATE_DIVERGENCE",
+      "kind": "pattern",
+      "title": "Paired create/update outcomes differ",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "pair_qualified",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "create_update_diverge",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "VIKUNJA-HARNESS_EXPECTATION_MISMATCH",
+      "kind": "pattern",
+      "title": "Harness rejects a contextually valid documented response",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "harness_expectation_wrong",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "response_context_valid",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "VIKUNJA-STALE_TEST_INPUT",
+      "kind": "pattern",
+      "title": "Test supplied a proven stale version or identifier",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "test_input_proven_stale",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "VIKUNJA-ORPHAN_AFTER_DELETE",
+      "kind": "pattern",
+      "title": "Child remains against explicit cascade policy",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "cascade_required",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "child_still_present",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "state_qualified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "VIKUNJA-DUPLICATE_WRITE_ERROR",
+      "kind": "pattern",
+      "title": "Server error in a qualified repeated-write experiment",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "repeated_write_qualified",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "VIKUNJA-VIEW_MISMATCH",
+      "kind": "pattern",
+      "title": "Resource absent from a required view",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "view_membership_required",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "view_missing",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "state_qualified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "VIKUNJA-LINK_MISMATCH",
+      "kind": "pattern",
+      "title": "Required relation missing, duplicate or left behind",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "link_violation",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "state_qualified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "VIKUNJA-SERVER_LOCK_EVIDENCE",
+      "kind": "pattern",
+      "title": "Correlated server log identifies lock error",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "log_correlation_verified",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "log_error_family",
+          "op": "eq",
+          "value": "database_lock"
+        }
+      ],
+      "evidence_requirements": [
+        "Source-linked normalized observation; semantic facts require a recomputing adapter"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "VIK-F01",
+      "kind": "known_bug",
+      "title": "Reported trigger-window intermittent failure; exact signature needs recovery",
+      "status": "draft",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "reported_f01_signature_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Exact affected version, operation/field identity and original positive/negative evidence must be recovered"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "VIK-F04",
+      "kind": "known_bug",
+      "title": "Reported create accepts/update rejects discrepancy; entity/version need recovery",
+      "status": "draft",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "reported_vik_f04_identity_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Exact affected version, operation/field identity and original positive/negative evidence must be recovered"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "VIK-C1",
+      "kind": "known_bug",
+      "title": "Reported partial-write finding C1; exact binding needs recovery",
+      "status": "draft",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "reported_c1_identity_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Exact affected version, operation/field identity and original positive/negative evidence must be recovered"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    },
+    {
+      "id": "VIK-C2",
+      "kind": "known_bug",
+      "title": "Reported silent create change plus update error plus partial write; exact binding needs recovery",
+      "status": "draft",
+      "product": "vikunja",
+      "versions": [],
+      "all": [
+        {
+          "fact": "reported_c2_identity_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Exact affected version, operation/field identity and original positive/negative evidence must be recovered"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "source": "User specification supplied 2026-10-21",
+          "verification": "Specification; not a claim that a historical implementation was retrieved"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    }
+  ]
+}

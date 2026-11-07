@@ -1,0 +1,463 @@
+{
+  "datasets": [
+    {
+      "id": "java-work-v012",
+      "archive": "upload/java-fixed-split-v011-20261021-094721-5216-review.zip",
+      "archive_sha256": "7abd54bd10a41ac0491594ca679112140d92fbe0fb5553cccc04264d5e0d0895",
+      "status": "complete",
+      "issues": [],
+      "summary": {
+        "run_count": 3,
+        "external_observation_count": 22,
+        "confirmed_unique_bug_count": null,
+        "candidate_cases": 22
+      },
+      "runs": [
+        {
+          "id": "control",
+          "tool": "provengo",
+          "semantic_status": "EVALUATED_RECORDED_CASES",
+          "external_evaluator": {
+            "confirmed_classes_in_evaluable_cases": [],
+            "candidate_classes_in_evaluable_cases": [],
+            "cases_with_candidates": 0
+          },
+          "native": {
+            "status": "recorded",
+            "metric": "failed_fixed_java_tests",
+            "failed_cases": [
+              "73",
+              "77"
+            ],
+            "note": "Recorded native test flags; not unique bugs or external findings",
+            "passed_case_count": 540
+          },
+          "candidate_class_cases": {}
+        },
+        {
+          "id": "business-four",
+          "tool": "provengo",
+          "semantic_status": "EVALUATED_RECORDED_CASES",
+          "external_evaluator": {
+            "confirmed_classes_in_evaluable_cases": [],
+            "candidate_classes_in_evaluable_cases": [
+              "bug-5-candidate"
+            ],
+            "cases_with_candidates": 22
+          },
+          "native": {
+            "status": "recorded",
+            "metric": "failed_fixed_java_tests",
+            "failed_cases": [
+              "73",
+              "77",
+              "80",
+              "257",
+              "260",
+              "266",
+              "433"
+            ],
+            "note": "Recorded native test flags; not unique bugs or external findings",
+            "passed_case_count": 535
+          },
+          "candidate_class_cases": {
+            "bug-5-candidate": 22
+          }
+        },
+        {
+          "id": "book-read-one",
+          "tool": "provengo",
+          "semantic_status": "EVALUATED_RECORDED_CASES",
+          "external_evaluator": {
+            "confirmed_classes_in_evaluable_cases": [],
+            "candidate_classes_in_evaluable_cases": [],
+            "cases_with_candidates": 0
+          },
+          "native": {
+            "status": "recorded",
+            "metric": "failed_fixed_java_tests",
+            "failed_cases": [
+              "73",
+              "77"
+            ],
+            "note": "Recorded native test flags; not unique bugs or external findings",
+            "passed_case_count": 540
+          },
+          "candidate_class_cases": {}
+        }
+      ],
+      "control_comparison": {
+        "status": "recorded",
+        "control_run_id": "control",
+        "runs": [
+          {
+            "id": "business-four",
+            "status": "recorded",
+            "native_failed_on_passing_control": [
+              "80",
+              "257",
+              "260",
+              "266",
+              "433"
+            ],
+            "native_failed_on_failing_control": [
+              "73",
+              "77"
+            ],
+            "native_failed_without_control_verdict": []
+          },
+          {
+            "id": "book-read-one",
+            "status": "recorded",
+            "native_failed_on_passing_control": [],
+            "native_failed_on_failing_control": [
+              "73",
+              "77"
+            ],
+            "native_failed_without_control_verdict": []
+          }
+        ],
+        "note": "Explicit case-ID correlation only; pairing assumes the declared same catalog. It does not confirm unique bugs."
+      }
+    },
+    {
+      "id": "java-home-v011",
+      "archive": "transfer-v012/java-fixed-split-v011-20261020-201115-48880-review.zip",
+      "archive_sha256": "173407454d15833b4b503d977c5a2d0498a6b429c839f3b2ac7c0b602cd41b28",
+      "status": "complete",
+      "issues": [],
+      "summary": {
+        "run_count": 3,
+        "external_observation_count": 22,
+        "confirmed_unique_bug_count": null,
+        "candidate_cases": 22
+      },
+      "runs": [
+        {
+          "id": "control",
+          "tool": "provengo",
+          "semantic_status": "EVALUATED_RECORDED_CASES",
+          "external_evaluator": {
+            "confirmed_classes_in_evaluable_cases": [],
+            "candidate_classes_in_evaluable_cases": [],
+            "cases_with_candidates": 0
+          },
+          "native": {
+            "status": "recorded",
+            "metric": "failed_fixed_java_tests",
+            "failed_cases": [
+              "73",
+              "77"
+            ],
+            "note": "Recorded native test flags; not unique bugs or external findings",
+            "passed_case_count": 540
+          },
+          "candidate_class_cases": {}
+        },
+        {
+          "id": "business-four",
+          "tool": "provengo",
+          "semantic_status": "EVALUATED_RECORDED_CASES",
+          "external_evaluator": {
+            "confirmed_classes_in_evaluable_cases": [],
+            "candidate_classes_in_evaluable_cases": [
+              "bug-5-candidate"
+            ],
+            "cases_with_candidates": 22
+          },
+          "native": {
+            "status": "recorded",
+            "metric": "failed_fixed_java_tests",
+            "failed_cases": [
+              "73",
+              "77",
+              "80",
+              "257",
+              "260",
+              "266",
+              "433"
+            ],
+            "note": "Recorded native test flags; not unique bugs or external findings",
+            "passed_case_count": 535
+          },
+          "candidate_class_cases": {
+            "bug-5-candidate": 22
+          }
+        },
+        {
+          "id": "book-read-one",
+          "tool": "provengo",
+          "semantic_status": "EVALUATED_RECORDED_CASES",
+          "external_evaluator": {
+            "confirmed_classes_in_evaluable_cases": [],
+            "candidate_classes_in_evaluable_cases": [],
+            "cases_with_candidates": 0
+          },
+          "native": {
+            "status": "recorded",
+            "metric": "failed_fixed_java_tests",
+            "failed_cases": [
+              "73",
+              "77"
+            ],
+            "note": "Recorded native test flags; not unique bugs or external findings",
+            "passed_case_count": 540
+          },
+          "candidate_class_cases": {}
+        }
+      ],
+      "control_comparison": {
+        "status": "recorded",
+        "control_run_id": "control",
+        "runs": [
+          {
+            "id": "business-four",
+            "status": "recorded",
+            "native_failed_on_passing_control": [
+              "80",
+              "257",
+              "260",
+              "266",
+              "433"
+            ],
+            "native_failed_on_failing_control": [
+              "73",
+              "77"
+            ],
+            "native_failed_without_control_verdict": []
+          },
+          {
+            "id": "book-read-one",
+            "status": "recorded",
+            "native_failed_on_passing_control": [],
+            "native_failed_on_failing_control": [
+              "73",
+              "77"
+            ],
+            "native_failed_without_control_verdict": []
+          }
+        ],
+        "note": "Explicit case-ID correlation only; pairing assumes the declared same catalog. It does not confirm unique bugs."
+      }
+    },
+    {
+      "id": "sample-v009",
+      "archive": "library-audit/evidence/provengo-sample10-split-v009-20261020-143852-69796-review.zip",
+      "archive_sha256": "45230f88bb63076795ff876c10b233f78e50249e8c93cd7ccf7e41fb75c4b182",
+      "status": "complete",
+      "issues": [],
+      "summary": {
+        "run_count": 3,
+        "external_observation_count": 20,
+        "confirmed_unique_bug_count": null,
+        "candidate_cases": 20
+      },
+      "runs": [
+        {
+          "id": "book-read-one",
+          "tool": "provengo",
+          "semantic_status": "EVALUATED_RECORDED_CASES",
+          "external_evaluator": {
+            "confirmed_classes_in_evaluable_cases": [],
+            "candidate_classes_in_evaluable_cases": [
+              "bug-4"
+            ],
+            "cases_with_candidates": 10
+          },
+          "native": {
+            "status": "unknown"
+          },
+          "candidate_class_cases": {
+            "bug-4": 10
+          }
+        },
+        {
+          "id": "business-four",
+          "tool": "provengo",
+          "semantic_status": "EVALUATED_RECORDED_CASES",
+          "external_evaluator": {
+            "confirmed_classes_in_evaluable_cases": [],
+            "candidate_classes_in_evaluable_cases": [
+              "bug-1-candidate",
+              "bug-3-candidate",
+              "bug-5-candidate"
+            ],
+            "cases_with_candidates": 10
+          },
+          "native": {
+            "status": "unknown"
+          },
+          "candidate_class_cases": {
+            "bug-3-candidate": 4,
+            "bug-5-candidate": 5,
+            "bug-1-candidate": 1
+          }
+        },
+        {
+          "id": "control",
+          "tool": "provengo",
+          "semantic_status": "EVALUATED_RECORDED_CASES",
+          "external_evaluator": {
+            "confirmed_classes_in_evaluable_cases": [],
+            "candidate_classes_in_evaluable_cases": [],
+            "cases_with_candidates": 0
+          },
+          "native": {
+            "status": "unknown"
+          },
+          "candidate_class_cases": {}
+        }
+      ],
+      "control_comparison": {
+        "status": "not_requested"
+      }
+    },
+    {
+      "id": "control-v007",
+      "archive": "upload/neutral-contract-v007-20261020-124530-51864-review.zip",
+      "archive_sha256": "f976b05dc6c4b1dd08e32c589759ab4190f1e1c1e938422b56ec89e475913002",
+      "status": "complete",
+      "issues": [],
+      "summary": {
+        "run_count": 2,
+        "external_observation_count": 0,
+        "confirmed_unique_bug_count": null,
+        "candidate_cases": 0
+      },
+      "runs": [
+        {
+          "id": "evomaster",
+          "tool": "evomaster",
+          "semantic_status": "EVALUATED_RECORDED_CASES",
+          "external_evaluator": {
+            "confirmed_classes_in_evaluable_cases": [],
+            "candidate_classes_in_evaluable_cases": [],
+            "cases_with_candidates": 0
+          },
+          "native": {
+            "status": "unknown"
+          },
+          "candidate_class_cases": {}
+        },
+        {
+          "id": "restler",
+          "tool": "restler",
+          "semantic_status": "EVALUATED_RECORDED_CASES",
+          "external_evaluator": {
+            "confirmed_classes_in_evaluable_cases": [],
+            "candidate_classes_in_evaluable_cases": [],
+            "cases_with_candidates": 0
+          },
+          "native": {
+            "status": "unknown"
+          },
+          "candidate_class_cases": {}
+        }
+      ],
+      "control_comparison": {
+        "status": "not_requested"
+      }
+    },
+    {
+      "id": "mutants-v008",
+      "archive": "upload/mutants-neutral-v008-20261020-131134-37312-review.zip",
+      "archive_sha256": "41d2e1b8369d1d552a0e1e5b55181b9f1a3c38dd0ebd2d5bd4a719cf57c90b86",
+      "status": "complete",
+      "issues": [],
+      "summary": {
+        "run_count": 2,
+        "external_observation_count": 2,
+        "confirmed_unique_bug_count": null,
+        "candidate_cases": 2
+      },
+      "runs": [
+        {
+          "id": "evomaster",
+          "tool": "evomaster",
+          "semantic_status": "EVALUATED_RECORDED_CASES",
+          "external_evaluator": {
+            "confirmed_classes_in_evaluable_cases": [],
+            "candidate_classes_in_evaluable_cases": [
+              "bug-4"
+            ],
+            "cases_with_candidates": 1
+          },
+          "native": {
+            "status": "unknown"
+          },
+          "candidate_class_cases": {
+            "bug-4": 1
+          }
+        },
+        {
+          "id": "restler",
+          "tool": "restler",
+          "semantic_status": "EVALUATED_RECORDED_CASES",
+          "external_evaluator": {
+            "confirmed_classes_in_evaluable_cases": [],
+            "candidate_classes_in_evaluable_cases": [
+              "bug-4"
+            ],
+            "cases_with_candidates": 1
+          },
+          "native": {
+            "status": "unknown"
+          },
+          "candidate_class_cases": {
+            "bug-4": 1
+          }
+        }
+      ],
+      "control_comparison": {
+        "status": "not_requested"
+      }
+    },
+    {
+      "id": "evomaster-v006",
+      "archive": "library-audit/retained/\u05de\u05d0\u05de\u05e8 FSE/baselines-all-v006-20261020-084601-67520.zip",
+      "archive_sha256": "f31162198c5613e52904147b768277f3718cf457bf98c9e879ef9343e502a7aa",
+      "status": "complete",
+      "issues": [],
+      "summary": {
+        "run_count": 1,
+        "external_observation_count": 1,
+        "confirmed_unique_bug_count": null,
+        "candidate_cases": 1
+      },
+      "runs": [
+        {
+          "id": "evomaster",
+          "tool": "evomaster",
+          "semantic_status": "EVALUATED_RECORDED_CASES",
+          "external_evaluator": {
+            "confirmed_classes_in_evaluable_cases": [],
+            "candidate_classes_in_evaluable_cases": [
+              "bug-4"
+            ],
+            "cases_with_candidates": 1
+          },
+          "native": {
+            "status": "unknown"
+          },
+          "candidate_class_cases": {
+            "bug-4": 1
+          }
+        }
+      ],
+      "control_comparison": {
+        "status": "not_requested"
+      }
+    }
+  ],
+  "rule_occurrences": {
+    "GEN-COLLATERAL_DELETE": 53,
+    "GEN-EXISTING_RESOURCE_UNREADABLE": 13,
+    "GEN-LEGAL_OPERATION_REJECTED": 1,
+    "LIB-ISSTA-BUG-1": 1,
+    "LIB-ISSTA-BUG-3": 4,
+    "LIB-ISSTA-BUG-4": 13,
+    "LIB-ISSTA-BUG-5": 49
+  },
+  "new_sut_requests": 0,
+  "analyst_narrative_used": false
+}

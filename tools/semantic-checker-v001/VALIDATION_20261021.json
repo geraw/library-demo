@@ -1,0 +1,84 @@
+{
+  "archive_sha256": "7abd54bd10a41ac0491594ca679112140d92fbe0fb5553cccc04264d5e0d0895",
+  "profile": "library-issta-v006",
+  "arms": {
+    "control": {
+      "case_count": 542,
+      "evaluable_case_count": 542,
+      "status": "EVALUATED_RECORDED_CASES",
+      "matches_original_candidate_cases": true,
+      "external_evaluator": {
+        "confirmed_classes_in_evaluable_cases": [],
+        "candidate_classes_in_evaluable_cases": [],
+        "cases_with_candidates": 0
+      },
+      "native_failed_cases": [
+        "73",
+        "77"
+      ],
+      "native_failed_control_eligible_cases": [],
+      "native_metric_note": "Native JSON flags retained separately; not inferred from oracle candidates"
+    },
+    "business-four": {
+      "case_count": 542,
+      "evaluable_case_count": 542,
+      "status": "EVALUATED_RECORDED_CASES",
+      "matches_original_candidate_cases": true,
+      "external_evaluator": {
+        "confirmed_classes_in_evaluable_cases": [],
+        "candidate_classes_in_evaluable_cases": [
+          "bug-5-candidate"
+        ],
+        "cases_with_candidates": 22
+      },
+      "native_failed_cases": [
+        "73",
+        "77",
+        "80",
+        "257",
+        "260",
+        "266",
+        "433"
+      ],
+      "native_failed_control_eligible_cases": [
+        "80",
+        "257",
+        "260",
+        "266",
+        "433"
+      ],
+      "native_metric_note": "Native JSON flags retained separately; not inferred from oracle candidates"
+    },
+    "book-read-one": {
+      "case_count": 542,
+      "evaluable_case_count": 542,
+      "status": "EVALUATED_RECORDED_CASES",
+      "matches_original_candidate_cases": true,
+      "external_evaluator": {
+        "confirmed_classes_in_evaluable_cases": [],
+        "candidate_classes_in_evaluable_cases": [],
+        "cases_with_candidates": 0
+      },
+      "native_failed_cases": [
+        "73",
+        "77"
+      ],
+      "native_failed_control_eligible_cases": [],
+      "native_metric_note": "Native JSON flags retained separately; not inferred from oracle candidates"
+    }
+  },
+  "input_manifest_verified": true,
+  "work_provenance": {
+    "version": "v012",
+    "source_archive": "java-fixed-split-v011-20261020-201115-48880-review.zip",
+    "source_archive_sha256": "173407454d15833b4b503d977c5a2d0498a6b429c839f3b2ac7c0b602cd41b28",
+    "bundle_sha256": "eecfb354db010110ed97e6af2f40252350c064c93071a999ec9648b19559738e",
+    "original_jar_sha256": "e4e9ec6914d8ceb0e2fb91d2322472d8208d9c01b735412dbe4db3cacfd392cc",
+    "local_jar_sha256": "5a8140409e200fb752a97b7317e1b259e668383d9d42814063b3365f0044981b",
+    "same_jar_as_home": false,
+    "model_and_sut": "Exact source-archive bytes; restored from Base64 to avoid Git newline conversion",
+    "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+    "reference_directory": "C:\\work\\temp\\library-demo\\library\\ess-experiment\\runs\\work-reference-v012-j3jc90yo"
+  },
+  "validation": "PASS"
+}

@@ -1,0 +1,83 @@
+{
+  "schema_version": "natchan-observations/1",
+  "observations": [
+    {
+      "id": "synthetic-vik-create",
+      "product": "vikunja",
+      "product_version": "synthetic",
+      "run_id": "fixture",
+      "tool": "synthetic",
+      "source": {
+        "fixture": "synthetic-pair",
+        "record": 1
+      },
+      "operation": "create",
+      "entity": "example_entity",
+      "field": "name",
+      "status": 201,
+      "request": {
+        "name": "abcdef"
+      },
+      "after": {
+        "name": "abc"
+      },
+      "readable_writable_fields": [
+        "name"
+      ],
+      "state_evidence": {
+        "same_resource": true,
+        "same_actor": true,
+        "ordered": true,
+        "no_intervening_write": true,
+        "complete": true
+      },
+      "pair_id": "pair-1",
+      "pair_evidence": {
+        "same_schema_context": true,
+        "compatible_preconditions": true
+      }
+    },
+    {
+      "id": "synthetic-vik-update",
+      "product": "vikunja",
+      "product_version": "synthetic",
+      "run_id": "fixture",
+      "tool": "synthetic",
+      "source": {
+        "fixture": "synthetic-pair",
+        "record": 2
+      },
+      "operation": "update",
+      "entity": "example_entity",
+      "field": "name",
+      "status": 500,
+      "request": {
+        "name": "abcdef",
+        "other": "new"
+      },
+      "after": {
+        "name": "old",
+        "other": "new"
+      },
+      "readable_writable_fields": [
+        "name"
+      ],
+      "state_evidence": {
+        "same_resource": true,
+        "same_actor": true,
+        "ordered": true,
+        "no_intervening_write": true,
+        "complete": true
+      },
+      "pair_id": "pair-1",
+      "pair_evidence": {
+        "same_schema_context": true,
+        "compatible_preconditions": true
+      },
+      "before": {
+        "name": "old",
+        "other": "old"
+      }
+    }
+  ]
+}

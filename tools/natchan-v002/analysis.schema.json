@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Natchan connected analysis v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "evidence",
+    "runs",
+    "findings",
+    "status",
+    "control_comparison",
+    "summary",
+    "policy"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "natchan-analysis/1"
+    },
+    "evidence": {
+      "$ref": "evidence.schema.json"
+    },
+    "status": {
+      "enum": [
+        "complete",
+        "incomplete"
+      ]
+    },
+    "runs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "tool",
+          "product",
+          "product_gateway",
+          "semantic",
+          "native"
+        ]
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "run_id",
+          "case",
+          "case_ordinal",
+          "classification",
+          "qualification",
+          "rule",
+          "source_event_id",
+          "source",
+          "context_event_ids",
+          "evidence",
+          "candidate_classes"
+        ],
+        "properties": {
+          "classification": {
+            "const": "external_observation"
+          },
+          "qualification": {
+            "const": "candidate_requires_control_review"
+          },
+          "context_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "confirmed_unique_bug_count": {
+          "type": "null"
+        }
+      }
+    }
+  }
+}

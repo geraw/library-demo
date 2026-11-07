@@ -1,0 +1,96 @@
+{
+  "schema_version": "natchan-native/15",
+  "signature_counts": {
+    "GIT-LOG-MISSING-ISSUE-COMMENTS": 133,
+    "GIT-LOG-INIT-TEMPLATE": 28,
+    "GIT-LOG-LICENSE-TEMPLATE": 13,
+    "GIT-LOG-OWNER-TEAM-MISSING": 85,
+    "GIT-LOG-TEAM-UNIT-UNIQUE": 14,
+    "GIT-C1-SIGNATURE": 1,
+    "GIT-LOG-RELEASE-OBJECT-MISSING": 1
+  },
+  "code_inventory": [
+    {
+      "path": "/workspace/scratch/3b7d6a0cbaaa/natchan-update/baseline/repo/tools/natchan-v015/native_analysis.py",
+      "sha256": "529be5fa6d5a1d9b8fcab81ff9f2fa4e8346b4904290516edb2bd80343d7966f"
+    },
+    {
+      "path": "/workspace/scratch/3b7d6a0cbaaa/natchan-update/baseline/repo/tools/natchan-v015/log-signatures.json",
+      "sha256": "67ff2ae2bae1b424a60de883685fde4384df206933894dfc01142a9da4d18d7f"
+    }
+  ],
+  "new_sut_requests": 0,
+  "analyst_narrative_used": false,
+  "policy": [
+    "Signature matches are separate from common exact known-bug matches.",
+    "Error log counts are not additional HTTP failures; do not sum them.",
+    "Adjacent response candidates are not causal correlation or state evidence.",
+    "Unknown native fault count is not zero."
+  ],
+  "validation": {
+    "new_unit_tests_passed": 6,
+    "prior_gateway_tests_passed": 9,
+    "raw_integration_all_checks_passed": true
+  },
+  "runs": [
+    {
+      "id": "evomaster_rep1",
+      "http_5xx": 88,
+      "tool_nested_2xx": 601,
+      "native_fault_count": null,
+      "process_status": "failed",
+      "metadata_checks": {
+        "requests": true,
+        "http_500": true,
+        "tool_repo_2xx": true
+      },
+      "signature_counts": {
+        "GIT-LOG-MISSING-ISSUE-COMMENTS": 66,
+        "GIT-LOG-INIT-TEMPLATE": 10,
+        "GIT-LOG-LICENSE-TEMPLATE": 9,
+        "GIT-LOG-OWNER-TEAM-MISSING": 21,
+        "GIT-LOG-TEAM-UNIT-UNIQUE": 3
+      }
+    },
+    {
+      "id": "evomaster_rep2",
+      "http_5xx": 64,
+      "tool_nested_2xx": 673,
+      "native_fault_count": null,
+      "process_status": "failed",
+      "metadata_checks": {
+        "requests": true,
+        "http_500": true,
+        "tool_repo_2xx": true
+      },
+      "signature_counts": {
+        "GIT-LOG-INIT-TEMPLATE": 11,
+        "GIT-LOG-LICENSE-TEMPLATE": 2,
+        "GIT-LOG-MISSING-ISSUE-COMMENTS": 44,
+        "GIT-LOG-TEAM-UNIT-UNIQUE": 6,
+        "GIT-LOG-OWNER-TEAM-MISSING": 28,
+        "GIT-C1-SIGNATURE": 1
+      }
+    },
+    {
+      "id": "evomaster_rep3",
+      "http_5xx": 38,
+      "tool_nested_2xx": 326,
+      "native_fault_count": null,
+      "process_status": "failed",
+      "metadata_checks": {
+        "requests": true,
+        "http_500": true,
+        "tool_repo_2xx": true
+      },
+      "signature_counts": {
+        "GIT-LOG-TEAM-UNIT-UNIQUE": 5,
+        "GIT-LOG-MISSING-ISSUE-COMMENTS": 23,
+        "GIT-LOG-INIT-TEMPLATE": 7,
+        "GIT-LOG-OWNER-TEAM-MISSING": 36,
+        "GIT-LOG-LICENSE-TEMPLATE": 2,
+        "GIT-LOG-RELEASE-OBJECT-MISSING": 1
+      }
+    }
+  ]
+}

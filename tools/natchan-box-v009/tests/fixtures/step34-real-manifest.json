@@ -1,0 +1,165 @@
+{
+  "study_repository": "weissye/vikunja_study",
+  "study_commit": "d378389226c1af05e767ddb0db895fcc41bd368d",
+  "mealie_contract_repository": "weissye/mealie_sbt_study",
+  "mealie_contract_path": "model/mealie-openapi.v3.28.0.reviewed.json",
+  "mealie_contract_git_blob": "9ae6edeecab4f8b75aec460cb9b9795d9ee112d7",
+  "cases": [
+    {
+      "system": "mealie",
+      "journal": "results/mealie-v22rc2-20261028-075118/gateway-journal.jsonl",
+      "contract": "mealie-contract.json",
+      "witnesses": [
+        {
+          "reason": "SCALED_ACTION_NONLINEAR_DELTA",
+          "lines": [
+            17,
+            14,
+            15,
+            16
+          ]
+        },
+        {
+          "reason": "REFERENCE_TO_OBSERVED_ABSENT_RESOURCE",
+          "lines": [
+            88,
+            87
+          ]
+        },
+        {
+          "reason": "REFERENCE_TO_OBSERVED_ABSENT_RESOURCE",
+          "lines": [
+            126,
+            125
+          ]
+        },
+        {
+          "reason": "REFERENCE_TO_OBSERVED_ABSENT_RESOURCE",
+          "lines": [
+            127,
+            125
+          ]
+        },
+        {
+          "reason": "REFERENCE_TO_OBSERVED_ABSENT_RESOURCE",
+          "lines": [
+            221,
+            220
+          ]
+        },
+        {
+          "reason": "REFERENCE_TO_OBSERVED_ABSENT_RESOURCE",
+          "lines": [
+            237,
+            236
+          ]
+        },
+        {
+          "reason": "REFERENCE_TO_OBSERVED_ABSENT_RESOURCE",
+          "lines": [
+            253,
+            252
+          ]
+        },
+        {
+          "reason": "REFERENCE_TO_OBSERVED_ABSENT_RESOURCE",
+          "lines": [
+            304,
+            305
+          ]
+        },
+        {
+          "reason": "COPY_INTERNAL_REFERENCE_NOT_IN_COPIED_TARGETS",
+          "lines": [
+            315,
+            314
+          ]
+        }
+      ],
+      "journal_git_blob": "401b28e5ae94a9d8e29aa13b30d25a4c0838978f",
+      "journal_lf_sha256": "fa675474c8568a22d56b21f05c294e3de8885b4debbea771dfd8bdcaad8478e6",
+      "contract_json_sha256": "d0d6d6efe819172edaf2f838367c1597e4b1221ff56cb16b9f84b29b7c9be6ad",
+      "retrieved_journal_sha256": "04e97f695034f05e828d68d832d850639d2ee8c1b86b420a1b761304ec0934f5",
+      "retrieved_contract_sha256": "90e19aa713ab4ba15352627aca7dc37290f868b213eb65a3e1564f3b7a7ff292"
+    },
+    {
+      "system": "wger",
+      "journal": "results/wger-v22rc-20261028-071809/gateway-journal.jsonl",
+      "contract": "cycles/1-wger/config/contract.json",
+      "witnesses": [
+        {
+          "reason": "MOVE_AGGREGATE_TRANSFER_MISMATCH",
+          "lines": [
+            100,
+            93,
+            94,
+            97,
+            90,
+            98,
+            99
+          ]
+        },
+        {
+          "reason": "MOVE_AGGREGATE_TRANSFER_MISMATCH",
+          "lines": [
+            160,
+            150,
+            154,
+            157,
+            149,
+            158,
+            159
+          ]
+        },
+        {
+          "reason": "MOVE_AGGREGATE_TRANSFER_MISMATCH",
+          "lines": [
+            188,
+            178,
+            182,
+            185,
+            177,
+            186,
+            187
+          ]
+        }
+      ],
+      "journal_git_blob": "98d33b5fa077738c8ff3046698f0a63553237260",
+      "journal_lf_sha256": "af6fc7bb6b3e98ed1f81705020893a516d2da35dfba55b5a22421cddba517f11",
+      "contract_json_sha256": "70941110d5651c579d591610d44b28acc4e65b8401f54d3c18fd1b129db79a4c",
+      "retrieved_journal_sha256": "0c88aba569fb8c1fe6b64f61aa2eab828b4d2dab1620c00ec20979fc8da8970c",
+      "retrieved_contract_sha256": "bde797ca0ca17ed64b7fbd473a965385d27fb94fa51f19dd37cded10c854bf87"
+    },
+    {
+      "system": "vikunja",
+      "journal": "results/vikunja-v22rc3-fresh-20261028-085526/gateway-journal.jsonl",
+      "contract": "toolkit/v2.7/configs/vikunja/contract.json",
+      "witnesses": [
+        {
+          "reason": "MOVED_ENTITY_REMAINS_UNDER_OTHER_PARENT",
+          "lines": [
+            113,
+            111,
+            109,
+            112
+          ]
+        },
+        {
+          "reason": "MOVED_ENTITY_REMAINS_UNDER_OTHER_PARENT",
+          "lines": [
+            114,
+            111,
+            110,
+            112
+          ]
+        }
+      ],
+      "journal_git_blob": "3808a0ec0782c3f478505788014653cbf2508e06",
+      "journal_lf_sha256": "ec35df69b7c0e0a2d2290b667368c4a4577d799c9db7797808792d8e67bf9c87",
+      "contract_json_sha256": "c81a3387e21c8b6e86f02d39d0b8501a2aced8a1da43629370819beeda85d977",
+      "retrieved_journal_sha256": "b17163f7535491903d042ca0d2495fc579167d65c66b62d0ed1e365c3affbfb2",
+      "retrieved_contract_sha256": "8b8e5eb45f3e3981e8210d9223314c976af4f29999957a9d8b1113c393c2c43b"
+    }
+  ],
+  "verification": "Journal LF normalization and trailing blank-line normalization; parsed contract canonical JSON. Git blob identities verified separately against pinned repository. Supports Windows/Linux checkouts without changing source files."
+}

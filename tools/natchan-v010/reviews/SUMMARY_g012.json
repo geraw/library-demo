@@ -1,0 +1,753 @@
+{
+  "input_sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa",
+  "summary_by_cohort": [
+    {
+      "variant": "nightly",
+      "model": "g003",
+      "runs": 4,
+      "http_requests": 1848,
+      "http_5xx": 9,
+      "correlated_5xx": 9,
+      "native_statuses": {
+        "COMPLETED": 4
+      }
+    },
+    {
+      "variant": "nightly",
+      "model": "g009",
+      "runs": 4,
+      "http_requests": 1947,
+      "http_5xx": 17,
+      "correlated_5xx": 17,
+      "native_statuses": {
+        "STOPPED_AT_FIRST_FAILURE": 4
+      }
+    },
+    {
+      "variant": "postgres",
+      "model": "g003",
+      "runs": 4,
+      "http_requests": 1848,
+      "http_5xx": 43,
+      "correlated_5xx": 43,
+      "native_statuses": {
+        "COMPLETED": 4
+      }
+    },
+    {
+      "variant": "postgres",
+      "model": "g009",
+      "runs": 4,
+      "http_requests": 1858,
+      "http_5xx": 14,
+      "correlated_5xx": 14,
+      "native_statuses": {
+        "STOPPED_AT_FIRST_FAILURE": 4
+      }
+    }
+  ],
+  "nightly_behavioral_analogs_outside_catalog_versions": {
+    "GIT-C1": 10,
+    "GIT-C7": 5,
+    "GIT-C2": 12,
+    "GIT-C3": 2,
+    "GIT-O1": 2,
+    "GIT-O2": 3,
+    "GIT-C8": 4
+  },
+  "nightly_analog_note": "Executable semantic predicates only; not version-qualified known-bug matches. Catalog was not expanded.",
+  "original_oracle_counts": [
+    {
+      "variant": "nightly",
+      "model": "g003",
+      "category": "roundtrip-check",
+      "counts": {
+        "ok": 486,
+        "mismatch": 18
+      }
+    },
+    {
+      "variant": "nightly",
+      "model": "g009",
+      "category": "roundtrip-check",
+      "counts": {
+        "ok": 466
+      }
+    },
+    {
+      "variant": "nightly",
+      "model": "g009",
+      "category": "reference-check",
+      "counts": {
+        "ok": 12,
+        "silently_dropped": 24,
+        "crash": 9
+      }
+    },
+    {
+      "variant": "nightly",
+      "model": "g009",
+      "category": "link2-check",
+      "counts": {
+        "ok": 56,
+        "silently_dropped": 53,
+        "rejected": 10
+      }
+    },
+    {
+      "variant": "nightly",
+      "model": "g009",
+      "category": "atomicity-check",
+      "counts": {
+        "partial": 13,
+        "rolled_back": 4
+      }
+    },
+    {
+      "variant": "nightly",
+      "model": "g009",
+      "category": "divergence-check",
+      "counts": {
+        "same": 27,
+        "class_diverge": 13
+      }
+    },
+    {
+      "variant": "postgres",
+      "model": "g003",
+      "category": "roundtrip-check",
+      "counts": {
+        "ok": 454,
+        "mismatch": 17
+      }
+    },
+    {
+      "variant": "postgres",
+      "model": "g009",
+      "category": "roundtrip-check",
+      "counts": {
+        "ok": 450
+      }
+    },
+    {
+      "variant": "postgres",
+      "model": "g009",
+      "category": "link2-check",
+      "counts": {
+        "ok": 53,
+        "silently_dropped": 51,
+        "rejected": 10
+      }
+    },
+    {
+      "variant": "postgres",
+      "model": "g009",
+      "category": "reference-check",
+      "counts": {
+        "ok": 11,
+        "silently_dropped": 23,
+        "crash": 6
+      }
+    },
+    {
+      "variant": "postgres",
+      "model": "g009",
+      "category": "atomicity-check",
+      "counts": {
+        "partial": 10,
+        "rolled_back": 4
+      }
+    },
+    {
+      "variant": "postgres",
+      "model": "g009",
+      "category": "divergence-check",
+      "counts": {
+        "same": 22,
+        "class_diverge": 10
+      }
+    }
+  ],
+  "new_sut_requests": 0,
+  "runs": [
+    {
+      "id": "g012-nightly-g003-s1",
+      "variant": "nightly",
+      "model": "g003",
+      "seed": 1,
+      "version": "29.0.0+dev-175-g33610142c3",
+      "status": "COMPLETED",
+      "native_exit": 0,
+      "http_requests": 460,
+      "http_5xx": 3,
+      "correlated_5xx": 3,
+      "duration": 150.1,
+      "native_success_marker": true,
+      "ir_source_version": "28.1.0",
+      "source": {
+        "file": "g012-gitea-variants-20261021-203735.zip",
+        "archive_sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa",
+        "member": "review_nightly_g003_s1.zip",
+        "inner_archive_sha256": "94ab7c8b7ac79355a171ac5bdc5541e7916fc8cbc86c4a757bb74eaba08626c8",
+        "journal_member": "gateway-journal.jsonl",
+        "sha256": "c2a825a92d52c4f068e9b35449c5fe925756185e5e39942ef3772a663701b39b"
+      },
+      "producer_summary": {
+        "status": "COMPLETED",
+        "native_exit": 0,
+        "requests": 460,
+        "elapsed_seconds": 150.1
+      },
+      "strict_catalog_known_occurrences": {}
+    },
+    {
+      "id": "g012-nightly-g003-s2",
+      "variant": "nightly",
+      "model": "g003",
+      "seed": 2,
+      "version": "29.0.0+dev-175-g33610142c3",
+      "status": "COMPLETED",
+      "native_exit": 0,
+      "http_requests": 460,
+      "http_5xx": 2,
+      "correlated_5xx": 2,
+      "duration": 145.0,
+      "native_success_marker": true,
+      "ir_source_version": "28.1.0",
+      "source": {
+        "file": "g012-gitea-variants-20261021-203735.zip",
+        "archive_sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa",
+        "member": "review_nightly_g003_s2.zip",
+        "inner_archive_sha256": "7b3446232deaf37bceb453c754f17e1c46da488927dcef4c245b6499676721f7",
+        "journal_member": "gateway-journal.jsonl",
+        "sha256": "3ea3b0ab1214bbe5e6faf55c8b3c2ece27b5c63ad60dfbe2d0110eec8f58d219"
+      },
+      "producer_summary": {
+        "status": "COMPLETED",
+        "native_exit": 0,
+        "requests": 460,
+        "elapsed_seconds": 145.0
+      },
+      "strict_catalog_known_occurrences": {}
+    },
+    {
+      "id": "g012-nightly-g003-s3",
+      "variant": "nightly",
+      "model": "g003",
+      "seed": 3,
+      "version": "29.0.0+dev-175-g33610142c3",
+      "status": "COMPLETED",
+      "native_exit": 0,
+      "http_requests": 464,
+      "http_5xx": 1,
+      "correlated_5xx": 1,
+      "duration": 137.4,
+      "native_success_marker": true,
+      "ir_source_version": "28.1.0",
+      "source": {
+        "file": "g012-gitea-variants-20261021-203735.zip",
+        "archive_sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa",
+        "member": "review_nightly_g003_s3.zip",
+        "inner_archive_sha256": "ba128c6c3dc27d13dfc090a134a64d86c0146f924c4b90ccfdb993d3817c4b4c",
+        "journal_member": "gateway-journal.jsonl",
+        "sha256": "a78284cbd8c44e2b017c59d12bbc3b663f5ad87b02b295c53ddbb285021bb81c"
+      },
+      "producer_summary": {
+        "status": "COMPLETED",
+        "native_exit": 0,
+        "requests": 464,
+        "elapsed_seconds": 137.4
+      },
+      "strict_catalog_known_occurrences": {}
+    },
+    {
+      "id": "g012-nightly-g003-s4",
+      "variant": "nightly",
+      "model": "g003",
+      "seed": 4,
+      "version": "29.0.0+dev-175-g33610142c3",
+      "status": "COMPLETED",
+      "native_exit": 0,
+      "http_requests": 464,
+      "http_5xx": 3,
+      "correlated_5xx": 3,
+      "duration": 145.8,
+      "native_success_marker": true,
+      "ir_source_version": "28.1.0",
+      "source": {
+        "file": "g012-gitea-variants-20261021-203735.zip",
+        "archive_sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa",
+        "member": "review_nightly_g003_s4.zip",
+        "inner_archive_sha256": "d5826a1b630f4bd7c98c117b841e31399f8033cffb9a873d86f080fcf959917c",
+        "journal_member": "gateway-journal.jsonl",
+        "sha256": "4ea247ce15d3c1de7d824eb61a7c14a3391262f665482c02e7ebdfc7244d34e1"
+      },
+      "producer_summary": {
+        "status": "COMPLETED",
+        "native_exit": 0,
+        "requests": 464,
+        "elapsed_seconds": 145.8
+      },
+      "strict_catalog_known_occurrences": {}
+    },
+    {
+      "id": "g012-nightly-g009-s1",
+      "variant": "nightly",
+      "model": "g009",
+      "seed": 1,
+      "version": "29.0.0+dev-175-g33610142c3",
+      "status": "STOPPED_AT_FIRST_FAILURE",
+      "native_exit": 1,
+      "http_requests": 493,
+      "http_5xx": 5,
+      "correlated_5xx": 5,
+      "duration": 181.8,
+      "native_success_marker": false,
+      "ir_source_version": "28.1.0",
+      "source": {
+        "file": "g012-gitea-variants-20261021-203735.zip",
+        "archive_sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa",
+        "member": "review_nightly_g009_s1.zip",
+        "inner_archive_sha256": "1c304ba4db2742d30a21be974b822dfa46c6e3b34699400b4ab58b130ad03fc9",
+        "journal_member": "gateway-journal.jsonl",
+        "sha256": "5f77d406624215acf579243a7a3f7f049bd60d0119f89d547763ae65269211f8"
+      },
+      "producer_summary": {
+        "status": "STOPPED_AT_FIRST_FAILURE",
+        "native_exit": 1,
+        "requests": 493,
+        "elapsed_seconds": 181.8
+      },
+      "strict_catalog_known_occurrences": {}
+    },
+    {
+      "id": "g012-nightly-g009-s2",
+      "variant": "nightly",
+      "model": "g009",
+      "seed": 2,
+      "version": "29.0.0+dev-175-g33610142c3",
+      "status": "STOPPED_AT_FIRST_FAILURE",
+      "native_exit": 1,
+      "http_requests": 477,
+      "http_5xx": 4,
+      "correlated_5xx": 4,
+      "duration": 183.7,
+      "native_success_marker": false,
+      "ir_source_version": "28.1.0",
+      "source": {
+        "file": "g012-gitea-variants-20261021-203735.zip",
+        "archive_sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa",
+        "member": "review_nightly_g009_s2.zip",
+        "inner_archive_sha256": "11c512eeb3a95a159b84956bb1d86744ee09d51ee10a04a5f03537787b636295",
+        "journal_member": "gateway-journal.jsonl",
+        "sha256": "b06f8947eb690eb25618a05efb001bd4dd22053bea23ba25480b522c3b4895f8"
+      },
+      "producer_summary": {
+        "status": "STOPPED_AT_FIRST_FAILURE",
+        "native_exit": 1,
+        "requests": 477,
+        "elapsed_seconds": 183.7
+      },
+      "strict_catalog_known_occurrences": {}
+    },
+    {
+      "id": "g012-nightly-g009-s3",
+      "variant": "nightly",
+      "model": "g009",
+      "seed": 3,
+      "version": "29.0.0+dev-175-g33610142c3",
+      "status": "STOPPED_AT_FIRST_FAILURE",
+      "native_exit": 1,
+      "http_requests": 493,
+      "http_5xx": 5,
+      "correlated_5xx": 5,
+      "duration": 188.0,
+      "native_success_marker": false,
+      "ir_source_version": "28.1.0",
+      "source": {
+        "file": "g012-gitea-variants-20261021-203735.zip",
+        "archive_sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa",
+        "member": "review_nightly_g009_s3.zip",
+        "inner_archive_sha256": "79c024755ecd99c6dbbf643bf4c40c1721f69e7d2287a1e458ff33940fa38d96",
+        "journal_member": "gateway-journal.jsonl",
+        "sha256": "c5e753e56f758251ea808caf3f1c74be97743f03cc5cb0cf3f274bc9809351aa"
+      },
+      "producer_summary": {
+        "status": "STOPPED_AT_FIRST_FAILURE",
+        "native_exit": 1,
+        "requests": 493,
+        "elapsed_seconds": 188.0
+      },
+      "strict_catalog_known_occurrences": {}
+    },
+    {
+      "id": "g012-nightly-g009-s4",
+      "variant": "nightly",
+      "model": "g009",
+      "seed": 4,
+      "version": "29.0.0+dev-175-g33610142c3",
+      "status": "STOPPED_AT_FIRST_FAILURE",
+      "native_exit": 1,
+      "http_requests": 484,
+      "http_5xx": 3,
+      "correlated_5xx": 3,
+      "duration": 208.5,
+      "native_success_marker": false,
+      "ir_source_version": "28.1.0",
+      "source": {
+        "file": "g012-gitea-variants-20261021-203735.zip",
+        "archive_sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa",
+        "member": "review_nightly_g009_s4.zip",
+        "inner_archive_sha256": "498273c4e7f50c2bdb80a893b6079edb9e53a9a697a1be15206e6b48f832b3dd",
+        "journal_member": "gateway-journal.jsonl",
+        "sha256": "5447a74eed3d9f47396a5abf08f273772981666bb915c853fca08298f842fb41"
+      },
+      "producer_summary": {
+        "status": "STOPPED_AT_FIRST_FAILURE",
+        "native_exit": 1,
+        "requests": 484,
+        "elapsed_seconds": 208.5
+      },
+      "strict_catalog_known_occurrences": {}
+    },
+    {
+      "id": "g012-postgres-g003-s1",
+      "variant": "postgres",
+      "model": "g003",
+      "seed": 1,
+      "version": "28.1.0",
+      "status": "COMPLETED",
+      "native_exit": 0,
+      "http_requests": 460,
+      "http_5xx": 13,
+      "correlated_5xx": 13,
+      "duration": 133.2,
+      "native_success_marker": true,
+      "ir_source_version": "28.1.0",
+      "source": {
+        "file": "g012-gitea-variants-20261021-203735.zip",
+        "archive_sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa",
+        "member": "review_postgres_g003_s1.zip",
+        "inner_archive_sha256": "daac4c01fabd2652a53769f1d283f55dfb2756c473a3ae806e60f923c8aebc7a",
+        "journal_member": "gateway-journal.jsonl",
+        "sha256": "3094d3377cedf37e8e255b4cdf465587235123dc26b5d8d1590cb59307dce3c2"
+      },
+      "producer_summary": {
+        "status": "COMPLETED",
+        "native_exit": 0,
+        "requests": 460,
+        "elapsed_seconds": 133.2
+      },
+      "strict_catalog_known_occurrences": {
+        "GIT-C1": 2,
+        "GIT-C7": 1,
+        "GIT-C2": 1
+      }
+    },
+    {
+      "id": "g012-postgres-g003-s2",
+      "variant": "postgres",
+      "model": "g003",
+      "seed": 2,
+      "version": "28.1.0",
+      "status": "COMPLETED",
+      "native_exit": 0,
+      "http_requests": 460,
+      "http_5xx": 8,
+      "correlated_5xx": 8,
+      "duration": 119.9,
+      "native_success_marker": true,
+      "ir_source_version": "28.1.0",
+      "source": {
+        "file": "g012-gitea-variants-20261021-203735.zip",
+        "archive_sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa",
+        "member": "review_postgres_g003_s2.zip",
+        "inner_archive_sha256": "34e36bd91bba1da6e8558797b6d649f97866dd3d442db945b04292726e739332",
+        "journal_member": "gateway-journal.jsonl",
+        "sha256": "79eadc629aabfb5668cec86f2e6f521bf311dd1be202e7d1cf7f9945c11cb0c0"
+      },
+      "producer_summary": {
+        "status": "COMPLETED",
+        "native_exit": 0,
+        "requests": 460,
+        "elapsed_seconds": 119.9
+      },
+      "strict_catalog_known_occurrences": {
+        "GIT-C1": 1,
+        "GIT-C7": 1,
+        "GIT-C2": 1,
+        "GIT-C3": 2
+      }
+    },
+    {
+      "id": "g012-postgres-g003-s3",
+      "variant": "postgres",
+      "model": "g003",
+      "seed": 3,
+      "version": "28.1.0",
+      "status": "COMPLETED",
+      "native_exit": 0,
+      "http_requests": 464,
+      "http_5xx": 14,
+      "correlated_5xx": 14,
+      "duration": 121.0,
+      "native_success_marker": true,
+      "ir_source_version": "28.1.0",
+      "source": {
+        "file": "g012-gitea-variants-20261021-203735.zip",
+        "archive_sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa",
+        "member": "review_postgres_g003_s3.zip",
+        "inner_archive_sha256": "195e9771635a6bd89ee0c0b7327875721e57ccb5ec953092e9d1fbca0204d806",
+        "journal_member": "gateway-journal.jsonl",
+        "sha256": "a5057e824d03061a501a3fd336065e6185b6f5882fd035768dd6bf8041ab9ea7"
+      },
+      "producer_summary": {
+        "status": "COMPLETED",
+        "native_exit": 0,
+        "requests": 464,
+        "elapsed_seconds": 121.0
+      },
+      "strict_catalog_known_occurrences": {
+        "GIT-C1": 1,
+        "GIT-C7": 1,
+        "GIT-O1": 1,
+        "GIT-O2": 1
+      }
+    },
+    {
+      "id": "g012-postgres-g003-s4",
+      "variant": "postgres",
+      "model": "g003",
+      "seed": 4,
+      "version": "28.1.0",
+      "status": "COMPLETED",
+      "native_exit": 0,
+      "http_requests": 464,
+      "http_5xx": 8,
+      "correlated_5xx": 8,
+      "duration": 120.0,
+      "native_success_marker": true,
+      "ir_source_version": "28.1.0",
+      "source": {
+        "file": "g012-gitea-variants-20261021-203735.zip",
+        "archive_sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa",
+        "member": "review_postgres_g003_s4.zip",
+        "inner_archive_sha256": "affda3b24963b400d223d4df6ef7a52757c6e85937a3d1bf014ed8bcebd3d170",
+        "journal_member": "gateway-journal.jsonl",
+        "sha256": "ffa993a4beb6e85edf382fd67c68c2b685a76bd76d850aac26130eec67429b79"
+      },
+      "producer_summary": {
+        "status": "COMPLETED",
+        "native_exit": 0,
+        "requests": 464,
+        "elapsed_seconds": 120.0
+      },
+      "strict_catalog_known_occurrences": {
+        "GIT-C1": 1,
+        "GIT-C7": 1,
+        "GIT-O1": 1,
+        "GIT-O2": 2,
+        "GIT-C2": 1
+      }
+    },
+    {
+      "id": "g012-postgres-g009-s1",
+      "variant": "postgres",
+      "model": "g009",
+      "seed": 1,
+      "version": "28.1.0",
+      "status": "STOPPED_AT_FIRST_FAILURE",
+      "native_exit": 1,
+      "http_requests": 400,
+      "http_5xx": 2,
+      "correlated_5xx": 2,
+      "duration": 126.5,
+      "native_success_marker": false,
+      "ir_source_version": "28.1.0",
+      "source": {
+        "file": "g012-gitea-variants-20261021-203735.zip",
+        "archive_sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa",
+        "member": "review_postgres_g009_s1.zip",
+        "inner_archive_sha256": "a03ff503f55cf21a493fadc5e3c0beafc9edae7c053395ccb1fb0a723accac10",
+        "journal_member": "gateway-journal.jsonl",
+        "sha256": "fcb4e20e56aa9f76f4791ef35e2a00271beea589c1f70e0e54d39c97dbd0fb2d"
+      },
+      "producer_summary": {
+        "status": "STOPPED_AT_FIRST_FAILURE",
+        "native_exit": 1,
+        "requests": 400,
+        "elapsed_seconds": 126.5
+      },
+      "strict_catalog_known_occurrences": {
+        "GIT-C1": 1,
+        "GIT-C8": 1
+      }
+    },
+    {
+      "id": "g012-postgres-g009-s2",
+      "variant": "postgres",
+      "model": "g009",
+      "seed": 2,
+      "version": "28.1.0",
+      "status": "STOPPED_AT_FIRST_FAILURE",
+      "native_exit": 1,
+      "http_requests": 487,
+      "http_5xx": 3,
+      "correlated_5xx": 3,
+      "duration": 152.8,
+      "native_success_marker": false,
+      "ir_source_version": "28.1.0",
+      "source": {
+        "file": "g012-gitea-variants-20261021-203735.zip",
+        "archive_sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa",
+        "member": "review_postgres_g009_s2.zip",
+        "inner_archive_sha256": "bc076ea129904f1f7fb13c856367fd692e214c075642807182b38834f507909e",
+        "journal_member": "gateway-journal.jsonl",
+        "sha256": "0b8ad8e23c62b688ae396295ba1a52b5fe1caa9880349b7e7fa633035237e7eb"
+      },
+      "producer_summary": {
+        "status": "STOPPED_AT_FIRST_FAILURE",
+        "native_exit": 1,
+        "requests": 487,
+        "elapsed_seconds": 152.8
+      },
+      "strict_catalog_known_occurrences": {
+        "GIT-C1": 1,
+        "GIT-C2": 1,
+        "GIT-C8": 1
+      }
+    },
+    {
+      "id": "g012-postgres-g009-s3",
+      "variant": "postgres",
+      "model": "g009",
+      "seed": 3,
+      "version": "28.1.0",
+      "status": "STOPPED_AT_FIRST_FAILURE",
+      "native_exit": 1,
+      "http_requests": 499,
+      "http_5xx": 5,
+      "correlated_5xx": 5,
+      "duration": 147.0,
+      "native_success_marker": false,
+      "ir_source_version": "28.1.0",
+      "source": {
+        "file": "g012-gitea-variants-20261021-203735.zip",
+        "archive_sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa",
+        "member": "review_postgres_g009_s3.zip",
+        "inner_archive_sha256": "c8af7901a58e2aa7244d5fc14f15d9c2185d7400176fb7b2fdcd5bf123a49512",
+        "journal_member": "gateway-journal.jsonl",
+        "sha256": "a69d4c9aca5030b5dcd1d6db007d8e2a76fafefde37f015553f656322f2137e4"
+      },
+      "producer_summary": {
+        "status": "STOPPED_AT_FIRST_FAILURE",
+        "native_exit": 1,
+        "requests": 499,
+        "elapsed_seconds": 147.0
+      },
+      "strict_catalog_known_occurrences": {
+        "GIT-C1": 1,
+        "GIT-C2": 3,
+        "GIT-C8": 1
+      }
+    },
+    {
+      "id": "g012-postgres-g009-s4",
+      "variant": "postgres",
+      "model": "g009",
+      "seed": 4,
+      "version": "28.1.0",
+      "status": "STOPPED_AT_FIRST_FAILURE",
+      "native_exit": 1,
+      "http_requests": 472,
+      "http_5xx": 4,
+      "correlated_5xx": 4,
+      "duration": 169.7,
+      "native_success_marker": false,
+      "ir_source_version": "28.1.0",
+      "source": {
+        "file": "g012-gitea-variants-20261021-203735.zip",
+        "archive_sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa",
+        "member": "review_postgres_g009_s4.zip",
+        "inner_archive_sha256": "4fb0c8b416a67e3a4070f14c447f82d6b63f5020f20bda80d8583fc5c1130f50",
+        "journal_member": "gateway-journal.jsonl",
+        "sha256": "1f75cdd7098cbcd27b258c0e9fff470cdd41ee49abd027523afe14246cc9f8a4"
+      },
+      "producer_summary": {
+        "status": "STOPPED_AT_FIRST_FAILURE",
+        "native_exit": 1,
+        "requests": 472,
+        "elapsed_seconds": 169.7
+      },
+      "strict_catalog_known_occurrences": {
+        "GIT-C1": 1,
+        "GIT-C2": 2,
+        "GIT-C8": 1
+      }
+    }
+  ],
+  "error_causes": {
+    "missing_assignee": 19,
+    "missing_milestone": 21,
+    "missing_git_object": 8,
+    "postgres_nul": 27,
+    "postgres_varchar_limit": 8
+  },
+  "postgres_failure_groups": {
+    "postgres_nul": {
+      "occurrences": 27,
+      "entities": {
+        "organization": 7,
+        "team": 2,
+        "label": 4,
+        "issue": 8,
+        "milestone": 4,
+        "comment": 2
+      }
+    },
+    "postgres_varchar_limit": {
+      "occurrences": 8,
+      "entities": {
+        "label": 4,
+        "milestone": 2,
+        "issue": 2
+      }
+    }
+  },
+  "atomicity_field_measurements": [
+    {
+      "variant": "nightly",
+      "states": {
+        "partial": 13,
+        "rolled_back": 4
+      },
+      "full_snapshots_verified": false
+    },
+    {
+      "variant": "postgres",
+      "states": {
+        "partial": 10,
+        "rolled_back": 4
+      },
+      "full_snapshots_verified": false
+    }
+  ],
+  "sqlite_comparison": {
+    "pairs": 35,
+    "unique_exact_request_matches": 35,
+    "baseline_status_counts": {
+      "201": 21,
+      "200": 12,
+      "422": 1,
+      "500": 1
+    },
+    "limitation": "Same seed/session/action/logical ID/method/input body on previous 28.1.0 SQLite campaign; not a randomized isolated database intervention"
+  },
+  "validation": {
+    "test_count": 7,
+    "result": "PASS",
+    "raw_request_count_parity": true,
+    "inner_outer_result_parity": true,
+    "all_83_http_errors_correlated": true
+  }
+}

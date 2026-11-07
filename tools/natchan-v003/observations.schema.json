@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Natchan normalized observations v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "observations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "natchan-observations/1"
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "product",
+          "run_id",
+          "source"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "product": {
+            "type": "string"
+          },
+          "product_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "run_id": {
+            "type": "string"
+          },
+          "source": {
+            "type": "object"
+          },
+          "status": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "facts": {
+            "type": "object"
+          },
+          "fact_basis": {
+            "enum": [
+              "recomputed",
+              "imported_oracle",
+              "declared"
+            ]
+          },
+          "state_evidence": {
+            "type": "object"
+          },
+          "pair_evidence": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  }
+}

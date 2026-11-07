@@ -1,0 +1,118 @@
+{
+  "schema_version": "natchan-corpus/1",
+  "datasets": [
+    {
+      "id": "baseline-corpus",
+      "adapter": "coverage-v005",
+      "manifest": "tools/natchan-v005/manifest-coverage-v005.json",
+      "evidence_root": "natchan-history/coverage"
+    },
+    {
+      "id": "gitea-cloud",
+      "adapter": "cloud-v006",
+      "manifest": "tools/natchan-v006/manifest-cloud-v006.json",
+      "evidence_root": "natchan-history/coverage-new"
+    },
+    {
+      "id": "g012",
+      "adapter": "gitea-review-bundle",
+      "path": "upload/g012-gitea-variants-20261021-203735.zip"
+    },
+    {
+      "id": "g005-http",
+      "adapter": "gitea-review-bundle",
+      "path": "natchan-history/family-coverage/results/gitea-g005-home-20261020"
+    },
+    {
+      "id": "g005-sequences",
+      "adapter": "g005-sequence-rules",
+      "path": "natchan-history/family-coverage/results/gitea-g005-home-20261020"
+    },
+    {
+      "id": "v164",
+      "adapter": "vikunja-adj-records",
+      "path": "natchan-history/family-coverage/results/check-v164-work-20261018/evidence/v164-triggers-20261018-153232-redacted.zip",
+      "version": "2.6.0",
+      "contract": "natchan-history/coverage/results/confirm-v185-cloud-20261020/cloud-v2.7.0/contract.json"
+    },
+    {
+      "id": "native-v153",
+      "adapter": "baseline-native",
+      "path": "natchan-history/report-corrections/results/compare-v153-20261017"
+    }
+  ],
+  "locked_sources": [
+    {
+      "path": "natchan-history/family-coverage/results/check-v164-work-20261018/evidence/v164-triggers-20261018-153232-redacted.zip",
+      "sha256": "a76fa16735830a838ac8720fcf4db8c8e826b7e6626e942814ba615a890de502"
+    },
+    {
+      "path": "natchan-history/family-coverage/results/gitea-g005-home-20261020/review_g005_s5.zip",
+      "sha256": "e9b22ac663d6142c4d59167992207a1e26f870a189b2045b015648f73ecc13d4"
+    },
+    {
+      "path": "natchan-history/family-coverage/results/gitea-g005-home-20261020/review_g005_s6.zip",
+      "sha256": "27c6ed00bc72d4d2708e7f97ddb6f7dafb63a5ba8cd1529265e78a4edfeb1097"
+    },
+    {
+      "path": "natchan-history/family-coverage/results/gitea-g005-home-20261020/review_g005_s7.zip",
+      "sha256": "b83d44ac63fea4f580e2f7d58c14d971e1f2059269ec8265ee0ab487696d93bb"
+    },
+    {
+      "path": "natchan-history/family-coverage/results/gitea-g005-home-20261020/review_g005_s8.zip",
+      "sha256": "a8f2ebc62a073a6e3420e17f49ea01c8e65629f9c2d796d6e376387b709cfe9e"
+    },
+    {
+      "path": "natchan-history/report-corrections/results/compare-v153-20261017/evomaster_rep1/report.json",
+      "sha256": "9172948b5dfca9bb8e1db8e9784a028ce952f72cd905d39fa81e497077eee61f"
+    },
+    {
+      "path": "natchan-history/report-corrections/results/compare-v153-20261017/evomaster_rep1/sut-lock-context.log",
+      "sha256": "1f741b5b21aa8144b2fba55159b8fc1a35eb2ab7575105ebdc3925908ff69379"
+    },
+    {
+      "path": "natchan-history/report-corrections/results/compare-v153-20261017/evomaster_rep1/tool-console.log",
+      "sha256": "4b358362f4bfd1dc274fb4ea0cbcdd5b11f2f0d8bc5bfca33b5b183ddb709360"
+    },
+    {
+      "path": "natchan-history/report-corrections/results/compare-v153-20261017/evomaster_rep2/report.json",
+      "sha256": "4f3dfbd45bf17e01d1f34ff19fa2c3251311d228e70a4e56f2f434fbc9b1bb8f"
+    },
+    {
+      "path": "natchan-history/report-corrections/results/compare-v153-20261017/evomaster_rep2/sut-lock-context.log",
+      "sha256": "3a95b63aa2c1768eb962dcbc6011683f4355f442dcec863958b2cfdaacda2adf"
+    },
+    {
+      "path": "natchan-history/report-corrections/results/compare-v153-20261017/evomaster_rep2/tool-console.log",
+      "sha256": "1e132b22856a169a0c9528643bfb04abfdd66b37394a15a7a3661e3d496fda99"
+    },
+    {
+      "path": "natchan-history/report-corrections/results/compare-v153-20261017/evomaster_rep3/report.json",
+      "sha256": "860dc2b4f0d6cab700eb072de6761b4d2bf05a9710b6ab0e8b3466a1200635b6"
+    },
+    {
+      "path": "natchan-history/report-corrections/results/compare-v153-20261017/evomaster_rep3/sut-lock-context.log",
+      "sha256": "f4660543ae95c0cc09846cea6f73016bbf22792e4e7b4aed7aa2b8f142e72cf4"
+    },
+    {
+      "path": "natchan-history/report-corrections/results/compare-v153-20261017/evomaster_rep3/tool-console.log",
+      "sha256": "881ca141b165695ba818ec1644c8fcdeac0bb53297e5273c823290a536ea839f"
+    },
+    {
+      "path": "natchan-history/report-corrections/results/compare-v153-20261017/schemathesis_rep1/junit-20261017T194756Z.xml",
+      "sha256": "550393b0dcc1ac589a256611346c99ac5426dfcf46c40a5ae452424ab23e442b"
+    },
+    {
+      "path": "natchan-history/report-corrections/results/compare-v153-20261017/schemathesis_rep2/junit-20261017T200811Z.xml",
+      "sha256": "331b9263934a79ac7e43fa0f6d8bfdadbf05410829b4ad872594613c40858c8d"
+    },
+    {
+      "path": "natchan-history/report-corrections/results/compare-v153-20261017/schemathesis_rep3/junit-20261017T202825Z.xml",
+      "sha256": "b084e4e3c98377e237650700057e3d8584d97fdacebb65170b46883bf61950ad"
+    },
+    {
+      "path": "upload/g012-gitea-variants-20261021-203735.zip",
+      "sha256": "93bbd055a88a57b4bb0d612ab8c2c37b2e454c6e46a751c112eb940640dab1fa"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "schema_version": "natchan-parity-expectations/1",
+  "sources": [
+    "findings/FINDINGS_INDEX_v185.md",
+    "results/gitea-g007-work-20261021/NOTE.md",
+    "results/gitea-g009-work-20261021/NOTE.md"
+  ],
+  "expectations": [
+    {
+      "scope": "gitea-g007-work",
+      "metric": "http_5xx",
+      "expected": 9
+    },
+    {
+      "scope": "gitea-g007-work",
+      "metric": "original_partial_oracles",
+      "expected": 9
+    },
+    {
+      "scope": "gitea-g007-work",
+      "metric": "adjacency_5xx",
+      "expected": 0,
+      "eligible": 503
+    },
+    {
+      "scope": "gitea-g009-work",
+      "metric": "GIT-C8_runs",
+      "expected": 4
+    },
+    {
+      "scope": "vikunja-2.6.0",
+      "metric": "VIK-F06_occurrences",
+      "expected": 30
+    },
+    {
+      "scope": "vikunja-2.7.0",
+      "metric": "VIK-F06_occurrences",
+      "expected": 30
+    }
+  ],
+  "required_known_signatures": {
+    "vikunja": [
+      "VIK-F02",
+      "VIK-F04",
+      "VIK-F05",
+      "VIK-F06"
+    ],
+    "gitea": [
+      "GIT-C1",
+      "GIT-C2",
+      "GIT-C8",
+      "GIT-C3"
+    ]
+  },
+  "expected_unresolved": {
+    "VIK-F01": "Run-level lock log available but per-request timestamp correlation absent from transcript",
+    "VIK-F03": "Not rechecked in selected v185 evidence; older evidence must be analyzed separately",
+    "GIT-C4..C7": "Cloud has oracle checks only; no complete HTTP transcript or original server logs in retained cloud folder",
+    "atomicity_independent_recheck": "Gitea ATOM field outcomes retained; full snapshots absent"
+  },
+  "initial_expectations_frozen_before_first_classifier_run": true,
+  "subsequent_manual_additions": [
+    {
+      "id": "GIT-C3",
+      "source": "results/gitea-g003-home-20261020/NOTE.md",
+      "timing": "Read after initial run, before implementing C3 detection. Counts not used as detector inputs."
+    }
+  ]
+}

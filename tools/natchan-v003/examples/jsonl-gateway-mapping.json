@@ -1,0 +1,17 @@
+{
+  "format": "jsonl",
+  "id_prefix": "gateway-record",
+  "defaults": {"product": "vikunja", "run_id": "replace-run-id", "tool": "provengo"},
+  "fields": {
+    "status": "status",
+    "request": "request",
+    "response": "response",
+    "before": "before",
+    "after": "after",
+    "operation": "operation",
+    "entity": "entity",
+    "field": "field",
+    "state_evidence": "state_evidence",
+    "readable_writable_fields": "readable_writable_fields"
+  }
+}

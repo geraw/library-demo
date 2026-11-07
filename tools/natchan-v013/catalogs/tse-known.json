@@ -1,0 +1,1078 @@
+{
+  "schema_version": "natchan-catalog/1",
+  "entries": [
+    {
+      "id": "VIK-F02",
+      "kind": "known_bug",
+      "title": "Accepted and persisted empty label title",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [
+        "2.6.0",
+        "2.7.0"
+      ],
+      "all": [
+        {
+          "fact": "entity",
+          "op": "eq",
+          "value": "labels"
+        },
+        {
+          "fact": "empty_title_stored",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "readback_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Source-linked HTTP response and all predicate witnesses; signature match is not root-cause proof"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "findings/FINDINGS_INDEX_v185.md",
+          "verification": "Historical description read before rule implementation; raw values evaluated separately",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "findings/FINDINGS_INDEX_v185.md",
+            "git_blob_sha": "95370d68bae9701b34437af03f86f5e34deef9e6",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "כותרת label ריקה מתקבלת ונמדדת בקריאה חוזרת"
+    },
+    {
+      "id": "VIK-F04",
+      "kind": "known_bug",
+      "title": "Accepted cover reference makes own-representation update fail",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [
+        "2.6.0",
+        "2.7.0"
+      ],
+      "all": [
+        {
+          "fact": "accepted_cover_then_noop_rejected",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "response_code",
+          "op": "eq",
+          "value": 4020
+        },
+        {
+          "fact": "invalid_cover_reference_observed",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Source-linked HTTP response and all predicate witnesses; signature match is not root-cause proof"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "findings/FINDINGS_INDEX_v185.md",
+          "verification": "Historical description read before rule implementation; raw values evaluated separately",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "findings/FINDINGS_INDEX_v185.md",
+            "git_blob_sha": "95370d68bae9701b34437af03f86f5e34deef9e6",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "הפניית cover לא תקינה מתקבלת; עדכון חוזר נדחה בקוד 4020"
+    },
+    {
+      "id": "VIK-F05",
+      "kind": "known_bug",
+      "title": "Seventh non-prefix color character lost on persisted readback",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [
+        "2.6.0",
+        "2.7.0"
+      ],
+      "all": [
+        {
+          "fact": "color_seventh_character_lost",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "readback_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Source-linked HTTP response and all predicate witnesses; signature match is not root-cause proof"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "findings/FINDINGS_INDEX_v185.md",
+          "verification": "Historical description read before rule implementation; raw values evaluated separately",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "findings/FINDINGS_INDEX_v185.md",
+            "git_blob_sha": "95370d68bae9701b34437af03f86f5e34deef9e6",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "התו השביעי בצבע נחתך בקריאה חוזרת"
+    },
+    {
+      "id": "VIK-F06",
+      "kind": "known_bug",
+      "title": "Link-share password exceeding 72 UTF-8 bytes receives server error",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [
+        "2.6.0",
+        "2.7.0"
+      ],
+      "all": [
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "share_password_context",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "password_byte_lower_bound",
+          "op": "gte",
+          "value": 73
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Source-linked HTTP response and all predicate witnesses; signature match is not root-cause proof"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "findings/FINDINGS_INDEX_v185.md",
+          "verification": "Historical description read before rule implementation; raw values evaluated separately",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "findings/FINDINGS_INDEX_v185.md",
+            "git_blob_sha": "95370d68bae9701b34437af03f86f5e34deef9e6",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "סיסמת share מעל 72 בתים מקבלת שגיאת שרת"
+    },
+    {
+      "id": "VIK-O04",
+      "kind": "known_bug",
+      "title": "Accepted empty task title ignored",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [
+        "2.6.0",
+        "2.7.0"
+      ],
+      "all": [
+        {
+          "fact": "empty_task_title_ignored",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "readback_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Source-linked HTTP response and all predicate witnesses; signature match is not root-cause proof"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "findings/FINDINGS_INDEX_v185.md",
+          "verification": "Historical description read before rule implementation; raw values evaluated separately",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "findings/FINDINGS_INDEX_v185.md",
+            "git_blob_sha": "95370d68bae9701b34437af03f86f5e34deef9e6",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "עדכון כותרת משימה לריק מתקבל ואינו מוחל"
+    },
+    {
+      "id": "VIK-O05",
+      "kind": "known_bug",
+      "title": "Accepted project blur hash update ignored",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [
+        "2.6.0",
+        "2.7.0"
+      ],
+      "all": [
+        {
+          "fact": "entity",
+          "op": "eq",
+          "value": "projects"
+        },
+        {
+          "fact": "blur_hash_ignored_on_update",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "readback_verified",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "client_create_value_retained",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Source-linked HTTP response and all predicate witnesses; signature match is not root-cause proof"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "findings/FINDINGS_INDEX_v185.md",
+          "verification": "Historical description read before rule implementation; raw values evaluated separately",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "findings/FINDINGS_INDEX_v185.md",
+            "git_blob_sha": "95370d68bae9701b34437af03f86f5e34deef9e6",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "ערך blur_hash של הלקוח נשמר ביצירה; שינויו בעדכון אינו מוחל"
+    },
+    {
+      "id": "VIK-O06",
+      "kind": "known_bug",
+      "title": "Control characters stored in titles; observation not automatic defect",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [
+        "2.6.0",
+        "2.7.0"
+      ],
+      "all": [
+        {
+          "fact": "control_title_stored",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "readback_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Source-linked HTTP response and all predicate witnesses; signature match is not root-cause proof"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "findings/FINDINGS_INDEX_v185.md",
+          "verification": "Historical description read before rule implementation; raw values evaluated separately",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "findings/FINDINGS_INDEX_v185.md",
+            "git_blob_sha": "95370d68bae9701b34437af03f86f5e34deef9e6",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "תווי בקרה נשמרים בכותרות"
+    },
+    {
+      "id": "VIK-O08",
+      "kind": "known_bug",
+      "title": "Negative client task index retained on create",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [
+        "2.6.0"
+      ],
+      "all": [
+        {
+          "fact": "entity",
+          "op": "eq",
+          "value": "tasks"
+        },
+        {
+          "fact": "operation",
+          "op": "eq",
+          "value": "create"
+        },
+        {
+          "fact": "negative_index_stored",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Source-linked HTTP response and all predicate witnesses; signature match is not root-cause proof"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "findings/FINDINGS_INDEX_v185.md",
+          "verification": "Historical description read before rule implementation; raw values evaluated separately",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "findings/FINDINGS_INDEX_v185.md",
+            "git_blob_sha": "95370d68bae9701b34437af03f86f5e34deef9e6",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "אינדקס משימה שלילי נשמר ביצירה"
+    },
+    {
+      "id": "VIK-O07",
+      "kind": "known_bug",
+      "title": "Successful deletion of a proven absent share",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [
+        "2.6.0"
+      ],
+      "all": [
+        {
+          "fact": "zero_share_delete_success",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Raw DELETE of share identifier zero returns 2xx; no claim of independently measured absence for large positive identifiers"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "findings/FINDINGS_INDEX_v185.md",
+          "verification": "Historical description read before rule implementation; raw values evaluated separately",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "findings/FINDINGS_INDEX_v185.md",
+            "git_blob_sha": "95370d68bae9701b34437af03f86f5e34deef9e6",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "מחיקת share במזהה 0 מחזירה הצלחה"
+    },
+    {
+      "id": "VIK-O09",
+      "kind": "known_bug",
+      "title": "Registration error echoes supplied password",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [
+        "2.6.0",
+        "2.7.0"
+      ],
+      "all": [
+        {
+          "fact": "password_echoed",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Source-linked HTTP response and all predicate witnesses; signature match is not root-cause proof"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "findings/FINDINGS_INDEX_v185.md",
+          "verification": "Historical description read before rule implementation; raw values evaluated separately",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "findings/FINDINGS_INDEX_v185.md",
+            "git_blob_sha": "95370d68bae9701b34437af03f86f5e34deef9e6",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "תגובת שגיאת רישום מחזירה את הסיסמה שנשלחה"
+    },
+    {
+      "id": "GIT-C1",
+      "kind": "known_bug",
+      "title": "Issue edit server error for a missing assignee",
+      "status": "active",
+      "product": "gitea",
+      "versions": [
+        "28.1.0",
+        "29.0.0+dev-175-g33610142c3"
+      ],
+      "all": [
+        {
+          "fact": "entity",
+          "op": "eq",
+          "value": "issue"
+        },
+        {
+          "fact": "operation",
+          "op": "eq",
+          "value": "update"
+        },
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "correlated_error_family",
+          "op": "eq",
+          "value": "missing_assignee"
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Source-linked HTTP response and all predicate witnesses; signature match is not root-cause proof"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "results/gitea-g009-work-20261021/NOTE.md",
+          "verification": "Historical description read before rule implementation; raw values evaluated separately",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "results/gitea-g009-work-20261021/NOTE.md",
+            "git_blob_sha": "36bab4e37294525f82893b5d41df2352c54d2f10",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "שגיאת עריכת Issue בהפניה למשתמש חסר"
+    },
+    {
+      "id": "GIT-C2",
+      "kind": "known_bug",
+      "title": "Issue edit server error for a missing milestone, including C2+ variants",
+      "status": "active",
+      "product": "gitea",
+      "versions": [
+        "28.1.0",
+        "29.0.0+dev-175-g33610142c3"
+      ],
+      "all": [
+        {
+          "fact": "entity",
+          "op": "eq",
+          "value": "issue"
+        },
+        {
+          "fact": "operation",
+          "op": "eq",
+          "value": "update"
+        },
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "correlated_error_family",
+          "op": "eq",
+          "value": "missing_milestone"
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Source-linked HTTP response and all predicate witnesses; signature match is not root-cause proof"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "results/gitea-g009-work-20261021/NOTE.md",
+          "verification": "Historical description read before rule implementation; raw values evaluated separately",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "results/gitea-g009-work-20261021/NOTE.md",
+            "git_blob_sha": "36bab4e37294525f82893b5d41df2352c54d2f10",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "שגיאת עריכת Issue בהפניה ל־milestone חסר"
+    },
+    {
+      "id": "GIT-C8",
+      "kind": "known_bug",
+      "title": "Stored release target followed by a failed tag rename",
+      "status": "active",
+      "product": "gitea",
+      "versions": [
+        "28.1.0",
+        "29.0.0+dev-175-g33610142c3"
+      ],
+      "all": [
+        {
+          "fact": "entity",
+          "op": "eq",
+          "value": "release"
+        },
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "stored_reference_then_failed_rename",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Source-linked HTTP response and all predicate witnesses; signature match is not root-cause proof"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "results/gitea-g009-work-20261021/NOTE.md",
+          "verification": "Historical description read before rule implementation; raw values evaluated separately",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "results/gitea-g009-work-20261021/NOTE.md",
+            "git_blob_sha": "36bab4e37294525f82893b5d41df2352c54d2f10",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "ערך target שנשמר מקדים כשל בשינוי תג Release"
+    },
+    {
+      "id": "VIK-F01",
+      "kind": "known_bug",
+      "title": "Database lock after task-create burst",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [
+        "2.6.0",
+        "2.7.0"
+      ],
+      "all": [
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "correlated_lock",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "prior_task_create_seen",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "All executable predicates and source-linked original values/logs; missing facts produce insufficient evidence"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "findings/FINDINGS_INDEX_v185.md",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "findings/FINDINGS_INDEX_v185.md",
+            "git_blob_sha": "95370d68bae9701b34437af03f86f5e34deef9e6",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "חתימת נעילה עם יצירת משימה קודמת בהרצה; ללא הוכחת סיבתיות"
+    },
+    {
+      "id": "VIK-F03",
+      "kind": "known_bug",
+      "title": "Team external_id bound not enforced",
+      "status": "active",
+      "product": "vikunja",
+      "versions": [
+        "2.6.0"
+      ],
+      "all": [
+        {
+          "fact": "external_id_bound_violated_and_persisted",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "external_id_maxlength",
+          "op": "eq",
+          "value": 250
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "All executable predicates and source-linked original values/logs; missing facts produce insufficient evidence"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "findings/FINDINGS_INDEX_v185.md",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "findings/FINDINGS_INDEX_v185.md",
+            "git_blob_sha": "95370d68bae9701b34437af03f86f5e34deef9e6",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "external_id של Team עובר גבול מתועד ונשמר"
+    },
+    {
+      "id": "GIT-C3",
+      "kind": "known_bug",
+      "title": "Issue title is silently truncated without a declared maxLength",
+      "status": "active",
+      "product": "gitea",
+      "versions": [
+        "28.1.0"
+      ],
+      "all": [
+        {
+          "fact": "entity",
+          "op": "eq",
+          "value": "issue"
+        },
+        {
+          "fact": "field_changes.title.truncated",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "title_maxlength_absent",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Complete request/response and required context/log witnesses; see COVERAGE.md"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "results/gitea-g003-home-20261020/NOTE.md",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "results/gitea-g003-home-20261020/NOTE.md",
+            "git_blob_sha": "1132676524adc343a66b8363276c979d164de700",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "כותרת Issue נחתכת ללא maxLength בחוזה שנבדק"
+    },
+    {
+      "id": "GIT-C4",
+      "kind": "known_bug",
+      "title": "Release tag handling returns 500: invalid-name branch or very-long-tag git-ref branch",
+      "status": "active",
+      "product": "gitea",
+      "versions": [
+        "28.1.0"
+      ],
+      "all": [
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "entity",
+          "op": "eq",
+          "value": "release"
+        },
+        {
+          "fact": "release_tag_error_context_verified",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "All executable predicates and source-linked original values/logs; missing facts produce insufficient evidence"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "results/gitea-g009-cloud-20261021/NOTE.md",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "results/gitea-g009-cloud-20261021/NOTE.md",
+            "git_blob_sha": "66de30c3b50f528aa5fb5215066d78028a78c541",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        },
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "results/gitea-g009-cloud-20261021/run_s2/sut.log",
+          "qualification": "Long-tag variant has git ref failure; no unrecorded filesystem root cause inferred",
+          "historical_commit": "e8314ed30534b0e24581f8c84700eada02b51253",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "כשל תג Release: שם לא תקין או ref ארוך"
+    },
+    {
+      "id": "GIT-C5",
+      "kind": "known_bug",
+      "title": "NUL release tag reaches git subprocess",
+      "status": "active",
+      "product": "gitea",
+      "versions": [
+        "28.1.0"
+      ],
+      "all": [
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "entity",
+          "op": "eq",
+          "value": "release"
+        },
+        {
+          "fact": "original_tag_contains_nul",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "correlated_error_family",
+          "op": "eq",
+          "value": "git_argument_nul"
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "All executable predicates and source-linked original values/logs; missing facts produce insufficient evidence"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "results/gitea-g009-cloud-20261021/NOTE.md",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "results/gitea-g009-cloud-20261021/NOTE.md",
+            "git_blob_sha": "66de30c3b50f528aa5fb5215066d78028a78c541",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "תו NUL בתג מגיע למסלול שגיאת Git"
+    },
+    {
+      "id": "GIT-C6",
+      "kind": "known_bug",
+      "title": "Release target parse failure on create",
+      "status": "active",
+      "product": "gitea",
+      "versions": [
+        "28.1.0"
+      ],
+      "all": [
+        {
+          "fact": "server_error",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "entity",
+          "op": "eq",
+          "value": "release"
+        },
+        {
+          "fact": "operation",
+          "op": "eq",
+          "value": "create"
+        },
+        {
+          "fact": "original_target_input_verified",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "correlated_error_family",
+          "op": "eq",
+          "value": "parse_integer"
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "All executable predicates and source-linked original values/logs; missing facts produce insufficient evidence"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "results/gitea-g009-cloud-20261021/NOTE.md",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "results/gitea-g009-cloud-20261021/NOTE.md",
+            "git_blob_sha": "66de30c3b50f528aa5fb5215066d78028a78c541",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "כשל בפענוח target_commitish ביצירת Release"
+    },
+    {
+      "id": "GIT-C7",
+      "kind": "known_bug",
+      "title": "Organization email create/update validation differs",
+      "status": "active",
+      "product": "gitea",
+      "versions": [
+        "28.1.0"
+      ],
+      "all": [
+        {
+          "fact": "entity",
+          "op": "eq",
+          "value": "organization"
+        },
+        {
+          "fact": "same_email_value_pair_verified",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "create_accepted_update_rejected",
+          "op": "eq",
+          "value": true
+        },
+        {
+          "fact": "update_status",
+          "op": "eq",
+          "value": 422
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "All executable predicates and source-linked original values/logs; missing facts produce insufficient evidence"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "results/gitea-g009-cloud-20261021/NOTE.md",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "results/gitea-g009-cloud-20261021/NOTE.md",
+            "git_blob_sha": "66de30c3b50f528aa5fb5215066d78028a78c541",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "אותו email מתקבל ביצירה ונדחה בעריכת ארגון"
+    },
+    {
+      "id": "GIT-O1",
+      "kind": "known_bug",
+      "title": "Milestone update replaces due time with end of day",
+      "status": "active",
+      "product": "gitea",
+      "versions": [
+        "28.1.0"
+      ],
+      "all": [
+        {
+          "fact": "entity",
+          "op": "eq",
+          "value": "milestone"
+        },
+        {
+          "fact": "operation",
+          "op": "eq",
+          "value": "update"
+        },
+        {
+          "fact": "due_time_replaced_by_end_of_day",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Complete request/response and required context/log witnesses; see COVERAGE.md"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "results/gitea-g003-home-20261020/NOTE.md",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "results/gitea-g003-home-20261020/NOTE.md",
+            "git_blob_sha": "1132676524adc343a66b8363276c979d164de700",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "שעת יעד milestone משתנה לסוף יום"
+    },
+    {
+      "id": "GIT-O2",
+      "kind": "known_bug",
+      "title": "Observed familiar title/color normalization; not automatically a defect",
+      "status": "active",
+      "product": "gitea",
+      "versions": [
+        "28.1.0"
+      ],
+      "all": [
+        {
+          "fact": "familiar_normalization",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "exclusions": [],
+      "evidence_requirements": [
+        "Complete request/response and required context/log witnesses; see COVERAGE.md"
+      ],
+      "provenance": [
+        {
+          "repository": "weissye/vikunja_study",
+          "source": "results/gitea-g003-home-20261020/NOTE.md",
+          "historical_commit": "a46ae1b4773e59727c37e9cd5f321bb1f1877a83",
+          "historical_commit_status": "pre-history-rewrite; not a retrieval reference",
+          "current_source_snapshot": {
+            "commit": "de1ba37f8abab4933ab85586c7f0b46b03b18dc9",
+            "path": "results/gitea-g003-home-20261020/NOTE.md",
+            "git_blob_sha": "1132676524adc343a66b8363276c979d164de700",
+            "relationship": "current catalog reference; raw evidence identity resolved separately by content"
+          }
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true,
+      "title_he": "נרמול ערך בכותרת או צבע"
+    }
+  ]
+}

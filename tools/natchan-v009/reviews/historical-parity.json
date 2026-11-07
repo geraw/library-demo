@@ -1,0 +1,11 @@
+{
+  "validation": "PASS",
+  "distinct_journals": 18,
+  "pattern_occurrences": {
+    "GEN-SERVER_ERROR": 23,
+    "GEN-REFERENCE-PROJECTION-DIFFERENCE": 174,
+    "GEN-STATUS-PAIR-DIFFERENCE": 28
+  },
+  "new_sut_requests": 0,
+  "note": "Frozen descriptive evidence baseline, not full semantic or named-bug confirmation"
+}

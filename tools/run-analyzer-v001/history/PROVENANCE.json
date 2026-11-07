@@ -1,0 +1,7 @@
+{
+  "archive": "openapi_to_sbt_provengo_four_systems_v38.zip",
+  "source_path": "experiments/netbox_a2a/collect_a2a_results.py",
+  "sha256": "0eed16166d3af54061896187267d9e87c5298663e417e739707130a9232693b1",
+  "native_parser_source": "../semantic-checker-v001/vendor/netbox_a2a_v38.py::parse_native",
+  "note": "Original collector retained for provenance only; not called by the new analyzer."
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "repository": "weissye/vikunja_tse_study",
+    "commit": "0a3eb528a4cfa13a3c91d02e67aea195efe73a31",
+    "path": "scripts/analyze_mealie_decision.py",
+    "retrieved_text_sha256": "2b45f542aae22e9f8041ef3fddaca6193ff5f6f2d6b9e599df0bac4fd7bd7837",
+    "audit_level": "source inspected; not live executed"
+  },
+  {
+    "repository": "weissye/vikunja_tse_study",
+    "commit": "0a3eb528a4cfa13a3c91d02e67aea195efe73a31",
+    "path": "scripts/evaluate_vikunja_multi_resource.py",
+    "retrieved_text_sha256": "56cbd2baaf5f583ba7a46b3ff5cef56a6a3f8e17f28d8ffc06cb204d36e62730",
+    "audit_level": "source inspected; not live executed"
+  },
+  {
+    "repository": "weissye/vikunja_tse_study",
+    "commit": "0a3eb528a4cfa13a3c91d02e67aea195efe73a31",
+    "path": "scripts/verify_keycloak_user_readback.py",
+    "retrieved_text_sha256": "40923569072aaa862023ccb8211d2ee7b6caa38a6284ba1e6216cb3150345f5b",
+    "audit_level": "source inspected; not live executed"
+  },
+  {
+    "repository": "weissye/vikunja_tse_study",
+    "commit": "0a3eb528a4cfa13a3c91d02e67aea195efe73a31",
+    "path": "scripts/audit_parallel_crud.py",
+    "retrieved_text_sha256": "c93f1005c285c22026d54189a402c81bc9f19632870e6879fc0b12c56d526801",
+    "audit_level": "source inspected; not live executed"
+  },
+  {
+    "repository": "weissye/vikunja_tse_study",
+    "commit": "0a3eb528a4cfa13a3c91d02e67aea195efe73a31",
+    "path": "scripts/analyze_vikunja_bp_schedules.py",
+    "retrieved_text_sha256": "2677ff102dafb1895cc906855cac522ba8ce4af67a2a9726207ecf44fe312221",
+    "audit_level": "source inspected; not live executed"
+  },
+  {
+    "repository": "weissye/vikunja_tse_study",
+    "commit": "0a3eb528a4cfa13a3c91d02e67aea195efe73a31",
+    "path": "scripts/triage_gitea_stage6.py",
+    "retrieved_text_sha256": "9fe39c83ec06e7230142306a6cc821b251f4cc01921750d08229fc3a697f03a5",
+    "audit_level": "source inspected; not live executed"
+  },
+  {
+    "repository": "weissye/vikunja_tse_study",
+    "commit": "0a3eb528a4cfa13a3c91d02e67aea195efe73a31",
+    "path": "scripts/evaluate_vikunja_interleaved_bp.py",
+    "retrieved_text_sha256": "a27bd3989fd5cbba4bec04083b8be17b56b22e48a11071444681bfc55c6a588e",
+    "audit_level": "source inspected; not live executed"
+  },
+  {
+    "repository": "weissye/vikunja_tse_study",
+    "commit": "0a3eb528a4cfa13a3c91d02e67aea195efe73a31",
+    "path": "generator_baseline/openapi_to_sbt/evaluate_verifiers.py",
+    "retrieved_text_sha256": "50676b0051f0ecc29a6662bf6502650cc213b99306caeceebfe6d5d685ed9cbe",
+    "audit_level": "source inspected; not live executed"
+  }
+]

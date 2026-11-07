@@ -1,0 +1,9 @@
+{
+  "repository": "geraw/library-demo",
+  "commit": "f90988bac9a3a89e6a7a17551b20e83ba3bbc6ab",
+  "sources": {
+    "classifier.py": "tools/natchan-v003/classifier.py",
+    "catalogs": "tools/natchan-v014/catalogs"
+  },
+  "policy": "Existing classifier and entire catalog snapshot reused without adding a new GIT-C2 signature. Adjacent original components take precedence when present."
+}

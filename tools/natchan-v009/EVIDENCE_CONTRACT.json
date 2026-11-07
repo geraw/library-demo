@@ -1,0 +1,114 @@
+{
+  "schema_version": "natchan-evidence-contract/2",
+  "families": [
+    "RESPONSE",
+    "EDGE-1",
+    "RT-1",
+    "ATOM-1-2",
+    "EDGE-U",
+    "KNOWN",
+    "CASCADE-1",
+    "ADJ",
+    "IDEM",
+    "VIEW",
+    "LINK",
+    "REF-1",
+    "LINK-2",
+    "DIV-1"
+  ],
+  "required_document_fields": [
+    "schema_version",
+    "capture_complete",
+    "profile",
+    "events"
+  ],
+  "required_event_fields": [
+    "id",
+    "run_id",
+    "case_id",
+    "actor",
+    "resource"
+  ],
+  "roles": {
+    "RESPONSE": [
+      "request"
+    ],
+    "EDGE-1": [
+      "request"
+    ],
+    "RT-1": [
+      "write",
+      "after"
+    ],
+    "ATOM-1-2": [
+      "before",
+      "write",
+      "after"
+    ],
+    "EDGE-U": [
+      "create",
+      "update_before",
+      "update"
+    ],
+    "DIV-1": [
+      "create",
+      "update_before",
+      "update"
+    ],
+    "CASCADE-1": [
+      "child_before",
+      "parent_delete",
+      "child_after"
+    ],
+    "ADJ": [
+      "trigger",
+      "request"
+    ],
+    "KNOWN": [
+      "trigger",
+      "request"
+    ],
+    "IDEM": [
+      "first",
+      "second"
+    ],
+    "VIEW": [
+      "write",
+      "after"
+    ],
+    "LINK": [
+      "write",
+      "after"
+    ],
+    "REF-1": [
+      "write",
+      "after"
+    ],
+    "LINK-2": [
+      "write",
+      "after"
+    ]
+  },
+  "additional_requirements": {
+    "EDGE-U/DIV-1": "Successful pairs also need create_after/update_after. Profile declares comparable preconditions. Parent scope must match.",
+    "ATOM-1-2": "Full before/after values or matching-item counts; rolled_back is not itself a finding.",
+    "CASCADE-1": "Parent/child relation in profile, child parent_resource and pre-deletion read. 403 remains unknown.",
+    "ADJ/KNOWN": "Timezone timestamps, configured trigger operation and time window.",
+    "REF-1/LINK-2": "Projection paths plus observe/exact_set semantics. Historical projected IDs are a lower evidence tier."
+  },
+  "boundaries": [
+    "Unique IDs",
+    "Recorder declares capture complete",
+    "Same run/case and verified actor/resource scope",
+    "No intervening writes or resets",
+    "Stored verdicts are not truth",
+    "Absent measurements are not zero findings",
+    "Native findings stay separate"
+  ],
+  "required_probe_fields": [
+    "id",
+    "family",
+    "role"
+  ],
+  "untagged_events": "Retained for interference and reset checks; do not produce a probe on their own."
+}

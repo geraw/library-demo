@@ -1,0 +1,58 @@
+{
+  "version": "semantic-checker-v001",
+  "source_archives": {
+    "library_v38_sequence_local_delta.zip": "b980a0e16a3fd669fd1337b1098d10c4dd0ccdbcfa105d0b0eaa146f71f032df",
+    "openapi_to_sbt_provengo_four_systems_v38.zip": "0534d49f41f5eb3662228f6edeed4b3c09828befdd4d4fb96482d6472aefaccf"
+  },
+  "files": {
+    "vendor/library_v38.py": {
+      "sha256": "b84485cd414b34a5173e5e868c0cb536b6072952900c7c90661572a81c427fe3",
+      "source_path": "scripts/evaluate_library_sequences.py",
+      "lf_sha256": "b84485cd414b34a5173e5e868c0cb536b6072952900c7c90661572a81c427fe3",
+      "source_archive": "library_v38_sequence_local_delta.zip"
+    },
+    "vendor/pharmacy_v38.py": {
+      "sha256": "b390441f0b3c6b47f557be618672b9b3dde8b7a5a2227b7f9f785f06adb666d4",
+      "source_path": "scripts/evaluate_pharmacy_trace.py",
+      "lf_sha256": "b390441f0b3c6b47f557be618672b9b3dde8b7a5a2227b7f9f785f06adb666d4",
+      "source_archive": "openapi_to_sbt_provengo_four_systems_v38.zip"
+    },
+    "vendor/garage_v38.py": {
+      "sha256": "f12468cecd2eb037c5113e603597a084e9497406c6e56a4468f4c2326a318232",
+      "source_path": "scripts/evaluate_garage_trace.py",
+      "lf_sha256": "f12468cecd2eb037c5113e603597a084e9497406c6e56a4468f4c2326a318232",
+      "source_archive": "openapi_to_sbt_provengo_four_systems_v38.zip"
+    },
+    "vendor/netbox_legacy_v38.py": {
+      "sha256": "aa70e20ea7dcc71a9f83c34e2e76ed8247af0508bd9af556400fb8be4e0dabd6",
+      "source_path": "scripts/evaluate_netbox_trace.py",
+      "lf_sha256": "aa70e20ea7dcc71a9f83c34e2e76ed8247af0508bd9af556400fb8be4e0dabd6",
+      "source_archive": "openapi_to_sbt_provengo_four_systems_v38.zip"
+    },
+    "vendor/netbox_a2a_v38.py": {
+      "sha256": "012d94aeea74a04964d4e84b5443da32e75e758f52988fca584993b72df204a1",
+      "source_path": "experiments/netbox_a2a/evaluate_netbox_a2a_trace.py",
+      "lf_sha256": "012d94aeea74a04964d4e84b5443da32e75e758f52988fca584993b72df204a1",
+      "source_archive": "openapi_to_sbt_provengo_four_systems_v38.zip"
+    },
+    "vendor/todoist_runtime_v38.py": {
+      "sha256": "1861d71030b67a1b2b7784043cfa02d2dedce912b96af7ef025b510ccb0dda4d",
+      "source_path": "scripts/evaluate_todoist_trace.py",
+      "lf_sha256": "1861d71030b67a1b2b7784043cfa02d2dedce912b96af7ef025b510ccb0dda4d",
+      "source_archive": "openapi_to_sbt_provengo_four_systems_v38.zip"
+    },
+    "vendor/http_trace_proxy_v38.py": {
+      "sha256": "a186da09a1ddf96797f5b0183cb5c96fd7bcebb6c7e209da3a38b57938146b27",
+      "source_path": "scripts/http_trace_proxy.py",
+      "lf_sha256": "a186da09a1ddf96797f5b0183cb5c96fd7bcebb6c7e209da3a38b57938146b27",
+      "source_archive": "openapi_to_sbt_provengo_four_systems_v38.zip"
+    },
+    "vendor/library_issta_v006.py": {
+      "sha256": "5a1926a1bf04b0decd1639a4f9904a5efbd82b559e1874dc16042367ccc758f5",
+      "source_path": "library/ess-experiment/campaign-v006/observed_server_v006.py",
+      "lf_sha256": "5a1926a1bf04b0decd1639a4f9904a5efbd82b559e1874dc16042367ccc758f5",
+      "source_repository": "geraw/library-demo",
+      "source_commit": "b4291b09a8a6362d348439f4104c06dc31222551"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "source_archive": "Mealie_Local_Observation_Tools.zip",
+  "source_member": "tools/audit.py",
+  "retained_sha256": "1876d8da5463f2e14d7b43d78db5695fac3dc3c68e811975ab5e309a2e1fbff9",
+  "reuse": "compare_owner_readbacks reused unchanged; caller chooses nearest valid owner preimage",
+  "retained_lf_sha256": "1876d8da5463f2e14d7b43d78db5695fac3dc3c68e811975ab5e309a2e1fbff9"
+}

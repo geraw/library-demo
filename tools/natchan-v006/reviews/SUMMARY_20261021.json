@@ -1,0 +1,150 @@
+{
+  "source_commit": "e8314ed30534b0e24581f8c84700eada02b51253",
+  "http_records": 1732,
+  "http_5xx": 36,
+  "known_signature_occurrences": {
+    "GIT-C1": 6,
+    "GIT-C2": 15,
+    "GIT-C3": 2,
+    "GIT-C4": 10,
+    "GIT-C5": 2,
+    "GIT-C6": 3,
+    "GIT-C7": 5,
+    "GIT-O1": 3,
+    "GIT-O2": 3
+  },
+  "runs": [
+    {
+      "id": "gitea-g009-cloud-s1",
+      "tool": "route-harness",
+      "version": "28.1.0",
+      "http_records": 431,
+      "http_5xx": 11,
+      "correlated_5xx": 11,
+      "clock_alignment": {
+        "status": "calibrated",
+        "clock_offset_seconds": 10800,
+        "anchor_count": 171,
+        "inlier_count": 171,
+        "maximum_inlier_residual_seconds": 0.9960000514984131,
+        "unresolved": [],
+        "clock_offset_is_measured_not_assumed_timezone": true
+      },
+      "native_provengo_run": false,
+      "original_harness_status": "COMPLETED",
+      "runner_log_sha256": "0824c5ad077565f0b75c9aa07d3ccd60dbff60b3ad2e597b9ee26e3a9bde70da"
+    },
+    {
+      "id": "gitea-g009-cloud-s2",
+      "tool": "route-harness",
+      "version": "28.1.0",
+      "http_records": 431,
+      "http_5xx": 9,
+      "correlated_5xx": 9,
+      "clock_alignment": {
+        "status": "calibrated",
+        "clock_offset_seconds": 10800,
+        "anchor_count": 168,
+        "inlier_count": 168,
+        "maximum_inlier_residual_seconds": 0.996999979019165,
+        "unresolved": [],
+        "clock_offset_is_measured_not_assumed_timezone": true
+      },
+      "native_provengo_run": false,
+      "original_harness_status": "COMPLETED",
+      "runner_log_sha256": "e524e214fdc90c87fbaeda124081d460e477248e081453942f612fcd7fc4592e"
+    },
+    {
+      "id": "gitea-g009-cloud-s3",
+      "tool": "route-harness",
+      "version": "28.1.0",
+      "http_records": 435,
+      "http_5xx": 7,
+      "correlated_5xx": 7,
+      "clock_alignment": {
+        "status": "calibrated",
+        "clock_offset_seconds": 10800,
+        "anchor_count": 176,
+        "inlier_count": 176,
+        "maximum_inlier_residual_seconds": 1.0,
+        "unresolved": [],
+        "clock_offset_is_measured_not_assumed_timezone": true
+      },
+      "native_provengo_run": false,
+      "original_harness_status": "COMPLETED",
+      "runner_log_sha256": "4eb54d620899ddc8e541bbc58bfbf0c3263fe6730ee297fb46e9d16027fbb2ab"
+    },
+    {
+      "id": "gitea-g009-cloud-s4",
+      "tool": "route-harness",
+      "version": "28.1.0",
+      "http_records": 435,
+      "http_5xx": 9,
+      "correlated_5xx": 9,
+      "clock_alignment": {
+        "status": "calibrated",
+        "clock_offset_seconds": 10800,
+        "anchor_count": 169,
+        "inlier_count": 169,
+        "maximum_inlier_residual_seconds": 0.999000072479248,
+        "unresolved": [],
+        "clock_offset_is_measured_not_assumed_timezone": true
+      },
+      "native_provengo_run": false,
+      "original_harness_status": "COMPLETED",
+      "runner_log_sha256": "615553a61f7763902daef9752f38ea224bea8c7aa9429f5e7261a865631cb7ed"
+    }
+  ],
+  "error_families": {
+    "missing_assignee": 6,
+    "invalid_tag": 8,
+    "git_argument_nul": 2,
+    "missing_milestone": 15,
+    "parse_integer": 3,
+    "git_ref_failure": 2
+  },
+  "prior_baseline_http_records": 11854,
+  "cumulative_raw_http_records": 13586,
+  "prior_candidate_occurrences_superseded": 20,
+  "not_new_unique_bug_count": true,
+  "snapshot_gaps": "Not evaluable where original internal readback bodies were never recorded",
+  "native_provengo_confirmation_for_C4_C7": false,
+  "new_sut_calls": 0,
+  "provider_audit": {
+    "families": {
+      "RESPONSE": {
+        "evaluated": 1732
+      },
+      "EDGE-1": {},
+      "RT-1": {
+        "evaluated": 20
+      },
+      "ATOM-1-2": {
+        "not_evaluable": 27
+      },
+      "EDGE-U": {
+        "not_evaluable": 158
+      },
+      "KNOWN": {},
+      "CASCADE-1": {
+        "not_evaluable": 128
+      },
+      "ADJ": {},
+      "IDEM": {},
+      "VIEW": {},
+      "LINK": {
+        "evaluated": 36
+      }
+    },
+    "missing_measurements": {
+      "CASCADE-1: parent_delete_status": 128,
+      "CASCADE-1: cascade_required": 128,
+      "CASCADE-1: context": 128,
+      "ATOM-1-2: before": 27,
+      "ATOM-1-2: after": 27,
+      "ATOM-1-2: request": 27,
+      "ATOM-1-2: context": 27,
+      "EDGE-U: context": 158
+    }
+  }
+}

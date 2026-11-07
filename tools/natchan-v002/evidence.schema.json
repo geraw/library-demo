@@ -1,0 +1,397 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Natchan evidence ingestion envelope v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "source",
+    "status",
+    "artifacts",
+    "runs",
+    "events",
+    "findings",
+    "issues",
+    "summary",
+    "capabilities"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "natchan-evidence/1"
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "filename",
+        "sha256"
+      ],
+      "properties": {
+        "filename": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "status": {
+      "enum": [
+        "complete",
+        "incomplete"
+      ]
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "locator",
+          "status",
+          "sha256",
+          "byte_count"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "locator": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "available",
+              "invalid",
+              "limited",
+              "ambiguous",
+              "rejected"
+            ]
+          },
+          "sha256": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "byte_count": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "runs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "tool",
+          "product",
+          "tool_gateway",
+          "product_gateway",
+          "status",
+          "artifacts",
+          "gateway_contracts"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "tool": {
+            "type": "string"
+          },
+          "product": {
+            "type": "string"
+          },
+          "tool_gateway": {
+            "type": "string"
+          },
+          "product_gateway": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "complete",
+              "incomplete"
+            ]
+          },
+          "artifacts": {
+            "type": "object",
+            "additionalProperties": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "gateway_contracts": {
+            "type": "object",
+            "required": [
+              "tool",
+              "product"
+            ],
+            "properties": {
+              "tool": {
+                "type": "object",
+                "required": [
+                  "api_version",
+                  "id",
+                  "dimension",
+                  "capabilities",
+                  "required_artifacts",
+                  "optional_artifacts",
+                  "evidence_requirements",
+                  "limitations"
+                ],
+                "properties": {
+                  "api_version": {
+                    "const": "natchan-gateway/1"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "dimension": {
+                    "const": "tool"
+                  },
+                  "capabilities": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "required_artifacts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "optional_artifacts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "evidence_requirements": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "limitations": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "product": {
+                "type": "object",
+                "required": [
+                  "api_version",
+                  "id",
+                  "dimension",
+                  "capabilities",
+                  "required_artifacts",
+                  "optional_artifacts",
+                  "evidence_requirements",
+                  "limitations"
+                ],
+                "properties": {
+                  "api_version": {
+                    "const": "natchan-gateway/1"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "dimension": {
+                    "const": "product"
+                  },
+                  "capabilities": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "required_artifacts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "optional_artifacts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "evidence_requirements": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "limitations": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "run_id",
+          "kind",
+          "role",
+          "gateway",
+          "scope",
+          "source",
+          "payload",
+          "product",
+          "evidence_availability"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "run_id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "execution",
+              "native_record",
+              "imported_claim",
+              "boundary",
+              "http",
+              "observation"
+            ]
+          },
+          "scope": {
+            "type": "object",
+            "required": [
+              "case_id",
+              "basis"
+            ],
+            "properties": {
+              "basis": {
+                "enum": [
+                  "unknown",
+                  "recorded_boundary",
+                  "record_declared",
+                  "conflicting"
+                ]
+              }
+            }
+          },
+          "source": {
+            "type": "object",
+            "required": [
+              "artifact_id",
+              "line"
+            ],
+            "properties": {
+              "artifact_id": {
+                "type": "string"
+              },
+              "line": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 1
+              }
+            }
+          },
+          "payload": {
+            "type": "object"
+          },
+          "product": {
+            "type": "object"
+          },
+          "evidence_availability": {
+            "type": "object",
+            "required": [
+              "status",
+              "missing"
+            ],
+            "properties": {
+              "status": {
+                "enum": [
+                  "not_applicable",
+                  "partial",
+                  "recorded"
+                ]
+              },
+              "missing": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "code",
+          "source",
+          "detail"
+        ]
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "run_count",
+        "artifact_count",
+        "event_count",
+        "issue_count",
+        "finding_count"
+      ],
+      "properties": {
+        "finding_count": {
+          "type": "null"
+        }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "properties": {
+        "semantic_evaluation": {
+          "const": false
+        },
+        "native_detection": {
+          "const": false
+        },
+        "offline_only": {
+          "const": true
+        }
+      }
+    }
+  }
+}

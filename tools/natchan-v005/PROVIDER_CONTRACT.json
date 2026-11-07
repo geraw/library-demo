@@ -1,0 +1,81 @@
+{
+  "schema_version": "natchan-provider-contract/1",
+  "families": {
+    "RESPONSE": [
+      "status"
+    ],
+    "EDGE-1": [
+      "status",
+      "value",
+      "constraints"
+    ],
+    "RT-1": [
+      "status",
+      "sent",
+      "readback",
+      "readable_fields",
+      "context"
+    ],
+    "ATOM-1-2": [
+      "status",
+      "operation",
+      "before",
+      "after",
+      "request",
+      "context"
+    ],
+    "EDGE-U": [
+      "create",
+      "update",
+      "context"
+    ],
+    "KNOWN": [
+      "status",
+      "response",
+      "operation",
+      "trigger_time",
+      "request_time",
+      "definition"
+    ],
+    "CASCADE-1": [
+      "parent_delete_status",
+      "child_read_status",
+      "cascade_required",
+      "context"
+    ],
+    "ADJ": [
+      "status",
+      "trigger_time",
+      "request_time",
+      "window_seconds",
+      "context"
+    ],
+    "IDEM": [
+      "first_request",
+      "second_request",
+      "status",
+      "context"
+    ],
+    "VIEW": [
+      "expected_ids",
+      "actual_ids",
+      "membership_required",
+      "context"
+    ],
+    "LINK": [
+      "operation",
+      "target_id",
+      "actual_ids",
+      "context"
+    ]
+  },
+  "common_metadata": [
+    "id",
+    "product",
+    "product_version",
+    "run_id",
+    "source"
+  ],
+  "missing_evidence_result": "not_evaluable",
+  "verdict_fields_are_not_inputs": true
+}

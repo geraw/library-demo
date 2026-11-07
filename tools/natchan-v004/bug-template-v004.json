@@ -1,0 +1,34 @@
+{
+  "schema_version": "natchan-catalog/1",
+  "entries": [
+    {
+      "id": "PRODUCT-ISSUE-ID",
+      "kind": "known_bug",
+      "title": "Describe observable behavior without asserting an unproven root cause",
+      "status": "draft",
+      "product": "replace-product",
+      "versions": [],
+      "all": [
+        {
+          "fact": "replace_with_recomputed_fact",
+          "op": "eq",
+          "value": true
+        }
+      ],
+      "evidence_requirements": [
+        "Original request and response",
+        "Required ordered context/readbacks or unambiguous log join"
+      ],
+      "exclusions": [],
+      "provenance": [
+        {
+          "repository": "replace-owner/repo",
+          "commit": "replace-commit",
+          "source": "replace-original-definition"
+        }
+      ],
+      "severity": "requires_context",
+      "human_review": true
+    }
+  ]
+}
