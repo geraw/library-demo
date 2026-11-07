@@ -1,0 +1,115 @@
+{
+  "version": "phase24-production-v2",
+  "derived_from": "library/provengo/meta-spec/tests/phase14b_features/canonical_feature_specs.json (phase14b-1.0, 13 experimental suspicious features)",
+  "purpose": "Refinement of the 13-feature experimental Suspicious State Coverage set into a small (7-9), high-quality collection for the REAL production ranking (ensemble-code.js STATE_FEATURES), per the advisor's request to replace simplistic CRUD coverage with a compact set of complex, bug-prone states. This file documents the selection; it does not change business behavior or the underlying marker instrumentation (unchanged, in lib_stories.js / phase14b_markers.js).",
+  "selection_method": "Business-rule relevance, interaction complexity, redundancy, and reachability only - per Phase 24 Section 2, NO mutation-detection result (Phase 15-22) was used to select or reject any feature. All reachability/redundancy evidence cited below was already gathered in Phase 14B from the SUT's source code and a live diagnostic corpus, independent of any mutant.",
+  "final_count": 8,
+  "retained": [
+    {
+      "name": "LOAN_BLOCKED_VIA_USER_ONLY",
+      "category": "conflicting constraints",
+      "predicate": "a loan attempt is blocked solely because the user already has an active loan (sut.py:262-263), not because of the book",
+      "business_significance": "isolates one disjunct of the loan-creation guard; independently exercises the per-user cap in isolation from the per-book cap",
+      "example_trace": "user U has an active loan on book A; U attempts to loan book B (B free) -> blocked via user-only",
+      "verification": "lib_stories.js markLoanBlocked* bthreads (Phase 4); independently re-verified against dal.js's hasLoanForUser/hasLoanForBook in phase14b_verifier.py-style tests (38/38 pass, this session)",
+      "instrumented_in": "lib_stories.js (unchanged)"
+    },
+    {
+      "name": "LOAN_BLOCKED_VIA_BOOK_ONLY",
+      "category": "conflicting constraints",
+      "predicate": "a loan attempt is blocked solely because the book is already loaned (sut.py:264-265), not because of the user",
+      "business_significance": "isolates the per-book cap in isolation from the per-user cap - mirror of LOAN_BLOCKED_VIA_USER_ONLY",
+      "example_trace": "book B already loaned to user U1; user U2 (no active loan) attempts to loan B -> blocked via book-only",
+      "verification": "same as above",
+      "instrumented_in": "lib_stories.js (unchanged)"
+    },
+    {
+      "name": "LOAN_BLOCKED_VIA_BOTH",
+      "category": "conflicting constraints, compound guard",
+      "predicate": "a loan attempt is blocked by BOTH the per-user and per-book cap simultaneously",
+      "business_significance": "the genuine compound-guard case: fixing either condition alone would not change the outcome. Distinct Set-coverage target from the two ONLY-variants - an ensemble can hit both ONLY-states without ever hitting BOTH.",
+      "example_trace": "user U has an active loan on book A; book B is loaned to a different user U2; U attempts to loan B -> blocked via both",
+      "verification": "lib_stories.js's dual-trigger markLoanBlockedViaBothRescan (Phase 4 fix for a one-shot-trigger bug); 3/3 ground-truth occurrences detected in the original Phase 4 live run",
+      "instrumented_in": "lib_stories.js (unchanged)"
+    },
+    {
+      "name": "BOOK_LOANED_WITH_ACTIVE_HOLD",
+      "category": "loan/hold interaction",
+      "predicate": "a book has both an active loan and an active hold (any users) at the same time",
+      "business_significance": "the single strongest feature in the whole catalog (Phase 14 Stage A): add_hold (sut.py:326-348) has NO loan-awareness at all - this feature directly tests that this absence of a check is intentional, not an oversight",
+      "example_trace": "book B loaned to U1; U2 places a hold on B -> both active simultaneously",
+      "verification": "lib_stories.js dual-trigger (ViaLoan/ViaHold) marker, race-safe via markStateFeatureOnce",
+      "instrumented_in": "lib_stories.js (unchanged)"
+    },
+    {
+      "name": "LOAN_AND_HOLD_SAME_PAIR",
+      "category": "loan/hold interaction, narrow self-pair variant",
+      "predicate": "the SAME (user, book) pair is connected by both an active loan and an active hold",
+      "business_significance": "a narrower, more surprising specialization of BOOK_LOANED_WITH_ACTIVE_HOLD - the same user redundantly holding a book they already have on loan. One-directional implication only (this implies the broader feature, not conversely), so it is genuinely additional Set-coverage information, not a duplicate.",
+      "example_trace": "user U loans book B, then U separately places a hold on B",
+      "verification": "phase14b_markers.js dual-trigger (ViaLoan/ViaHold); EMPIRICALLY_OBSERVED 12/30 diagnostic traces (more frequent than Stage A's rarity guess)",
+      "instrumented_in": "phase14b_markers.js (unchanged)"
+    },
+    {
+      "name": "BOOK_WITH_MULTIPLE_ACTIVE_HOLDS",
+      "category": "multi-entity relationships, cardinality",
+      "predicate": "a book has 2 or more simultaneous active holds (any users)",
+      "business_significance": "directly tests the absence of any hold-per-book cap - the business-rule mirror question to LOAN_BLOCKED_VIA_BOOK_ONLY (which proves a cap exists for loans)",
+      "example_trace": "U1 and U2 both place holds on the same free book B",
+      "verification": "lib_stories.js marker (unchanged)",
+      "instrumented_in": "lib_stories.js (unchanged)"
+    },
+    {
+      "name": "USER_LOAN_PLUS_HOLD_DIFFERENT_BOOKS",
+      "category": "multi-entity relationships, cross-mechanism non-leakage",
+      "predicate": "a user has one active loan (book A) and at least one active hold on a DIFFERENT book (B != A)",
+      "business_significance": "tests that the per-user LOAN cap (sut.py:262-263) does not leak into HOLD creation for that same user on a different book - add_hold never consults the loans table at all, so this state should always be reachable; its absence would indicate the cap was wrongly applied across mechanisms",
+      "example_trace": "user U loans book A, then places a hold on book B (B != A)",
+      "verification": "phase14b_markers.js dual-trigger (ViaLoan/ViaHold); EMPIRICALLY_OBSERVED 12/30 diagnostic traces",
+      "instrumented_in": "phase14b_markers.js (unchanged)"
+    },
+    {
+      "name": "BOOK_DELETE_BLOCKED_BY_HOLD_ONLY",
+      "category": "conditional deletion",
+      "predicate": "a book has an active hold and no active loan (so deletion is blocked by the hold disjunct alone, not the loan disjunct, of sut.py's delete_book OR-guard)",
+      "business_significance": "isolates one disjunct of the book-deletion OR-guard - a book can be undeletable purely because of an unresolved hold, with no loan involved at all",
+      "example_trace": "book B has an active hold, no loan; a delete-book attempt on B is rejected",
+      "verification": "phase14b_markers.js dual-trigger (hold creation / loan deletion); EMPIRICALLY_OBSERVED 23/30 diagnostic traces",
+      "instrumented_in": "phase14b_markers.js (unchanged)"
+    }
+  ],
+  "removed": [
+    {
+      "name": "USER_TWO_BOOKS_VIA_HOLDS_ONLY",
+      "reason": "Lower marginal value once BOOK_WITH_MULTIPLE_ACTIVE_HOLDS is retained: both probe the same underlying fact (holds have no cardinality cap), just from the book side vs. the user side. Keeping both would spend two of 8 slots on near-duplicate variations of one condition. USER_LOAN_PLUS_HOLD_DIFFERENT_BOOKS (retained) already covers the user side's \"connected to two distinct books\" relationship, via a cross-mechanism case that is more informative than the pure hold+hold case."
+    },
+    {
+      "name": "BOOK_DELETE_BLOCKED_BY_LOAN_ONLY",
+      "reason": "Explicitly self-flagged in the Phase 14B catalog (canonical_feature_specs.json) as 'likely frequent/weakly discriminating' - the same reasoning that excluded HOLD_CREATABLE from the basic baseline. A business-rule-grounded, not mutation-outcome-based, reason to drop: a feature that is almost always true the instant a book is loaned carries little coverage signal."
+    },
+    {
+      "name": "USER_DELETE_BLOCKED_BY_HOLD_ONLY",
+      "reason": "Structurally identical to retained BOOK_DELETE_BLOCKED_BY_HOLD_ONLY - Phase 14 Stage A itself confirmed sut.py's delete_user and delete_book guards are 'identically shaped... same two-disjunct structure in both cases'. Keeping the book-side isolation already demonstrates whether this OR-guard pattern is independently correct per disjunct; the user-side mirror is a minor variation of the same underlying condition, not a new business fact."
+    },
+    {
+      "name": "USER_DELETE_BLOCKED_BY_LOAN_ONLY",
+      "reason": "Self-flagged weakly discriminating in the Phase 14B catalog, same reasoning as BOOK_DELETE_BLOCKED_BY_LOAN_ONLY; additionally carries a documented end-of-trace marker-truncation edge case."
+    },
+    {
+      "name": "ALL_BOOKS_ON_LOAN",
+      "reason": "LOGICALLY_REACHABLE but NOT_OBSERVED in 0/30 diagnostic traces (max trace length 80) - requires all 4 users and all 4 books to cooperate with zero prior conflicts. For a feature meant to actually guide production ensemble selection (not just describe coverage abstractly), a state that is essentially unreachable within normal generation budgets would permanently suppress the State Coverage percentage without providing any actionable selection signal. This is a reachability-based exclusion, consistent with Phase 24 Section 2's own criterion ('a rare state is useful only if it... can realistically be reached'), not a judgment that the business scenario is uninteresting."
+    }
+  ],
+  "dropped_as_redundant_upstream_unchanged": [
+    "BOOK_DELETE_BLOCKED_BOTH (proven equivalent to BOOK_LOANED_WITH_ACTIVE_HOLD, Phase 14B)",
+    "USER_DELETE_BLOCKED_BOTH (proven equivalent to OR(LOAN_AND_HOLD_SAME_PAIR, USER_LOAN_PLUS_HOLD_DIFFERENT_BOOKS), Phase 14B)"
+  ],
+  "no_mutation_evidence_used": "Confirmed: every retain/drop decision above cites only business-rule relevance, redundancy, or empirical reachability from the Phase 14B diagnostic corpus. No Phase 15-22 mutant-detection result (M1-M5, N1-N3, C1-C3) was consulted or referenced in making this selection.",
+  "instrumentation_unchanged": [
+    "library/provengo/spec/js/lib_stories.js",
+    "library/provengo/spec/js/phase14b_markers.js",
+    "library/provengo/meta-spec/tests/phase14b_features/canonical_feature_specs.json (13-feature experimental set, preserved as historical/experimental reference)",
+    "library/provengo/meta-spec/tests/phase14b_features/common_selection.py (experimental MIN selector, NOT used in production)"
+  ],
+  "production_file_changed": "library/provengo/meta-spec/ensemble-code.js (STATE_FEATURES constant only - rankingFunction/parameterCoverageFunction/combinedCoverageFunction logic unchanged)"
+}

@@ -14,6 +14,17 @@ elsewhere in this investigation - see ensemble-code.js's loanOrHoldCreateParamet
 
 HOLD_CREATABLE deliberately excluded (2026-10-24): UserBook.CanCreateHold is unconditionally true
 for any existing user-book pair, so it can't discriminate between scenarios - see lib_stories.js.
+
+Phase 4 (2026-11-06) extension: six more features, mirroring the six new markStateFeatureOnce
+bthreads added to lib_stories.js in the same phase (predicates/naming per the Phase 1-3 research
+reports) - LOAN_BLOCKED_VIA_USER_ONLY/VIA_BOOK_ONLY/VIA_BOTH split UserBook.CannotCreateLoan's two
+disjuncts and explicitly exclude the "this exact pair already has the loan" case;
+BOOK_LOANED_WITH_ACTIVE_HOLD and BOOK_WITH_MULTIPLE_ACTIVE_HOLDS read active_loans/active_holds
+directly; DELETE_BLOCKED_BY_HOLD_ONLY merges the book and user variants (measured ~95% redundant
+in Phase 3). This script only reconstructs ground truth from raw REST events - it still has no
+access to the new markers' own emitted events unless the trace being read was produced by the
+Phase-4-instrumented lib_stories.js, so a true marker-emission TP/FN comparison for these six is
+only meaningful against freshly-generated traces, not the pre-Phase-4 saved sample files.
 """
 import json
 import os
@@ -23,6 +34,9 @@ import sys
 FEATURES = [
     "BOOK_DELETE_ELIGIBLE", "USER_DELETE_ELIGIBLE", "LOAN_CREATABLE",
     "HOLD_WITHOUT_LOAN", "MULTI_USER_BOOK_RELATIONS", "USER_WITH_TWO_BOOKS",
+    "LOAN_BLOCKED_VIA_USER_ONLY", "LOAN_BLOCKED_VIA_BOOK_ONLY", "LOAN_BLOCKED_VIA_BOTH",
+    "BOOK_LOANED_WITH_ACTIVE_HOLD", "BOOK_WITH_MULTIPLE_ACTIVE_HOLDS",
+    "DELETE_BLOCKED_BY_HOLD_ONLY",
 ]
 
 
@@ -86,6 +100,58 @@ class State:
                     return True
         return False
 
+    def loan_blocked_via(self, user, book):
+        """None, or 'user'/'book'/'both' for a (user, book) pair that does not itself already
+        hold the loan - mirrors UserBook.CannotCreateLoan's two disjuncts kept separate, per the
+        Phase 2/3 finding that collapsing them hides the "pair already loaned" case inside the
+        interesting cross-pair-blocking one."""
+        if (user, book) in self.active_loans:
+            return None
+        via_user = any(u == user for (u, b) in self.active_loans)
+        via_book = any(b == book for (u, b) in self.active_loans)
+        if via_user and via_book:
+            return "both"
+        if via_user:
+            return "user"
+        if via_book:
+            return "book"
+        return None
+
+    def loan_blocked_via_user_only(self):
+        return any(self.loan_blocked_via(u, b) == "user" for u in self.users for b in self.books)
+
+    def loan_blocked_via_book_only(self):
+        return any(self.loan_blocked_via(u, b) == "book" for u in self.users for b in self.books)
+
+    def loan_blocked_via_both(self):
+        return any(self.loan_blocked_via(u, b) == "both" for u in self.users for b in self.books)
+
+    def book_loaned_with_active_hold(self):
+        loaned_books = set(b for (u, b) in self.active_loans)
+        held_books = set(b for (u, b) in self.active_holds.values())
+        return len(loaned_books & held_books) > 0
+
+    def book_with_multiple_active_holds(self):
+        counts = {}
+        for (u, b) in self.active_holds.values():
+            counts[b] = counts.get(b, 0) + 1
+        return any(c >= 2 for c in counts.values())
+
+    def delete_blocked_by_hold_only(self):
+        """Merged book+user variant (Phase 3): true if any book OR any user is blocked from
+        deletion solely by a hold (no active loan on that same book/user)."""
+        for b in self.books:
+            has_loan = any(bb == b for (uu, bb) in self.active_loans)
+            has_hold = any(bb == b for (uu, bb) in self.active_holds.values())
+            if has_hold and not has_loan:
+                return True
+        for u in self.users:
+            has_loan = any(uu == u for (uu, bb) in self.active_loans)
+            has_hold = any(uu == u for (uu, bb) in self.active_holds.values())
+            if has_hold and not has_loan:
+                return True
+        return False
+
 
 def replay_trace(events):
     """Returns (observed, marker_fired) dicts over FEATURES - both "ever true over the whole
@@ -141,6 +207,18 @@ def replay_trace(events):
             observed["MULTI_USER_BOOK_RELATIONS"] = True
         if st.user_with_two_books():
             observed["USER_WITH_TWO_BOOKS"] = True
+        if st.loan_blocked_via_user_only():
+            observed["LOAN_BLOCKED_VIA_USER_ONLY"] = True
+        if st.loan_blocked_via_book_only():
+            observed["LOAN_BLOCKED_VIA_BOOK_ONLY"] = True
+        if st.loan_blocked_via_both():
+            observed["LOAN_BLOCKED_VIA_BOTH"] = True
+        if st.book_loaned_with_active_hold():
+            observed["BOOK_LOANED_WITH_ACTIVE_HOLD"] = True
+        if st.book_with_multiple_active_holds():
+            observed["BOOK_WITH_MULTIPLE_ACTIVE_HOLDS"] = True
+        if st.delete_blocked_by_hold_only():
+            observed["DELETE_BLOCKED_BY_HOLD_ONLY"] = True
 
     return observed, marker_fired
 

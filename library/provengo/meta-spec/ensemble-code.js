@@ -2,11 +2,31 @@
 // reaching the same state many times must not score higher than reaching it once.
 // HOLD_CREATABLE deliberately excluded: UserBook.CanCreateHold has no restricting condition
 // (true for any user-book pair), so it can't discriminate between scenarios - see lib_stories.js.
+//
+// Phase 24 (2026-11-07): per the advisor's request to replace simplistic CRUD state coverage
+// with a small set of complex, business-rule-interaction states, STATE_FEATURES below was
+// refined from the original 6 basic CRUD predicates to 8 Suspicious State Features - each
+// isolating a genuine interacting-constraint, loan/hold-asymmetry, multi-entity-cardinality, or
+// conditional-deletion scenario in the real SUT (sut.py). Selection was made purely from
+// business-rule relevance, redundancy, and reachability evidence (no mutation-detection result
+// was used - see PRODUCTION_SUSPICIOUS_FEATURES_v2.json for the full per-feature justification
+// and the 5 features considered and dropped as redundant or weakly discriminating).
+//
+// Marker mechanism is unchanged: every name below is emitted via the same markStateFeatureOnce
+// -> Ctrl.doMark(name) path distinctStateFeaturesHit() already reads, from lib_stories.js
+// (5 names, pre-existing Phase 4 instrumentation) and phase14b_markers.js (3 names, Phase 14B
+// instrumentation, loaded additively in the same shared Rhino scope) - no new marker code and no
+// change to distinctStateFeaturesHit/rankingFunction were needed for this refinement.
+//
+// The original 6-feature list and the 13-feature experimental superset this was refined from
+// both remain available, unmodified, for reproducibility: see
+// meta-spec/tests/phase14b_features/canonical_feature_specs.json (13-feature set, used by the
+// Phase 15-22 research comparison) and this file's own git history (original 6-feature list).
 const STATE_FEATURES = [
-    "BOOK_DELETE_ELIGIBLE", "USER_DELETE_ELIGIBLE",
-    "LOAN_CREATABLE",
-    "HOLD_WITHOUT_LOAN", "MULTI_USER_BOOK_RELATIONS",
-    "USER_WITH_TWO_BOOKS"
+    "LOAN_BLOCKED_VIA_USER_ONLY", "LOAN_BLOCKED_VIA_BOOK_ONLY", "LOAN_BLOCKED_VIA_BOTH",
+    "BOOK_LOANED_WITH_ACTIVE_HOLD", "LOAN_AND_HOLD_SAME_PAIR",
+    "BOOK_WITH_MULTIPLE_ACTIVE_HOLDS", "USER_LOAN_PLUS_HOLD_DIFFERENT_BOOKS",
+    "BOOK_DELETE_BLOCKED_BY_HOLD_ONLY"
 ];
 
 // Counts how many distinct STATE_FEATURES markers (lib_stories.js's markStateFeature bthreads,

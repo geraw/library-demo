@@ -44,12 +44,20 @@ function createEvent(type, userId, bookId) {
   return restEvent("POST", url, { description: "Create: " + label + " " + userId + "/" + bookId, userId: userId, bookId: bookId });
 }
 
-const ALL_STATE_FEATURES = ["BOOK_DELETE_ELIGIBLE", "USER_DELETE_ELIGIBLE", "LOAN_CREATABLE", "HOLD_WITHOUT_LOAN", "MULTI_USER_BOOK_RELATIONS", "USER_WITH_TWO_BOOKS"];
+// Phase 24 (2026-11-07): STATE_FEATURES in ensemble-code.js was refined from the original
+// 6 basic CRUD predicates to 8 Suspicious State Features (see
+// meta-spec/PRODUCTION_SUSPICIOUS_FEATURES_v2.json) - this fixture is updated to match the
+// real production constant, since these tests exercise rankingFunction()'s actual counting
+// logic (Set semantics, duplicate handling, unknown-marker rejection) against whatever
+// STATE_FEATURES currently is, not a frozen list of its own. The test *structure* (partial vs
+// full coverage, duplicates don't inflate, unrelated events don't affect the score, etc.) is
+// unchanged - only the concrete feature names used to build synthetic marker events were swapped.
+const ALL_STATE_FEATURES = ["LOAN_BLOCKED_VIA_USER_ONLY", "LOAN_BLOCKED_VIA_BOOK_ONLY", "LOAN_BLOCKED_VIA_BOTH", "BOOK_LOANED_WITH_ACTIVE_HOLD", "LOAN_AND_HOLD_SAME_PAIR", "BOOK_WITH_MULTIPLE_ACTIVE_HOLDS", "USER_LOAN_PLUS_HOLD_DIFFERENT_BOOKS", "BOOK_DELETE_BLOCKED_BY_HOLD_ONLY"];
 const NUM_STATE_FEATURES = ALL_STATE_FEATURES.length;
 
 // --- Test 1: state-feature coverage counted from StateFeature marker events ------------------
 {
-  const partialTrace = ["BOOK_DELETE_ELIGIBLE", "USER_DELETE_ELIGIBLE", "LOAN_CREATABLE", "HOLD_WITHOUT_LOAN"].map(stateFeatureEvent);
+  const partialTrace = ["LOAN_BLOCKED_VIA_USER_ONLY", "LOAN_BLOCKED_VIA_BOOK_ONLY", "LOAN_BLOCKED_VIA_BOTH", "BOOK_LOANED_WITH_ACTIVE_HOLD"].map(stateFeatureEvent);
   const fullTrace = ALL_STATE_FEATURES.map(stateFeatureEvent);
 
   const scorePartial = sandbox.rankingFunction([partialTrace]);
@@ -61,14 +69,14 @@ const NUM_STATE_FEATURES = ALL_STATE_FEATURES.length;
 
 // --- Test 2: unrelated (non-StateFeature) events don't affect the score ----------------------
 {
-  const trace = [stateFeatureEvent("HOLD_WITHOUT_LOAN"), restEvent("POST", "/loans", { userId: 1, bookId: 1 })];
+  const trace = [stateFeatureEvent("LOAN_BLOCKED_VIA_USER_ONLY"), restEvent("POST", "/loans", { userId: 1, bookId: 1 })];
   const score = sandbox.rankingFunction([trace]);
   assertEqual(score, 100 * (1 / NUM_STATE_FEATURES), "T2: a REST event alongside one marker doesn't add or remove coverage");
 }
 
 // --- Test 3: duplicate markers/traces don't inflate the score --------------------------------
 {
-  const trace = [stateFeatureEvent("HOLD_WITHOUT_LOAN"), stateFeatureEvent("HOLD_WITHOUT_LOAN")];
+  const trace = [stateFeatureEvent("LOAN_BLOCKED_VIA_USER_ONLY"), stateFeatureEvent("LOAN_BLOCKED_VIA_USER_ONLY")];
   const s1 = sandbox.rankingFunction([trace]);
   const s2 = sandbox.rankingFunction([trace, trace, trace]);
   assertEqual(s1, 100 * (1 / NUM_STATE_FEATURES), "T3a: repeating the same marker in one trace counts once");
@@ -77,18 +85,19 @@ const NUM_STATE_FEATURES = ALL_STATE_FEATURES.length;
 
 // --- Test 4: coverage accumulates across different tests in the ensemble ---------------------
 {
-  const t1 = [stateFeatureEvent("BOOK_DELETE_ELIGIBLE")];
-  const t2 = [stateFeatureEvent("USER_DELETE_ELIGIBLE")];
+  const t1 = [stateFeatureEvent("LOAN_BLOCKED_VIA_USER_ONLY")];
+  const t2 = [stateFeatureEvent("LOAN_BLOCKED_VIA_BOOK_ONLY")];
   const score = sandbox.rankingFunction([t1, t2]);
   assertEqual(score, 100 * (2 / NUM_STATE_FEATURES), "T4: markers from different tests in the ensemble both count");
 }
 
 // --- Test 5: specific edge cases requested during RankingFunction review (2026-10-24) --------
 {
-  // T5a: exactly half of the 6 features marked -> score is exactly 50, not just "some partial
-  // value" (T1a already covers 4/6; this is the round-number case asked for explicitly).
-  const halfTrace = ["BOOK_DELETE_ELIGIBLE", "USER_DELETE_ELIGIBLE", "LOAN_CREATABLE"].map(stateFeatureEvent);
-  assertEqual(sandbox.rankingFunction([halfTrace]), 50, "T5a: exactly 3/6 features marked -> score 50");
+  // T5a: exactly half of the 8 features marked -> score is exactly 50, not just "some partial
+  // value" (T1a already covers 4/8, which is this same half-coverage case - kept as a separate,
+  // explicit round-number assertion).
+  const halfTrace = ["LOAN_BLOCKED_VIA_USER_ONLY", "LOAN_BLOCKED_VIA_BOOK_ONLY", "LOAN_BLOCKED_VIA_BOTH", "BOOK_LOANED_WITH_ACTIVE_HOLD"].map(stateFeatureEvent);
+  assertEqual(sandbox.rankingFunction([halfTrace]), 50, "T5a: exactly 4/8 features marked -> score 50");
 }
 {
   // T5b: a StateFeature-named event whose feature value is NOT in STATE_FEATURES (e.g. a stray
@@ -157,7 +166,7 @@ const NUM_STATE_FEATURES = ALL_STATE_FEATURES.length;
 {
   // T6g: parameterCoverageFunction must not read StateFeature events, and rankingFunction must
   // not read REST create events - the two scores are independent, as designed.
-  const trace = [stateFeatureEvent("BOOK_DELETE_ELIGIBLE"), createEvent("loan", 1, 1)];
+  const trace = [stateFeatureEvent("LOAN_BLOCKED_VIA_USER_ONLY"), createEvent("loan", 1, 1)];
   assertEqual(sandbox.parameterCoverageFunction([trace]), 100 * (1 / 32), "T6g: a StateFeature event alongside a loan create doesn't affect parameter coverage");
   assertEqual(sandbox.rankingFunction([trace]), 100 * (1 / NUM_STATE_FEATURES), "T6g: a loan create event alongside a marker doesn't affect state coverage");
 }
