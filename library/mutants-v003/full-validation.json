@@ -1,0 +1,17 @@
+{
+  "status": "LOCAL_PREPARATION_VALIDATED_NATIVE_CHECK_PENDING",
+  "mutants_changed": false,
+  "python_tests": 17,
+  "full_adapter_harness": "PASS",
+  "b2_dal_prerequisites": "PASS: real DAL query predicates, 24 steps, 3 users, 3 books",
+  "b2_api_replays": {
+    "original": "PASS",
+    "baseline": "PASS",
+    "B2": "DIFFERENT"
+  },
+  "b2_guide_selector_harness": "PASS: 24 JSON events materialize and expose B2",
+  "full_campaign_mock": "PASS: 2 cases, 6 events each, 3 rejected operations removed, all eight arms pass",
+  "native_provengo_run_here": false,
+  "powershell_run_here": false,
+  "rarity_qualified": false
+}

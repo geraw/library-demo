@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [ValidateSet('Existing','Sample')][string]$Mode = 'Existing',
+    [ValidateSet('Existing','Sample','FullSample','CheckB2')][string]$Mode = 'Existing',
     [string]$EvidencePath,
     [string]$WorkBase,
     [string]$OutputBase,
@@ -50,11 +50,16 @@ if ($Mode -eq 'Existing') {
     }
     if (-not $ProvengoJar) { $ProvengoJar = 'C:\Program Files\Provengo\Provengo Cli\Provengo.uber.jar' }
     if (-not (Test-Path -LiteralPath $ProvengoJar -PathType Leaf)) { throw 'Pass -ProvengoJar with the installed Provengo JAR.' }
+    if ($Mode -eq 'CheckB2') { $SampleSize = 1 }
     $arguments = @((Join-Path $PSScriptRoot 'sample_campaign.py'), '--jar', $ProvengoJar,
         '--java', $Java, '--count', "$SampleSize", '--max-length', "$MaxLength", '--seed', "$Seed",
         '--timeout', "$SampleTimeout", '--work-base', $WorkBase, '--output-base', $OutputBase)
+    if ($Mode -eq 'FullSample' -or $Mode -eq 'CheckB2') { $arguments += @('--model','full') }
+    if ($Mode -eq 'CheckB2') {
+        $arguments += '--b2-witness'
+    }
     if ($ResumeRun) { $arguments += @('--resume', $ResumeRun) }
-    Write-Host 'ENGINE Provengo compact sampling + Flask test_client replay; mutations v003'
+    Write-Host "ENGINE Provengo sampling ($Mode) + Flask test_client replay; mutations v003"
     & $python @arguments
 }
 if ($LASTEXITCODE -ne 0) { throw 'v003 stopped. Inspect the printed result/work directory; evidence retained.' }

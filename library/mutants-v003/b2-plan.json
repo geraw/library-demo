@@ -1,0 +1,141 @@
+[
+  {
+    "method": "POST",
+    "entity": "users",
+    "slot": 0
+  },
+  {
+    "method": "POST",
+    "entity": "users",
+    "slot": 1
+  },
+  {
+    "method": "POST",
+    "entity": "users",
+    "slot": 2
+  },
+  {
+    "method": "POST",
+    "entity": "books",
+    "slot": 0
+  },
+  {
+    "method": "POST",
+    "entity": "books",
+    "slot": 1
+  },
+  {
+    "method": "POST",
+    "entity": "books",
+    "slot": 2
+  },
+  {
+    "method": "POST",
+    "entity": "loans",
+    "user": 0,
+    "book": 0
+  },
+  {
+    "method": "POST",
+    "entity": "holds",
+    "user": 1,
+    "book": 0,
+    "slot": 0
+  },
+  {
+    "method": "DELETE",
+    "entity": "loans",
+    "user": 0,
+    "book": 0
+  },
+  {
+    "method": "POST",
+    "entity": "loans",
+    "user": 0,
+    "book": 1
+  },
+  {
+    "method": "POST",
+    "entity": "loans",
+    "user": 1,
+    "book": 0
+  },
+  {
+    "method": "POST",
+    "entity": "holds",
+    "user": 2,
+    "book": 1,
+    "slot": 1
+  },
+  {
+    "method": "DELETE",
+    "entity": "loans",
+    "user": 0,
+    "book": 1
+  },
+  {
+    "method": "POST",
+    "entity": "loans",
+    "user": 0,
+    "book": 2
+  },
+  {
+    "method": "POST",
+    "entity": "loans",
+    "user": 2,
+    "book": 1
+  },
+  {
+    "method": "POST",
+    "entity": "holds",
+    "user": 1,
+    "book": 2,
+    "slot": 2
+  },
+  {
+    "method": "DELETE",
+    "entity": "loans",
+    "user": 0,
+    "book": 2
+  },
+  {
+    "method": "DELETE",
+    "entity": "loans",
+    "user": 2,
+    "book": 1
+  },
+  {
+    "method": "POST",
+    "entity": "loans",
+    "user": 0,
+    "book": 1
+  },
+  {
+    "method": "DELETE",
+    "entity": "loans",
+    "user": 1,
+    "book": 0
+  },
+  {
+    "method": "POST",
+    "entity": "loans",
+    "user": 1,
+    "book": 2
+  },
+  {
+    "method": "DELETE",
+    "entity": "holds",
+    "slot": 0
+  },
+  {
+    "method": "DELETE",
+    "entity": "books",
+    "slot": 0
+  },
+  {
+    "method": "GET",
+    "entity": "loans",
+    "user": 0,
+    "book": 1
+  }
+]

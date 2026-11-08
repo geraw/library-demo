@@ -119,3 +119,10 @@ Local check: `node library/mutants-v003/check_story_rechecks.js` exercises story
 registration, both removal triggers, repeated reads and exclusion of GET triggers
 for both model copies. It does not emulate Context cancellation or prove native
 Provengo scheduling; those still require a real first-sample control check.
+
+## Full-model sampling and directed B2 check
+
+See FULL-SAMPLING.md. New modes FullSample and CheckB2 retain the full negative
+request alternatives at sampling, then project only original-rejected requests
+out of execution. Invoke-Full-V003.ps1 also collects an analysis ZIP.
+CheckB2 defaults to one diagnostic path and is not random discovery.
