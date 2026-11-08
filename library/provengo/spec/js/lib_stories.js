@@ -113,6 +113,31 @@ ctx.bthread("verifyLoanExists", "Loan.All", function (loan) {
   verifyLoanExists(loan.bookid, loan.userid);
 });
 
+// Recheck surviving loans after relationship removals, not only at creation.
+// One Context-managed bthread per Loan.All incarnation avoids detached checks:
+// Context ends it when that loan disappears, including return/recreation of the
+// same user/book pair. A new incarnation receives its own fresh bthread.
+// Do not spawn a new bthread per removal: that can accumulate duplicate checks
+// and leave reads pending for loans that have already been returned.
+// Reads remain ordinary selectable events; no block forces an immediate GET.
+// While a read is pending, further removals coalesce into that check. This bounds
+// pending work, but deliberately does not promise one check per removal.
+// GETs do not trigger this story, so verification cannot trigger itself.
+// In the compact model verifyLoanExists emits only the valid read; full response
+// comparison belongs to the replay oracle, not to this scheduling story.
+ctx.bthread("verifyActiveLoanAfterRelationshipRemoval", "Loan.All", function (loan) {
+  var relationshipRemoved = bp.EventSet("Loan or hold removed", function (event) {
+    return matchAnyHoldDeleted().contains(event) ||
+           matchAnyLoanDeleted().contains(event);
+  });
+
+  while (true) {
+    waitFor(relationshipRemoved);
+    verifyLoanExists(loan.bookid, loan.userid);
+  }
+});
+
+
 // Unlike users/books/holds, a loan's identity is its userId/bookId pair, so the same loan can be
 // re-created while these checks wait their turn. Wait for that too: once it happens the loan
 // exists again, so the absence checks no longer apply (verifyLoanExists covers the new loan).

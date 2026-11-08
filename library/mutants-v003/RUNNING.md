@@ -99,3 +99,23 @@ exact sampled event files remain available for replay. Model data seeds are reco
   deliberately mandatory. A fake CLI in a unit test is not evidence of native success.
 - The fast replay omits TCP, the native Java actuator and its SQLite result database.
   Its timings are not a fair tool comparison against native Provengo runs.
+
+## Relationship-removal rechecks (post-calibration model update)
+
+Both the main stories and compact sampling stories now register one persistent
+Context bthread per active loan. A hold cancellation or loan return offers a new
+existence read for each surviving loan. Pending reads may coalesce later removals;
+reads are not forced before other operations. Context owns termination on loan
+removal, preventing detached checks from surviving into a later incarnation.
+This closes an observation gap: a successful creation-time read alone cannot
+observe damage caused by a later relationship removal. It is not a rarity guard.
+
+Mutant code and old 84-case results are unchanged. Existing mode replays saved
+requests and therefore does not acquire new reads. Only newly sampled sequences
+use this updated story. Do not pool old and new sampling results as one unchanged
+distribution. Changed model hashes also prevent resuming an older Sample campaign.
+
+Local check: `node library/mutants-v003/check_story_rechecks.js` exercises story
+registration, both removal triggers, repeated reads and exclusion of GET triggers
+for both model copies. It does not emulate Context cancellation or prove native
+Provengo scheduling; those still require a real first-sample control check.

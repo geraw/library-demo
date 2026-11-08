@@ -18,7 +18,7 @@
   "pilot-84-results.json": "2ba0d80616860731ad5502cae2c8d8c93f8d280ee07fcec62c4f435f63526036",
   "controls-probe.json": "783118a8d1a8225af518efe60a945ebcc1840871ef87bfa6fb35fd87e8bfdbb6",
   "replay.py": "f2202d5d7677ca8600621d1512bd6b499de4fe0e26a0f49d6b8a0badcb01f307",
-  "RUNNING.md": "58828b04c7a3837800230fbe3c8160efa10264ef85e1a411ec89cbc87b9205d1",
+  "RUNNING.md": "a7ea5a825f3e983fa3b89423d9a164ed26cc79c304b4e0d6aeb5349518615eb8",
   "test_regressions.py": "46eed5ea6592123bd30f8a92084ee5252509abc049fe4921705a4fc5e9aecbc3",
   "first-differences.json": "031c747287e181345a069c1e21c3fa9e160eea2650979bb5755b0d3027deece9",
   ".gitignore": "e99f6ee4eb88882ea6589ecb717e10a41401763241b246b6821bc091cfe2227e",
@@ -30,5 +30,6 @@
   "compact-model/config/provengo.yml": "8384310a0fc931195e6395a6c8d487ca8c208ecfce8613f0443a585f0553d5ea",
   "compact-model/spec/js/interfaces.library.js": "4352d544ef36f1ef55220a84202dffef5cc390d9e73718f26ddcf3e1ac22242d",
   "compact-model/spec/js/dal.js": "a272849252d0ae95c3acd4b96e50c24302665490011810161899f2db0a44963f",
-  "compact-model/spec/js/lib_stories.js": "600e73d9491263be83f3668e2cc2bae3fb1da0f5a2241e399a9fccaa00949e9f"
+  "compact-model/spec/js/lib_stories.js": "ea24ec7ab9a1eb3d778fb4b171d739bffa74d64c4250fb34ec4324b396dd01c9",
+  "check_story_rechecks.js": "1b7cedb331155d7dc650b3fd5e094503947d2d87cc7c94a517da8bde17a1a049"
 }
