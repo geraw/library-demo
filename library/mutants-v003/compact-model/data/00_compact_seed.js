@@ -1,0 +1,1 @@
+var COMPACT_SEED = 1;

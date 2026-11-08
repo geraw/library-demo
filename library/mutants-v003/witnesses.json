@@ -1,0 +1,3529 @@
+{
+  "B1": {
+    "full_requests": 16,
+    "reduced_requests": 15,
+    "reduction": "greedy deletion under retained-response equivalence; not globally minimal",
+    "full_trace": [
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U0"
+        },
+        "status": 201,
+        "response": {
+          "id": 770487,
+          "name": "U0"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 1
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U1"
+        },
+        "status": 201,
+        "response": {
+          "id": 216739,
+          "name": "U1"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 2
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U2"
+        },
+        "status": 201,
+        "response": {
+          "id": 126225,
+          "name": "U2"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 3
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B0"
+        },
+        "status": 201,
+        "response": {
+          "id": 877572,
+          "title": "B0"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 4
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B1"
+        },
+        "status": 201,
+        "response": {
+          "id": 388389,
+          "title": "B1"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 5
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B2"
+        },
+        "status": 201,
+        "response": {
+          "id": 356787,
+          "title": "B2"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 6
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 334053,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 7
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 246316,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 8
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 126225,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 872246,
+          "userId": 126225
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 9
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/877572",
+        "role": "tool",
+        "order": 10
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/246316",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/246316",
+        "role": "tool",
+        "order": 11
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 207473,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 12
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 809570,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 13
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/216739/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/216739/877572",
+        "role": "tool",
+        "order": 14
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/872246",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/872246",
+        "role": "tool",
+        "order": 15
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 126225,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 876646,
+          "userId": 126225
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 16
+      }
+    ],
+    "reduced_trace": [
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U0"
+        },
+        "status": 201,
+        "response": {
+          "id": 770487,
+          "name": "U0"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 1
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U1"
+        },
+        "status": 201,
+        "response": {
+          "id": 216739,
+          "name": "U1"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 2
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U2"
+        },
+        "status": 201,
+        "response": {
+          "id": 126225,
+          "name": "U2"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 3
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B0"
+        },
+        "status": 201,
+        "response": {
+          "id": 877572,
+          "title": "B0"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 4
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B1"
+        },
+        "status": 201,
+        "response": {
+          "id": 388389,
+          "title": "B1"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 5
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 334053,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 7
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 246316,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 8
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 126225,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 872246,
+          "userId": 126225
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 9
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/877572",
+        "role": "tool",
+        "order": 10
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/246316",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/246316",
+        "role": "tool",
+        "order": 11
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 207473,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 12
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 809570,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 13
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/216739/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/216739/877572",
+        "role": "tool",
+        "order": 14
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/872246",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/872246",
+        "role": "tool",
+        "order": 15
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 126225,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 876646,
+          "userId": 126225
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 16
+      }
+    ]
+  },
+  "B2": {
+    "full_requests": 24,
+    "reduced_requests": 24,
+    "reduction": "greedy deletion under retained-response equivalence; not globally minimal",
+    "full_trace": [
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U0"
+        },
+        "status": 201,
+        "response": {
+          "id": 770487,
+          "name": "U0"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 1
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U1"
+        },
+        "status": 201,
+        "response": {
+          "id": 216739,
+          "name": "U1"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 2
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U2"
+        },
+        "status": 201,
+        "response": {
+          "id": 126225,
+          "name": "U2"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 3
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B0"
+        },
+        "status": 201,
+        "response": {
+          "id": 877572,
+          "title": "B0"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 4
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B1"
+        },
+        "status": 201,
+        "response": {
+          "id": 388389,
+          "title": "B1"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 5
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B2"
+        },
+        "status": 201,
+        "response": {
+          "id": 356787,
+          "title": "B2"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 6
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 334053,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 7
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 246316,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 8
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/877572",
+        "role": "tool",
+        "order": 9
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 872246,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 10
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 207473,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 11
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 126225,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 809570,
+          "userId": 126225
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 12
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/388389",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/388389",
+        "role": "tool",
+        "order": 13
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 356787
+        },
+        "status": 201,
+        "response": {
+          "bookId": 356787,
+          "id": 876646,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 14
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 126225,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 671858,
+          "userId": 126225
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 15
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 216739,
+          "bookId": 356787
+        },
+        "status": 201,
+        "response": {
+          "bookId": 356787,
+          "id": 191161,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 16
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/356787",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/356787",
+        "role": "tool",
+        "order": 17
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/126225/388389",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/126225/388389",
+        "role": "tool",
+        "order": 18
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 719176,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 19
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/216739/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/216739/877572",
+        "role": "tool",
+        "order": 20
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 356787
+        },
+        "status": 201,
+        "response": {
+          "bookId": 356787,
+          "id": 542417,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 21
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/246316",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/246316",
+        "role": "tool",
+        "order": 22
+      },
+      {
+        "method": "DELETE",
+        "path": "/books/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Book deleted"
+        },
+        "url": "http://127.0.0.1/books/877572",
+        "role": "tool",
+        "order": 23
+      },
+      {
+        "method": "GET",
+        "path": "/loans?userId=770487&bookId=388389",
+        "input": null,
+        "status": 200,
+        "response": [
+          {
+            "bookId": 388389,
+            "id": 719176,
+            "userId": 770487
+          }
+        ],
+        "url": "http://127.0.0.1/loans?userId=770487&bookId=388389",
+        "role": "tool",
+        "order": 24
+      }
+    ],
+    "reduced_trace": [
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U0"
+        },
+        "status": 201,
+        "response": {
+          "id": 770487,
+          "name": "U0"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 1
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U1"
+        },
+        "status": 201,
+        "response": {
+          "id": 216739,
+          "name": "U1"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 2
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U2"
+        },
+        "status": 201,
+        "response": {
+          "id": 126225,
+          "name": "U2"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 3
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B0"
+        },
+        "status": 201,
+        "response": {
+          "id": 877572,
+          "title": "B0"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 4
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B1"
+        },
+        "status": 201,
+        "response": {
+          "id": 388389,
+          "title": "B1"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 5
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B2"
+        },
+        "status": 201,
+        "response": {
+          "id": 356787,
+          "title": "B2"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 6
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 334053,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 7
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 246316,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 8
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/877572",
+        "role": "tool",
+        "order": 9
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 872246,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 10
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 207473,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 11
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 126225,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 809570,
+          "userId": 126225
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 12
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/388389",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/388389",
+        "role": "tool",
+        "order": 13
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 356787
+        },
+        "status": 201,
+        "response": {
+          "bookId": 356787,
+          "id": 876646,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 14
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 126225,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 671858,
+          "userId": 126225
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 15
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 216739,
+          "bookId": 356787
+        },
+        "status": 201,
+        "response": {
+          "bookId": 356787,
+          "id": 191161,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 16
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/356787",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/356787",
+        "role": "tool",
+        "order": 17
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/126225/388389",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/126225/388389",
+        "role": "tool",
+        "order": 18
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 719176,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 19
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/216739/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/216739/877572",
+        "role": "tool",
+        "order": 20
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 356787
+        },
+        "status": 201,
+        "response": {
+          "bookId": 356787,
+          "id": 542417,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 21
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/246316",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/246316",
+        "role": "tool",
+        "order": 22
+      },
+      {
+        "method": "DELETE",
+        "path": "/books/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Book deleted"
+        },
+        "url": "http://127.0.0.1/books/877572",
+        "role": "tool",
+        "order": 23
+      },
+      {
+        "method": "GET",
+        "path": "/loans?userId=770487&bookId=388389",
+        "input": null,
+        "status": 200,
+        "response": [
+          {
+            "bookId": 388389,
+            "id": 719176,
+            "userId": 770487
+          }
+        ],
+        "url": "http://127.0.0.1/loans?userId=770487&bookId=388389",
+        "role": "tool",
+        "order": 24
+      }
+    ]
+  },
+  "B3": {
+    "full_requests": 20,
+    "reduced_requests": 20,
+    "reduction": "greedy deletion under retained-response equivalence; not globally minimal",
+    "full_trace": [
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U0"
+        },
+        "status": 201,
+        "response": {
+          "id": 770487,
+          "name": "U0"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 1
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U1"
+        },
+        "status": 201,
+        "response": {
+          "id": 216739,
+          "name": "U1"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 2
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U2"
+        },
+        "status": 201,
+        "response": {
+          "id": 126225,
+          "name": "U2"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 3
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B0"
+        },
+        "status": 201,
+        "response": {
+          "id": 877572,
+          "title": "B0"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 4
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B1"
+        },
+        "status": 201,
+        "response": {
+          "id": 388389,
+          "title": "B1"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 5
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B2"
+        },
+        "status": 201,
+        "response": {
+          "id": 356787,
+          "title": "B2"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 6
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 356787
+        },
+        "status": 201,
+        "response": {
+          "bookId": 356787,
+          "id": 334053,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 7
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 246316,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 8
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 126225,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 872246,
+          "userId": 126225
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 9
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 770487,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 207473,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 10
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 809570,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 11
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 216739,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 876646,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 12
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 216739,
+          "bookId": 356787
+        },
+        "status": 201,
+        "response": {
+          "bookId": 356787,
+          "id": 671858,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 13
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/872246",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/872246",
+        "role": "tool",
+        "order": 14
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/356787",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/356787",
+        "role": "tool",
+        "order": 15
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 191161,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 16
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/388389",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/388389",
+        "role": "tool",
+        "order": 17
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/216739/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/216739/877572",
+        "role": "tool",
+        "order": 18
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/809570",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/809570",
+        "role": "tool",
+        "order": 19
+      },
+      {
+        "method": "GET",
+        "path": "/holds",
+        "input": null,
+        "status": 200,
+        "response": [
+          {
+            "bookId": 877572,
+            "id": 207473,
+            "userId": 770487
+          },
+          {
+            "bookId": 388389,
+            "id": 876646,
+            "userId": 216739
+          },
+          {
+            "bookId": 356787,
+            "id": 671858,
+            "userId": 216739
+          }
+        ],
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 20
+      }
+    ],
+    "reduced_trace": [
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U0"
+        },
+        "status": 201,
+        "response": {
+          "id": 770487,
+          "name": "U0"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 1
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U1"
+        },
+        "status": 201,
+        "response": {
+          "id": 216739,
+          "name": "U1"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 2
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U2"
+        },
+        "status": 201,
+        "response": {
+          "id": 126225,
+          "name": "U2"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 3
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B0"
+        },
+        "status": 201,
+        "response": {
+          "id": 877572,
+          "title": "B0"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 4
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B1"
+        },
+        "status": 201,
+        "response": {
+          "id": 388389,
+          "title": "B1"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 5
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B2"
+        },
+        "status": 201,
+        "response": {
+          "id": 356787,
+          "title": "B2"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 6
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 356787
+        },
+        "status": 201,
+        "response": {
+          "bookId": 356787,
+          "id": 334053,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 7
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 246316,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 8
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 126225,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 872246,
+          "userId": 126225
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 9
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 770487,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 207473,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 10
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 809570,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 11
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 216739,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 876646,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 12
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 216739,
+          "bookId": 356787
+        },
+        "status": 201,
+        "response": {
+          "bookId": 356787,
+          "id": 671858,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 13
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/872246",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/872246",
+        "role": "tool",
+        "order": 14
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/356787",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/356787",
+        "role": "tool",
+        "order": 15
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 191161,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 16
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/388389",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/388389",
+        "role": "tool",
+        "order": 17
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/216739/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/216739/877572",
+        "role": "tool",
+        "order": 18
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/809570",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/809570",
+        "role": "tool",
+        "order": 19
+      },
+      {
+        "method": "GET",
+        "path": "/holds",
+        "input": null,
+        "status": 200,
+        "response": [
+          {
+            "bookId": 877572,
+            "id": 207473,
+            "userId": 770487
+          },
+          {
+            "bookId": 388389,
+            "id": 876646,
+            "userId": 216739
+          },
+          {
+            "bookId": 356787,
+            "id": 671858,
+            "userId": 216739
+          }
+        ],
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 20
+      }
+    ]
+  },
+  "B4": {
+    "full_requests": 22,
+    "reduced_requests": 20,
+    "reduction": "greedy deletion under retained-response equivalence; not globally minimal",
+    "full_trace": [
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U0"
+        },
+        "status": 201,
+        "response": {
+          "id": 770487,
+          "name": "U0"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 1
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U1"
+        },
+        "status": 201,
+        "response": {
+          "id": 216739,
+          "name": "U1"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 2
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U2"
+        },
+        "status": 201,
+        "response": {
+          "id": 126225,
+          "name": "U2"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 3
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B0"
+        },
+        "status": 201,
+        "response": {
+          "id": 877572,
+          "title": "B0"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 4
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B1"
+        },
+        "status": 201,
+        "response": {
+          "id": 388389,
+          "title": "B1"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 5
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B2"
+        },
+        "status": 201,
+        "response": {
+          "id": 356787,
+          "title": "B2"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 6
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 334053,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 7
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 246316,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 8
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 872246,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 9
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 207473,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 10
+      },
+      {
+        "method": "GET",
+        "path": "/loans?userId=770487&bookId=877572",
+        "input": null,
+        "status": 200,
+        "response": [
+          {
+            "bookId": 877572,
+            "id": 334053,
+            "userId": 770487
+          }
+        ],
+        "url": "http://127.0.0.1/loans?userId=770487&bookId=877572",
+        "role": "tool",
+        "order": 11
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/877572",
+        "role": "tool",
+        "order": 12
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/216739/388389",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/216739/388389",
+        "role": "tool",
+        "order": 13
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 809570,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 14
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 876646,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 15
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/388389",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/388389",
+        "role": "tool",
+        "order": 16
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/216739/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/216739/877572",
+        "role": "tool",
+        "order": 17
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 671858,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 18
+      },
+      {
+        "method": "GET",
+        "path": "/loans?userId=770487&bookId=877572",
+        "input": null,
+        "status": 200,
+        "response": [
+          {
+            "bookId": 877572,
+            "id": 671858,
+            "userId": 770487
+          }
+        ],
+        "url": "http://127.0.0.1/loans?userId=770487&bookId=877572",
+        "role": "tool",
+        "order": 19
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/872246",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/872246",
+        "role": "tool",
+        "order": 20
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/207473",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/207473",
+        "role": "tool",
+        "order": 21
+      },
+      {
+        "method": "GET",
+        "path": "/loans?userId=770487&bookId=877572",
+        "input": null,
+        "status": 200,
+        "response": [
+          {
+            "bookId": 877572,
+            "id": 671858,
+            "userId": 770487
+          }
+        ],
+        "url": "http://127.0.0.1/loans?userId=770487&bookId=877572",
+        "role": "tool",
+        "order": 22
+      }
+    ],
+    "reduced_trace": [
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U0"
+        },
+        "status": 201,
+        "response": {
+          "id": 770487,
+          "name": "U0"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 1
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U1"
+        },
+        "status": 201,
+        "response": {
+          "id": 216739,
+          "name": "U1"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 2
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B0"
+        },
+        "status": 201,
+        "response": {
+          "id": 877572,
+          "title": "B0"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 4
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B1"
+        },
+        "status": 201,
+        "response": {
+          "id": 388389,
+          "title": "B1"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 5
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 334053,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 7
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 246316,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 8
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 872246,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 9
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 207473,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 10
+      },
+      {
+        "method": "GET",
+        "path": "/loans?userId=770487&bookId=877572",
+        "input": null,
+        "status": 200,
+        "response": [
+          {
+            "bookId": 877572,
+            "id": 334053,
+            "userId": 770487
+          }
+        ],
+        "url": "http://127.0.0.1/loans?userId=770487&bookId=877572",
+        "role": "tool",
+        "order": 11
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/877572",
+        "role": "tool",
+        "order": 12
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/216739/388389",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/216739/388389",
+        "role": "tool",
+        "order": 13
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 809570,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 14
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 876646,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 15
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/388389",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/388389",
+        "role": "tool",
+        "order": 16
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/216739/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/216739/877572",
+        "role": "tool",
+        "order": 17
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 671858,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 18
+      },
+      {
+        "method": "GET",
+        "path": "/loans?userId=770487&bookId=877572",
+        "input": null,
+        "status": 200,
+        "response": [
+          {
+            "bookId": 877572,
+            "id": 671858,
+            "userId": 770487
+          }
+        ],
+        "url": "http://127.0.0.1/loans?userId=770487&bookId=877572",
+        "role": "tool",
+        "order": 19
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/872246",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/872246",
+        "role": "tool",
+        "order": 20
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/207473",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/207473",
+        "role": "tool",
+        "order": 21
+      },
+      {
+        "method": "GET",
+        "path": "/loans?userId=770487&bookId=877572",
+        "input": null,
+        "status": 200,
+        "response": [
+          {
+            "bookId": 877572,
+            "id": 671858,
+            "userId": 770487
+          }
+        ],
+        "url": "http://127.0.0.1/loans?userId=770487&bookId=877572",
+        "role": "tool",
+        "order": 22
+      }
+    ]
+  },
+  "B5": {
+    "full_requests": 19,
+    "reduced_requests": 17,
+    "reduction": "greedy deletion under retained-response equivalence; not globally minimal",
+    "full_trace": [
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U0"
+        },
+        "status": 201,
+        "response": {
+          "id": 770487,
+          "name": "U0"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 1
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U1"
+        },
+        "status": 201,
+        "response": {
+          "id": 216739,
+          "name": "U1"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 2
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U2"
+        },
+        "status": 201,
+        "response": {
+          "id": 126225,
+          "name": "U2"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 3
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B0"
+        },
+        "status": 201,
+        "response": {
+          "id": 877572,
+          "title": "B0"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 4
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B1"
+        },
+        "status": 201,
+        "response": {
+          "id": 388389,
+          "title": "B1"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 5
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B2"
+        },
+        "status": 201,
+        "response": {
+          "id": 356787,
+          "title": "B2"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 6
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 334053,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 7
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 246316,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 8
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 872246,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 9
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 207473,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 10
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/877572",
+        "role": "tool",
+        "order": 11
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/216739/388389",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/216739/388389",
+        "role": "tool",
+        "order": 12
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 809570,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 13
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 876646,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 14
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/388389",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/388389",
+        "role": "tool",
+        "order": 15
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/216739/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/216739/877572",
+        "role": "tool",
+        "order": 16
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 671858,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 17
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/877572",
+        "role": "tool",
+        "order": 18
+      },
+      {
+        "method": "GET",
+        "path": "/loans",
+        "input": null,
+        "status": 200,
+        "response": [],
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 19
+      }
+    ],
+    "reduced_trace": [
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U0"
+        },
+        "status": 201,
+        "response": {
+          "id": 770487,
+          "name": "U0"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 1
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U1"
+        },
+        "status": 201,
+        "response": {
+          "id": 216739,
+          "name": "U1"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 2
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B0"
+        },
+        "status": 201,
+        "response": {
+          "id": 877572,
+          "title": "B0"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 4
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B1"
+        },
+        "status": 201,
+        "response": {
+          "id": 388389,
+          "title": "B1"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 5
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 334053,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 7
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 246316,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 8
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 872246,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 9
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 207473,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 10
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/877572",
+        "role": "tool",
+        "order": 11
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/216739/388389",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/216739/388389",
+        "role": "tool",
+        "order": 12
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 809570,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 13
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 876646,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 14
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/388389",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/388389",
+        "role": "tool",
+        "order": 15
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/216739/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/216739/877572",
+        "role": "tool",
+        "order": 16
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 671858,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 17
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/877572",
+        "role": "tool",
+        "order": 18
+      },
+      {
+        "method": "GET",
+        "path": "/loans",
+        "input": null,
+        "status": 200,
+        "response": [],
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 19
+      }
+    ]
+  },
+  "B6": {
+    "full_requests": 17,
+    "reduced_requests": 16,
+    "reduction": "greedy deletion under retained-response equivalence; not globally minimal",
+    "full_trace": [
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U0"
+        },
+        "status": 201,
+        "response": {
+          "id": 770487,
+          "name": "U0"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 1
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U1"
+        },
+        "status": 201,
+        "response": {
+          "id": 216739,
+          "name": "U1"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 2
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U2"
+        },
+        "status": 201,
+        "response": {
+          "id": 126225,
+          "name": "U2"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 3
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B0"
+        },
+        "status": 201,
+        "response": {
+          "id": 877572,
+          "title": "B0"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 4
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B1"
+        },
+        "status": 201,
+        "response": {
+          "id": 388389,
+          "title": "B1"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 5
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B2"
+        },
+        "status": 201,
+        "response": {
+          "id": 356787,
+          "title": "B2"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 6
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 334053,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 7
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 246316,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 8
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 126225,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 872246,
+          "userId": 126225
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 9
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 126225,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 207473,
+          "userId": 126225
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 10
+      },
+      {
+        "method": "GET",
+        "path": "/books",
+        "input": null,
+        "status": 200,
+        "response": [
+          {
+            "id": 877572,
+            "title": "B0"
+          },
+          {
+            "id": 388389,
+            "title": "B1"
+          },
+          {
+            "id": 356787,
+            "title": "B2"
+          }
+        ],
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 11
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/877572",
+        "role": "tool",
+        "order": 12
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/872246",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/872246",
+        "role": "tool",
+        "order": 13
+      },
+      {
+        "method": "DELETE",
+        "path": "/books/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Book deleted"
+        },
+        "url": "http://127.0.0.1/books/877572",
+        "role": "tool",
+        "order": 14
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/207473",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/207473",
+        "role": "tool",
+        "order": 15
+      },
+      {
+        "method": "GET",
+        "path": "/books/877572",
+        "input": null,
+        "status": 404,
+        "response": {
+          "error": "Book not found"
+        },
+        "url": "http://127.0.0.1/books/877572",
+        "role": "tool",
+        "order": 16
+      },
+      {
+        "method": "GET",
+        "path": "/books",
+        "input": null,
+        "status": 200,
+        "response": [
+          {
+            "id": 388389,
+            "title": "B1"
+          },
+          {
+            "id": 356787,
+            "title": "B2"
+          }
+        ],
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 17
+      }
+    ],
+    "reduced_trace": [
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U0"
+        },
+        "status": 201,
+        "response": {
+          "id": 770487,
+          "name": "U0"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 1
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U1"
+        },
+        "status": 201,
+        "response": {
+          "id": 216739,
+          "name": "U1"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 2
+      },
+      {
+        "method": "POST",
+        "path": "/users",
+        "input": {
+          "name": "U2"
+        },
+        "status": 201,
+        "response": {
+          "id": 126225,
+          "name": "U2"
+        },
+        "url": "http://127.0.0.1/users",
+        "role": "tool",
+        "order": 3
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B0"
+        },
+        "status": 201,
+        "response": {
+          "id": 877572,
+          "title": "B0"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 4
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B1"
+        },
+        "status": 201,
+        "response": {
+          "id": 388389,
+          "title": "B1"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 5
+      },
+      {
+        "method": "POST",
+        "path": "/books",
+        "input": {
+          "title": "B2"
+        },
+        "status": 201,
+        "response": {
+          "id": 356787,
+          "title": "B2"
+        },
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 6
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 770487,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 334053,
+          "userId": 770487
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 7
+      },
+      {
+        "method": "POST",
+        "path": "/loans",
+        "input": {
+          "userId": 216739,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 246316,
+          "userId": 216739
+        },
+        "url": "http://127.0.0.1/loans",
+        "role": "tool",
+        "order": 8
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 126225,
+          "bookId": 877572
+        },
+        "status": 201,
+        "response": {
+          "bookId": 877572,
+          "id": 872246,
+          "userId": 126225
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 9
+      },
+      {
+        "method": "POST",
+        "path": "/holds",
+        "input": {
+          "userId": 126225,
+          "bookId": 388389
+        },
+        "status": 201,
+        "response": {
+          "bookId": 388389,
+          "id": 207473,
+          "userId": 126225
+        },
+        "url": "http://127.0.0.1/holds",
+        "role": "tool",
+        "order": 10
+      },
+      {
+        "method": "GET",
+        "path": "/books",
+        "input": null,
+        "status": 200,
+        "response": [
+          {
+            "id": 877572,
+            "title": "B0"
+          },
+          {
+            "id": 388389,
+            "title": "B1"
+          },
+          {
+            "id": 356787,
+            "title": "B2"
+          }
+        ],
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 11
+      },
+      {
+        "method": "DELETE",
+        "path": "/loans/770487/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Loan deleted"
+        },
+        "url": "http://127.0.0.1/loans/770487/877572",
+        "role": "tool",
+        "order": 12
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/872246",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/872246",
+        "role": "tool",
+        "order": 13
+      },
+      {
+        "method": "DELETE",
+        "path": "/books/877572",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Book deleted"
+        },
+        "url": "http://127.0.0.1/books/877572",
+        "role": "tool",
+        "order": 14
+      },
+      {
+        "method": "DELETE",
+        "path": "/holds/207473",
+        "input": null,
+        "status": 200,
+        "response": {
+          "message": "Hold deleted"
+        },
+        "url": "http://127.0.0.1/holds/207473",
+        "role": "tool",
+        "order": 15
+      },
+      {
+        "method": "GET",
+        "path": "/books",
+        "input": null,
+        "status": 200,
+        "response": [
+          {
+            "id": 388389,
+            "title": "B1"
+          },
+          {
+            "id": 356787,
+            "title": "B2"
+          }
+        ],
+        "url": "http://127.0.0.1/books",
+        "role": "tool",
+        "order": 17
+      }
+    ]
+  }
+}

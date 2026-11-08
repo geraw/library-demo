@@ -1,0 +1,19 @@
+test_archive_matches_source (test_compact.CompactTests.test_archive_matches_source) ... ok
+test_negative_fields_and_callbacks_rejected (test_compact.CompactTests.test_negative_fields_and_callbacks_rejected) ... ok
+test_symbolic_sample_materializes_and_replays_on_controls (test_compact.CompactTests.test_symbolic_sample_materializes_and_replays_on_controls) ... ok
+test_unbound_symbol_rejected (test_compact.CompactTests.test_unbound_symbol_rejected) ... ok
+test_campaign_and_resume_preserve_partial_case (test_driver.DriverTests.test_campaign_and_resume_preserve_partial_case) ... ok
+test_b1_no_handoff_is_safe (test_regressions.Regressions.test_b1_no_handoff_is_safe) ... ok
+test_b2_acyclic_retirement_is_safe (test_regressions.Regressions.test_b2_acyclic_retirement_is_safe) ... ok
+test_b3_release_without_repin_is_safe (test_regressions.Regressions.test_b3_release_without_repin_is_safe) ... ok
+test_b4_release_without_positive_refresh_is_safe (test_regressions.Regressions.test_b4_release_without_positive_refresh_is_safe) ... ok
+test_b5_single_rebound_side_is_safe (test_regressions.Regressions.test_b5_single_rebound_side_is_safe) ... ok
+test_baseline_validation_and_seeded_reset (test_regressions.Regressions.test_baseline_validation_and_seeded_reset) ... ok
+test_directed_witness_matrix (test_regressions.Regressions.test_directed_witness_matrix) ... ok
+test_reset_clears_fault_metadata (test_regressions.Regressions.test_reset_clears_fault_metadata) ... ok
+test_v002_shortcuts_are_closed (test_regressions.Regressions.test_v002_shortcuts_are_closed) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 1.468s
+
+OK

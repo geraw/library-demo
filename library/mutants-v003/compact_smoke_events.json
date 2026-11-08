@@ -1,0 +1,250 @@
+[
+  [
+    {
+      "name": "POST",
+      "data": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23600/users",
+        "expectedResponseCodes": [
+          201
+        ],
+        "parameters": {
+          "description": "Create: User 1",
+          "id": 1
+        },
+        "body": "{\"name\":\"A\"}",
+        "model": {
+          "valid": true,
+          "name": "createUser (valid-standard): 1"
+        }
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23600/books",
+        "expectedResponseCodes": [
+          201
+        ],
+        "parameters": {
+          "description": "Create: Book 1",
+          "id": 1
+        },
+        "body": "{\"title\":\"X\"}",
+        "model": {
+          "valid": true,
+          "name": "createBook (valid-standard): 1"
+        }
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23600/loans",
+        "expectedResponseCodes": [
+          201
+        ],
+        "parameters": {
+          "description": "Create: Loan 1/1 number 1",
+          "userId": 1,
+          "bookId": 1,
+          "loanNumber": 1
+        },
+        "body": "{\"userId\":\"@{USER1}\",\"bookId\":\"@{BOOK1}\"}",
+        "model": {
+          "valid": true,
+          "name": "createLoan (valid-standard): 1/1"
+        }
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "method": "POST",
+        "url": "http://127.0.0.1:23600/holds",
+        "expectedResponseCodes": [
+          201
+        ],
+        "parameters": {
+          "description": "Create: Hold 1 for User 1 and Book 1",
+          "id": 1,
+          "userId": 1,
+          "bookId": 1
+        },
+        "body": "{\"userId\":\"@{USER1}\",\"bookId\":\"@{BOOK1}\"}",
+        "model": {
+          "valid": true,
+          "name": "createHold (valid-standard): 1"
+        }
+      }
+    },
+    {
+      "name": "GET",
+      "data": {
+        "method": "GET",
+        "url": "http://127.0.0.1:23600/books",
+        "expectedResponseCodes": [
+          200
+        ],
+        "parameters": {
+          "q": "@{BOOK1}",
+          "description": "Verify: Book 1 exists in books list"
+        },
+        "model": {
+          "valid": true,
+          "name": "compact"
+        }
+      }
+    },
+    {
+      "name": "GET",
+      "data": {
+        "method": "GET",
+        "url": "http://127.0.0.1:23600/books/@{BOOK1}",
+        "expectedResponseCodes": [
+          200
+        ],
+        "parameters": {
+          "description": "Verify: Book 1 exists in book detail list",
+          "id": 1
+        },
+        "model": {
+          "valid": true,
+          "name": "readBookDetail (valid-standard): 1"
+        }
+      }
+    },
+    {
+      "name": "GET",
+      "data": {
+        "method": "GET",
+        "url": "http://127.0.0.1:23600/loans",
+        "expectedResponseCodes": [
+          200
+        ],
+        "parameters": {
+          "userId": "@{USER1}",
+          "bookId": "@{BOOK1}",
+          "description": "Verify: Loan 1/1 exists in loans list"
+        },
+        "model": {
+          "valid": true,
+          "name": "readLoans (valid): 1/@{BOOK1}"
+        }
+      }
+    },
+    {
+      "name": "GET",
+      "data": {
+        "method": "GET",
+        "url": "http://127.0.0.1:23600/holds",
+        "expectedResponseCodes": [
+          200
+        ],
+        "parameters": {
+          "q": "@{HOLD1}",
+          "description": "Verify: Hold 1 exists in holds list"
+        },
+        "model": {
+          "valid": true,
+          "name": "compact"
+        }
+      }
+    },
+    {
+      "name": "DELETE",
+      "data": {
+        "method": "DELETE",
+        "url": "http://127.0.0.1:23600/loans/@{USER1}/@{BOOK1}",
+        "expectedResponseCodes": [
+          204
+        ],
+        "parameters": {
+          "description": "Delete: Loan 1/1 number 1",
+          "userId": 1,
+          "bookId": 1,
+          "loanNumber": 1
+        },
+        "model": {
+          "valid": true,
+          "name": "deleteLoan (valid): 1/1"
+        }
+      }
+    },
+    {
+      "name": "DELETE",
+      "data": {
+        "method": "DELETE",
+        "url": "http://127.0.0.1:23600/holds/@{HOLD1}",
+        "expectedResponseCodes": [
+          204
+        ],
+        "parameters": {
+          "description": "Delete: Hold 1 for User 1 and Book 1",
+          "id": 1,
+          "userId": 1,
+          "bookId": 1
+        },
+        "model": {
+          "valid": true,
+          "name": "deleteHold (valid): 1"
+        }
+      }
+    },
+    {
+      "name": "DELETE",
+      "data": {
+        "method": "DELETE",
+        "url": "http://127.0.0.1:23600/books/@{BOOK1}",
+        "expectedResponseCodes": [
+          204
+        ],
+        "parameters": {
+          "description": "Delete: Book 1",
+          "id": 1
+        },
+        "model": {
+          "valid": true,
+          "name": "deleteBook (valid): 1"
+        }
+      }
+    },
+    {
+      "name": "DELETE",
+      "data": {
+        "method": "DELETE",
+        "url": "http://127.0.0.1:23600/users/@{USER1}",
+        "expectedResponseCodes": [
+          204
+        ],
+        "parameters": {
+          "description": "Delete: User 1",
+          "id": 1
+        },
+        "model": {
+          "valid": true,
+          "name": "deleteUser (valid): 1"
+        }
+      }
+    },
+    {
+      "name": "GET",
+      "data": {
+        "method": "GET",
+        "url": "http://127.0.0.1:23600/books/@{BOOK1}",
+        "expectedResponseCodes": [
+          404
+        ],
+        "parameters": {
+          "description": "Verify absence: Book 1"
+        },
+        "model": {
+          "valid": true,
+          "name": "compact"
+        }
+      }
+    }
+  ]
+]

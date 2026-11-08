@@ -1,0 +1,7 @@
+{
+  "generator": "independent functional probe, not Provengo",
+  "scenarios": 100,
+  "steps_per_scenario": 200,
+  "replays": 200,
+  "controls": "PASS"
+}

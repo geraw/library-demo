@@ -1,0 +1,3466 @@
+{
+  "case-001": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "b07f6b7508e6b21c4a3d7c9aabf2c3cd789b784697c955f36f4bf88851b46885",
+    "source_requests": 426,
+    "retained_requests": 68,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 68
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 68
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 68
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 68
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 68
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 68
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 68
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 68
+      }
+    },
+    "seconds": 0.25907678400017176
+  },
+  "case-002": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "346b35b0dac8f5f4a1591d9054356413664b7cbfffd0e56ab659721a6f569dce",
+    "source_requests": 2000,
+    "retained_requests": 149,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 149
+      }
+    },
+    "seconds": 0.5159641269997337
+  },
+  "case-003": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "5b4db3ecf8d092f575f919089921c8304416e937ca9659ba356568ecd8709f99",
+    "source_requests": 1062,
+    "retained_requests": 105,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 105
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 105
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 105
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 105
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 105
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 105
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 105
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 105
+      }
+    },
+    "seconds": 0.33230733699974735
+  },
+  "case-004": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "fef979234de70dc6e2494f4c4245179c217aa01460576c811b92b3a1607fd153",
+    "source_requests": 1358,
+    "retained_requests": 142,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 142
+      }
+    },
+    "seconds": 0.30631891600023664
+  },
+  "case-005": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "ca551b0ea969dc2e990dcde14964dfa5bfe3a92a4704ce34e4c1c71296bc9a59",
+    "source_requests": 1499,
+    "retained_requests": 130,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 130
+      }
+    },
+    "seconds": 0.28464491900012945
+  },
+  "case-006": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "bcc46bd9779ca2e6229904b3266e26ab3a4fc7c5ddfceafbb86b8bd0b601386f",
+    "source_requests": 1859,
+    "retained_requests": 165,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 165
+      }
+    },
+    "seconds": 0.38391232100002526
+  },
+  "case-007": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "6056e19bfb2b99d978e11a341fba0903d5f999d9c7e4778303c9cfc8eb675dbf",
+    "source_requests": 1929,
+    "retained_requests": 154,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 154
+      }
+    },
+    "seconds": 0.3506005270000969
+  },
+  "case-008": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "51aacc1693de42143dc35d787f7548ed5b9181e59372a0422a833df6452aa8f5",
+    "source_requests": 2000,
+    "retained_requests": 133,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 119,
+        "source_order": 1783,
+        "http_requests": 119
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 133
+      }
+    },
+    "seconds": 0.3280599119998442
+  },
+  "case-009": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "e50e0e55c5d6aaed4c4ba9b231139c06ba8a78b2ef1ad5e3245a898b77e16015",
+    "source_requests": 1482,
+    "retained_requests": 123,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 123
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 123
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 123
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 123
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 123
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 123
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 123
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 123
+      }
+    },
+    "seconds": 0.29679316099964126
+  },
+  "case-010": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "6fa270797596019da00799c12081a71725fc8a5d278149332a9ce676dfb189b8",
+    "source_requests": 1834,
+    "retained_requests": 139,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 139
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 139
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 139
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 139
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 139
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 139
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 139
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 139
+      }
+    },
+    "seconds": 0.33949408000034964
+  },
+  "case-011": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "509fe43797f4f5b25bbb045b9ff8d9f0972c0ef555de28e1f7cc0a2f19c0e537",
+    "source_requests": 1544,
+    "retained_requests": 137,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 137
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 137
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 137
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 137
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 137
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 137
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 137
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 137
+      }
+    },
+    "seconds": 0.3974783150001713
+  },
+  "case-012": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "d32333b2f77d308c2165ce9dc26ece52b0a1c8e2b3c131376abcb51ccbcdfa57",
+    "source_requests": 1681,
+    "retained_requests": 156,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 156
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 156
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 156
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 156
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 156
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 156
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 156
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 156
+      }
+    },
+    "seconds": 0.5054287200000545
+  },
+  "case-013": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "9919aa906c0b0832cd26cafe26397db346bea84f8010bfc02b78179e678dd9e0",
+    "source_requests": 1558,
+    "retained_requests": 147,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 147
+      }
+    },
+    "seconds": 0.46925425600011295
+  },
+  "case-014": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "e9c50e627bdd45c50c7d2f2d1c91ab777410c026276de8932f85350a4d6ee296",
+    "source_requests": 1891,
+    "retained_requests": 161,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 161
+      }
+    },
+    "seconds": 0.42742412600000534
+  },
+  "case-015": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "d3bf0586d7b62c1e7ca436fe9a4add8c5e3e7796df15cddaef6d6a79a2d085b2",
+    "source_requests": 1554,
+    "retained_requests": 146,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 100,
+        "source_order": 1265,
+        "http_requests": 100
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 146
+      }
+    },
+    "seconds": 0.4114561819997107
+  },
+  "case-016": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "9c20a0c62f7b6b23e6586930c475c210f3c4f3ca7533b5a1335c7a72d0b78310",
+    "source_requests": 648,
+    "retained_requests": 87,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 87
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 87
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 87
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 87
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 87
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 87
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 87
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 87
+      }
+    },
+    "seconds": 0.2514551770000253
+  },
+  "case-017": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "b1c21d8618eb31182794b23f9a9d0a11e359517af772498a637e97d9b137fad7",
+    "source_requests": 2000,
+    "retained_requests": 140,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 140
+      }
+    },
+    "seconds": 0.4917709849996754
+  },
+  "case-018": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "0e5f70c48f83e47b2aa7644cfaa39abd6d5a4c03e99eb49abc10d2d9320841bc",
+    "source_requests": 2000,
+    "retained_requests": 166,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 166
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 166
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 166
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 166
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 166
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 166
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 166
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 166
+      }
+    },
+    "seconds": 0.5464624030000778
+  },
+  "case-019": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "fd94e569e356af1a400600cbd3bd4fb060e5c837e71b5f69fc2b5a3b4edaa069",
+    "source_requests": 796,
+    "retained_requests": 92,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 92
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 92
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 92
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 92
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 92
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 92
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 92
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 92
+      }
+    },
+    "seconds": 0.26447239000026457
+  },
+  "case-020": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "83996231b88b7ddcd952b9794468bce66337754d99afe8c783c713a10a8f2c79",
+    "source_requests": 1136,
+    "retained_requests": 133,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 133
+      }
+    },
+    "seconds": 0.3686165340000116
+  },
+  "case-021": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "12d850c399ff72f43c9de007dfd2e393ba05ed3a8ad2f405e6a60460762e5c74",
+    "source_requests": 1086,
+    "retained_requests": 114,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 114
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 114
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 114
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 114
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 114
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 114
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 114
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 114
+      }
+    },
+    "seconds": 0.3548437379999996
+  },
+  "case-022": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "255e726e44f6def38006463fe38488e0e813270e7aa1e0359217314238f48854",
+    "source_requests": 939,
+    "retained_requests": 108,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 108
+      }
+    },
+    "seconds": 0.30987369500007844
+  },
+  "case-023": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "c0b5fed093ea1a2f95728782a14035faa71a2963bc14874eb0185c5e13a5a7d9",
+    "source_requests": 1176,
+    "retained_requests": 131,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 131
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 131
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 131
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 131
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 131
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 131
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 131
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 131
+      }
+    },
+    "seconds": 0.3373404649996701
+  },
+  "case-024": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "069cb71044305ba0098820bd25705ebeb0ed04a80bcd0c89d1f912b887f87c60",
+    "source_requests": 1145,
+    "retained_requests": 98,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 98
+      }
+    },
+    "seconds": 0.33039277599982597
+  },
+  "case-025": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "2a1e6043e3667822a29b65690da6da6bce215b9ba4c365f16d8e48314d7f87fa",
+    "source_requests": 1846,
+    "retained_requests": 173,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 173
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 173
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 173
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 173
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 173
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 173
+      },
+      "B5": {
+        "status": "DIFFERENT",
+        "first_difference": 109,
+        "source_order": 1371,
+        "http_requests": 109
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 173
+      }
+    },
+    "seconds": 0.5376741119998769
+  },
+  "case-026": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "c45c68f08799add508a4abfe655b921601e3fa5bdf116f3908b17f9b17080b25",
+    "source_requests": 1429,
+    "retained_requests": 140,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 140
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 140
+      }
+    },
+    "seconds": 0.4120144349999464
+  },
+  "case-027": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "16608ec206e5fc69dc220a9c31d82b650ed25f74664d371fdad47be1bbcd4f67",
+    "source_requests": 617,
+    "retained_requests": 75,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 75
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 75
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 75
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 75
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 75
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 75
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 75
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 75
+      }
+    },
+    "seconds": 0.21984568299967577
+  },
+  "case-028": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "b94254096d67ef956b211bc8fe8cd65b235c6d45c72bc05cb17c84d3b8f239ac",
+    "source_requests": 1567,
+    "retained_requests": 133,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 133
+      }
+    },
+    "seconds": 0.4030827030001092
+  },
+  "case-029": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "54cbb1080a2298f3dc4b0fbb07ee39627c3680c1fac8b538f1866c3cbcf1d0c1",
+    "source_requests": 1796,
+    "retained_requests": 150,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 150
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 150
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 150
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 150
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 150
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 150
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 150
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 150
+      }
+    },
+    "seconds": 0.45717075800030216
+  },
+  "case-030": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "550cf2481bc4fdd69abca7338ca35365fa36bcd3964b0752bed1ce4a22b3fa87",
+    "source_requests": 2000,
+    "retained_requests": 141,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 141
+      }
+    },
+    "seconds": 0.36761489499986055
+  },
+  "case-031": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "19f6ccd0c946525fcd757b614f7871c0308311d7f18467defdff23fdc7c7b8d7",
+    "source_requests": 2000,
+    "retained_requests": 154,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 154
+      }
+    },
+    "seconds": 0.4386801050000031
+  },
+  "case-032": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "f30db73ec21e216bc6d8d9b99c33789a4a6248518b21e973a4cd691cc6e56fd1",
+    "source_requests": 1204,
+    "retained_requests": 112,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 112
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 112
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 112
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 112
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 112
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 112
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 112
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 112
+      }
+    },
+    "seconds": 0.3088987249998354
+  },
+  "case-033": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "f49244af77be698847e516a76e9a1ebacc524a1a485d3de70426991127f03df9",
+    "source_requests": 865,
+    "retained_requests": 104,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 104
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 104
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 104
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 104
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 104
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 104
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 104
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 104
+      }
+    },
+    "seconds": 0.28759379699977217
+  },
+  "case-034": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "35e8e83cf9d5b9dc3c9ec6cfe32d9a47bfa09fc5f4a50a593d5f33bb93622145",
+    "source_requests": 584,
+    "retained_requests": 73,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 73
+      }
+    },
+    "seconds": 0.19500801699996373
+  },
+  "case-035": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "bd60afba1f5aa503d3209ca77ea4762edcec240d7ae53b973a6c70f61a53b25f",
+    "source_requests": 1347,
+    "retained_requests": 133,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 133
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 133
+      }
+    },
+    "seconds": 0.2745534589998897
+  },
+  "case-036": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "7c8f2987f6a13eed145f0cbb075e40fb14dbc5d0e1c5d479dcd0723e71d695db",
+    "source_requests": 2000,
+    "retained_requests": 157,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 157
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 157
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 157
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 157
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 157
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 157
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 157
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 157
+      }
+    },
+    "seconds": 0.36891566900021644
+  },
+  "case-037": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "ffab6172c603caf39ded07ac9d62ff219a2377eb84a9d7844cc0b55c78349225",
+    "source_requests": 2000,
+    "retained_requests": 149,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 144,
+        "source_order": 1912,
+        "http_requests": 144
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 149
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 149
+      }
+    },
+    "seconds": 0.36202953799966053
+  },
+  "case-038": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "1fe2db72f1e3e240972bae6e66894ca1b947110a9973b71af6b3b0985ebea4d2",
+    "source_requests": 1061,
+    "retained_requests": 107,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 107
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 107
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 107
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 107
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 107
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 107
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 107
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 107
+      }
+    },
+    "seconds": 0.2738820449999366
+  },
+  "case-039": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "eb7782201978b3d82688148db4e392f4aaa4b395f196d2183d61555b1e11e036",
+    "source_requests": 1535,
+    "retained_requests": 145,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 145
+      }
+    },
+    "seconds": 0.39549627100041107
+  },
+  "case-040": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "2b23f05e1af776252a5ae56850f4769a3ad3f2b9a8600ec63c042ef382b456f6",
+    "source_requests": 2000,
+    "retained_requests": 129,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 128,
+        "source_order": 1985,
+        "http_requests": 128
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 129
+      }
+    },
+    "seconds": 0.35591411799987327
+  },
+  "case-041": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "e7efeca2b3d9e805df29080150c0c4d8d603caf3cd1a56b203ec38496f05e649",
+    "source_requests": 1491,
+    "retained_requests": 128,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 128
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 128
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 128
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 128
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 128
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 128
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 128
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 128
+      }
+    },
+    "seconds": 0.33173592299999655
+  },
+  "case-042": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "55678f9ddbb12d00192491311b131db6f63ba4d440a2893c59cb150aa2bdb68d",
+    "source_requests": 896,
+    "retained_requests": 97,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 97
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 97
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 97
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 97
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 97
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 97
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 97
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 97
+      }
+    },
+    "seconds": 0.20513551800013374
+  },
+  "case-043": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "0317b2c502410db3ed8ac314f6e2e6b1ea90bc3416b3f9a1804c45fa199b6213",
+    "source_requests": 1258,
+    "retained_requests": 108,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 108
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 108
+      }
+    },
+    "seconds": 0.2872757810000621
+  },
+  "case-044": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "4b6f08d8c7ed9d0e92c068ca3a8adaa72efa883969dafbe5488821b1555c2b5d",
+    "source_requests": 1614,
+    "retained_requests": 151,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 82,
+        "source_order": 992,
+        "http_requests": 82
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 151
+      }
+    },
+    "seconds": 0.32362755899976037
+  },
+  "case-045": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "6b61a8ac5c7043879083663ea8c0bf743ebbf2b63c5b45d2fb54c36e299a0922",
+    "source_requests": 1937,
+    "retained_requests": 177,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 177
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 177
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 177
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 177
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 177
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 177
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 177
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 177
+      }
+    },
+    "seconds": 0.4403862939998362
+  },
+  "case-046": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "ad3fe364ef9a807630331710e486587a956086748259df46b3c917e09d473e94",
+    "source_requests": 1576,
+    "retained_requests": 164,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 164
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 164
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 164
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 164
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 164
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 164
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 164
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 164
+      }
+    },
+    "seconds": 0.4418642400000863
+  },
+  "case-047": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "7c6b6500e8e74f1357cb8a534b55c9a93879c7b7f122b75e433b80efadfbff06",
+    "source_requests": 1763,
+    "retained_requests": 154,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 154
+      }
+    },
+    "seconds": 0.4257994800000233
+  },
+  "case-048": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "de8b0e7dbdb9e804966a797da4bb4a85eba20db067b0e6494c8d4a82c22e53fa",
+    "source_requests": 1445,
+    "retained_requests": 146,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 146
+      }
+    },
+    "seconds": 0.35299722800027666
+  },
+  "case-049": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "6e0d86578f0dce1b6db3d18ef2a81e1902b094cd67590bdca8a1eb39c61ba2d8",
+    "source_requests": 1239,
+    "retained_requests": 120,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 120
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 120
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 120
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 120
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 120
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 120
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 120
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 120
+      }
+    },
+    "seconds": 0.25646043100005045
+  },
+  "case-050": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "a618c5b660d5921eff6d0aff5acc34944af6cd1ea737f7338d954903d379ead9",
+    "source_requests": 705,
+    "retained_requests": 80,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 80
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 80
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 80
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 80
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 80
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 80
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 80
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 80
+      }
+    },
+    "seconds": 0.18717502799972863
+  },
+  "case-051": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "4ef5e09e5d5642fa92c16ef7f08cbf1f84795d89cadbf550a340a0727c35bbe2",
+    "source_requests": 671,
+    "retained_requests": 77,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 77
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 77
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 77
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 77
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 77
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 77
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 77
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 77
+      }
+    },
+    "seconds": 0.19917932399994243
+  },
+  "case-052": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "c6ac895f97fccc54bedb71ace91755d1d6f65cb494be2ccda79c3d8415c1507e",
+    "source_requests": 605,
+    "retained_requests": 78,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 78
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 78
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 78
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 78
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 78
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 78
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 78
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 78
+      }
+    },
+    "seconds": 0.19811440400007996
+  },
+  "case-053": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "e47c111e51a9baa99e9e923eda726dffcb64186dffa101d1fcfd3dd191f152f4",
+    "source_requests": 1359,
+    "retained_requests": 130,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 130
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 130
+      }
+    },
+    "seconds": 0.3373294990001341
+  },
+  "case-054": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "5d64d6669a904daa43c4d53eba151d0dd7e3669abffcdcb0291f76d0d056c169",
+    "source_requests": 1470,
+    "retained_requests": 129,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 129
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 129
+      }
+    },
+    "seconds": 0.3590175240001372
+  },
+  "case-055": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "ec85b0aceff3045f640adeebf85b75ffa18dc1937e0459e755c9435d75c503d6",
+    "source_requests": 1549,
+    "retained_requests": 151,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 151
+      }
+    },
+    "seconds": 0.40796369399959076
+  },
+  "case-056": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "170492a31baa728d015b7ed5449e009e1c8f6258a3bd372061028710eae3945d",
+    "source_requests": 1924,
+    "retained_requests": 160,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "B1": {
+        "status": "DIFFERENT",
+        "first_difference": 106,
+        "source_order": 1547,
+        "http_requests": 106
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 160
+      }
+    },
+    "seconds": 0.3692625919998136
+  },
+  "case-057": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "e8b665aa790ee8b554239eb83756526ffa4fb3c9d69a209485566ff4289093d2",
+    "source_requests": 1733,
+    "retained_requests": 142,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 142
+      }
+    },
+    "seconds": 0.352597428000081
+  },
+  "case-058": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "b696d51a9b4d4949bbd1d7c7db5927542ab14064cae0326deda31347f66baade",
+    "source_requests": 1724,
+    "retained_requests": 165,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 165
+      }
+    },
+    "seconds": 0.4081731320002291
+  },
+  "case-059": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "0da4869a697fb5828a31dd0313a9b5a0f1976b7528dc344d879ae340e0cf9e35",
+    "source_requests": 2000,
+    "retained_requests": 135,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 135
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 135
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 135
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 135
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 135
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 135
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 135
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 135
+      }
+    },
+    "seconds": 0.3428736709997793
+  },
+  "case-060": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "07010f75468c35c97b60c5d447698f0c0e426cfc87785e35a7fa6a1fd5c154eb",
+    "source_requests": 1807,
+    "retained_requests": 165,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 165
+      }
+    },
+    "seconds": 0.37224558400021124
+  },
+  "case-061": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "496a5f742af90ddaa858fa030ff16f0f19141a0866d4f4371b7b8413a4250c9d",
+    "source_requests": 1240,
+    "retained_requests": 116,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 116
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 116
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 116
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 116
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 116
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 116
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 116
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 116
+      }
+    },
+    "seconds": 0.25386596099997405
+  },
+  "case-062": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "c120837615123a565f03f202cda879e6e24114d0c98e381ba36eccc12cbf07e4",
+    "source_requests": 1523,
+    "retained_requests": 138,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 138
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 138
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 138
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 138
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 138
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 138
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 138
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 138
+      }
+    },
+    "seconds": 0.32984491499973956
+  },
+  "case-063": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "bab4c201d8b86ce2e0e2d9589cc50dab4a76460d6a7138f7edb5ce274d241f8b",
+    "source_requests": 712,
+    "retained_requests": 94,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 94
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 94
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 94
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 94
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 94
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 94
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 94
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 94
+      }
+    },
+    "seconds": 0.28149221999956353
+  },
+  "case-064": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "fa0409f5eee0a732da3c9a039bd7f1c3382c3fcd1e72f357d4c859c688c79358",
+    "source_requests": 2000,
+    "retained_requests": 147,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 147
+      },
+      "B6": {
+        "status": "DIFFERENT",
+        "first_difference": 119,
+        "source_order": 1698,
+        "http_requests": 119
+      }
+    },
+    "seconds": 0.3678271969997695
+  },
+  "case-065": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "a5257864f99c84e0dc74c4a4dc219a94c35fb512a0efb12df21e06ea3a036dc2",
+    "source_requests": 1507,
+    "retained_requests": 134,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 134
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 134
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 134
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 134
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 134
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 134
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 134
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 134
+      }
+    },
+    "seconds": 0.31033117700008006
+  },
+  "case-066": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "c38f77227920d4618a5a81bb6a4517e9b9d706b24be2543d97a480d23faba07f",
+    "source_requests": 2000,
+    "retained_requests": 141,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 141
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 141
+      }
+    },
+    "seconds": 0.3419476740000391
+  },
+  "case-067": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "e57728cd538feb1b3853cc1c282e82b1943bccffc835eb9d897331f7790e395c",
+    "source_requests": 586,
+    "retained_requests": 73,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 73
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 73
+      }
+    },
+    "seconds": 0.1804628100003356
+  },
+  "case-068": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "e05fe279e27cf483518b0ff14512cfd16ed21866be200f2ea81c3f297e7e75e8",
+    "source_requests": 895,
+    "retained_requests": 96,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 96
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 96
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 96
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 96
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 96
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 96
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 96
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 96
+      }
+    },
+    "seconds": 0.22979710499976136
+  },
+  "case-069": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "31a42c84bd85f305f3cbcb1090baa767db528eb7f8c510f476fecb2e0400b1d7",
+    "source_requests": 2000,
+    "retained_requests": 154,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 154
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 154
+      }
+    },
+    "seconds": 0.41642076499965697
+  },
+  "case-070": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "c03b3b8a5dfe6894db5fe05794ed5fcc6fac9adf5084a182777d38c552584339",
+    "source_requests": 1385,
+    "retained_requests": 146,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 146
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 146
+      }
+    },
+    "seconds": 0.39856964299997344
+  },
+  "case-071": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "a4dcaea590db5dffd7e5ce6852c9cf93a580c00a8567125e9d5d0161dee1a919",
+    "source_requests": 1920,
+    "retained_requests": 159,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 159
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 159
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 159
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 159
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 92,
+        "source_order": 1437,
+        "http_requests": 92
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 159
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 159
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 159
+      }
+    },
+    "seconds": 0.3907485539998561
+  },
+  "case-072": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "9487e32efffac8feefb4e42ac356162876d26633f7b782dcc0b040f1b0aa07ad",
+    "source_requests": 2000,
+    "retained_requests": 152,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 152
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 152
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 152
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 152
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 152
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 152
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 152
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 152
+      }
+    },
+    "seconds": 0.39469456699998773
+  },
+  "case-073": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "a1046d8c2cecc956acc3f7333ae09956f0de31d65cc983e088b447be7b62ace8",
+    "source_requests": 1708,
+    "retained_requests": 160,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 160
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 160
+      }
+    },
+    "seconds": 0.3695066840000436
+  },
+  "case-074": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "3f40596872278b47cd72ff1d7fb14e72c0f5889be3389ab4dc25218b7f92050c",
+    "source_requests": 1459,
+    "retained_requests": 145,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 145
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 145
+      }
+    },
+    "seconds": 0.3118645079998714
+  },
+  "case-075": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "3836ae34e865fa8c6a09217e688f5fd7e3d4b08833993e0c2dc2b9187954f93f",
+    "source_requests": 2000,
+    "retained_requests": 132,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 132
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 132
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 132
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 132
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 132
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 132
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 132
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 132
+      }
+    },
+    "seconds": 0.3516792619998341
+  },
+  "case-076": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "84b435164c4ee693ce255e87ea0c7befa42b1d86b4539f69bde46e2af9358100",
+    "source_requests": 1704,
+    "retained_requests": 161,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 161
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 161
+      }
+    },
+    "seconds": 0.3490372739997838
+  },
+  "case-077": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "2d4b9c137962ec6aed6d628c54bc400d4f2f3c92a342ab86794a2ae384e1eccd",
+    "source_requests": 1922,
+    "retained_requests": 165,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 165
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 165
+      }
+    },
+    "seconds": 0.3813259610001296
+  },
+  "case-078": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "987e790f13144fe16d1597013f56ee2846427987a935eb22f18f0b0e1e2d9739",
+    "source_requests": 1564,
+    "retained_requests": 153,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 153
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 153
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 153
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 153
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 153
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 153
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 153
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 153
+      }
+    },
+    "seconds": 0.33140365000008387
+  },
+  "case-079": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "d3edb62b977dee7789434897a971e85fffec380f364ddfe01bee642407d5f5ed",
+    "source_requests": 1022,
+    "retained_requests": 110,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 110
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 110
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 110
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 110
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 110
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 110
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 110
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 110
+      }
+    },
+    "seconds": 0.25587049899968406
+  },
+  "case-080": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "b83d87f23bd4203315d1ba60d75e11f6c98701b26aea608dcecae4ddd44f4870",
+    "source_requests": 954,
+    "retained_requests": 98,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 98
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 98
+      }
+    },
+    "seconds": 0.24686196299990115
+  },
+  "case-081": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "2eeaafa8640bce44dfcb65a952403b279f7e95483cfaac6678ebe3346bcd8f30",
+    "source_requests": 1590,
+    "retained_requests": 148,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 148
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 148
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 148
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 148
+      },
+      "B3": {
+        "status": "DIFFERENT",
+        "first_difference": 89,
+        "source_order": 1161,
+        "http_requests": 89
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 148
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 148
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 148
+      }
+    },
+    "seconds": 0.31686897000008685
+  },
+  "case-082": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "c79a0de2b61baab289a70ad5dd481801432df925dc954f8645f068ba84c355ec",
+    "source_requests": 1999,
+    "retained_requests": 183,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 183
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 183
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 183
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 183
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 183
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 183
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 183
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 183
+      }
+    },
+    "seconds": 0.43804068099962024
+  },
+  "case-083": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "9c62c0534fbc4e4fa9ba4e42a0914b0a76d1bb9e20faac17a04ec04998039405",
+    "source_requests": 1571,
+    "retained_requests": 142,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 142
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 142
+      }
+    },
+    "seconds": 0.3589762020001217
+  },
+  "case-084": {
+    "engine": "flask-test-client-projected-replay",
+    "source_sha256": "9213001a7eee00d28f9d7c265add89529bfff8309c3ea98448e77f0456ee9298",
+    "source_requests": 2000,
+    "retained_requests": 151,
+    "arms": {
+      "original": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "baseline": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B1": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B2": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B3": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B4": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B5": {
+        "status": "PASS",
+        "http_requests": 151
+      },
+      "B6": {
+        "status": "PASS",
+        "http_requests": 151
+      }
+    },
+    "seconds": 0.3563106810001955
+  }
+}

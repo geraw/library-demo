@@ -1,0 +1,232 @@
+[
+  {
+    "case": "case-008",
+    "arm": "B5",
+    "first_difference": {
+      "projected_order": 119,
+      "source_order": 1783,
+      "method": "POST",
+      "path": "/loans?loanNumber=244.0&userId=7.0&bookId=6.0",
+      "input": {
+        "userId": "950672",
+        "bookId": "700965"
+      },
+      "status": 400,
+      "response": {
+        "error": "User already has an active loan"
+      },
+      "expected_status": 201,
+      "expected_response": {
+        "bookId": 700965,
+        "id": 588020,
+        "userId": 950672
+      },
+      "match": false,
+      "seconds": 0.00033428200003982056
+    }
+  },
+  {
+    "case": "case-015",
+    "arm": "B3",
+    "first_difference": {
+      "projected_order": 100,
+      "source_order": 1265,
+      "method": "DELETE",
+      "path": "/holds/376105?id=45.0&userId=7.0&bookId=6.0",
+      "input": null,
+      "status": 404,
+      "response": {
+        "error": "Hold not found"
+      },
+      "expected_status": 200,
+      "expected_response": {
+        "message": "Hold deleted"
+      },
+      "match": false,
+      "seconds": 0.00021768799979327014
+    }
+  },
+  {
+    "case": "case-025",
+    "arm": "B5",
+    "first_difference": {
+      "projected_order": 109,
+      "source_order": 1371,
+      "method": "POST",
+      "path": "/loans?loanNumber=182.0&userId=2.0&bookId=4.0",
+      "input": {
+        "userId": "495273",
+        "bookId": "984418",
+        "unexpected": "value"
+      },
+      "status": 400,
+      "response": {
+        "error": "User already has an active loan"
+      },
+      "expected_status": 201,
+      "expected_response": {
+        "bookId": 984418,
+        "id": 682325,
+        "userId": 495273
+      },
+      "match": false,
+      "seconds": 0.0002187589998356998
+    }
+  },
+  {
+    "case": "case-037",
+    "arm": "B3",
+    "first_difference": {
+      "projected_order": 144,
+      "source_order": 1912,
+      "method": "DELETE",
+      "path": "/books/251412?id=7.0",
+      "input": null,
+      "status": 400,
+      "response": {
+        "error": "Cannot delete book with active loans or holds"
+      },
+      "expected_status": 200,
+      "expected_response": {
+        "message": "Book deleted"
+      },
+      "match": false,
+      "seconds": 0.00021011599983467022
+    }
+  },
+  {
+    "case": "case-040",
+    "arm": "B3",
+    "first_difference": {
+      "projected_order": 128,
+      "source_order": 1985,
+      "method": "DELETE",
+      "path": "/books/796839?id=4.0",
+      "input": null,
+      "status": 400,
+      "response": {
+        "error": "Cannot delete book with active loans or holds"
+      },
+      "expected_status": 200,
+      "expected_response": {
+        "message": "Book deleted"
+      },
+      "match": false,
+      "seconds": 0.00018797199982145685
+    }
+  },
+  {
+    "case": "case-044",
+    "arm": "B3",
+    "first_difference": {
+      "projected_order": 82,
+      "source_order": 992,
+      "method": "DELETE",
+      "path": "/holds/177126?id=48.0&userId=7.0&bookId=7.0",
+      "input": null,
+      "status": 404,
+      "response": {
+        "error": "Hold not found"
+      },
+      "expected_status": 200,
+      "expected_response": {
+        "message": "Hold deleted"
+      },
+      "match": false,
+      "seconds": 0.00018677099978958722
+    }
+  },
+  {
+    "case": "case-056",
+    "arm": "B1",
+    "first_difference": {
+      "projected_order": 106,
+      "source_order": 1547,
+      "method": "POST",
+      "path": "/loans?loanNumber=200.0&userId=6.0&bookId=7.0",
+      "input": {
+        "userId": "895917",
+        "bookId": "123484",
+        "unexpected": "value"
+      },
+      "status": 400,
+      "response": {
+        "error": "Book already has an active loan"
+      },
+      "expected_status": 201,
+      "expected_response": {
+        "bookId": 123484,
+        "id": 642890,
+        "userId": 895917
+      },
+      "match": false,
+      "seconds": 0.0002540820000831445
+    }
+  },
+  {
+    "case": "case-064",
+    "arm": "B6",
+    "first_difference": {
+      "projected_order": 119,
+      "source_order": 1698,
+      "method": "GET",
+      "path": "/books?q=561411",
+      "input": null,
+      "status": 200,
+      "response": [
+        {
+          "id": 561411,
+          "title": "Book title 505148"
+        }
+      ],
+      "expected_status": 200,
+      "expected_response": [],
+      "match": false,
+      "seconds": 0.00021762699998362223
+    }
+  },
+  {
+    "case": "case-071",
+    "arm": "B3",
+    "first_difference": {
+      "projected_order": 92,
+      "source_order": 1437,
+      "method": "DELETE",
+      "path": "/users/937434?id=1.0",
+      "input": null,
+      "status": 400,
+      "response": {
+        "error": "Cannot delete user with active loans or holds"
+      },
+      "expected_status": 200,
+      "expected_response": {
+        "message": "User deleted"
+      },
+      "match": false,
+      "seconds": 0.00019079699995927513
+    }
+  },
+  {
+    "case": "case-081",
+    "arm": "B3",
+    "first_difference": {
+      "projected_order": 89,
+      "source_order": 1161,
+      "method": "GET",
+      "path": "/holds?q=732571",
+      "input": null,
+      "status": 200,
+      "response": [],
+      "expected_status": 200,
+      "expected_response": [
+        {
+          "bookId": 267152,
+          "id": 732571,
+          "userId": 735535
+        }
+      ],
+      "match": false,
+      "seconds": 0.00027483299982122844
+    }
+  }
+]

@@ -1,0 +1,49 @@
+{
+  "status": "EXPERIMENTAL_RELEASE_NOT_RARITY_QUALIFIED",
+  "published_to_git": true,
+  "source_base_commit": "5c224ad1b18ab19827f0a79193178aa39a4214bd",
+  "cases": 84,
+  "source_requests": 124481,
+  "retained_requests": 11154,
+  "controls_passed": true,
+  "v002_differences": {
+    "B1": 33,
+    "B2": 47,
+    "B3": 84,
+    "B4": 40,
+    "B5": 84,
+    "B6": 70
+  },
+  "v003_differences": {
+    "B1": 1,
+    "B2": 0,
+    "B3": 6,
+    "B4": 0,
+    "B5": 2,
+    "B6": 1
+  },
+  "regression_groups": 9,
+  "directed_witness_mode_combinations": 48,
+  "additional_control_probe": {
+    "generator": "independent functional probe, not Provengo",
+    "scenarios": 100,
+    "steps_per_scenario": 200,
+    "replays": 200,
+    "controls": "PASS"
+  },
+  "runtime": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.39",
+    "flask": "3.1.3"
+  },
+  "qualification_limitations": [
+    "84 traces reused across three development iterations; not independent holdout",
+    "No fresh Provengo samples generated",
+    "No claim about 500 x 2000 detection probability",
+    "test_client replay, not TCP or native Provengo run",
+    "All six have directed witnesses with at most three users and three books"
+  ],
+  "workflow_test_groups": 14,
+  "native_provengo_sampling_tested_here": false,
+  "powershell_tested_here": false
+}
