@@ -26,4 +26,24 @@ class FullTests(unittest.TestCase):
         random.seed(42);rows=witness('B2','original')
         for i,r in enumerate(rows,1):r.update(url='http://127.0.0.1'+r['path'],order=i,role='tool')
         self.assertEqual(check_rows(rows)['requests'],24)
+    def test_b2_campaign_accepts_complete_events_without_log_marker(self):
+        from argparse import Namespace
+        from unittest.mock import patch
+        import shutil
+        from sample_campaign import main
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);jar=root/'fake.jar';jar.write_bytes(b'fake')
+            def fake_launch(command,folder,name,timeout):
+                (folder/(name+'.log')).write_text('--max-length --seed' if name=='help' else '')
+                if name=='sample':shutil.copyfile(HERE/'b2-witness-events.json',command[command.index('-o')+1])
+            args=Namespace(jar=jar,java='fake',count=1,max_length=2000,seed=10001,timeout=30,
+                model='full',b2_witness=True,resume=None,work_base=root/'work',output_base=root/'out')
+            with patch('sample_campaign.launch',side_effect=fake_launch):main(args)
+            run=next((root/'out').iterdir())
+            summary=json.loads((run/'summary.json').read_text())['case-001']
+            self.assertFalse(summary['b2_guide_log_marker'])
+            self.assertEqual(summary['arms']['B2']['status'],'DIFFERENT')
+            self.assertEqual(summary['arms']['original']['status'],'PASS')
+            self.assertEqual(summary['arms']['baseline']['status'],'PASS')
+            self.assertTrue((run/'completed.json').exists())
 if __name__=='__main__':unittest.main()

@@ -1,0 +1,334 @@
+[
+  [
+    {
+      "name": "POST",
+      "data": {
+        "url": "http://127.0.0.1:23600/users",
+        "parameters": {
+          "id": 10
+        },
+        "expectedResponseCodes": [
+          201
+        ],
+        "body": "{\"name\":\"U\"}"
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "url": "http://127.0.0.1:23600/users",
+        "parameters": {
+          "id": 11
+        },
+        "expectedResponseCodes": [
+          201
+        ],
+        "body": "{\"name\":\"U\"}"
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "url": "http://127.0.0.1:23600/users",
+        "parameters": {
+          "id": 12
+        },
+        "expectedResponseCodes": [
+          201
+        ],
+        "body": "{\"name\":\"U\"}"
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "url": "http://127.0.0.1:23600/books",
+        "parameters": {
+          "id": 20
+        },
+        "expectedResponseCodes": [
+          201
+        ],
+        "body": "{\"title\":\"B\"}"
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "url": "http://127.0.0.1:23600/books",
+        "parameters": {
+          "id": 21
+        },
+        "expectedResponseCodes": [
+          201
+        ],
+        "body": "{\"title\":\"B\"}"
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "url": "http://127.0.0.1:23600/books",
+        "parameters": {
+          "id": 22
+        },
+        "expectedResponseCodes": [
+          201
+        ],
+        "body": "{\"title\":\"B\"}"
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "url": "http://127.0.0.1:23600/loans",
+        "parameters": {
+          "userId": 10,
+          "bookId": 20,
+          "loanNumber": 1
+        },
+        "expectedResponseCodes": [
+          201
+        ],
+        "body": "{\"userId\":\"@{USER10}\",\"bookId\":\"@{BOOK20}\"}"
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "url": "http://127.0.0.1:23600/holds",
+        "parameters": {
+          "userId": 11,
+          "bookId": 20,
+          "id": 30
+        },
+        "expectedResponseCodes": [
+          201
+        ],
+        "body": "{\"userId\":\"@{USER11}\",\"bookId\":\"@{BOOK20}\"}"
+      }
+    },
+    {
+      "name": "DELETE",
+      "data": {
+        "url": "http://127.0.0.1:23600/loans/@{USER10}/@{BOOK20}",
+        "parameters": {
+          "userId": 10,
+          "bookId": 20
+        },
+        "expectedResponseCodes": [
+          200
+        ]
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "url": "http://127.0.0.1:23600/loans",
+        "parameters": {
+          "userId": 10,
+          "bookId": 21,
+          "loanNumber": 2
+        },
+        "expectedResponseCodes": [
+          201
+        ],
+        "body": "{\"userId\":\"@{USER10}\",\"bookId\":\"@{BOOK21}\"}"
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "url": "http://127.0.0.1:23600/loans",
+        "parameters": {
+          "userId": 11,
+          "bookId": 20,
+          "loanNumber": 3
+        },
+        "expectedResponseCodes": [
+          201
+        ],
+        "body": "{\"userId\":\"@{USER11}\",\"bookId\":\"@{BOOK20}\"}"
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "url": "http://127.0.0.1:23600/holds",
+        "parameters": {
+          "userId": 12,
+          "bookId": 21,
+          "id": 31
+        },
+        "expectedResponseCodes": [
+          201
+        ],
+        "body": "{\"userId\":\"@{USER12}\",\"bookId\":\"@{BOOK21}\"}"
+      }
+    },
+    {
+      "name": "DELETE",
+      "data": {
+        "url": "http://127.0.0.1:23600/loans/@{USER10}/@{BOOK21}",
+        "parameters": {
+          "userId": 10,
+          "bookId": 21
+        },
+        "expectedResponseCodes": [
+          200
+        ]
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "url": "http://127.0.0.1:23600/loans",
+        "parameters": {
+          "userId": 10,
+          "bookId": 22,
+          "loanNumber": 4
+        },
+        "expectedResponseCodes": [
+          201
+        ],
+        "body": "{\"userId\":\"@{USER10}\",\"bookId\":\"@{BOOK22}\"}"
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "url": "http://127.0.0.1:23600/loans",
+        "parameters": {
+          "userId": 12,
+          "bookId": 21,
+          "loanNumber": 5
+        },
+        "expectedResponseCodes": [
+          201
+        ],
+        "body": "{\"userId\":\"@{USER12}\",\"bookId\":\"@{BOOK21}\"}"
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "url": "http://127.0.0.1:23600/holds",
+        "parameters": {
+          "userId": 11,
+          "bookId": 22,
+          "id": 32
+        },
+        "expectedResponseCodes": [
+          201
+        ],
+        "body": "{\"userId\":\"@{USER11}\",\"bookId\":\"@{BOOK22}\"}"
+      }
+    },
+    {
+      "name": "DELETE",
+      "data": {
+        "url": "http://127.0.0.1:23600/loans/@{USER10}/@{BOOK22}",
+        "parameters": {
+          "userId": 10,
+          "bookId": 22
+        },
+        "expectedResponseCodes": [
+          200
+        ]
+      }
+    },
+    {
+      "name": "DELETE",
+      "data": {
+        "url": "http://127.0.0.1:23600/loans/@{USER12}/@{BOOK21}",
+        "parameters": {
+          "userId": 12,
+          "bookId": 21
+        },
+        "expectedResponseCodes": [
+          200
+        ]
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "url": "http://127.0.0.1:23600/loans",
+        "parameters": {
+          "userId": 10,
+          "bookId": 21,
+          "loanNumber": 6
+        },
+        "expectedResponseCodes": [
+          201
+        ],
+        "body": "{\"userId\":\"@{USER10}\",\"bookId\":\"@{BOOK21}\"}"
+      }
+    },
+    {
+      "name": "DELETE",
+      "data": {
+        "url": "http://127.0.0.1:23600/loans/@{USER11}/@{BOOK20}",
+        "parameters": {
+          "userId": 11,
+          "bookId": 20
+        },
+        "expectedResponseCodes": [
+          200
+        ]
+      }
+    },
+    {
+      "name": "POST",
+      "data": {
+        "url": "http://127.0.0.1:23600/loans",
+        "parameters": {
+          "userId": 11,
+          "bookId": 22,
+          "loanNumber": 7
+        },
+        "expectedResponseCodes": [
+          201
+        ],
+        "body": "{\"userId\":\"@{USER11}\",\"bookId\":\"@{BOOK22}\"}"
+      }
+    },
+    {
+      "name": "DELETE",
+      "data": {
+        "url": "http://127.0.0.1:23600/holds/@{HOLD30}",
+        "parameters": {
+          "id": 30
+        },
+        "expectedResponseCodes": [
+          200
+        ]
+      }
+    },
+    {
+      "name": "DELETE",
+      "data": {
+        "url": "http://127.0.0.1:23600/books/@{BOOK20}",
+        "parameters": {
+          "id": 20
+        },
+        "expectedResponseCodes": [
+          200
+        ]
+      }
+    },
+    {
+      "name": "GET",
+      "data": {
+        "url": "http://127.0.0.1:23600/loans",
+        "parameters": {
+          "userId": "@{USER10}",
+          "bookId": "@{BOOK21}"
+        },
+        "expectedResponseCodes": [
+          200
+        ]
+      }
+    }
+  ]
+]

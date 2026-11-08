@@ -1,5 +1,5 @@
 {
-  "sample_campaign.py": "6267653d952fd672a6f8d66a5e858f8b96100b0541745c63db6e4a0b1a072809",
+  "sample_campaign.py": "b0a5c5f7d0739c56408ad4b49e4e9e2275d53be47012ebc3d49447549c63a8d0",
   "Invoke-V003.ps1": "0abddea48cb3b9f731c7d26abb1378b5c9f0e07bdf93f97fddd1cac07f951ba6",
   "compact_smoke_events.json": "4233b22a462181d1f66ae23ae9a797b952b45ec230275d415cff2856ed808f86",
   "mutants.py": "156a2b4091d0b39fdc6dd7a3cd98b12e4a506bb0eb6a3d87ce0c7785eec53971",
@@ -33,10 +33,10 @@
   "compact-model/spec/js/lib_stories.js": "ea24ec7ab9a1eb3d778fb4b171d739bffa74d64c4250fb34ec4324b396dd01c9",
   "check_story_rechecks.js": "1b7cedb331155d7dc650b3fd5e094503947d2d87cc7c94a517da8bde17a1a049",
   "Invoke-Full-V003.ps1": "a0447df37caa0c3944fc7532d6cca5e6ce644e9c4edc296f3da7aa23246cb27d",
-  "FULL-SAMPLING.md": "92049ab4ff6442c28e0a858f65b197d003830ec0e77240dbe301228fe514c5c9",
+  "FULL-SAMPLING.md": "9976e85bd9aaf16ad24458ee16fa31e596c10b00505746a7094329d572931246",
   "full-validation.json": "4924a195574e19c10918dd858250349e71ab5be46b33adced7b7b706dc531dd1",
   "check_b2_guide.js": "2784f3e90e7ffd5d2664b0e598e6b44bfb3b5e2c41b50836ce0b83135d240bf1",
-  "test_full.py": "d0f62bcb8b3eea8ad802843034dc8c921c05e6357e7809b30a86150a96227ed4",
+  "test_full.py": "1c942f81c6d26fab9577b7d4e73148ef1a34ce5f89b3e052a06b3d17267432f5",
   "b2-plan.json": "02925b66624dca14aafc0b2746c812161f50fe50446888562f0456c8f18ff800",
   "b2_reachability_guide.js": "7f16047db7dc99447bc59c3fcd5bb5048d6ad15971ad15ecc9a471050e00fd98",
   "check_full_adapter.js": "84ffd48304a024eec12c12c3ea2b36a348d5caa45ed9beaa6fdccbd32aa2eee2",
@@ -48,5 +48,6 @@
   "full-model/data/00_compact_seed.js": "6bc97ed321273ae91e2c3de26dd11483708817f95366ebc33a38e036ffeaae3d",
   "full-model/spec/js/lib_stories.js": "ea24ec7ab9a1eb3d778fb4b171d739bffa74d64c4250fb34ec4324b396dd01c9",
   "full-model/spec/js/interfaces.library.js": "023f86aa7db4831f4e15f2d90f45e0483ef9e35841fa20b762b4d49e27203168",
-  "full-model/spec/js/dal.js": "cbd74137a19f181d701532d80bca6e674a585c75ccdabb9ac07d80d5378448bb"
+  "full-model/spec/js/dal.js": "cbd74137a19f181d701532d80bca6e674a585c75ccdabb9ac07d80d5378448bb",
+  "b2-witness-events.json": "45cc881230c8b738773f2e4d3f992f492d8383db2e4bafba3babe7c75065b03c"
 }

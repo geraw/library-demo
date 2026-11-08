@@ -47,8 +47,9 @@ This is one directed path with 24 requests, not a 500-case random campaign. The
 extra guide only blocks events other than the next witness operation; it never
 requests an event. It binds role IDs from the existing creation stories. A missing
 model offer stops the guide; the runner rejects an incomplete/different path.
-Success requires B2_GUIDE_COMPLETED, exact semantic witness agreement, passing
-controls and B2 divergence. Other mutations are also replayed independently.
+Success requires native sampling exit success, exact semantic witness agreement,
+passing controls and B2 divergence. B2_GUIDE_COMPLETED in the sampling log is
+informational only: native sampling may suppress story log messages. Other mutations are also replayed independently.
 Do not count this guided diagnostic as random bug discovery. Upload UPLOAD_THIS.
 
 ## Home: 500 random full paths, one at a time
