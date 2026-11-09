@@ -367,55 +367,19 @@ bthread("tryToDeleteNonexistingHold", function () {
 });
 
 //////////////////////////////////////////////////////////////////////////
-// Coverage markers for ensemble ranking (state+parameter coverage).
+// Coverage markers for ensemble ranking (state coverage).
 //
-// These bthreads don't drive any behavior - they just emit a lightweight
-// "StateFeature" event whenever one of six hand-picked domain states becomes
-// true, by reusing the DAL's own queries so the detection logic isn't
-// duplicated here (feature list and rationale per Gera's 2026-10-15 review).
-// meta-spec/ensemble-code.js's stateParamRankingFunction reads these events
-// back out of sampled traces to score ensembles by how many distinct features
-// (not raw occurrences) they exercise - see STATE_FEATURES there, which must
-// stay in sync with the names marked here.
-//
-// markStateFeature uses Ctrl.doMark (per Gera's suggestion) instead of a plain
-// bp.sync({request:...}) offer: a plain offer competes on equal footing with every other event
-// any other bthread offers at that sync point, and loses most of the time at high-competition
-// moments (e.g. every single loan/hold create) - a measured 45-78% miss rate across all six
-// original features. Ctrl.doMark requests its event with eventPriority:1010 (controlLib.js),
-// which wins selection instead of competing as an equal offer.
-//
-// This changes the marker event's shape from the old bp.Event("StateFeature", {feature: name})
-// to Ctrl.markEvent's own: name "marker: " + name, data {lib:"Ctrl", verb:"marker", value: name,
-// eventPriority: 1010} - ensemble-code.js's distinctStateFeaturesHit reads this shape (data.lib
-// === "Ctrl" && data.verb === "marker", feature name in data.value), not the old one.
+// These bthreads don't drive any behavior - they emit a marker event whenever
+// a hand-picked domain state becomes true, reusing the DAL's own queries so
+// the detection logic isn't duplicated here. meta-spec/ensemble-code.js reads
+// these markers back out of sampled traces to score ensembles by how many
+// distinct features (STATE_FEATURES there) they exercise. Ctrl.doMark is used
+// instead of a plain event offer so markers reliably win selection at busy
+// synchronization points.
 //////////////////////////////////////////////////////////////////////////
 
-function markStateFeature(name) {
-  Ctrl.doMark(name);
-}
-
-// Phase 4 (2026-11-06) reliability fix for the dual-trigger marker race: MULTI_USER_BOOK_RELATIONS
-// and USER_WITH_TWO_BOOKS below are each spawned from two independent ctx.bthreads (one per
-// Loan.All, one per Hold.All) that can both become eligible in the same synchronization round and
-// both call Ctrl.doMark for the same feature name - the measured ~10-11% marker-miss source
-// (RESEARCH_SUMMARY.md §11). markStateFeatureOnce replaces markStateFeature at exactly those four
-// call sites (and is used by every new marker added below) to close that race: only the first of
-// several concurrently-racing callers for a given name ever proceeds to call Ctrl.doMark, so the
-// two bthreads stop competing for the same sync slot instead of leaving one to possibly lose it.
-//
-// ConcurrentHashMap.putIfAbsent, not a plain JS Set's has()+add(): BPjs runs b-thread callbacks
-// concurrently on a thread pool (see nextUserId's AtomicInteger comment at the top of this file
-// for the same reasoning), so a plain Set's two non-atomic steps would still race; putIfAbsent is
-// a single atomic check-and-set.
-//
-// Scoping this at module level (rather than per-trace-scoped ctx state) was verified, not
-// assumed: replaying both saved 10-trace sample pools shows every trace's user/book ids restart at
-// 1 (max id seen across all 20 traces is 6, from the few extra ids
-// tryToDeleteNonexisting{User,Book}'s generateMissingId() calls burn within a single trace - never
-// the dozens+ a run of several traces sharing one counter would produce), the same evidence
-// nextUserId/nextBookId/etc. above already rely on - so this map is effectively fresh per
-// generated trace, same as the rest of this file's module state.
+// Guards against two bthreads racing to mark the same feature (e.g. reachable via either a loan
+// or a hold path): only the first caller for a given name emits the marker per trace.
 const markedFeaturesThisTrace = new java.util.concurrent.ConcurrentHashMap();
 
 function markStateFeatureOnce(name) {
@@ -423,92 +387,10 @@ function markStateFeatureOnce(name) {
     Ctrl.doMark(name);
   }
 }
+////////////////////////////////////////////////////////////////
 
-ctx.bthread("markBookDeleteEligible", "Book.CanDelete", function (book) {
-  markStateFeature("BOOK_DELETE_ELIGIBLE");
-});
-
-ctx.bthread("markUserDeleteEligible", "User.CanDelete", function (user) {
-  markStateFeature("USER_DELETE_ELIGIBLE");
-});
-
-ctx.bthread("markLoanCreatable", "UserBook.CanCreateLoan", function (userbook) {
-  markStateFeature("LOAN_CREATABLE");
-});
-
-// HOLD_CREATABLE (UserBook.CanCreateHold) deliberately dropped from the feature list: that query
-// is `e.type === 'user-book'` with no other condition, so it's true for every user-book pair the
-// instant it exists - it measures "a user and a book exist", not any interesting/restrictive
-// state, so it can't discriminate between scenarios (confirmed: independently true in 20/20
-// traces in earlier measurements). Not replaced with a different hold-related condition - no
-// other well-defined "hold not yet possible" business concept exists in the model to measure.
-
-// Hold.WithoutLoan was previously dead code (defined, never consumed) - this is its first use.
-ctx.bthread("markHoldWithoutLoan", "Hold.WithoutLoan", function (hold) {
-  markStateFeature("HOLD_WITHOUT_LOAN");
-});
-
-// At least two users each tied to a different book through a loan or a hold - the one feature
-// here with no existing single-entity DAL query, so it's computed directly over Loan.All +
-// Hold.All rather than added as a new registerQuery (nothing else needs this combined view).
-function hasMultiUserBookRelations() {
-  var relations = ctx.runQuery('Loan.All').concat(ctx.runQuery('Hold.All'));
-  for (var i = 0; i < relations.length; i++) {
-    for (var j = i + 1; j < relations.length; j++) {
-      if (!sameId(relations[i].userid, relations[j].userid) && !sameId(relations[i].bookid, relations[j].bookid)) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-ctx.bthread("markMultiUserBookRelationsViaLoan", "Loan.All", function (loan) {
-  if (hasMultiUserBookRelations()) markStateFeatureOnce("MULTI_USER_BOOK_RELATIONS");
-});
-
-ctx.bthread("markMultiUserBookRelationsViaHold", "Hold.All", function (hold) {
-  if (hasMultiUserBookRelations()) markStateFeatureOnce("MULTI_USER_BOOK_RELATIONS");
-});
-
-// Mirror of hasMultiUserBookRelations: one user tied to two different books through a loan or a
-// hold, instead of two different users each tied to a different book.
-function hasUserWithTwoBooks() {
-  var relations = ctx.runQuery('Loan.All').concat(ctx.runQuery('Hold.All'));
-  for (var i = 0; i < relations.length; i++) {
-    for (var j = i + 1; j < relations.length; j++) {
-      if (sameId(relations[i].userid, relations[j].userid) && !sameId(relations[i].bookid, relations[j].bookid)) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-ctx.bthread("markUserWithTwoBooksViaLoan", "Loan.All", function (loan) {
-  if (hasUserWithTwoBooks()) markStateFeatureOnce("USER_WITH_TWO_BOOKS");
-});
-
-ctx.bthread("markUserWithTwoBooksViaHold", "Hold.All", function (hold) {
-  if (hasUserWithTwoBooks()) markStateFeatureOnce("USER_WITH_TWO_BOOKS");
-});
-
-//////////////////////////////////////////////////////////////////////////
-// Phase 4 (2026-11-06): experimental new State Feature markers.
-//
-// The six markers below (A-F, naming/predicates per the Phase 1-3 research reports) are emitted
-// the same way as the six features above, but are NOT added to meta-spec/ensemble-code.js's
-// STATE_FEATURES/rankingFunction yet - this phase instruments and validates detection only, it
-// does not change what the production ranking function scores. A marker name absent from
-// STATE_FEATURES is harmlessly ignored by distinctStateFeaturesHit (it only matches names in that
-// array), so adding these here cannot affect any existing measurement.
-//////////////////////////////////////////////////////////////////////////
-
-// --- A/B/C: loan-blocked sub-conditions -------------------------------------------------------
-// UserBook.CannotCreateLoan (dal.js) is `hasLoanForUser(e.userid) || hasLoanForBook(e.bookid)` -
-// true both when a DIFFERENT pair's loan blocks this one (the interesting cross-pair case) and
-// when this exact pair already holds the loan itself (excluded below, per the Phase 2/3 finding
-// that collapsing the two would hide the trivial case inside the interesting one).
+// Loan-blocked sub-conditions: distinguishes whether a loan attempt is blocked because of the
+// user, the book, or both.
 ctx.bthread("markLoanBlockedSubConditions", "UserBook.CannotCreateLoan", function (userbook) {
   if (entityExists('Loan.All', loanId(userbook.userid, userbook.bookid))) return;
 
@@ -521,26 +403,10 @@ ctx.bthread("markLoanBlockedSubConditions", "UserBook.CannotCreateLoan", functio
   } else if (viaBook) {
     markStateFeatureOnce("LOAN_BLOCKED_VIA_BOOK_ONLY");
   }
-  // Neither viaUser nor viaBook shouldn't be reachable given this query's own condition, but no
-  // marker fires in that case rather than assuming it can't happen.
 });
 
-// Fix (2026-11-06, live-run finding): the bthread above fires only once per pair, at the moment
-// UserBook.CannotCreateLoan's query first matches that pair - i.e. the instant whichever
-// condition (viaUser/viaBook) flips true FIRST. If the pair enters as USER_ONLY or BOOK_ONLY and
-// only later does the OTHER condition also become true (via an unrelated loan elsewhere), that
-// transition to BOTH is invisible to the one-shot trigger above: confirmed by direct trace
-// inspection in the Phase 4 live run (3/3 ground-truth LOAN_BLOCKED_VIA_BOTH occurrences were
-// exactly this case - e.g. user5/book2 entered CannotCreateLoan via viaUser alone when user5 first
-// borrowed book1; only when book2 was separately loaned to a different user did viaBook also
-// become true, with no re-evaluation of the already-consumed trigger), so the marker's live recall
-// was 0/3. Loan.All is the only event type that can ever flip hasLoanForUser/hasLoanForBook (holds
-// don't participate in this condition at all - see UserBook.CannotCreateLoan's definition in
-// dal.js), so a single rescan triggered on every new loan - re-checking ALL currently-blocked
-// pairs, not just the one that just got loaned - is enough to catch the transition regardless of
-// which side completes it second, without needing BOOK_LOANED_WITH_ACTIVE_HOLD's two-trigger-type
-// structure (that feature needs both Loan.All and Hold.All because either relationship type can
-// establish it; this one only ever changes via loans).
+// Rescans all currently-blocked pairs on every new loan, so a transition into "blocked by both"
+// is caught even if the user-side and book-side conditions become true at different times.
 ctx.bthread("markLoanBlockedViaBothRescan", "Loan.All", function (loan) {
   var blocked = ctx.runQuery('UserBook.CannotCreateLoan');
   for (var i = 0; i < blocked.length; i++) {
@@ -553,10 +419,7 @@ ctx.bthread("markLoanBlockedViaBothRescan", "Loan.All", function (loan) {
   }
 });
 
-// --- D: a book with both an active loan and an active hold simultaneously --------------------
-// Needs two trigger paths (Loan.All, Hold.All) since either relationship can be created first;
-// markStateFeatureOnce's guard (above) is what makes this safe instead of racing the way the
-// existing MULTI_USER_BOOK_RELATIONS/USER_WITH_TWO_BOOKS dual-trigger markers used to.
+// A book with both an active loan and an active hold at the same time.
 ctx.bthread("markBookLoanedWithActiveHoldViaLoan", "Loan.All", function (loan) {
   if (hasHoldForBook(loan.bookid)) markStateFeatureOnce("BOOK_LOANED_WITH_ACTIVE_HOLD");
 });
@@ -565,14 +428,7 @@ ctx.bthread("markBookLoanedWithActiveHoldViaHold", "Hold.All", function (hold) {
   if (hasLoanForBook(hold.bookid)) markStateFeatureOnce("BOOK_LOANED_WITH_ACTIVE_HOLD");
 });
 
-// --- E: a book with >=2 active holds -----------------------------------------------------------
-// Confirmed generator-reachable only via distinct user-book pairs sharing a book: createHold's
-// ctx.bthread (above) spawns once per UserBook.CanCreateHold-matching pair and never refires for
-// that same pair, so "the same pair held twice" is not exercised by the current generator even
-// though UserBook.CanCreateHold itself has no guard against it (Phase 2/3 finding) - not claimed
-// or instrumented here. Single trigger type (Hold.All only), so no dual-trigger race is possible:
-// each hold's bthread instance evaluates once, at its own creation moment, and those moments are
-// naturally staggered (holds are created one at a time, not within the same event).
+// A book with two or more active holds at the same time.
 ctx.bthread("markBookWithMultipleActiveHolds", "Hold.All", function (hold) {
   var holdsForThisBook = ctx.runQuery('Hold.All').filter(function (h) {
     return sameId(h.bookid, hold.bookid);
@@ -580,68 +436,9 @@ ctx.bthread("markBookWithMultipleActiveHolds", "Hold.All", function (hold) {
   if (holdsForThisBook.length >= 2) markStateFeatureOnce("BOOK_WITH_MULTIPLE_ACTIVE_HOLDS");
 });
 
-// --- F: a book or user undeletable solely because of an active hold (no active loan) ----------
-// Merged book+user into one feature per the Phase 3 finding that the two variants are ~95%
-// redundant in practice (a hold ties exactly one user to one book) and don't justify separate
-// features.
-//
-// Two entry paths, per the Phase 2 finding that a simple query-trigger bthread alone only catches
-// the first of these:
-//
-// Path 1 (this bthread): a hold is newly created on a book/user that has no active loan - a NEW
-// entity (the hold) enters Hold.All, so a ctx.bthread query trigger works here.
-ctx.bthread("markDeleteBlockedByHoldOnlyViaHoldCreation", "Hold.All", function (hold) {
-  if (!hasLoanForBook(hold.bookid) || !hasLoanForUser(hold.userid)) {
-    markStateFeatureOnce("DELETE_BLOCKED_BY_HOLD_ONLY");
-  }
-});
-
-// Path 2: an existing loan is deleted while a hold on that same book or user remains - no NEW
-// entity enters any ctx query here (the hold already existed before the deletion), so a
-// ctx.bthread query trigger cannot catch this path at all; needs a plain bthread keyed off the
-// deletion event itself, mirroring verifyLoanDeletion's on(matchAnyLoanDeleted(), ...) pattern
-// above. Inherits that same bthread's documented limitation (Gera's comment near
-// verifyBookDeletion above): on() only re-arms after its own callback finishes, so a second loan
-// deletion arriving while this callback is still running would be missed - accepted here for the
-// same reason it was accepted there, not a new issue introduced by this marker.
-bthread("markDeleteBlockedByHoldOnlyViaLoanDeletion", function () {
-  on(matchAnyLoanDeleted(), function (e) {
-    var loan = extractEventData(e);
-    if (hasHoldForBook(loan.bookId) || hasHoldForUser(loan.userId)) {
-      markStateFeatureOnce("DELETE_BLOCKED_BY_HOLD_ONLY");
-    }
-  });
-});
-
-//////////////////////////////////////////////////////////////////////////
-// Phase 24 production consolidation (2026-11-08): the three marker bthreads below were
-// originally developed in a separate research file (phase14b_markers.js, part of the Phase
-// 14B experimental 13-feature catalog) and are consolidated here because all three are part of
-// the real production 8-feature STATE_FEATURES list (meta-spec/ensemble-code.js) - this is now
-// the single file production markers live in, matching the original Phase 4 markers above.
-//
-// Only the logic for the 3 production features is carried over. The experimental file also
-// defined markers for 5 OTHER features (USER_TWO_BOOKS_VIA_HOLDS_ONLY,
-// BOOK_DELETE_BLOCKED_BY_LOAN_ONLY, USER_DELETE_BLOCKED_BY_HOLD_ONLY,
-// USER_DELETE_BLOCKED_BY_LOAN_ONLY, ALL_BOOKS_ON_LOAN) that are NOT in production's
-// STATE_FEATURES - those are deliberately NOT carried over here, since a marker for a name
-// absent from STATE_FEATURES is dead weight in production (distinctStateFeaturesHit only reads
-// names in that array). The full 13-feature experimental set, including those 5, remains
-// available unmodified on the research branch (phase14b_markers.js, meta-spec/tests/
-// phase14b_features/) for reproducibility - it is simply not part of this minimal production
-// integration.
-//
-// Verified before this consolidation: no naming collision with anything already in this file
-// (markLoanAndHoldSamePairViaLoan/ViaHold, markUserLoanPlusHoldDifferentBooksViaLoan/ViaHold,
-// markBookDeleteBlockedByHoldOnlyViaHoldCreation/ViaLoanDeletion, samePairHasHold,
-// hasUserLoanPlusHoldDifferentBooks - all previously unique to phase14b_markers.js).
-//////////////////////////////////////////////////////////////////////////
-
-// --- LOAN_AND_HOLD_SAME_PAIR: same user+book connected by BOTH an active loan and an active hold.
-// Needs two trigger paths (either relationship can be created first), same race-safety reasoning
-// as BOOK_LOANED_WITH_ACTIVE_HOLD's dual-trigger marker above.
+// Same user and book connected by both an active loan and an active hold.
 ctx.bthread("markLoanAndHoldSamePairViaLoan", "Loan.All", function (loan) {
-  if (hasHoldForUser(loan.userid) && samePairHasHold(loan.userid, loan.bookid)) {
+  if (samePairHasHold(loan.userid, loan.bookid)) {
     markStateFeatureOnce("LOAN_AND_HOLD_SAME_PAIR");
   }
 });
@@ -660,9 +457,7 @@ function samePairHasHold(userIdValue, bookIdValue) {
   return false;
 }
 
-// --- USER_LOAN_PLUS_HOLD_DIFFERENT_BOOKS: one user with an active loan on one book and an
-// active hold on a DIFFERENT book - tests that the per-user loan cap doesn't leak into hold
-// creation for that same user.
+// One user with an active loan on one book and an active hold on a different book.
 ctx.bthread("markUserLoanPlusHoldDifferentBooksViaLoan", "Loan.All", function (loan) {
   if (hasUserLoanPlusHoldDifferentBooks(loan.userid)) markStateFeatureOnce("USER_LOAN_PLUS_HOLD_DIFFERENT_BOOKS");
 });
@@ -671,8 +466,6 @@ ctx.bthread("markUserLoanPlusHoldDifferentBooksViaHold", "Hold.All", function (h
   if (hasUserLoanPlusHoldDifferentBooks(hold.userid)) markStateFeatureOnce("USER_LOAN_PLUS_HOLD_DIFFERENT_BOOKS");
 });
 
-// A single shared user id is enough: the per-user loan cap means there is at most one loan to
-// check against this user's holds.
 function hasUserLoanPlusHoldDifferentBooks(userIdValue) {
   if (!hasLoanForUser(userIdValue)) return false;
   var loans = ctx.runQuery('Loan.All');
@@ -689,29 +482,6 @@ function hasUserLoanPlusHoldDifferentBooks(userIdValue) {
   }
   return false;
 }
-
-// --- BOOK_DELETE_BLOCKED_BY_HOLD_ONLY: a book undeletable solely because of an active hold on
-// it (no active loan on that same book) - the book-side-only isolation of the original merged
-// DELETE_BLOCKED_BY_HOLD_ONLY feature above.
-//
-// Two entry paths, mirroring DELETE_BLOCKED_BY_HOLD_ONLY's own dual-path structure: a new hold
-// being created (ctx.bthread query trigger works), or an existing loan being deleted while a
-// hold on that same book remains (no new entity enters any ctx query, so needs the on()-based
-// plain bthread instead).
-ctx.bthread("markBookDeleteBlockedByHoldOnlyViaHoldCreation", "Hold.All", function (hold) {
-  if (hasHoldForBook(hold.bookid) && !hasLoanForBook(hold.bookid)) {
-    markStateFeatureOnce("BOOK_DELETE_BLOCKED_BY_HOLD_ONLY");
-  }
-});
-
-bthread("markBookDeleteBlockedByHoldOnlyViaLoanDeletion", function () {
-  on(matchAnyLoanDeleted(), function (e) {
-    var loan = extractEventData(e);
-    if (hasHoldForBook(loan.bookId) && !hasLoanForBook(loan.bookId)) {
-      markStateFeatureOnce("BOOK_DELETE_BLOCKED_BY_HOLD_ONLY");
-    }
-  });
-});
 
 // =========================================================================
 // Step 1: The Fuzzing Interface Layer Contract

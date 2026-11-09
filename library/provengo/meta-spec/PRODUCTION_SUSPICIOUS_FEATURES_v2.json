@@ -1,9 +1,9 @@
 {
   "version": "phase24-production-v2",
   "derived_from": "library/provengo/meta-spec/tests/phase14b_features/canonical_feature_specs.json (phase14b-1.0, 13 experimental suspicious features)",
-  "purpose": "Refinement of the 13-feature experimental Suspicious State Coverage set into a small (7-9), high-quality collection for the REAL production ranking (ensemble-code.js STATE_FEATURES), per the advisor's request to replace simplistic CRUD coverage with a compact set of complex, bug-prone states. This file documents the selection; it does not change business behavior. As of the Phase 24 production-minimal integration, all 8 production markers' instrumentation lives in lib_stories.js (the 3 that were originally developed in phase14b_markers.js on the research branch were consolidated there - see lib_stories.js's own consolidation comment).",
+  "purpose": "Refinement of the 13-feature experimental Suspicious State Coverage set into a small, high-quality collection for the REAL production ranking (ensemble-code.js STATE_FEATURES), per the advisor's request to replace simplistic CRUD coverage with a compact set of complex, bug-prone states. This file documents the selection; it does not change business behavior. All production markers' instrumentation lives in lib_stories.js (some originally developed in phase14b_markers.js on the research branch were consolidated there - see lib_stories.js's own consolidation comment).",
   "selection_method": "Business-rule relevance, interaction complexity, redundancy, and reachability only - per Phase 24 Section 2, NO mutation-detection result (Phase 15-22) was used to select or reject any feature. All reachability/redundancy evidence cited below was already gathered in Phase 14B from the SUT's source code and a live diagnostic corpus, independent of any mutant.",
-  "final_count": 8,
+  "final_count": 7,
   "retained": [
     {
       "name": "LOAN_BLOCKED_VIA_USER_ONLY",
@@ -67,18 +67,13 @@
       "example_trace": "user U loans book A, then places a hold on book B (B != A)",
       "verification": "dual-trigger (ViaLoan/ViaHold); EMPIRICALLY_OBSERVED 12/30 diagnostic traces",
       "instrumented_in": "lib_stories.js (consolidated from phase14b_markers.js in the Phase 24 production-minimal integration)"
-    },
-    {
-      "name": "BOOK_DELETE_BLOCKED_BY_HOLD_ONLY",
-      "category": "conditional deletion",
-      "predicate": "a book has an active hold and no active loan (so deletion is blocked by the hold disjunct alone, not the loan disjunct, of sut.py's delete_book OR-guard)",
-      "business_significance": "isolates one disjunct of the book-deletion OR-guard - a book can be undeletable purely because of an unresolved hold, with no loan involved at all",
-      "example_trace": "book B has an active hold, no loan; a delete-book attempt on B is rejected",
-      "verification": "dual-trigger (hold creation / loan deletion); EMPIRICALLY_OBSERVED 23/30 diagnostic traces",
-      "instrumented_in": "lib_stories.js (consolidated from phase14b_markers.js in the Phase 24 production-minimal integration)"
     }
   ],
   "removed": [
+    {
+      "name": "BOOK_DELETE_BLOCKED_BY_HOLD_ONLY",
+      "reason": "Removed from production STATE_FEATURES by explicit request after the Phase 24 integration, to keep the feature set smaller. Its markers (markBookDeleteBlockedByHoldOnlyViaHoldCreation/ViaLoanDeletion) were removed from lib_stories.js; State Coverage is now normalized over the remaining 7 features. Not a reachability or redundancy finding - just a scope reduction."
+    },
     {
       "name": "USER_TWO_BOOKS_VIA_HOLDS_ONLY",
       "reason": "Lower marginal value once BOOK_WITH_MULTIPLE_ACTIVE_HOLDS is retained: both probe the same underlying fact (holds have no cardinality cap), just from the book side vs. the user side. Keeping both would spend two of 8 slots on near-duplicate variations of one condition. USER_LOAN_PLUS_HOLD_DIFFERENT_BOOKS (retained) already covers the user side's \"connected to two distinct books\" relationship, via a cross-mechanism case that is more informative than the pure hold+hold case."

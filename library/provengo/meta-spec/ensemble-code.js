@@ -1,44 +1,19 @@
-// State coverage ranking: a Set of distinct STATE_FEATURES markers hit, not raw occurrences -
-// reaching the same state many times must not score higher than reaching it once.
-// HOLD_CREATABLE deliberately excluded: UserBook.CanCreateHold has no restricting condition
-// (true for any user-book pair), so it can't discriminate between scenarios - see lib_stories.js.
+// ============================================================
+// State Coverage
+// ============================================================
+// Measures how many distinct, hand-picked "suspicious state features" an ensemble reaches. Each
+// feature corresponds to an interesting business-rule state in the SUT. Coverage is a Set of
+// distinct features hit, so reaching the same state multiple times does not increase the score.
 //
-// Phase 24 (2026-11-07): per the advisor's request to replace simplistic CRUD state coverage
-// with a small set of complex, business-rule-interaction states, STATE_FEATURES below was
-// refined from the original 6 basic CRUD predicates to 8 Suspicious State Features - each
-// isolating a genuine interacting-constraint, loan/hold-asymmetry, multi-entity-cardinality, or
-// conditional-deletion scenario in the real SUT (sut.py). Selection was made purely from
-// business-rule relevance, redundancy, and reachability evidence (no mutation-detection result
-// was used - see PRODUCTION_SUSPICIOUS_FEATURES_v2.json for the full per-feature justification
-// and the 5 features considered and dropped as redundant or weakly discriminating).
-//
-// Marker mechanism is unchanged: every name below is emitted via the same markStateFeatureOnce
-// -> Ctrl.doMark(name) path distinctStateFeaturesHit() already reads, all from lib_stories.js
-// (5 names are pre-existing Phase 4 instrumentation; 3 names - LOAN_AND_HOLD_SAME_PAIR,
-// USER_LOAN_PLUS_HOLD_DIFFERENT_BOOKS, BOOK_DELETE_BLOCKED_BY_HOLD_ONLY - were developed in a
-// separate Phase 14B research file and consolidated into lib_stories.js, per the Phase 24
-// production-minimal integration, as the single file production markers live in) - no new
-// marker code and no change to distinctStateFeaturesHit/rankingFunction were needed for this
-// refinement.
-//
-// The original 6-feature list and the 13-feature experimental superset this was refined from
-// both remain available, unmodified, on the research feature branch, for reproducibility (not
-// part of this minimal production integration): the 13-feature set's full catalog and the
-// other 5 features' marker code (not used by production) stay on that branch only.
+// HOLD_CREATABLE is excluded because it has no restricting condition and cannot discriminate
+// between scenarios.
 const STATE_FEATURES = [
     "LOAN_BLOCKED_VIA_USER_ONLY", "LOAN_BLOCKED_VIA_BOOK_ONLY", "LOAN_BLOCKED_VIA_BOTH",
     "BOOK_LOANED_WITH_ACTIVE_HOLD", "LOAN_AND_HOLD_SAME_PAIR",
-    "BOOK_WITH_MULTIPLE_ACTIVE_HOLDS", "USER_LOAN_PLUS_HOLD_DIFFERENT_BOOKS",
-    "BOOK_DELETE_BLOCKED_BY_HOLD_ONLY"
+    "BOOK_WITH_MULTIPLE_ACTIVE_HOLDS", "USER_LOAN_PLUS_HOLD_DIFFERENT_BOOKS"
 ];
 
-// Counts how many distinct STATE_FEATURES markers (lib_stories.js's markStateFeature bthreads,
-// which call Ctrl.doMark) appeared anywhere in the ensemble - a Set, so reaching the same state
-// many times only counts once.
-//
-// Reads Ctrl.markEvent's own event shape (controlLib.js): name "marker: " + value, data
-// {lib:"Ctrl", verb:"marker", value: <feature name>, eventPriority: 1010} - not a custom
-// "StateFeature"/data.feature shape, since markStateFeature calls Ctrl.doMark directly.
+// Counts how many distinct STATE_FEATURES markers were observed anywhere in the ensemble.
 function distinctStateFeaturesHit(ensemble) {
     let hit = new Set();
     for (let test of ensemble)
@@ -49,13 +24,9 @@ function distinctStateFeaturesHit(ensemble) {
 }
 
 /**
- * A score of 0 (or any value below 100) means no StateFeature MARKER for the missing
- * feature(s) was observed in this ensemble - it does NOT mean the underlying state never
- * actually occurred. The marker mechanism's own reliability (whether a state that truly
- * occurred reliably produces its marker) was measured separately against a live SUT - see
- * meta-spec/tests/RESEARCH_SUMMARY.md §8 and the per-run data in state_feature_runs.csv - and
- * is a precondition for trusting this score as a proxy for actual state coverage, not something
- * this function can verify on its own.
+ * State Coverage ranking function: the fraction of STATE_FEATURES reached by this ensemble. A
+ * score below 100 reflects the marker not being observed, not necessarily that the underlying
+ * state never occurred.
  *
  * @param {Event[][]} ensemble Test suite to be ranked.
  * @returns State-feature coverage, 0-100.
@@ -64,233 +35,310 @@ function rankingFunction(ensemble) {
     return (distinctStateFeaturesHit(ensemble) / STATE_FEATURES.length) * 100;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Parameter coverage (2026-10-24) - deliberately independent of rankingFunction/STATE_FEATURES
-// above: doesn't read StateFeature events or touch lib_stories.js, so the already-validated
-// State Coverage measurement can't be affected by this.
+// ============================================================
+// CTD Parameter Coverage (combinatorial, symmetry-reduced)
+// ============================================================
+// Measures combinations of parameter equivalence classes submitted to create/delete actions,
+// rather than raw values, outcomes, or persistent state. Symmetry reduction treats user/book ids
+// by class rather than numeric identity, so renaming an id does not create a new combination.
 //
-// Reuses the NUMBER_OF_USERS/NUMBER_OF_BOOKS globals lib_stories.js already declares, rather
-// than redeclaring them here - every meta-spec/spec .js file Provengo loads shares one global
-// Rhino scope, and a second top-level `const` of the same name is a redeclaration error, not a
-// shadowing local (confirmed by hitting exactly that error while developing this).
-//////////////////////////////////////////////////////////////////////////
+// Parameters are classified by type: string parameters (title/name) via classifyCtdStringValue,
+// id parameters (userId/bookId/id) via classifyCtdIdValue. Id classification distinguishes VALID
+// (a reference to an existing entity) from VALID_NONEXISTENT (a well-formed reference to an
+// entity that was never created).
+//
+// Classification reads the submitted request body/URL directly rather than the SUT's response,
+// since a single response code cannot reveal whether multiple fields were simultaneously invalid.
+//
+// CTD_FEASIBLE_COMBINATIONS_BY_ACTION enumerates, per action, the combinations its test
+// generators can actually produce, rather than the full cross-product of classes - not every
+// combination is reachable.
+
+// Numbers below this threshold are treated as real ids; at or above it, as ids known not to
+// exist (VALID_NONEXISTENT).
+var CTD_NONEXISTENT_ID_THRESHOLD = 1000000;
+// RTV template referencing a created entity, e.g. "@{USER3}", "@{BOOK12}", "@{HOLD5}".
+var CTD_RTV_TEMPLATE_PATTERN = /^@\{[A-Z]+\d+\}$/;
 
 /**
- * Extracts {type, userId, bookId} from an event IF it's a genuinely emitted createLoan or
- * createHold request - i.e. this exact variant was selected and actually sent (requestOneOfDirect
- * is single-sync, so selection is sending), not a rejected/invalid-shape attempt that merely looks
- * similar. Uses the same "Create: " description-prefix convention already established and
- * validated elsewhere in this investigation (dal.js's effects, verify_state_features.py's
- * is_genuine) - interfaces.library.js's createLoan/createHold only set this description, with
- * userId/bookId alongside it, on their valid variants; invalid variants carry no `parameters` at
- * all, so they never match here. Returns null for anything else (including unrelated REST calls).
+ * Classifies a submitted id-typed value into MISSING/NULL/WRONG_TYPE/OUT_OF_RANGE/VALID/
+ * VALID_NONEXISTENT. See the section comment above for VALID vs VALID_NONEXISTENT.
  *
- * Caveat carried over unchanged from earlier state-feature work (RESEARCH_SUMMARY.md): this only
- * proves the request was genuinely emitted, not that the SUT actually returned 200/201 for it -
- * neither this function nor the rest of the model checks the real response code. Treat the
- * resulting score as coverage of emitted create requests, not confirmed-successful creates.
+ * @param {*} raw
+ * @returns {string}
  */
-function extractLoanOrHoldCreateParams(event) {
-    const d = event && event.data;
-    if (!d || d.lib !== "REST" || d.method !== "POST") return null;
-    const params = d.parameters;
-    const description = params && params.description;
-    if (typeof description !== "string") return null;
-    let type;
-    if (description.indexOf("Create: Loan") === 0) type = "loan";
-    else if (description.indexOf("Create: Hold") === 0) type = "hold";
-    else return null;
-    // parseInt rather than Number.isInteger: userId/bookId may come back as a Rhino-wrapped
-    // java.lang.Integer/Long once deserialized from a persisted samples.json/ensemble.json, and
-    // Number.isInteger() requires typeof === "number", which such a wrapped value may not
-    // satisfy. parseInt coerces via String() first, so it's safe across that boundary regardless;
-    // isNaN after parseInt is the correct "was this actually present and numeric" check.
-    const userId = Number.parseInt(params.userId, 10);
-    const bookId = Number.parseInt(params.bookId, 10);
-    if (isNaN(userId) || isNaN(bookId)) return null;
-    return { type: type, userId: userId, bookId: bookId };
-}
-
-/**
- * Parameter coverage, split per action type (loan/hold) since they're different endpoints/slots,
- * not one shared value space. Each is a Set of distinct (userId, bookId) pairs, counted once no
- * matter how many times the same pair recurs - same non-double-counting principle as
- * distinctStateFeaturesHit.
- *
- * Only pairs within the basic NUMBER_OF_USERS x NUMBER_OF_BOOKS space count towards coverage - a
- * pair with an id outside that range is a known artifact of lib_stories.js's
- * tryToDeleteNonexisting{User,Book,Loan} bthreads burning real id-generator counters (see
- * RESEARCH_SUMMARY.md / project memory), not a legitimate part of the parameter space, and is
- * NOT normalized into the denominator to compensate - it's tracked separately in
- * outOfRangePairs instead, so the base 4x4=16-pair universe stays a fixed, bug-independent
- * definition that's fair to compare across candidates/runs.
- *
- * @param {Event[][]} ensemble Test suite to be measured.
- * @returns {{loanPairs: Set<string>, holdPairs: Set<string>, outOfRangePairs: Set<string>}}
- */
-function parameterCoverageDetails(ensemble) {
-    const loanPairs = new Set();
-    const holdPairs = new Set();
-    const outOfRangePairs = new Set();
-    for (let test of ensemble) {
-        for (let event of test) {
-            const extracted = extractLoanOrHoldCreateParams(event);
-            if (!extracted) continue;
-            const inRange = extracted.userId >= 1 && extracted.userId <= NUMBER_OF_USERS &&
-                extracted.bookId >= 1 && extracted.bookId <= NUMBER_OF_BOOKS;
-            const key = extracted.type + ":" + extracted.userId + "," + extracted.bookId;
-            if (inRange) {
-                (extracted.type === "loan" ? loanPairs : holdPairs).add(key);
-            } else {
-                outOfRangePairs.add(key);
-            }
+function classifyCtdIdValue(raw) {
+    if (raw === undefined) return "MISSING";
+    if (raw === null) return "NULL";
+    if (typeof raw === "boolean") return "WRONG_TYPE";
+    if (typeof raw === "object") return "WRONG_TYPE"; // plain objects and arrays alike
+    if (typeof raw === "string") {
+        if (CTD_RTV_TEMPLATE_PATTERN.test(raw)) return "VALID";
+        if (/^-?\d+$/.test(raw)) {
+            const n = parseInt(raw, 10);
+            if (n <= 0) return "OUT_OF_RANGE";
+            return n >= CTD_NONEXISTENT_ID_THRESHOLD ? "VALID_NONEXISTENT" : "VALID";
         }
+        return "WRONG_TYPE"; // non-numeric, non-template string, e.g. "bad-id"
     }
-    return { loanPairs: loanPairs, holdPairs: holdPairs, outOfRangePairs: outOfRangePairs };
+    if (typeof raw === "number") {
+        if (isNaN(raw)) return "WRONG_TYPE";
+        if (raw <= 0) return "OUT_OF_RANGE";
+        return raw >= CTD_NONEXISTENT_ID_THRESHOLD ? "VALID_NONEXISTENT" : "VALID";
+    }
+    return "WRONG_TYPE";
 }
 
 /**
- * Parameter coverage of emitted create requests (see extractLoanOrHoldCreateParams's caveat - not
- * "confirmed successful creates"), 0-100: the fraction of the fixed 2*NUMBER_OF_USERS*NUMBER_OF_BOOKS
- * (loan pairs + hold pairs, each out of 16) universe actually exercised by this ensemble.
- * Deliberately NOT combined with rankingFunction above - a separate, independent score so
- * `provengo ensemble --ranking-function=parameterCoverageFunction` can be compared against
- * `--ranking-function=rankingFunction` without either affecting the other's measurement.
+ * Classifies a submitted string-typed value into MISSING/NULL/WRONG_TYPE/EMPTY/VALID. No
+ * existing/nonexistent distinction - title/name aren't entity references.
  *
- * KNOWN CLI QUIRK (found 2026-10-24, not fixed here - it's in Provengo's own closed-source
- * GeneticOptimizer, not this file): `provengo ensemble --ranking-function=parameterCoverageFunction`
- * printed "rank 0.000" against a real live-SUT pool that genuinely had non-zero coverage (9/10
- * traces independently confirmed to contain genuine loan/hold creates, via both Python and a
- * direct Node `vm` call to this exact function on the raw samples.json - both agreed exactly,
- * e.g. 28.125 on the full 10-trace pool). Re-scoring the CLI's OWN written output file
- * (`ensemble_param2.json`) directly through this same function gave 18.75, not 0 - the function
- * is correct; the CLI's live progress-log "rank" number during/after a custom-named
- * `--ranking-function` search is not trustworthy and must not be read as the real score. Always
- * re-score the written ensemble file independently (as done here) rather than trusting the CLI's
- * printed rank for any ranking function other than the one it shipped with by default.
- *
- * @param {Event[][]} ensemble Test suite to be ranked.
- * @returns Parameter coverage, 0-100.
+ * @param {*} raw
+ * @returns {string}
  */
-function parameterCoverageFunction(ensemble) {
-    const details = parameterCoverageDetails(ensemble);
-    const universe = 2 * NUMBER_OF_USERS * NUMBER_OF_BOOKS;
-    return ((details.loanPairs.size + details.holdPairs.size) / universe) * 100;
+function classifyCtdStringValue(raw) {
+    if (raw === undefined) return "MISSING";
+    if (raw === null) return "NULL";
+    if (typeof raw !== "string") return "WRONG_TYPE";
+    return raw === "" ? "EMPTY" : "VALID";
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Combined coverage (2026-11-02) - a weighted combination of the already-independently-
-// validated State Coverage (distinctStateFeaturesHit/STATE_FEATURES above) and Parameter
-// Coverage (parameterCoverageDetails above), as three separately-normalized components
-// (state/loan/hold, each 0-1). Reuses those functions as-is; does not duplicate marker
-// detection or parameter extraction/validation, and does not alter rankingFunction or
-// parameterCoverageFunction above - both remain independently runnable
-// (--ranking-function=rankingFunction / =parameterCoverageFunction), unaffected by this.
-//
-// Loan and Hold are each normalized over their OWN NUMBER_OF_USERS*NUMBER_OF_BOOKS=16-pair
-// space (not parameterCoverageFunction's shared 32-pair universe) specifically so a weight can
-// be assigned to each independently.
-//
-// Weights are hierarchical, not three flat independent numbers: `state` is State's share of the
-// total, and `parameter.loan`/`parameter.hold` split the REMAINING share (1 - state) between
-// Loan and Hold - parameter.loan + parameter.hold must sum to 1 on their own (a complete split
-// of "the rest"), not to (1 - state) directly. This mirrors how the question actually gets
-// discussed with the advisor as two separate decisions ("how much does Parameter matter
-// relative to State", then separately "how should Parameter's budget split between Loan and
-// Hold") rather than one three-way number pick. It's equivalent in expressiveness to a flat
-// wState+wLoan+wHold=1 scheme (wLoan = (1-wState)*parameter.loan, same for hold) - this is a
-// parameterization choice, not a different scoring capability.
-//////////////////////////////////////////////////////////////////////////
-
-// Provisional defaults only (2026-11-02) - NOT a research finding and not yet reviewed with
-// the advisor. The investigation that led here found Loan pairs structurally harder to cover
-// than Hold pairs (business-rule-serialized vs. unrestricted - see dal.js's
-// UserBook.CanCreateLoan/CanCreateHold), but per explicit instruction this is deliberately NOT
-// used to justify a larger Loan weight here - that is exactly the kind of decision reserved for
-// the advisor discussion + controlled weighting experiments this function is meant to enable,
-// not something to bake in now. 50/50 within `parameter` here resolves to the same wLoan=0.25/
-// wHold=0.25 as the flat scheme this replaced. Change these numbers for a future experiment;
-// nothing else in this section needs to change to support that.
-const COVERAGE_WEIGHTS = {
-    state: 0.50,
-    parameter: {
-        loan: 0.50,
-        hold: 0.50
-    }
+// Per-action factor spec: where to read submitted value(s) from (JSON body for create actions;
+// trailing URL path segments for delete actions), and which classifier applies, in field order.
+var CTD_ACTION_SPEC = {
+    createBook: { kind: "body", fields: ["title"], classifiers: [classifyCtdStringValue] },
+    createUser: { kind: "body", fields: ["name"], classifiers: [classifyCtdStringValue] },
+    createLoan: { kind: "body", fields: ["userId", "bookId"], classifiers: [classifyCtdIdValue, classifyCtdIdValue] },
+    createHold: { kind: "body", fields: ["userId", "bookId"], classifiers: [classifyCtdIdValue, classifyCtdIdValue] },
+    deleteBook: { kind: "pathTail", count: 1, classifiers: [classifyCtdIdValue] },
+    deleteUser: { kind: "pathTail", count: 1, classifiers: [classifyCtdIdValue] },
+    deleteHold: { kind: "pathTail", count: 1, classifiers: [classifyCtdIdValue] },
+    deleteLoan: { kind: "pathTail", count: 2, classifiers: [classifyCtdIdValue, classifyCtdIdValue] }
 };
 
-// Hard failure, not a clamp: silently normalizing or clamping an invalid weights object would
-// hide a misconfiguration (e.g. a typo'd component name, or shares that don't sum to 1) behind
-// a plausible-looking score instead of surfacing it.
-function validateCoverageWeights(weights) {
+/**
+ * Reads the raw submitted value(s) for an action's factors off the event - data.body (parsed) for
+ * create actions, or trailing URL path segment(s) for delete actions. Returns null if the event
+ * doesn't carry what this spec needs.
+ *
+ * @param {Event} event
+ * @param {{kind:string, fields?:string[], count?:number}} spec
+ * @returns {Array<*>|null}
+ */
+function ctdExtractRawValues(event, spec) {
+    const d = event && event.data;
+    if (!d) return null;
+    if (spec.kind === "body") {
+        if (typeof d.body !== "string") return null;
+        let parsed;
+        try { parsed = JSON.parse(d.body); } catch (e) { return null; }
+        if (!parsed || typeof parsed !== "object") return null;
+        return spec.fields.map(function (f) { return parsed[f]; });
+    }
+    // pathTail
+    if (typeof d.url !== "string") return null;
+    const segments = d.url.split("/").filter(function (s) { return s.length > 0; });
+    if (segments.length < spec.count) return null;
+    return segments.slice(segments.length - spec.count);
+}
+
+/**
+ * Classifies an event into an "action:class1[,class2]" CTD combination string, or null if it's
+ * not a recognized create/delete action, isn't in CTD_ACTION_SPEC, or its value(s) can't be read.
+ *
+ * @param {Event} event
+ * @returns {string|null}
+ */
+function classifyCtdCombination(event) {
+    const d = event && event.data;
+    const name = d && d.model && typeof d.model.name === "string" ? d.model.name : null;
+    if (!name) return null;
+
+    const parenIdx = name.indexOf(" (");
+    if (parenIdx === -1) return null;
+    const action = name.substring(0, parenIdx);
+    const spec = CTD_ACTION_SPEC[action];
+    if (!spec) return null;
+
+    const raws = ctdExtractRawValues(event, spec);
+    if (raws === null) return null;
+
+    const classes = raws.map(function (v, i) { return spec.classifiers[i](v); });
+    return action + ":" + classes.join(",");
+}
+
+// The feasible-combination universe for each action, enumerated directly rather than computed as
+// a cross-product of classes, since not every combination is reachable by the test generators.
+var CTD_FEASIBLE_COMBINATIONS_BY_ACTION = {
+    createBook: ["VALID", "MISSING", "WRONG_TYPE", "NULL", "EMPTY"],
+    createUser: ["VALID", "MISSING", "WRONG_TYPE", "NULL", "EMPTY"],
+    // (userId, bookId); includes combinations where one or both ids are VALID_NONEXISTENT.
+    createLoan: [
+        "VALID,VALID", "VALID,MISSING", "MISSING,VALID", "MISSING,MISSING",
+        "WRONG_TYPE,VALID", "VALID,WRONG_TYPE", "WRONG_TYPE,WRONG_TYPE",
+        "NULL,VALID", "VALID,NULL", "OUT_OF_RANGE,VALID", "VALID,OUT_OF_RANGE",
+        "VALID_NONEXISTENT,VALID", "VALID_NONEXISTENT,MISSING", "VALID_NONEXISTENT,WRONG_TYPE",
+        "VALID_NONEXISTENT,NULL", "VALID_NONEXISTENT,OUT_OF_RANGE",
+        "VALID,VALID_NONEXISTENT", "MISSING,VALID_NONEXISTENT", "WRONG_TYPE,VALID_NONEXISTENT",
+        "NULL,VALID_NONEXISTENT", "OUT_OF_RANGE,VALID_NONEXISTENT",
+        "VALID_NONEXISTENT,VALID_NONEXISTENT"
+    ],
+    // (userId, bookId); structurally identical to createLoan.
+    createHold: [
+        "VALID,VALID", "VALID,MISSING", "MISSING,VALID", "MISSING,MISSING",
+        "WRONG_TYPE,VALID", "VALID,WRONG_TYPE", "WRONG_TYPE,WRONG_TYPE",
+        "NULL,VALID", "VALID,NULL", "OUT_OF_RANGE,VALID", "VALID,OUT_OF_RANGE",
+        "VALID_NONEXISTENT,VALID", "VALID_NONEXISTENT,MISSING", "VALID_NONEXISTENT,WRONG_TYPE",
+        "VALID_NONEXISTENT,NULL", "VALID_NONEXISTENT,OUT_OF_RANGE",
+        "VALID,VALID_NONEXISTENT", "MISSING,VALID_NONEXISTENT", "WRONG_TYPE,VALID_NONEXISTENT",
+        "NULL,VALID_NONEXISTENT", "OUT_OF_RANGE,VALID_NONEXISTENT",
+        "VALID_NONEXISTENT,VALID_NONEXISTENT"
+    ],
+    // Single path id; MISSING/NULL/EMPTY aren't feasible for a URL path segment.
+    deleteBook: ["VALID", "WRONG_TYPE", "OUT_OF_RANGE", "VALID_NONEXISTENT"],
+    deleteUser: ["VALID", "WRONG_TYPE", "OUT_OF_RANGE", "VALID_NONEXISTENT"],
+    deleteHold: ["VALID", "WRONG_TYPE", "OUT_OF_RANGE", "VALID_NONEXISTENT"],
+    // (userId, bookId) as URL path parameters; no single-field-nonexistent combinations here.
+    deleteLoan: [
+        "VALID,VALID", "WRONG_TYPE,VALID", "VALID,WRONG_TYPE",
+        "OUT_OF_RANGE,VALID", "VALID,OUT_OF_RANGE", "VALID_NONEXISTENT,VALID_NONEXISTENT"
+    ]
+};
+
+var CTD_UNIVERSE = (function () {
+    const units = [];
+    const actions = Object.keys(CTD_FEASIBLE_COMBINATIONS_BY_ACTION);
+    for (let i = 0; i < actions.length; i++) {
+        const action = actions[i];
+        const combos = CTD_FEASIBLE_COMBINATIONS_BY_ACTION[action];
+        for (let j = 0; j < combos.length; j++) units.push(action + ":" + combos[j]);
+    }
+    return units;
+})();
+var CTD_UNIVERSE_SET = new Set(CTD_UNIVERSE);
+var CTD_UNIVERSE_SIZE = CTD_UNIVERSE.length; // 72
+
+/**
+ * Distinct feasible CTD combinations hit (Set - repeats count once), plus any classified
+ * combination OUTSIDE the declared universe - diagnostic only, never counted in the score. A
+ * non-empty outsideUniverse would mean the enumeration is missing a generator case.
+ *
+ * @param {Event[][]} ensemble Test suite to be measured.
+ * @returns {{hit: Set<string>, outsideUniverse: Set<string>}}
+ */
+function ctdParameterCoverageDetails(ensemble) {
+    const hit = new Set();
+    const outsideUniverse = new Set();
+    for (let test of ensemble) {
+        for (let event of test) {
+            const combo = classifyCtdCombination(event);
+            if (combo === null) continue;
+            if (CTD_UNIVERSE_SET.has(combo)) hit.add(combo);
+            else outsideUniverse.add(combo);
+        }
+    }
+    return { hit: hit, outsideUniverse: outsideUniverse };
+}
+
+/**
+ * CTD Parameter Coverage, 0-100: fraction of the fixed 72-unit feasible-combination universe
+ * attempted by this ensemble (accepted or rejected). Deterministic, monotonic, 0 for an empty
+ * ensemble.
+ *
+ * @param {Event[][]} ensemble Test suite to be ranked.
+ * @returns CTD Parameter coverage, 0-100.
+ */
+function ctdParameterCoverageFunction(ensemble) {
+    return (ctdParameterCoverageDetails(ensemble).hit.size / CTD_UNIVERSE_SIZE) * 100;
+}
+
+/**
+ * Reporting breakdown, NOT the ranking score itself - per-action hit/missing combination lists
+ * plus outside-universe classifications. Not used by ctdParameterCoverageFunction; call
+ * separately for inspection (same relationship coverageBreakdownV3 has to rankingFunction).
+ *
+ * @param {Event[][]} ensemble Test suite to be measured.
+ * @returns {{unitsHit:number, universeSize:number, perAction:Object<string,{hit:string[],
+ *   missing:string[], universeSize:number}>, outsideUniverse:string[]}}
+ */
+function ctdParameterCoverageBreakdown(ensemble) {
+    const details = ctdParameterCoverageDetails(ensemble);
+    const actions = Object.keys(CTD_FEASIBLE_COMBINATIONS_BY_ACTION);
+    const perAction = {};
+    for (let i = 0; i < actions.length; i++) {
+        const action = actions[i];
+        const combos = CTD_FEASIBLE_COMBINATIONS_BY_ACTION[action];
+        const hitCombos = [];
+        const missingCombos = [];
+        for (let j = 0; j < combos.length; j++) {
+            const unit = action + ":" + combos[j];
+            (details.hit.has(unit) ? hitCombos : missingCombos).push(combos[j]);
+        }
+        perAction[action] = { hit: hitCombos, missing: missingCombos, universeSize: combos.length };
+    }
+    return {
+        unitsHit: details.hit.size,
+        universeSize: CTD_UNIVERSE_SIZE,
+        perAction: perAction,
+        outsideUniverse: Array.from(details.outsideUniverse)
+    };
+}
+
+// ============================================================
+// Combined Ranking (active)
+// ============================================================
+// Combines State Coverage and CTD Parameter Coverage into a single weighted score. This is the
+// active ranking function for `provengo ensemble --ranking-function=combinedCoverageFunctionV3`.
+
+var COVERAGE_WEIGHTS_V3 = {
+    state: 0.50,
+    parameter: 0.50
+};
+
+function validateCoverageWeightsV3(weights) {
     if (!weights || typeof weights !== "object") {
-        throw new Error("combinedCoverageFunction: weights must be an object");
+        throw new Error("combinedCoverageFunctionV3: weights must be an object");
     }
     const state = weights.state;
     if (typeof state !== "number" || isNaN(state) || state < 0 || state > 1) {
-        throw new Error("combinedCoverageFunction: weight 'state' must be a number in [0,1], got " + state);
+        throw new Error("combinedCoverageFunctionV3: weight 'state' must be a number in [0,1], got " + state);
     }
     const parameter = weights.parameter;
-    if (!parameter || typeof parameter !== "object") {
-        throw new Error("combinedCoverageFunction: weights.parameter must be an object with 'loan' and 'hold'");
+    if (typeof parameter !== "number" || isNaN(parameter) || parameter < 0 || parameter > 1) {
+        throw new Error("combinedCoverageFunctionV3: weight 'parameter' must be a number in [0,1], got " + parameter);
     }
-    const loanShare = parameter.loan;
-    const holdShare = parameter.hold;
-    if (typeof loanShare !== "number" || isNaN(loanShare) || loanShare < 0) {
-        throw new Error("combinedCoverageFunction: weights.parameter.loan must be a nonnegative number, got " + loanShare);
-    }
-    if (typeof holdShare !== "number" || isNaN(holdShare) || holdShare < 0) {
-        throw new Error("combinedCoverageFunction: weights.parameter.hold must be a nonnegative number, got " + holdShare);
-    }
-    if (Math.abs(loanShare + holdShare - 1) > 1e-9) {
-        throw new Error("combinedCoverageFunction: weights.parameter.loan + weights.parameter.hold must sum to 1 (a complete split of Parameter's own share), got " + (loanShare + holdShare));
+    if (Math.abs(state + parameter - 1) > 1e-9) {
+        throw new Error("combinedCoverageFunctionV3: weights.state + weights.parameter must sum to 1, got " + (state + parameter));
     }
 }
 
 /**
- * The three coverage components (each 0-1) plus the combined score (0-100), computed purely by
- * calling the existing, already-validated distinctStateFeaturesHit()/parameterCoverageDetails()
- * - so a high combined score can be checked against its parts instead of hiding poor coverage
- * in one component. This is the function to call for inspection/reporting;
- * combinedCoverageFunction() below is the thin ranking-function-shaped wrapper around it.
- *
  * @param {Event[][]} ensemble Test suite to be measured.
- * @param {{state:number, parameter:{loan:number, hold:number}}} [weights] Defaults to
- *   COVERAGE_WEIGHTS. Validated the same way regardless of caller - see validateCoverageWeights.
- * @returns {{state:number, loan:number, hold:number, combined:number}} state/loan/hold in
- *   [0,1]; combined in [0,100].
+ * @param {{state:number, parameter:number}} [weights] Defaults to COVERAGE_WEIGHTS_V3.
+ * @returns {{state:number, parameter:number, combined:number}} state/parameter in [0,1];
+ *   combined in [0,100].
  */
-function coverageBreakdown(ensemble, weights) {
-    weights = weights || COVERAGE_WEIGHTS;
-    validateCoverageWeights(weights);
+function coverageBreakdownV3(ensemble, weights) {
+    weights = weights || COVERAGE_WEIGHTS_V3;
+    validateCoverageWeightsV3(weights);
 
     const state = distinctStateFeaturesHit(ensemble) / STATE_FEATURES.length;
-    const details = parameterCoverageDetails(ensemble);
-    const pairUniverse = NUMBER_OF_USERS * NUMBER_OF_BOOKS;
-    const loan = details.loanPairs.size / pairUniverse;
-    const hold = details.holdPairs.size / pairUniverse;
-
-    const parameterShare = 1 - weights.state;
-    const wLoan = parameterShare * weights.parameter.loan;
-    const wHold = parameterShare * weights.parameter.hold;
+    const parameter = ctdParameterCoverageFunction(ensemble) / 100;
 
     return {
         state: state,
-        loan: loan,
-        hold: hold,
-        combined: 100 * (weights.state * state + wLoan * loan + wHold * hold)
+        parameter: parameter,
+        combined: 100 * (weights.state * state + weights.parameter * parameter)
     };
 }
 
 /**
- * Ranking-function-shaped entry point for `provengo ensemble --ranking-function=combinedCoverageFunction`.
- * Always uses COVERAGE_WEIGHTS - call coverageBreakdown(ensemble, weights) directly (e.g. from a
- * verification script) to inspect the three components or try different weights without editing
- * this function.
+ * Ranking-function entry point for
+ * `provengo ensemble --ranking-function=combinedCoverageFunctionV3`.
  *
  * @param {Event[][]} ensemble Test suite to be ranked.
- * @returns Combined coverage, 0-100.
+ * @returns {number} Combined coverage (V3), 0-100.
  */
-function combinedCoverageFunction(ensemble) {
-    return coverageBreakdown(ensemble, COVERAGE_WEIGHTS).combined;
+function combinedCoverageFunctionV3(ensemble) {
+    return coverageBreakdownV3(ensemble, COVERAGE_WEIGHTS_V3).combined;
 }

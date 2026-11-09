@@ -326,8 +326,10 @@ function tryToCreateBookWithBadParametersAndExpectError(id, expectedCode) {
     { name: "title is null", body: { "title": null } },
     { name: "title is empty", body: { "title": "" } }
   ];
+  // Labeled like createBook's own invalid variants (same "name" convention) so the Parameter
+  // Coverage classifiers in meta-spec/ensemble-code.js can see these requests.
   var variants = cases.map(function (c) {
-    return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
+    return { name: "createBook (invalid - " + c.name + "): " + id, body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
   });
   requestOneOfDirect("post", url, variants);
 }
@@ -401,12 +403,17 @@ function verifyBookAbsentFromAllLists(id) {
   return readSutList("/holds", { q: bookIdRef, description: verifyAbsentDescription("Book", id, "holds") });
 }
 
+// Routed through requestOneOfDirect with a single offered variant (same url/body/
+// expectedResponseCodes/single-outcome sync as a direct svc.delete call) so that
+// evt.data.model.name is set - without this, the real business-rule rejection this sends (a cap
+// conflict or an already-deleted 404) would be invisible to the Parameter Coverage classifiers in
+// meta-spec/ensemble-code.js.
 function tryToDeleteBookAndExpectError(id, expectedCode) {
   id = asInteger(id);
   expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
   var url = "/books/" + sutBookIdRef(id);
   var description = verifyRejectedDescription("Book", id, "delete", "the operation is not allowed in this state");
-  svc.delete(url, { expectedResponseCodes: [expectedCode], parameters: { description: description } });
+  requestOneOfDirect("delete", null, [{ name: "deleteBook (valid-business-reject): " + id, url: url, expectedResponseCodes: [expectedCode], parameters: { description: description } }]);
 }
 
 function tryToDeleteDeletedBookAndExpectError(id) {
@@ -418,7 +425,7 @@ function tryToDeleteDeletedBookAndExpectError(id) {
 function tryToDeleteNonexistingBookAndExpectError(id) {
   id = asInteger(id);
   var description = verifyRejectedDescription("Book", id, "delete", "the operation is not allowed in this state");
-  svc.delete("/books/" + id, { expectedResponseCodes: [404], parameters: { description: description } });
+  requestOneOfDirect("delete", null, [{ name: "deleteBook (valid-business-reject): " + id, url: "/books/" + id, expectedResponseCodes: [404], parameters: { description: description } }]);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -585,8 +592,9 @@ function tryToCreateLoanWithBadParametersAndExpectError(userId, expectedCode) {
     { name: "userId is negative", body: { "userId": -userId, "bookId": userId } },
     { name: "bookId is negative", body: { "userId": userId, "bookId": -userId } }
   ];
+  // Labeled the same way createBook's own duplicate-fuzz helper is - see that comment above.
   var variants = cases.map(function (c) {
-    return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
+    return { name: "createLoan (invalid - " + c.name + "): " + userId, body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
   });
   requestOneOfDirect("post", url, variants);
 }
@@ -636,13 +644,14 @@ function verifyLoanAbsentFromAllLists(bookId, userId) {
   return readSutList("/loans", parameters);
 }
 
+// Routed through requestOneOfDirect the same way tryToDeleteBookAndExpectError is - see its comment above.
 function tryToDeleteLoanAndExpectError(userId, bookId, expectedCode) {
   userId = asInteger(userId);
   var bookIdRef = sutBookIdRef(bookId);
   expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
   var url = "/loans/" + sutUserIdRef(userId) + "/" + bookIdRef;
   var description = verifyRejectedDescription("Loan", userId + "/" + bookId, "delete", "the operation is not allowed in this state");
-  svc.delete(url, { expectedResponseCodes: [expectedCode], parameters: { description: description } });
+  requestOneOfDirect("delete", null, [{ name: "deleteLoan (valid-business-reject): " + userId + "/" + bookId, url: url, expectedResponseCodes: [expectedCode], parameters: { description: description } }]);
 }
 
 function tryToDeleteDeletedLoanAndExpectError(userId, bookId) {
@@ -656,7 +665,7 @@ function tryToDeleteNonexistingLoanAndExpectError(userId, bookId) {
   userId = asInteger(userId);
   bookId = asInteger(bookId);
   var description = verifyRejectedDescription("Loan", userId + "/" + bookId, "delete", "the operation is not allowed in this state");
-  svc.delete("/loans/" + userId + "/" + bookId, { expectedResponseCodes: [404], parameters: { description: description } });
+  requestOneOfDirect("delete", null, [{ name: "deleteLoan (valid-business-reject): " + userId + "/" + bookId, url: "/loans/" + userId + "/" + bookId, expectedResponseCodes: [404], parameters: { description: description } }]);
 }
 
 function matchAnyLoanDeleted() {
@@ -712,8 +721,9 @@ function tryToCreateUserWithBadParametersAndExpectError(id, expectedCode) {
     { name: "name is null", body: { "name": null } },
     { name: "name is empty", body: { "name": "" } }
   ];
+  // Labeled the same way createBook's own duplicate-fuzz helper is - see that comment above.
   var variants = cases.map(function (c) {
-    return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
+    return { name: "createUser (invalid - " + c.name + "): " + id, body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
   });
   requestOneOfDirect("post", url, variants);
 }
@@ -756,12 +766,13 @@ function verifyUserAbsentFromAllLists(id) {
   return readSutList("/holds", { q: sutUserIdRef(id), description: verifyAbsentDescription("User", id, "holds") });
 }
 
+// Routed through requestOneOfDirect the same way tryToDeleteBookAndExpectError is - see its comment above.
 function tryToDeleteUserAndExpectError(id, expectedCode) {
   id = asInteger(id);
   expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
   var url = "/users/" + sutUserIdRef(id);
   var description = verifyRejectedDescription("User", id, "delete", "the operation is not allowed in this state");
-  svc.delete(url, { expectedResponseCodes: [expectedCode], parameters: { description: description } });
+  requestOneOfDirect("delete", null, [{ name: "deleteUser (valid-business-reject): " + id, url: url, expectedResponseCodes: [expectedCode], parameters: { description: description } }]);
 }
 
 function tryToDeleteDeletedUserAndExpectError(id) {
@@ -773,7 +784,7 @@ function tryToDeleteDeletedUserAndExpectError(id) {
 function tryToDeleteNonexistingUserAndExpectError(id) {
   id = asInteger(id);
   var description = verifyRejectedDescription("User", id, "delete", "the operation is not allowed in this state");
-  svc.delete("/users/" + id, { expectedResponseCodes: [404], parameters: { description: description } });
+  requestOneOfDirect("delete", null, [{ name: "deleteUser (valid-business-reject): " + id, url: "/users/" + id, expectedResponseCodes: [404], parameters: { description: description } }]);
 }
 
 function matchAnyUserDeleted() {
@@ -875,8 +886,9 @@ function tryToCreateHoldWithBadParametersAndExpectError(id, userId, expectedCode
     // userId/bookId are read/validated - see sut.py's POST /holds), so a request with one
     // succeeds rather than being rejected. See the identical note on createBook.
   ];
+  // Labeled the same way createBook's own duplicate-fuzz helper is - see that comment above.
   var variants = cases.map(function (c) {
-    return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
+    return { name: "createHold (invalid - " + c.name + "): " + id, body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
   });
   requestOneOfDirect("post", url, variants);
 }
@@ -936,12 +948,13 @@ function verifyHoldAbsentFromAllLists(id) {
   return readSutList("/holds", { q: sutHoldIdRef(id), description: verifyAbsentDescription("Hold", id, "holds") });
 }
 
+// Routed through requestOneOfDirect the same way tryToDeleteBookAndExpectError is - see its comment above.
 function tryToDeleteHoldAndExpectError(id, expectedCode) {
   id = asInteger(id);
   expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
   var url = "/holds/" + sutHoldIdRef(id);
   var description = verifyRejectedDescription("Hold", id, "delete", "the operation is not allowed in this state");
-  svc.delete(url, { expectedResponseCodes: [expectedCode], parameters: { description: description } });
+  requestOneOfDirect("delete", null, [{ name: "deleteHold (valid-business-reject): " + id, url: url, expectedResponseCodes: [expectedCode], parameters: { description: description } }]);
 }
 
 function tryToDeleteDeletedHoldAndExpectError(id) {
@@ -953,7 +966,7 @@ function tryToDeleteDeletedHoldAndExpectError(id) {
 function tryToDeleteNonexistingHoldAndExpectError(id) {
   id = asInteger(id);
   var description = verifyRejectedDescription("Hold", id, "delete", "the operation is not allowed in this state");
-  svc.delete("/holds/" + id, { expectedResponseCodes: [404], parameters: { description: description } });
+  requestOneOfDirect("delete", null, [{ name: "deleteHold (valid-business-reject): " + id, url: "/holds/" + id, expectedResponseCodes: [404], parameters: { description: description } }]);
 }
 
 function matchAnyHoldDeleted() {
