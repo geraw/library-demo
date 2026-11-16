@@ -75,8 +75,13 @@ forEachEvent("verifyUserDeletion", AnyUserDeleted, function (e) {
   tryToDeleteDeletedUserAndExpectError(id);
 });
 
+// The list read and the detail read are independent checks, so each gets its own b-thread:
+// chaining them in one b-thread would make the detail read reachable only after the list read.
 ctx.bthread("verifyBookExistsAfterCreation", "Book.All", function (book) {
   verifyBookExists(book.bookid);
+});
+
+ctx.bthread("verifyBookDetailExistsAfterCreation", "Book.All", function (book) {
   verifyBookDetailExists(book.bookid);
 });
 
