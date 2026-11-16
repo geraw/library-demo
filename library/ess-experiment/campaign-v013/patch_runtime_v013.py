@@ -1,10 +1,11 @@
 """Frozen StrictGuidedRun copy for the single-event model.
 
 Applies the same four v011 execution edits (native RTV evaluation, ActuationSummary checks,
-stop on failed actuation, per-scenario runtime cleanup) plus ONE matching edit: the runner's
+stop on failed actuation, per-scenario runtime cleanup) plus TWO matching edits: the runner's
 chooserName() falls back to V013Match.actionName() instead of the bare HTTP verb, so the
-catalog's existing name matching ("<action> (valid): <ids>", never "(invalid ...)", never a
-nonexistent 10-digit id) works for events that carry no data.model any more.
+catalog's existing name matching ("<action> (valid): <ids>", never a nonexistent 10-digit id)
+works for events that carry no data.model any more; and a step whose action starts with
+"reject" may target a 4xx-expecting event (a business-rule rejection check as a scenario step).
 
 Scenario definitions and the selection strategy are never modified; the catalog section of the
 source is checked byte-for-byte.
@@ -32,6 +33,12 @@ RUNTIME_EDITS = [
 MATCHING_EDITS = [
     ('        return event.getName();',
      '        return V013Match.actionName(event);'),
+    # A step whose action is a rejection check ("rejectDeleteUser400") targets an event that
+    # expects 4xx; expectsRejection() must not veto it. Success steps keep the veto.
+    ('        return chooserNameMatches(chooserName(event), step.action)\n'
+     '                && !expectsRejection(event)',
+     '        return chooserNameMatches(chooserName(event), step.action)\n'
+     '                && (step.action.startsWith("reject") || !expectsRejection(event))'),
 ]
 
 CATALOG_BOUNDARY = '    // Matching\n'

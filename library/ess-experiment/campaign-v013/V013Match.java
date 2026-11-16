@@ -14,8 +14,13 @@ import java.util.Map;
  * id. This class derives such a name from the event's transport shape alone:
  *
  *   method + path            -> createBook / deleteLoan / readBookDetail / readLoans ...
- *   expectedResponseCodes    -> "(valid)" for 2xx, "(invalid - expects [400])" otherwise
- *   parameters id/userId/bookId -> the identity suffix (a missing id of 1000000001+ stays visible)
+ *   expectedResponseCodes    -> "createBook (valid): 3" for 2xx; a business-rule rejection check
+ *                               becomes its own action, "rejectDeleteUser400 (valid): 3", so a
+ *                               scenario can target it as a step ("rejectDeleteUser" matches any
+ *                               code, "rejectDeleteUser404" one code)
+ *   parameters id/userId/bookId -> the identity suffix; a deliberately nonexistent id
+ *                               (1000000001+) is printed as "missing" in rejection names, and
+ *                               stays visible (hence excluded by the catalog) in success names
  *
  * No request is inspected for anything the catalog did not already depend on.
  */
@@ -58,24 +63,29 @@ public final class V013Match {
         for (int code : codes) if (code < 200 || code >= 300) success = false;
 
         Map<?, ?> parameters = data.get("parameters") instanceof Map ? (Map<?, ?>) data.get("parameters") : Map.of();
-        return action + (success ? " (valid): " : " (invalid - expects " + codes + "): ") + identity(parameters);
+        if (success) return action + " (valid): " + identity(parameters, false);
+        String code = codes.size() == 1 ? String.valueOf(codes.get(0)) : codes.toString();
+        return "reject" + Character.toUpperCase(action.charAt(0)) + action.substring(1) + code + " (valid): " + identity(parameters, true);
     }
 
-    private static String identity(Map<?, ?> parameters) {
+    private static final double MISSING_ID = 1_000_000_000d;
+
+    private static String identity(Map<?, ?> parameters, boolean maskMissing) {
         Object id = parameters.get("id"), userId = parameters.get("userId"), bookId = parameters.get("bookId");
         StringBuilder label = new StringBuilder();
-        if (id != null) label.append(number(id));
+        if (id != null) label.append(number(id, maskMissing));
         if (userId != null || bookId != null) {
             if (label.length() > 0) label.append(' ');
-            label.append(number(userId)).append('/').append(number(bookId));
+            label.append(number(userId, maskMissing)).append('/').append(number(bookId, maskMissing));
         }
         if (label.length() == 0 && parameters.get("description") != null) label.append(parameters.get("description"));
         return label.toString();
     }
 
-    private static String number(Object value) {
+    private static String number(Object value, boolean maskMissing) {
         if (value instanceof Number) {
             double d = ((Number) value).doubleValue();
+            if (maskMissing && d >= MISSING_ID) return "missing";
             if (d == Math.rint(d)) return String.valueOf((long) d);
         }
         return String.valueOf(value);

@@ -46,13 +46,12 @@ function verifyRejectedDescription(entityName, id, action, reason) {
   return "Verify: " + action + " " + entityDescription(entityName, id) + " is rejected" + (reason ? " because " + reason : "");
 }
 
+// The three accessors below read the event shape RESTSession produces (svc.get/post/delete):
+// data.url, data.expectedResponseCodes, and a JSON string in data.body.
+
 function getExpectedResponseCodes(e) {
   var data = e && e.data ? e.data : e;
-  if (!data) return [];
-  if (Array.isArray(data.expectedResponseCodes)) return data.expectedResponseCodes;
-  if (data.options && Array.isArray(data.options.expectedResponseCodes)) return data.options.expectedResponseCodes;
-  if (data.parameters && Array.isArray(data.parameters.expectedResponseCodes)) return data.parameters.expectedResponseCodes;
-  return [];
+  return data && Array.isArray(data.expectedResponseCodes) ? data.expectedResponseCodes : [];
 }
 
 function hasExpectedCode(e, code) {
@@ -61,36 +60,30 @@ function hasExpectedCode(e, code) {
 
 function getRequestPath(e) {
   var data = e && e.data ? e.data : e;
-  if (!data) return "";
-  var p = data.path || data.url || data.endpoint || "";
-  if (!p) return "";
-  p = String(p).replace(/^https?:\/\/[^\/]+/, "");
+  if (!data || !data.url) return "";
+  var p = String(data.url).replace(/^https?:\/\/[^\/]+/, "");
   var qIdx = p.indexOf("?");
   return qIdx === -1 ? p : p.substring(0, qIdx);
 }
 
 function getJsonBody(e) {
   var data = e && e.data ? e.data : e;
-  if (!data || data.body === undefined || data.body === null) return null;
-  if (typeof data.body === "object") return data.body;
-  if (typeof data.body === "string") {
-    try { return JSON.parse(data.body); } catch (err) { return null; }
-  }
-  return null;
+  if (!data || typeof data.body !== "string") return null;
+  try { return JSON.parse(data.body); } catch (err) { return null; }
 }
 
 //////////////////////////////////////////////////////////////////////////
-// SUT list reads.
+// SUT reads.
 //////////////////////////////////////////////////////////////////////////
 
-// Reads a SUT list, expecting 200, and returns the event sync() selected - svc.get never hands
-// back the HTTP response, so the list's contents can't be inspected here (that would need a REST
-// callback). Within a waitFor(...) scope, the returned event may be the waited-for one instead.
+// Reads a SUT list, expecting 200. svc.get never hands back the HTTP response, so the list's
+// contents cannot be inspected here (that would need a REST callback).
 function readSutList(url, parameters) {
   return svc.get(url, { parameters: parameters, expectedResponseCodes: [200] });
 }
 
+// Reads the detail of an entity that was deleted, expecting 404.
 function verifyMissingEntityReadIsRejected(entityName, id, url) {
-  var description = verifyRejectedDescription(entityName, id, "read", "the entity does not exist");
-  svc.get(url, { expectedResponseCodes: [404], parameters: { description: description } });
+  var description = verifyRejectedDescription(entityName, id, "read", "the " + entityName.toLowerCase() + " no longer exists");
+  svc.get(url, { expectedResponseCodes: [404], parameters: { description: description, id: asInteger(id) } });
 }

@@ -21,7 +21,10 @@ import java.util.concurrent.TimeoutException;
  * additions one scenario per fresh runtime, with a verified case boundary before each one.
  *
  *   V013GuidedSuiteHarness <model> <native.jsonl> <caseTimeoutSeconds> [options]
- *     --set catalog,v013-common,v013-contract | all     which scenario lists (default all)
+ *     --set <comma list> | all                           catalog, v013-common, v013-contract,
+ *                                                        v013-negative, v013-negative-contract
+ *                                                        (the default five), v013-negative-original,
+ *                                                        v013-gaps
  *     --only <substring>                                 keep scenarios whose name contains it
  *     --boundary observer | direct                       case reset through the observer's
  *                                                        /__campaign__/case (default) or the
@@ -71,7 +74,7 @@ public class V013GuidedSuiteHarness {
     public static void main(String[] args) throws Exception {
         String model = args[0], output = args[1];
         int caseTimeout = Integer.parseInt(args[2]);
-        List<String> sets = List.of("catalog", "v013-common", "v013-contract");
+        List<String> sets = List.of("catalog", "v013-common", "v013-contract", "v013-negative", "v013-negative-contract");
         String only = null, boundary = "observer", resetUrl = null;
         boolean list = false, smoke = false;
         for (int i = 3; i < args.length; i++) {
@@ -99,6 +102,10 @@ public class V013GuidedSuiteHarness {
                     case "catalog": source = catalog(); break;
                     case "v013-common": source = V013Scenarios.COMMON; break;
                     case "v013-contract": source = V013Scenarios.CONTRACT; break;
+                    case "v013-negative": source = V013Scenarios.NEGATIVE; break;
+                    case "v013-negative-contract": source = V013Scenarios.NEGATIVE_CONTRACT; break;
+                    case "v013-negative-original": source = V013Scenarios.NEGATIVE_ORIGINAL; break;
+                    case "v013-gaps": source = V013Scenarios.GAPS; break;
                     default: throw new IllegalArgumentException("Unknown scenario set " + set);
                 }
                 for (StrictGuidedRun.Scenario s : source) {

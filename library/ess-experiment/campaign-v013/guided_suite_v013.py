@@ -84,6 +84,40 @@ def rows(path):
     return [json.loads(line) for line in Path(path).read_text(encoding='utf-8').splitlines() if line.strip()]
 
 
+def default_sets(profile):
+    if profile == 'contract':
+        return 'catalog,v013-common,v013-contract,v013-negative,v013-negative-contract'
+    return 'catalog,v013-common,v013-negative,v013-negative-original'
+
+
+def build_adapter(root, source, jar, java, sets, only):
+    """Patch, copy and compile the Java adapter into root; list the selection.
+
+    Returns (harness command prefix, selection arguments, scenario count)."""
+    src = root / 'src'; src.mkdir()
+    classes = root / 'classes'; classes.mkdir()
+    (src / 'StrictGuidedRun.java').write_text(patch(source.read_text(encoding='utf-8')), encoding='utf-8')
+    for name in JAVA_SOURCES:
+        shutil.copy2(HERE / name, src / name)
+    shutil.copy2(HERE.parent / 'campaign-v011/V011Actuation.java', src / 'V011Actuation.java')
+    compile_result = runtime.run([java, '-m', 'jdk.compiler/com.sun.tools.javac.Main', '-cp', jar, '-d', classes,
+                                  *(src / n for n in ['StrictGuidedRun.java', 'V011Actuation.java'] + JAVA_SOURCES)], root, 'compile', 180)
+    if compile_result['exit_code']:
+        raise RuntimeError('Java compilation failed: inspect compile.log; use a JDK matching Provengo')
+    cp = str(classes) + os.pathsep + str(jar)
+    harness = [java, '-cp', cp, 'V013GuidedSuiteHarness']
+    selection = ['--set', sets] + (['--only', only] if only else [])
+    listing = runtime.run(harness + [root / 'model', root / 'selection.txt', '1', '--list'] + selection, root, 'catalog', 60)
+    catalog_log = (root / 'catalog.log').read_text(encoding='utf-8', errors='replace')
+    count_line = next((l for l in catalog_log.splitlines() if l.startswith('SCENARIO_COUNT=')), None)
+    if listing['exit_code'] or not count_line:
+        raise RuntimeError('Scenario listing failed; inspect catalog.log')
+    count = int(count_line.split('=')[1])
+    if count == 0:
+        raise RuntimeError('No scenarios selected')
+    return harness, selection, count, compile_result['wall_seconds']
+
+
 def arm_name(bugs):
     return 'control' if bugs == 'none' else 'bugs-' + bugs.replace(',', '-')
 
@@ -147,42 +181,23 @@ def main(args):
                           port=23242 if original else 23243)
         if original:
             shutil.copy2(repo / 'library/sut/sut.py', root / 'sut.py')
-        src = root / 'src'; src.mkdir()
-        classes = root / 'classes'; classes.mkdir()
-        (src / 'StrictGuidedRun.java').write_text(patch(source.read_text(encoding='utf-8')), encoding='utf-8')
-        for name in JAVA_SOURCES:
-            shutil.copy2(HERE / name, src / name)
-        shutil.copy2(HERE.parent / 'campaign-v011/V011Actuation.java', src / 'V011Actuation.java')
-        sets = args.sets or ('catalog,v013-common,v013-contract' if args.profile == 'contract' else 'catalog,v013-common')
+        sets = args.sets or default_sets(args.profile)
+        harness, selection, expected_count, compile_seconds = build_adapter(root, source, jar, args.java, sets, args.only)
+        timing['compilation_seconds'] = compile_seconds
+        if original:
+            selection = selection + ['--boundary', 'direct']
+        service = (lambda folder, bugs: PlainSut(root, folder)) if original else (lambda folder, bugs: runtime.Service(root, folder, bugs))
         write(root / 'environment.json', {
             'version': 'v013', 'repo': str(repo), 'provengo_jar': str(jar), 'jar_sha256': sha(jar), 'python': sys.version,
             'sut': 'library/sut/sut.py (original rules, no observer)' if original else 'library/sut/sut_buggy_issta.py behind the v006 observer',
             'java_source_sha256': sha(source), 'java_source_normalized_sha256': SOURCE_SHA,
-            'patched_source_sha256': sha(src / 'StrictGuidedRun.java'),
+            'patched_source_sha256': sha(root / 'src/StrictGuidedRun.java'),
             'runtime_patch': 'v011 native RTV evaluation, ActuationSummary checks, stop on failed actuation, cleanup; '
-                             'v013 action naming from transport shape (V013Match)',
-            'scenario_sets': sets, 'only': args.only, 'model_profile': profile,
+                             'v013 action naming from transport shape (V013Match), rejection checks as steps',
+            'scenario_sets': sets, 'scenario_count': expected_count, 'only': args.only, 'model_profile': profile,
             'arms': [arm_name(a) for a in args.arms.split(',')],
             'case_timeout_seconds': args.case_timeout, 'arm_timeout_seconds': args.arm_timeout})
-        write(root / 'input_hashes.json', {str(p.relative_to(root)): sha(p) for p in sorted(root.rglob('*')) if p.is_file()})
-
-        compile_result = runtime.run([args.java, '-m', 'jdk.compiler/com.sun.tools.javac.Main', '-cp', jar, '-d', classes,
-                                      *(src / n for n in ['StrictGuidedRun.java', 'V011Actuation.java'] + JAVA_SOURCES)], root, 'compile', 180)
-        timing['compilation_seconds'] = compile_result['wall_seconds']
-        if compile_result['exit_code']:
-            raise RuntimeError('Java compilation failed: inspect compile.log; use a JDK matching Provengo')
-        cp = str(classes) + os.pathsep + str(jar)
-        harness = [args.java, '-cp', cp, 'V013GuidedSuiteHarness']
-        selection = ['--set', sets] + (['--only', args.only] if args.only else []) + (['--boundary', 'direct'] if original else [])
-        service = (lambda folder, bugs: PlainSut(root, folder)) if original else (lambda folder, bugs: runtime.Service(root, folder, bugs))
-        listing = runtime.run(harness + [root / 'model', root / 'selection.txt', '1', '--list'] + selection, root, 'catalog', 60)
-        catalog_log = (root / 'catalog.log').read_text(encoding='utf-8', errors='replace')
-        count_line = next((l for l in catalog_log.splitlines() if l.startswith('SCENARIO_COUNT=')), None)
-        if listing['exit_code'] or not count_line:
-            raise RuntimeError('Scenario listing failed; inspect catalog.log')
-        expected_count = int(count_line.split('=')[1])
-        if expected_count == 0:
-            raise RuntimeError('No scenarios selected')
+        write(root / 'input_hashes.json', {str(p.relative_to(root)): sha(p) for p in sorted(root.rglob('*')) if p.is_file() and 'classes' not in p.parts})
 
         if not args.skip_preflight and not original:
             preflight_started = time.perf_counter()

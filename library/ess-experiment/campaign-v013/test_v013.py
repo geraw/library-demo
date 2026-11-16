@@ -118,7 +118,9 @@ class JavaCompileTest(unittest.TestCase):
             compile_result = subprocess.run(['java', '-m', 'jdk.compiler/com.sun.tools.javac.Main', '-cp', jar, '-d', str(classes), *map(str, src.glob('*.java'))], capture_output=True, text=True)
             self.assertEqual(compile_result.returncode, 0, compile_result.stderr)
             listing = subprocess.run(['java', '-cp', str(classes) + os.pathsep + jar, 'V013GuidedSuiteHarness', 'x', 'y', '1', '--list'], capture_output=True, text=True)
-            self.assertIn('SCENARIO_COUNT=568', listing.stdout)
+            count = int(next(l for l in listing.stdout.splitlines() if l.startswith('SCENARIO_COUNT=')).split('=')[1])
+            self.assertGreaterEqual(count, 542 + 16 + 10 + 20)
+            self.assertIn('v013-N-2.4.2', listing.stdout)
 
 
 if __name__ == '__main__':

@@ -107,6 +107,94 @@ public final class V013Scenarios {
                     loan("u1", "b1"), loan("u2", "b2"), loan("u1", "b3"), loan("u2", "b4"), returnLoan("u1", "b1"), returnLoan("u2", "b4"), readLoans())
     );
 
+    // ---- Rejection steps: a business-rule rejection check as a scenario step. The model must
+    // offer the rejecting request (expected 400/404) at exactly that point; nothing else is
+    // selectable. The step name "rejectDeleteUser" matches any code, "rejectDeleteUser404" one.
+    private static StrictGuidedRun.Step rejectDeleteUser(String var, String code) { return step("rejectDeleteUser" + code).require(var, "id"); }
+    private static StrictGuidedRun.Step rejectDeleteBook(String var, String code) { return step("rejectDeleteBook" + code).require(var, "id"); }
+    private static StrictGuidedRun.Step rejectDeleteHold(String var, String code) { return step("rejectDeleteHold" + code).require(var, "id"); }
+    private static StrictGuidedRun.Step rejectDeleteLoan(String user, String book, String code) { return step("rejectDeleteLoan" + code).require(user, "userId").require(book, "bookId"); }
+    private static StrictGuidedRun.Step rejectLoan(String user, String book) { return step("rejectCreateLoan400").require(user, "userId").require(book, "bookId"); }
+    private static StrictGuidedRun.Step rejectLoanMissingBook(String user) { return step("rejectCreateLoan400").require(user, "userId"); }
+    private static StrictGuidedRun.Step rejectLoanMissingUser(String book) { return step("rejectCreateLoan400").require(book, "bookId"); }
+    private static StrictGuidedRun.Step rejectHoldMissingBook(String user) { return step("rejectCreateHold400").require(user, "userId"); }
+    private static StrictGuidedRun.Step rejectHoldMissingUser(String book) { return step("rejectCreateHold400").require(book, "bookId"); }
+    private static StrictGuidedRun.Step rejectReadBook(String var) { return step("rejectReadBookDetail404").require(var, "id"); }
+
+    /** Rejection sequences legal under both profiles (bug-mapping chapters 2-3). */
+    public static final List<StrictGuidedRun.Scenario> NEGATIVE = List.of(
+            reach("v013-N-2.4.2 Reader with a hold: delete must be rejected",
+                    user("u"), book("b"), hold("h", "u", "b"), rejectDeleteUser("u", "400")),
+            reach("v013-N-2.4.3 Reader with a loan: delete must be rejected",
+                    user("u"), book("b"), loan("u", "b"), rejectDeleteUser("u", "400")),
+            reach("v013-N-2.7.3 Held book: delete must be rejected",
+                    user("u"), book("b"), hold("h", "u", "b"), rejectDeleteBook("b", "400")),
+            reach("v013-N-2.7.4 Loaned book: delete must be rejected",
+                    user("u"), book("b"), loan("u", "b"), rejectDeleteBook("b", "400")),
+            reach("v013-N-2.9.4 Loaned book: a loan by another reader must be rejected",
+                    user("u1"), user("u2", "u1"), book("b"), loan("u1", "b"), rejectLoan("u2", "b")),
+            reach("v013-N-2.9.2 Same pair twice: the second loan must be rejected",
+                    user("u"), book("b"), loan("u", "b"), rejectLoan("u", "b")),
+            reach("v013-N-3.6 Loan rejected on a loaned book, then a hold by the same reader succeeds",
+                    user("u1"), user("u2", "u1"), book("b"), loan("u1", "b"), rejectLoan("u2", "b"), hold("h", "u2", "b")),
+            reach("v013-N-handover Loan rejected while loaned; after the return the same reader borrows it",
+                    user("u1"), user("u2", "u1"), book("b"), loan("u1", "b"), rejectLoan("u2", "b"), returnLoan("u1", "b"), loan("u2", "b")),
+            reach("v013-N-3.7-then-ok Reader with a hold: delete rejected, hold cancelled, delete succeeds",
+                    user("u"), book("b"), hold("h", "u", "b"), rejectDeleteUser("u", "400"), cancelHold("h"), deleteUser("u")),
+            reach("v013-N-2.7.4-then-ok Loaned book: delete rejected, returned, delete succeeds",
+                    user("u"), book("b"), loan("u", "b"), rejectDeleteBook("b", "400"), returnLoan("u", "b"), deleteBook("b")),
+            reach("v013-N-404 Deleted reader: deleting again must answer 404",
+                    user("u"), deleteUser("u"), rejectDeleteUser("u", "404")),
+            reach("v013-N-404 Deleted book: the detail read must answer 404",
+                    book("b"), deleteBook("b"), rejectReadBook("b")),
+            reach("v013-N-404 Deleted book: deleting again must answer 404",
+                    book("b"), deleteBook("b"), rejectDeleteBook("b", "404")),
+            reach("v013-N-404 Returned loan: returning again must answer 404",
+                    user("u"), book("b"), loan("u", "b"), returnLoan("u", "b"), rejectDeleteLoan("u", "b", "404")),
+            reach("v013-N-404 Cancelled hold: cancelling again must answer 404",
+                    user("u"), book("b"), hold("h", "u", "b"), cancelHold("h"), rejectDeleteHold("h", "404")),
+            reach("v013-N-FK Loan for a nonexistent book must be rejected",
+                    user("u"), rejectLoanMissingBook("u")),
+            reach("v013-N-FK Loan for a nonexistent reader must be rejected",
+                    book("b"), rejectLoanMissingUser("b")),
+            reach("v013-N-FK Hold for a nonexistent book must be rejected",
+                    user("u"), rejectHoldMissingBook("u")),
+            reach("v013-N-FK Hold for a nonexistent reader must be rejected",
+                    book("b"), rejectHoldMissingUser("b")),
+            reach("v013-N-404 Never-created reader, book, loan and hold: each delete must answer 404",
+                    step("rejectDeleteUser404"), step("rejectDeleteBook404"), step("rejectDeleteLoan404"), step("rejectDeleteHold404")),
+            reach("v013-N-mixed Hold and loan on one book by two readers: every delete is rejected until the relations are gone",
+                    user("u1"), user("u2", "u1"), book("b"), hold("h", "u1", "b"), loan("u2", "b"),
+                    rejectDeleteUser("u1", "400"), rejectDeleteUser("u2", "400"), rejectDeleteBook("b", "400"),
+                    cancelHold("h"), rejectDeleteBook("b", "400"), returnLoan("u2", "b"), deleteBook("b"))
+    );
+
+    /** Rejection sequences that need a multi-loan reader (contract profile only). */
+    public static final List<StrictGuidedRun.Scenario> NEGATIVE_CONTRACT = List.of(
+            reach("v013-N-contract Reader with two loans: delete rejected after one return, allowed after both",
+                    user("u"), book("b1"), book("b2", "b1"), loan("u", "b1"), loan("u", "b2"),
+                    rejectDeleteUser("u", "400"), returnLoan("u", "b1"), rejectDeleteUser("u", "400"), returnLoan("u", "b2"), deleteUser("u")),
+            reach("v013-N-contract Reader with two loans: deleting either book is rejected",
+                    user("u"), book("b1"), book("b2", "b1"), loan("u", "b1"), loan("u", "b2"), rejectDeleteBook("b1", "400"), rejectDeleteBook("b2", "400"))
+    );
+
+    /** Rejection sequences that hold only under the original one-loan-per-reader rule. */
+    public static final List<StrictGuidedRun.Scenario> NEGATIVE_ORIGINAL = List.of(
+            reach("v013-N-original 2.9.3 Reader with a loan: a loan on another book must be rejected",
+                    user("u"), book("b1"), book("b2", "b1"), loan("u", "b1"), rejectLoan("u", "b2")),
+            reach("v013-N-original Busy reader rejected, another reader takes the other book",
+                    user("u1"), user("u2", "u1"), book("b1"), book("b2", "b1"), loan("u1", "b1"), rejectLoan("u1", "b2"), loan("u2", "b2"))
+    );
+
+    /** Known model gaps, kept out of the default sets: the model never attempts a loan or hold
+     *  for a DELETED entity (its user-book row disappears with it), so these come out STUCK. */
+    public static final List<StrictGuidedRun.Scenario> GAPS = List.of(
+            reach("v013-gap-3.17 Loan for a deleted book must be rejected (not generated by the model)",
+                    user("u"), book("b"), deleteBook("b"), rejectLoan("u", "b")),
+            reach("v013-gap-3.17-hold Hold for a deleted reader must be rejected (not generated by the model)",
+                    user("u"), book("b"), deleteUser("u"), step("rejectCreateHold400").require("u", "userId").require("b", "bookId"))
+    );
+
     /** Transport self-check: one real loan with server-assigned ids (same as the v011 smoke). */
     public static StrictGuidedRun.Scenario smoke() {
         return reach("v013-transport-smoke", user("reader"), book("book"), loan("reader", "book"));

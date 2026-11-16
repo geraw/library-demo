@@ -1,20 +1,27 @@
 // @provengo summon ctrl
 
 /**
- * List of events "of interest" that we want test suites to cover.
- * TODO: Change this list to match the project
+ * Events "of interest" that a selected suite should cover. Every event of this model is named
+ * after its HTTP verb, so goals are expressed over the trace description in
+ * data.parameters.description (see interfaces.library.js).
  */
-const GOALS = [
-    any(/Howdy/),
-    any(/Mars/),
-    Ctrl.markEvent("Classic!")
-];
-
-const makeGoals = function(){
-    return [ [ any(/Howdy/), any(/Venus/) ],
-             [ any(/Mars/) ],
-             [ Ctrl.markEvent("Classic!") ] ];
+function described(pattern) {
+    return bp.EventSet("Goal " + pattern, function (e) {
+        var parameters = e.data && e.data.parameters;
+        return !!(parameters && parameters.description && pattern.test(String(parameters.description)));
+    });
 }
+
+const GOALS = [
+    described(/^Create: Loan/),
+    described(/^Delete: Loan/),
+    described(/^Create: Hold/),
+    described(/^Delete: Hold/),
+    described(/^Verify: create Loan .* is rejected because the book is on loan/),
+    described(/^Verify: delete (User|Book) .* is rejected because the (reader|book) (has|is)/),
+    described(/^Verify: (delete|read) .* no longer exists/),
+    described(/^Verify: Book \d+ exists/)
+];
 
 
 /**
