@@ -28,12 +28,18 @@ function deleteDescription(entityName, id, details) {
   return "Delete: " + relationDescription(entityName, id, details);
 }
 
-function verifyExistsDescription(entityName, id, listName) {
-  return "Verify: " + entityDescription(entityName, id) + " exists in " + listName + " list";
+function verifyExistsDescription(entityName, id, how) {
+  return "Verify: " + entityDescription(entityName, id) + " exists" + (how ? " (" + how + ")" : "");
 }
 
-function verifyAbsentDescription(entityName, id, listName) {
-  return "Verify: " + entityDescription(entityName, id) + " is absent from " + listName + " list";
+// List reads only check that the SUT answers 200 (see readSutList), so they are described as
+// reads, not as verifications of the list's contents.
+function readListAfterCreateDescription(entityName, id, listName) {
+  return "Read: " + listName + " list for " + entityDescription(entityName, id) + " after create";
+}
+
+function readListAfterDeleteDescription(entityName, id, listName) {
+  return "Read: " + listName + " list for " + entityDescription(entityName, id) + " after delete";
 }
 
 function verifyRejectedDescription(entityName, id, action, reason) {
@@ -82,12 +88,6 @@ function getJsonBody(e) {
 // callback). Within a waitFor(...) scope, the returned event may be the waited-for one instead.
 function readSutList(url, parameters) {
   return svc.get(url, { parameters: parameters, expectedResponseCodes: [200] });
-}
-
-function tryToUpdateAndExpectError(entityName, id, url, body, expectedCode) {
-  expectedCode = expectedCode === undefined || expectedCode === null ? 405 : asInteger(expectedCode);
-  var description = verifyRejectedDescription(entityName, id, "update", "this API does not expose update routes");
-  svc.put(url, { body: JSON.stringify(body || {}), expectedResponseCodes: [expectedCode], parameters: { description: description } });
 }
 
 function verifyMissingEntityReadIsRejected(entityName, id, url) {

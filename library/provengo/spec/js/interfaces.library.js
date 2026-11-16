@@ -8,7 +8,7 @@
 // It exposes three kinds of API to the rest of the model:
 //
 // 1. Action functions such as createBook/deleteLoan that send REST requests.
-// 2. EventSets such as AnyBookAdded and matchAnyUserDeleted that classify events.
+// 2. EventSets such as AnyBookAdded and AnyUserDeleted that classify events.
 // 3. extractEventData(), which converts a concrete event into semantic fields.
 //
 // Stories use action functions and EventSets to describe behavior. The DAL uses
@@ -17,7 +17,13 @@
 //
 // Every action function sends exactly one REST request: one call, one event.
 // Negative checks (tryTo*AndExpectError) are separate functions that likewise
-// send one request, with the rejecting response code as the expected one.
+// send one request, with the rejecting response code as the expected one. They
+// cover business-rule rejections only (an entity that cannot be deleted in its
+// current state, a loan the rules forbid, an entity that does not exist); the
+// model sends no malformed requests.
+//
+// Argument order is the same everywhere: an entity's own id first, then userId,
+// then bookId.
 //////////////////////////////////////////////////////////////////////////
 
 // The model addresses each entity by the small id a story picks at creation; the SUT's own,
@@ -43,8 +49,8 @@ function optionalInteger(value) {
 }
 
 // asInteger, asString, the *Description builders, getExpectedResponseCodes, hasExpectedCode,
-// getRequestPath, getJsonBody, readSutList, tryToUpdateAndExpectError, and
-// verifyMissingEntityReadIsRejected live in lib/utils.js.
+// getRequestPath, getJsonBody, readSutList, and verifyMissingEntityReadIsRejected live in
+// lib/utils.js.
 
 // Boundary adapter from concrete REST events to semantic event data.
 // Consumers can depend on fields like id, userId, bookId, title, and
@@ -80,8 +86,9 @@ function extractEventData(e) {
 // readable; only the REST calls in this file need the id the SUT
 // actually assigned (the "SUT id"). The mapping is written once, right after a successful
 // create response into Provengo's runtime-variable store under a per-entity
-// key ("USER1", "BOOK1", "LOAN1", "HOLD1", ...). Every wire-level use is a
-// late-bound `@{...}` expression; parameters retain that id for the DAL.
+// key ("USER1", "BOOK1", "HOLD1", ...). Every wire-level use is a late-bound
+// `@{...}` expression; parameters retain the logical id for the DAL. Loans need
+// no entry: the SUT addresses a loan by its user/book pair.
 //////////////////////////////////////////////////////////////////////////
 
 function rtvKey(entityType, id) {
@@ -161,12 +168,29 @@ var AnyHoldDeleted = bp.EventSet("Any Holds Deleted", function (e) {
   return e.name === "DELETE" && getRequestPath(e).startsWith("/holds/") && hasExpectedCode(e, 200);
 });
 
+// A successful creation of the loan for this userId/bookId pair (logical ids, as createLoan
+// carries them in its parameters).
+function matchLoanAdded(userId, bookId) {
+  userId = asInteger(userId);
+  bookId = asInteger(bookId);
+  return bp.EventSet("Loan Added " + userId + "/" + bookId, function (e) {
+    if (!AnyLoanAdded.contains(e)) return false;
+    var loanData = extractEventData(e);
+    return asInteger(loanData.userId) === userId && asInteger(loanData.bookId) === bookId;
+  });
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Interface action functions.
 //
 // These functions are the only place stories should actuate the SUT. They
 // normalize argument types, build URLs/bodies, and attach semantic parameters
 // that extractEventData() can later expose to other layers.
+//
+// The list reads (verify*Exists / verify*Absent) only check that the SUT answers
+// 200 - see readSutList. Checking the list's contents would need a REST callback,
+// so their descriptions say "Read:", not "Verify:". verifyBookDetailExists is the
+// one real existence check: GET /books/{id} answers 200 only for a book that exists.
 //////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////
@@ -184,15 +208,6 @@ function createBook(id, title) {
     parameters: { description: createDescription("Book", id), id: id },
     callback: rememberCreatedId("BOOK", id)
   });
-}
-
-// Sends one malformed create request (the required field is missing) and expects it rejected.
-// `id` only labels the event; the SUT never sees it.
-function tryToCreateBookWithBadParametersAndExpectError(id, expectedCode) {
-  id = asInteger(id);
-  expectedCode = codeOrDefault(expectedCode, 400);
-  var description = verifyRejectedDescription("Book", id, "create", "required parameters are missing or invalid");
-  return svc.post("/books", { body: JSON.stringify({}), expectedResponseCodes: [expectedCode], parameters: { description: description } });
 }
 
 // sutBookIdRef() is an inert "@{...}" template until actuation, so it is safe to embed at
@@ -213,27 +228,17 @@ function verifyBookDetailExists(id) {
   });
 }
 
-function tryToUpdateBookAndExpectError(id, body, expectedCode) {
-  id = asInteger(id);
-  expectedCode = codeOrDefault(expectedCode, 405);
-  tryToUpdateAndExpectError("Book", id, "/books/" + sutBookIdRef(id), body, expectedCode);
-}
-
-// The verify*Exists/verify*AbsentFromAllLists reads below only check that the SUT answers 200 -
-// see readSutList. Checking the list's contents would need a REST callback.
-// Gera: yet their descriptions ("Verify: Book 3 is absent from loans list") claim a content check
-// that never happens. Should the descriptions say what is actually tested?
 function verifyBookExists(id) {
   id = asInteger(id);
-  return readSutList("/books", { q: asString(sutBookIdRef(id)), description: verifyExistsDescription("Book", id, "books") });
+  return readSutList("/books", { q: asString(sutBookIdRef(id)), description: readListAfterCreateDescription("Book", id, "books") });
 }
 
-function verifyBookAbsentFromAllLists(id) {
+function verifyBookAbsent(id) {
   id = asInteger(id);
   var bookIdRef = asString(sutBookIdRef(id));
-  readSutList("/books", { q: bookIdRef, description: verifyAbsentDescription("Book", id, "books") });
-  readSutList("/loans", { bookId: bookIdRef, description: verifyAbsentDescription("Book", id, "loans") });
-  return readSutList("/holds", { q: bookIdRef, description: verifyAbsentDescription("Book", id, "holds") });
+  readSutList("/books", { q: bookIdRef, description: readListAfterDeleteDescription("Book", id, "books") });
+  readSutList("/loans", { bookId: bookIdRef, description: readListAfterDeleteDescription("Book", id, "loans") });
+  return readSutList("/holds", { q: bookIdRef, description: readListAfterDeleteDescription("Book", id, "holds") });
 }
 
 function tryToDeleteBookAndExpectError(id, expectedCode) {
@@ -255,31 +260,65 @@ function tryToDeleteNonexistingBookAndExpectError(id) {
   svc.delete("/books/" + id, { expectedResponseCodes: [404], parameters: { description: description } });
 }
 
-// Pass-throughs to the Any*Deleted EventSets above, used by lib_stories.js's
-// on(matchAny*Deleted(), ...) verify-after-deletion bthreads.
-// Claude: do we need these pass-throughs, or can the stories use AnyBookDeleted etc. directly?
-function matchAnyBookDeleted() {
-  return AnyBookDeleted;
+//////////////////////////////////////////////////////////////////////////
+// Users
+//////////////////////////////////////////////////////////////////////////
+
+function createUser(id, name) {
+  id = asInteger(id);
+  return svc.post("/users", {
+    body: JSON.stringify({ name: asString(name) }),
+    expectedResponseCodes: [201],
+    parameters: { description: createDescription("User", id), id: id },
+    callback: rememberCreatedId("USER", id)
+  });
+}
+
+function deleteUser(id) {
+  id = asInteger(id);
+  return svc.delete("/users/" + sutUserIdRef(id), {
+    expectedResponseCodes: [200],
+    parameters: { description: deleteDescription("User", id), id: id }
+  });
+}
+
+function verifyUserExists(id) {
+  id = asInteger(id);
+  return readSutList("/users", { q: sutUserIdRef(id), description: readListAfterCreateDescription("User", id, "users") });
+}
+
+function verifyUserAbsent(id) {
+  id = asInteger(id);
+  readSutList("/users", { q: sutUserIdRef(id), description: readListAfterDeleteDescription("User", id, "users") });
+  readSutList("/loans", { userId: sutUserIdRef(id), description: readListAfterDeleteDescription("User", id, "loans") });
+  return readSutList("/holds", { q: sutUserIdRef(id), description: readListAfterDeleteDescription("User", id, "holds") });
+}
+
+function tryToDeleteUserAndExpectError(id, expectedCode) {
+  id = asInteger(id);
+  expectedCode = codeOrDefault(expectedCode, 400);
+  var description = verifyRejectedDescription("User", id, "delete", "the operation is not allowed in this state");
+  svc.delete("/users/" + sutUserIdRef(id), { expectedResponseCodes: [expectedCode], parameters: { description: description } });
+}
+
+function tryToDeleteDeletedUserAndExpectError(id) {
+  tryToDeleteUserAndExpectError(id, 404);
+}
+
+// id was never created (see generateMissingId()), so it has no RTV entry: build the request
+// directly with the plain id instead of going through tryToDeleteUserAndExpectError/sutUserIdRef.
+function tryToDeleteNonexistingUserAndExpectError(id) {
+  id = asInteger(id);
+  var description = verifyRejectedDescription("User", id, "delete", "the operation is not allowed in this state");
+  svc.delete("/users/" + id, { expectedResponseCodes: [404], parameters: { description: description } });
 }
 
 //////////////////////////////////////////////////////////////////////////
 // Loans
 //////////////////////////////////////////////////////////////////////////
 
-// A successful creation of the loan for this userId/bookId pair (logical ids, as createLoan
-// carries them in its parameters).
-function matchLoanAdded(userId, bookId) {
-  userId = asInteger(userId);
-  bookId = asInteger(bookId);
-  return bp.EventSet("Loan Added " + userId + "/" + bookId, function (e) {
-    if (!AnyLoanAdded.contains(e)) return false;
-    var loanData = extractEventData(e);
-    return asInteger(loanData.userId) === userId && asInteger(loanData.bookId) === bookId;
-  });
-}
-
-// Claude: rememberCreatedId("LOAN", ...) stores a LOAN<n> RTV that nothing ever reads (loans are
-// addressed by their user/book pair), so loanNumber only feeds descriptions. Needed?
+// A loan has no id of its own on the wire: the SUT addresses it by its user/book pair.
+// loanNumber is the story's label for it (it reaches the DAL and the trace descriptions only).
 //
 // userId/bookId in the body are late-bound "@{...}" placeholders (see the sutIdRef doc comment
 // above). userIdMissing/bookIdMissing are true when the caller is deliberately exercising a
@@ -295,13 +334,11 @@ function createLoan(userId, bookId, loanNumber, expectedCode, description, userI
   var parameters = { description: reqDescription, userId: userId, bookId: bookId };
   if (loanNumber !== null) parameters.loanNumber = loanNumber;
 
-  var options = {
+  return svc.post("/loans", {
     body: JSON.stringify({ userId: sutUserIdRef(userId, userIdMissing), bookId: sutBookIdRef(bookId, bookIdMissing) }),
     expectedResponseCodes: [expectedCode],
     parameters: parameters
-  };
-  if (expectedCode === 201 && loanNumber !== null) options.callback = rememberCreatedId("LOAN", loanNumber);
-  return svc.post("/loans", options);
+  });
 }
 
 function tryToCreateLoanAndExpectError(userId, bookId, loanNumber, expectedCode) {
@@ -309,30 +346,21 @@ function tryToCreateLoanAndExpectError(userId, bookId, loanNumber, expectedCode)
   return createLoan(userId, bookId, loanNumber, expectedCode, verifyRejectedDescription("Loan", userId + "/" + bookId, "create", "the operation is not allowed in this state"));
 }
 
-// missingUserId/bookId/missingBookId were never created (see generateMissingId()), so they have no
-// RTV entry; createLoan is told which argument(s) to send as a plain id instead of resolving one.
+// missingUserId/missingBookId were never created (see generateMissingId()), so they have no RTV
+// entry; createLoan is told which argument(s) to send as a plain id instead of resolving one.
 function tryToCreateLoanWithNonexistentUserAndExpectError(missingUserId, bookId, loanNumber, expectedCode) {
   expectedCode = codeOrDefault(expectedCode, 400);
-  return createLoan(missingUserId, bookId, loanNumber, expectedCode, verifyRejectedDescription("Loan", missingUserId + "/" + bookId, "create", "the operation is not allowed in this state"), true, false);
+  return createLoan(missingUserId, bookId, loanNumber, expectedCode, verifyRejectedDescription("Loan", missingUserId + "/" + bookId, "create", "the user does not exist"), true, false);
 }
 
 function tryToCreateLoanWithNonexistentBookAndExpectError(userId, missingBookId, loanNumber, expectedCode) {
   expectedCode = codeOrDefault(expectedCode, 400);
-  return createLoan(userId, missingBookId, loanNumber, expectedCode, verifyRejectedDescription("Loan", userId + "/" + missingBookId, "create", "the operation is not allowed in this state"), false, true);
+  return createLoan(userId, missingBookId, loanNumber, expectedCode, verifyRejectedDescription("Loan", userId + "/" + missingBookId, "create", "the book does not exist"), false, true);
 }
 
 function tryToCreateLoanWithNonexistentUserAndBookAndExpectError(missingUserId, missingBookId, loanNumber, expectedCode) {
   expectedCode = codeOrDefault(expectedCode, 400);
-  return createLoan(missingUserId, missingBookId, loanNumber, expectedCode, verifyRejectedDescription("Loan", missingUserId + "/" + missingBookId, "create", "the operation is not allowed in this state"), true, true);
-}
-
-// Sends one malformed create request (both required fields missing) and expects it rejected.
-// `userId` only labels the event; the SUT never sees it.
-function tryToCreateLoanWithBadParametersAndExpectError(userId, expectedCode) {
-  userId = asInteger(userId);
-  expectedCode = codeOrDefault(expectedCode, 400);
-  var description = verifyRejectedDescription("Loan", userId, "create", "required parameters are missing or invalid");
-  return svc.post("/loans", { body: JSON.stringify({}), expectedResponseCodes: [expectedCode], parameters: { description: description } });
+  return createLoan(missingUserId, missingBookId, loanNumber, expectedCode, verifyRejectedDescription("Loan", missingUserId + "/" + missingBookId, "create", "neither the user nor the book exists"), true, true);
 }
 
 function deleteLoan(userId, bookId, loanNumber) {
@@ -349,35 +377,24 @@ function deleteLoan(userId, bookId, loanNumber) {
   });
 }
 
-function tryToUpdateLoanAndExpectError(userId, bookId, body, expectedCode) {
+function verifyLoanExists(userId, bookId) {
   userId = asInteger(userId);
   bookId = asInteger(bookId);
-  expectedCode = codeOrDefault(expectedCode, 405);
-  tryToUpdateAndExpectError("Loan", userId + "/" + bookId, "/loans/" + sutUserIdRef(userId) + "/" + sutBookIdRef(bookId), body, expectedCode);
-}
-
-// Gera: (bookId, userId) here and in verifyLoanAbsentFromAllLists, but (userId, bookId) in
-// createLoan/deleteLoan, and (bookId, id, userId) in createHold. Mixed argument orders already
-// caused one swapped-ids bug (d242a26) - one order everywhere?
-function verifyLoanExists(bookId, userId) {
-  bookId = asInteger(bookId);
-  userId = asInteger(userId);
   return readSutList("/loans", {
     userId: sutUserIdRef(userId),
     bookId: sutBookIdRef(bookId),
-    description: verifyExistsDescription("Loan", userId + "/" + bookId, "loans")
+    description: readListAfterCreateDescription("Loan", userId + "/" + bookId, "loans")
   });
 }
 
-// Gera: reads one list, not "all lists", and its only caller always passes bookId, so the
-// bookId === null branch is dead. Rename to verifyLoanAbsent and drop the branch?
-function verifyLoanAbsentFromAllLists(bookId, userId) {
-  var bookIdRef = bookId === undefined || bookId === null ? null : sutBookIdRef(bookId);
+function verifyLoanAbsent(userId, bookId) {
   userId = asInteger(userId);
-  var loanId = userId + (bookIdRef === null ? "" : "/" + bookIdRef);
-  var parameters = { userId: sutUserIdRef(userId), description: verifyAbsentDescription("Loan", loanId, "loans") };
-  if (bookIdRef !== null) parameters.bookId = asString(bookIdRef);
-  return readSutList("/loans", parameters);
+  bookId = asInteger(bookId);
+  return readSutList("/loans", {
+    userId: sutUserIdRef(userId),
+    bookId: asString(sutBookIdRef(bookId)),
+    description: readListAfterDeleteDescription("Loan", userId + "/" + bookId, "loans")
+  });
 }
 
 function tryToDeleteLoanAndExpectError(userId, bookId, expectedCode) {
@@ -402,82 +419,6 @@ function tryToDeleteNonexistingLoanAndExpectError(userId, bookId) {
   svc.delete("/loans/" + userId + "/" + bookId, { expectedResponseCodes: [404], parameters: { description: description } });
 }
 
-function matchAnyLoanDeleted() {
-  return AnyLoanDeleted;
-}
-
-//////////////////////////////////////////////////////////////////////////
-// Users
-//////////////////////////////////////////////////////////////////////////
-
-function createUser(id, name) {
-  id = asInteger(id);
-  return svc.post("/users", {
-    body: JSON.stringify({ name: asString(name) }),
-    expectedResponseCodes: [201],
-    parameters: { description: createDescription("User", id), id: id },
-    callback: rememberCreatedId("USER", id)
-  });
-}
-
-// Sends one malformed create request (the required field is missing) and expects it rejected.
-// `id` only labels the event; the SUT never sees it.
-function tryToCreateUserWithBadParametersAndExpectError(id, expectedCode) {
-  id = asInteger(id);
-  expectedCode = codeOrDefault(expectedCode, 400);
-  var description = verifyRejectedDescription("User", id, "create", "required parameters are missing or invalid");
-  return svc.post("/users", { body: JSON.stringify({}), expectedResponseCodes: [expectedCode], parameters: { description: description } });
-}
-
-function deleteUser(id) {
-  id = asInteger(id);
-  return svc.delete("/users/" + sutUserIdRef(id), {
-    expectedResponseCodes: [200],
-    parameters: { description: deleteDescription("User", id), id: id }
-  });
-}
-
-function tryToUpdateUserAndExpectError(id, body, expectedCode) {
-  id = asInteger(id);
-  expectedCode = codeOrDefault(expectedCode, 405);
-  tryToUpdateAndExpectError("User", id, "/users/" + sutUserIdRef(id), body, expectedCode);
-}
-
-function verifyUserExists(id) {
-  id = asInteger(id);
-  return readSutList("/users", { q: sutUserIdRef(id), description: verifyExistsDescription("User", id, "users") });
-}
-
-function verifyUserAbsentFromAllLists(id) {
-  id = asInteger(id);
-  readSutList("/users", { q: sutUserIdRef(id), description: verifyAbsentDescription("User", id, "users") });
-  readSutList("/loans", { userId: sutUserIdRef(id), description: verifyAbsentDescription("User", id, "loans") });
-  return readSutList("/holds", { q: sutUserIdRef(id), description: verifyAbsentDescription("User", id, "holds") });
-}
-
-function tryToDeleteUserAndExpectError(id, expectedCode) {
-  id = asInteger(id);
-  expectedCode = codeOrDefault(expectedCode, 400);
-  var description = verifyRejectedDescription("User", id, "delete", "the operation is not allowed in this state");
-  svc.delete("/users/" + sutUserIdRef(id), { expectedResponseCodes: [expectedCode], parameters: { description: description } });
-}
-
-function tryToDeleteDeletedUserAndExpectError(id) {
-  tryToDeleteUserAndExpectError(id, 404);
-}
-
-// id was never created (see generateMissingId()), so it has no RTV entry: build the request
-// directly with the plain id instead of going through tryToDeleteUserAndExpectError/sutUserIdRef.
-function tryToDeleteNonexistingUserAndExpectError(id) {
-  id = asInteger(id);
-  var description = verifyRejectedDescription("User", id, "delete", "the operation is not allowed in this state");
-  svc.delete("/users/" + id, { expectedResponseCodes: [404], parameters: { description: description } });
-}
-
-function matchAnyUserDeleted() {
-  return AnyUserDeleted;
-}
-
 //////////////////////////////////////////////////////////////////////////
 // Holds
 //////////////////////////////////////////////////////////////////////////
@@ -485,13 +426,13 @@ function matchAnyUserDeleted() {
 // The SUT assigns the hold's id itself (see sut.py's POST /holds, which reads only userId/bookId
 // from the payload); `id` is this story's bookkeeping handle, like a book's id in createBook.
 // userId/bookId in the body are late-bound "@{...}" placeholders (see the sutIdRef doc comment
-// above). bookIdMissing/userIdMissing are true when the caller is deliberately exercising a
+// above). userIdMissing/bookIdMissing are true when the caller is deliberately exercising a
 // nonexistent foreign key (see tryToCreateHoldWithNonexistent{User,Book,UserAndBook}AndExpectError):
 // that id was never created and has no RTV entry.
-function createHold(bookId, id, userId, expectedCode, description, bookIdMissing, userIdMissing) {
-  bookId = asInteger(bookId);
+function createHold(id, userId, bookId, expectedCode, description, userIdMissing, bookIdMissing) {
   id = asInteger(id);
   userId = asInteger(userId);
+  bookId = asInteger(bookId);
   expectedCode = codeOrDefault(expectedCode, 201);
 
   var reqDescription = description || (createDescription("Hold", id) + " for User " + userId + " and Book " + bookId);
@@ -504,31 +445,21 @@ function createHold(bookId, id, userId, expectedCode, description, bookIdMissing
   return svc.post("/holds", options);
 }
 
-// missingBookId/userId/missingUserId were never created (see generateMissingId()), so they have no
-// RTV entry; createHold is told which argument(s) to send as a plain id instead of resolving one.
-function tryToCreateHoldWithNonexistentUserAndExpectError(bookId, id, missingUserId, expectedCode) {
+// missingUserId/missingBookId were never created (see generateMissingId()), so they have no RTV
+// entry; createHold is told which argument(s) to send as a plain id instead of resolving one.
+function tryToCreateHoldWithNonexistentUserAndExpectError(id, missingUserId, bookId, expectedCode) {
   expectedCode = codeOrDefault(expectedCode, 400);
-  return createHold(bookId, id, missingUserId, expectedCode, verifyRejectedDescription("Hold", id, "create", "the operation is not allowed in this state"), false, true);
+  return createHold(id, missingUserId, bookId, expectedCode, verifyRejectedDescription("Hold", id, "create", "the user does not exist"), true, false);
 }
 
-function tryToCreateHoldWithNonexistentBookAndExpectError(missingBookId, id, userId, expectedCode) {
+function tryToCreateHoldWithNonexistentBookAndExpectError(id, userId, missingBookId, expectedCode) {
   expectedCode = codeOrDefault(expectedCode, 400);
-  return createHold(missingBookId, id, userId, expectedCode, verifyRejectedDescription("Hold", id, "create", "the operation is not allowed in this state"), true, false);
+  return createHold(id, userId, missingBookId, expectedCode, verifyRejectedDescription("Hold", id, "create", "the book does not exist"), false, true);
 }
 
-function tryToCreateHoldWithNonexistentUserAndBookAndExpectError(missingBookId, id, missingUserId, expectedCode) {
+function tryToCreateHoldWithNonexistentUserAndBookAndExpectError(id, missingUserId, missingBookId, expectedCode) {
   expectedCode = codeOrDefault(expectedCode, 400);
-  return createHold(missingBookId, id, missingUserId, expectedCode, verifyRejectedDescription("Hold", id, "create", "the operation is not allowed in this state"), true, true);
-}
-
-// Sends one malformed create request (both required fields missing) and expects it rejected.
-// `id`/`userId` only label the event; the SUT never sees them.
-function tryToCreateHoldWithBadParametersAndExpectError(id, userId, expectedCode) {
-  id = asInteger(id);
-  userId = asInteger(userId);
-  expectedCode = codeOrDefault(expectedCode, 400);
-  var description = verifyRejectedDescription("Hold", id, "create", "required parameters are missing or invalid");
-  return svc.post("/holds", { body: JSON.stringify({}), expectedResponseCodes: [expectedCode], parameters: { description: description } });
+  return createHold(id, missingUserId, missingBookId, expectedCode, verifyRejectedDescription("Hold", id, "create", "neither the user nor the book exists"), true, true);
 }
 
 function deleteHold(id, userId, bookId) {
@@ -543,24 +474,14 @@ function deleteHold(id, userId, bookId) {
   return svc.delete("/holds/" + sutHoldIdRef(id), { expectedResponseCodes: [200], parameters: parameters });
 }
 
-// Claude: userId/bookId are normalized and then never used.
-function tryToUpdateHoldAndExpectError(id, userId, bookId, body, expectedCode) {
-  id = asInteger(id);
-  userId = asInteger(userId);
-  bookId = asInteger(bookId);
-  expectedCode = codeOrDefault(expectedCode, 405);
-  tryToUpdateAndExpectError("Hold", id, "/holds/" + sutHoldIdRef(id), body, expectedCode);
-}
-
 function verifyHoldExists(id) {
   id = asInteger(id);
-  return readSutList("/holds", { q: sutHoldIdRef(id), description: verifyExistsDescription("Hold", id, "holds") });
+  return readSutList("/holds", { q: sutHoldIdRef(id), description: readListAfterCreateDescription("Hold", id, "holds") });
 }
 
-// Gera: one list, not "all lists" - rename?
-function verifyHoldAbsentFromAllLists(id) {
+function verifyHoldAbsent(id) {
   id = asInteger(id);
-  return readSutList("/holds", { q: sutHoldIdRef(id), description: verifyAbsentDescription("Hold", id, "holds") });
+  return readSutList("/holds", { q: sutHoldIdRef(id), description: readListAfterDeleteDescription("Hold", id, "holds") });
 }
 
 function tryToDeleteHoldAndExpectError(id, expectedCode) {
@@ -580,8 +501,4 @@ function tryToDeleteNonexistingHoldAndExpectError(id) {
   id = asInteger(id);
   var description = verifyRejectedDescription("Hold", id, "delete", "the operation is not allowed in this state");
   svc.delete("/holds/" + id, { expectedResponseCodes: [404], parameters: { description: description } });
-}
-
-function matchAnyHoldDeleted() {
-  return AnyHoldDeleted;
 }

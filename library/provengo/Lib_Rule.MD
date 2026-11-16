@@ -40,7 +40,8 @@ Rules:
 Story behavior:
 
 - Stories and the DAL address every entity by its virtual id. Each successful create callback
-  stores the SUT id in a Provengo run-time variable (`USERn`, `BOOKn`, `LOANn`, or `HOLDn`). The
+  stores the SUT id in a Provengo run-time variable (`USERn`, `BOOKn`, or `HOLDn`; a loan is
+  addressed by its user/book pair and needs none). The
   interface layer uses late-bound `@{...}` expressions wherever an id is sent in a URL, body, or
   query parameter.
 
@@ -94,10 +95,13 @@ Context queries:
 
 Story behavior:
 
-- `crud:Loans:create` creates valid loans from `UserBook.CanCreateLoan`.
-- `verifyCannotCreateLoanForBusyUserOrBook` verifies that invalid loan creation fails with `400`.
-- `blockDuplicateSuccessfulLoanCreation` blocks duplicate successful loan creation while the active loan still exists.
+- `createLoan` creates valid loans from `UserBook.CanCreateLoan`.
+- `verifyCannotCreateLoan` verifies that a loan for a busy user or book fails with `400`.
+- `verifyCannotCreateLoanWithNonexistent{User,Book,UserAndBook}` verify that a loan whose user
+  and/or book does not exist fails with `400` (once per book, once per user, once per run).
 - `deleteLoan` deletes existing loans from `Loan.All`.
+- `verifyLoanDeletion` reads the loans list and re-deletes the loan (expecting `404`) after each
+  deletion, unless the same pair was loaned again in the meantime.
 
 Trace format:
 
@@ -136,11 +140,13 @@ Context queries:
 
 Story behavior:
 
-- `crud:Holds:linear:2` creates valid holds from `UserBook.CanCreateHold`.
-- `verifyCanCreateMultipleHoldsForSameUserBook` verifies that a second hold for the same user/book pair can be created.
-- `verifyCanCreateHoldForLoanedBook` verifies that hold creation on a loaned book succeeds.
-- `verifyCannotCreateDuplicateHoldId` verifies that a duplicate hold number fails with `400`.
+- `createHold` creates valid holds from `UserBook.CanCreateHold` (every existing user/book
+  pair, loaned or not).
+- `verifyCannotCreateHoldWithNonexistent{User,Book,UserAndBook}` verify that a hold whose user
+  and/or book does not exist fails with `400` (once per book, once per user, once per run).
 - `deleteHold` deletes existing holds from `Hold.All`.
+- `verifyHoldDeletion` reads the holds list and re-deletes the hold (expecting `404`) after each
+  deletion.
 
 Trace format:
 
@@ -212,11 +218,11 @@ Story behavior:
 ## Interface Layer Contract
 
 Every action function in `interfaces.library.js` sends exactly one REST request: one call in a
-story is one event in the trace. The malformed-request checks live in separate
-`tryToCreate*WithBadParametersAndExpectError` functions, each of which sends one request with
-the required fields missing and expects `400`. The SUT's finer rejection rules (wrong types,
-nulls, zero or negative ids, malformed path/query ids) are documented below but are not
-exercised by this model.
+story is one event in the trace. Negative checks (`tryTo*AndExpectError`) cover business-rule
+rejections only: deletes blocked by an active loan or hold, loans the rules forbid, and entities
+that do not exist or were already deleted. The model never sends a malformed request (missing
+fields, wrong types, nulls, zero or negative ids) and never calls an unsupported route such as
+`PUT`. The SUT's input-validation rules below are documented for reference only.
 
 ## Parameter and Type Rules
 
@@ -235,6 +241,6 @@ per-entity-type monotonic counter that only ever increases (see `_next_ids`/`gen
 in `sut.py`). Deleting an entity never frees its id for reuse - the next created entity of that
 type always gets a strictly higher id than any previously issued, leaving a permanent gap where
 the deleted one was. This matters for the RTV mechanism in `interfaces.library.js`: an RTV entry
-(`USERn`/`BOOKn`/`LOANn`/`HOLDn`) recorded at creation stays a valid, permanent reference to that
+(`USERn`/`BOOKn`/`HOLDn`) recorded at creation stays a valid, permanent reference to that
 specific real id for the rest of the run, even after the entity is deleted - it can never later
 resolve to some other, unrelated entity that happens to reuse the same real id.
