@@ -78,7 +78,11 @@ public final class V013Scenarios {
                     hold("h1", "u1", "b"), hold("h2", "u2", "b", "h1"), hold("h3", "u3", "b", "h1", "h2"), hold("h4", "u4", "b", "h1", "h2", "h3"),
                     hold("h5", "u5", "b", "h1", "h2", "h3", "h4"), readHolds()),
             reach("v013-handover Book returned by one reader is borrowed by another, both reads",
-                    user("u1"), user("u2", "u1"), book("b"), loan("u1", "b"), readLoans(), returnLoan("u1", "b"), loan("u2", "b"), readLoans())
+                    user("u1"), user("u2", "u1"), book("b"), loan("u1", "b"), readLoans(), returnLoan("u1", "b"), loan("u2", "b"), readLoans()),
+            reach("v013-3.19b Loans and holds lists read right after a reader is deleted",
+                    user("u"), deleteUser("u"), readLoans(), readHolds()),
+            reach("v013-3.19c Loans and holds lists read right after a book is deleted",
+                    book("b"), deleteBook("b"), readLoans(), readHolds())
     );
 
     public static final List<StrictGuidedRun.Scenario> CONTRACT = List.of(
@@ -161,6 +165,10 @@ public final class V013Scenarios {
                     user("u"), rejectHoldMissingBook("u")),
             reach("v013-N-FK Hold for a nonexistent reader must be rejected",
                     book("b"), rejectHoldMissingUser("b")),
+            reach("v013-N-FK Loan for a nonexistent reader and a nonexistent book must be rejected",
+                    step("rejectCreateLoan400")),
+            reach("v013-N-FK Hold for a nonexistent reader and a nonexistent book must be rejected",
+                    step("rejectCreateHold400")),
             reach("v013-N-404 Never-created reader, book, loan and hold: each delete must answer 404",
                     step("rejectDeleteUser404"), step("rejectDeleteBook404"), step("rejectDeleteLoan404"), step("rejectDeleteHold404")),
             reach("v013-N-mixed Hold and loan on one book by two readers: every delete is rejected until the relations are gone",
