@@ -32,7 +32,7 @@ A book represents a library item.
 Rules:
 
 - A book can be created independently. Only `title` is client-supplied; the SUT assigns the
-  book's `id` itself, so there is no client-chosen id to duplicate or fuzz.
+  book's `id` itself, so there is no client-chosen id to duplicate.
 - A book can be deleted only when the book has no active loans and no active holds.
 - After a successful book deletion, the book should not appear in books, loans, or holds lists.
 - Deleting a book that no longer exists is expected to fail with `404`.
@@ -203,13 +203,20 @@ Rules:
 
 Story behavior:
 
-- `verifyBookDetailExists` and `verifyLoanExists` fuzz their reads the same way create/delete
-  actions fuzz their requests (see the Fuzzing Interface Layer Contract in `lib_stories.js`),
-  because the SUT defines real rejection semantics for those parameters.
-- `verifyBookExists`, `verifyUserExists`, and `verifyHoldExists` read the SUT list directly
-  without a fuzzing loop, because there is no invalid `q` value for the SUT to reject.
+- `verifyBookDetailExists` reads `GET /books/{id}` once and expects `200`.
+- `verifyBookExists`, `verifyUserExists`, `verifyLoanExists`, and `verifyHoldExists` read the
+  matching SUT list once and expect `200`.
 - After a successful book deletion, `GET /books/{id}` for the deleted id is expected to return
   `404`.
+
+## Interface Layer Contract
+
+Every action function in `interfaces.library.js` sends exactly one REST request: one call in a
+story is one event in the trace. The malformed-request checks live in separate
+`tryToCreate*WithBadParametersAndExpectError` functions, each of which sends one request with
+the required fields missing and expects `400`. The SUT's finer rejection rules (wrong types,
+nulls, zero or negative ids, malformed path/query ids) are documented below but are not
+exercised by this model.
 
 ## Parameter and Type Rules
 
@@ -219,10 +226,7 @@ To support flexible integrations, SUT endpoints allow several valid options for 
 - **Invalid ID formats**: Passing IDs as non-integer/non-numeric-string types, such as objects (e.g., `{"val": 123}`), arrays, booleans, or null, is invalid and expected to fail with `400`.
 - **Unrecognized fields**: All four `POST` create endpoints (`/users`, `/books`, `/loans`, `/holds`)
   read only their documented required fields and silently ignore anything else in the body -
-  an unexpected field never causes a `400`. Each `create*` function's `valid-unexpected-field`
-  variant in `interfaces.library.js` exercises this as a positive case (expects `201`), not a
-  rejected one; there is deliberately no "unexpected field" case in the corresponding
-  `tryToCreate*WithBadParametersAndExpectError` fuzzers.
+  an unexpected field never causes a `400`.
 
 ## ID Generation
 

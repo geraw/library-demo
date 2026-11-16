@@ -14,6 +14,10 @@
 // Stories use action functions and EventSets to describe behavior. The DAL uses
 // EventSets plus extractEventData() to update the Context model without parsing
 // URLs, bodies, or transport parameters itself.
+//
+// Every action function sends exactly one REST request: one call, one event.
+// Negative checks (tryTo*AndExpectError) are separate functions that likewise
+// send one request, with the rejecting response code as the expected one.
 //////////////////////////////////////////////////////////////////////////
 
 // The model addresses each entity by the small id a story picks at creation; the SUT's own,
@@ -27,128 +31,42 @@ var path = '';
 
 const svc = new RESTSession(protocol + "://" + host + ":" + port + path, "provengo-client", { headers: { "Content-Type": "application/json", "api_key": "special-key" } });
 
-// Every action below sends one of several request variants (each with its own
-// body/expectedResponseCodes/parameters) by offering them all to sync() at once via
-// requestOneOfDirect, so the event selection mechanism (not this code) picks which single variant
-// is actually sent - letting fuzzing/exploration choose the request shape instead of a scripted
-// for-loop that sends every case every time.
-//
-// No staleness recheck is needed between offering and sending: a story's ctx.bthread is ended
-// by COBP at the very event that removes its entity from the query it was spawned for (the REST
-// event itself is the DAL effect - see dal.js), so it can never actuate against an entity that
-// stopped existing while its variants were waiting to be selected.
+function modelFail(msg) { bp.log.error(msg); throw new Error(msg); }
 
-// Mirrors RESTSession's private ___apiBody___ so a fully-formed, already-actuatable REST event
-// can be built here instead of only inside svc[method]. Reads session defaults
-// (headers/parameters/expectedResponseCodes/callback) off `svc` itself rather than duplicating
-// their values.
-// Claude: this copies a private RESTSession internal. Is there a public Provengo way to build an
-// unsent REST event? If not, should we ask for one, rather than track private internals?
-function buildRestEvent(session, httpMethod, url, options) {
-  options = options || {};
-  var headers = options.headers !== undefined ? options.headers : session.defaultHeaders;
-  var parameters = options.parameters !== undefined ? options.parameters : session.defaultParameters;
-  var expectedResponseCodes = options.expectedResponseCodes !== undefined ? options.expectedResponseCodes : session.defaultExpectedResponseCodes;
-  var callback = options.callback !== undefined ? options.callback : session.defaultCallback;
-  var data = {
-    lib: "REST",
-    method: httpMethod,
-    url: session.baseURL + url,
-    headers: headers,
-    parameters: parameters,
-    expectedResponseCodes: expectedResponseCodes,
-    callback: callback
-  };
-  if (options.body !== undefined) data.body = JSON.stringify(options.body);
-  return bp.Event(httpMethod, data);
+// expectedCode arguments are optional everywhere below; this applies the per-action default.
+function codeOrDefault(expectedCode, fallback) {
+  return expectedCode === undefined || expectedCode === null ? fallback : asInteger(expectedCode);
 }
 
-// Each variant already carries its real, fully-resolved url/body (the sutIdRef()-embedded template
-// is safe to bake in at construction time - see the RTV doc comment below), so the variants
-// themselves are offered as the actuatable REST events - a single sync, with no separate
-// "chooser" event. `url` is a fallback used by variants that don't set their own (e.g. all
-// POST-create variants share one url; DELETE variants each set their own since the id is part of
-// the path).
-// Claude: "Direct" only contrasted with the two-sync requestOneOf, which is gone. Rename to requestOneOf?
-function requestOneOfDirect(method, url, variants) {
-  if (!variants || variants.length === 0) pvg.fail("requestOneOfDirect requires at least one variant");
-  var httpMethod = method.toUpperCase();
-  var events = variants.map(function (v) {
-    var evt = buildRestEvent(svc, httpMethod, v.url || url, v);
-    // buildRestEvent already copies url/body/parameters/expectedResponseCodes/callback from v
-    // onto evt.data using the REST library's own field names - that part of evt.data is standard
-    // REST-actuator territory. `name` (this variant's descriptive identity, since the event
-    // itself is named after the HTTP verb) and `valid` (checked by every create/delete retry loop
-    // below) belong to no one but us, so they live under their own `model` key instead of sitting
-    // flat alongside the actuator's fields.
-    evt.data.model = { name: v.name, valid: v.valid === true };
-    return evt;
-  });
-  return sync({ request: events });
+function optionalInteger(value) {
+  return value === undefined || value === null ? null : asInteger(value);
 }
 
-// Claude: this shadows Provengo's own pvg. The REST callbacks (rememberCreatedId) call pvg.rtv.set,
-// which this object doesn't have - that only works because callbacks run in a different scope.
-// Rename this one (e.g. modelFail)?
-const pvg = { fail: function (msg) { bp.log.error(msg); throw new Error(msg); } };
-
-// asInteger, asString, and the *Description builders now live in lib/utils.js.
-
-// getExpectedResponseCodes, hasExpectedCode, getRequestPath, and getJsonBody now live in lib/utils.js.
+// asInteger, asString, the *Description builders, getExpectedResponseCodes, hasExpectedCode,
+// getRequestPath, getJsonBody, readSutList, tryToUpdateAndExpectError, and
+// verifyMissingEntityReadIsRejected live in lib/utils.js.
 
 // Boundary adapter from concrete REST events to semantic event data.
 // Consumers can depend on fields like id, userId, bookId, title, and
-// loanNumber without knowing whether the values came from a JSON body,
-// REST path, query parameter, or request metadata.
+// loanNumber without knowing whether the values came from a JSON body
+// or from request metadata.
+//
+// parameters win over body: actions that address an RTV-mapped entity (see the RTV helpers below)
+// attach the logical id as a parameter, while their body/URL carries a sutIdRef "@{...}"
+// reference. Every event the DAL and the stories pass here (the Any*Added/Any*Deleted events)
+// carries its ids in parameters, so the body is only a fallback.
 function extractEventData(e) {
   var body = getJsonBody(e) || {};
   var data = e && e.data ? e.data : e;
   var parameters = data && data.parameters ? data.parameters : {};
-  
-  // parameters win over body: actions that address an RTV-mapped entity (see the RTV helpers below)
-  // attach the logical id as a parameter, while their body/URL carries a sutIdRef "@{...}"
-  // reference. For every other field, parameters were never set before, so this is a no-op.
-  var id = parameters.id !== undefined && parameters.id !== null ? parameters.id : body.id;
-  var userId = parameters.userId !== undefined && parameters.userId !== null ? parameters.userId : body.userId;
-  var bookId = parameters.bookId !== undefined && parameters.bookId !== null ? parameters.bookId : body.bookId;
-
-  // Claude: every event that reaches this function (the Any*Added/Any*Deleted effects and handlers,
-  // matchLoanAdded) already carries id/userId/bookId in parameters, and a valid request's URL holds
-  // an "@{...}" template that parseInt skips. So isn't this path fallback dead? (Also: title falls
-  // back to body.name below - why?)
-  // Try extracting from path if they are not in body/parameters
-  var pathValue = data.path || data.url || "";
-  if (pathValue) {
-    pathValue = String(pathValue).replace(/^https?:\/\/[^\/]+/, "");
-    var segments = pathValue.split("/").filter(function (s) { return s.length > 0; });
-    if (segments.length >= 2) {
-      var lastSegment = segments[segments.length - 1];
-      var lastSegmentInt = Number.parseInt(lastSegment, 10);
-      if (!isNaN(lastSegmentInt)) {
-        if (segments[0] === "users") {
-          if (id === undefined || id === null) id = lastSegmentInt;
-        } else if (segments[0] === "books") {
-          if (id === undefined || id === null) id = lastSegmentInt;
-        } else if (segments[0] === "holds") {
-          if (id === undefined || id === null) id = lastSegmentInt;
-        } else if (segments[0] === "loans") {
-          if (segments.length >= 3) {
-            var userSeg = Number.parseInt(segments[1], 10);
-            var bookSeg = Number.parseInt(segments[2], 10);
-            if (!isNaN(userSeg) && (userId === undefined || userId === null)) userId = userSeg;
-            if (!isNaN(bookSeg) && (bookId === undefined || bookId === null)) bookId = bookSeg;
-          }
-        }
-      }
-    }
-  }
+  function firstDefined(primary, fallback) { return primary !== undefined && primary !== null ? primary : fallback; }
 
   return {
-    id: id,
-    title: body.title !== undefined && body.title !== null ? body.title : body.name,
+    id: firstDefined(parameters.id, body.id),
+    title: body.title,
     name: body.name,
-    userId: userId,
-    bookId: bookId,
+    userId: firstDefined(parameters.userId, body.userId),
+    bookId: firstDefined(parameters.bookId, body.bookId),
     loanNumber: parameters.loanNumber
   };
 }
@@ -191,7 +109,7 @@ function rememberCreatedId(entityType, id) {
   var key = rtvKey(entityType, id);
   return function (response) {
     var body = JSON.parse(response.body);
-    if (body.id === undefined || body.id === null) pvg.fail("Create response did not contain id");
+    if (body.id === undefined || body.id === null) modelFail("Create response did not contain id");
     pvg.rtv.set(key, body.id);
   };
 }
@@ -206,8 +124,8 @@ function rememberCreatedId(entityType, id) {
 //////////////////////////////////////////////////////////////////////////
 
 var AnyBookAdded = bp.EventSet("Any Books Added", function (e) {
-  // The request body no longer carries an id (see createBook/the RTV helpers above) - title is
-  // the only client-supplied field left, so it is what marks this as a real book-create request.
+  // The request body carries no id (see createBook/the RTV helpers above) - title is the only
+  // client-supplied field, so it is what marks this as a real book-create request.
   var body = getJsonBody(e);
   return e.name === "POST" && getRequestPath(e) === "/books" && hasExpectedCode(e, 201) && body && body.title !== undefined;
 });
@@ -243,24 +161,6 @@ var AnyHoldDeleted = bp.EventSet("Any Holds Deleted", function (e) {
   return e.name === "DELETE" && getRequestPath(e).startsWith("/holds/") && hasExpectedCode(e, 200);
 });
 
-
-// Claude: this block, and the other "now live in lib/utils.js" / "were replaced by" notes in this
-// file, describe code that isn't here. The last line below points at
-// verifyListQueryFuzzIsAccepted/verifyLoanQueryFuzzIsRejected, which don't exist. Drop them?
-// readSutList, tryToUpdateAndExpectError, and verifyMissingEntityReadIsRejected now live in
-// lib/utils.js.
-
-// Malformed-delete and malformed-read rejection cases are covered by the dynamic valid/invalid
-// loops inside deleteBook/deleteUser/deleteLoan/deleteHold and verifyBookDetailExists, so this
-// file has no separate verifyMalformedDeleteIsRejected/verifyMalformedReadIsRejected helpers.
-
-// The /books, /users, and /holds search endpoints accept any `q` value and always answer 200 (no
-// format validation), so verifyBookExists/verifyUserExists/verifyHoldExists below have no
-// rejectable invalid variant to fuzz - they read the SUT list directly. /loans search does
-// validate userId/bookId, so verifyLoanExists uses the same dynamic valid/invalid loop as the
-// create/delete actions (verifyListQueryFuzzIsAccepted/verifyLoanQueryFuzzIsRejected below).
-
-
 //////////////////////////////////////////////////////////////////////////
 // Interface action functions.
 //
@@ -269,118 +169,53 @@ var AnyHoldDeleted = bp.EventSet("Any Holds Deleted", function (e) {
 // that extractEventData() can later expose to other layers.
 //////////////////////////////////////////////////////////////////////////
 
-// The SUT assigns the book's id itself (title is the only client-supplied field), so there
-// is no client-chosen id left to fuzz or to duplicate. The id parameter below is this story's
-// own bookkeeping handle: it never goes on the wire, only into `parameters` for the DAL/matchers, and into
-// the BOOK<n> RTV once the SUT id comes back.
+//////////////////////////////////////////////////////////////////////////
+// Books
+//////////////////////////////////////////////////////////////////////////
+
+// The SUT assigns the book's id itself (title is the only client-supplied field). The id
+// parameter below is this story's own bookkeeping handle: it never goes on the wire, only into
+// `parameters` for the DAL/matchers, and into the BOOK<n> RTV once the SUT id comes back.
 function createBook(id, title) {
   id = asInteger(id);
-  title = asString(title);
-
-  var reqDescription = createDescription("Book", id);
-  var captureResponse = rememberCreatedId("BOOK", id);
-  var idParameters = { description: reqDescription, id: id };
-  var variants = [
-    { name: "createBook (valid-standard): " + id, body: { title: title }, expectedResponseCodes: [201], parameters: idParameters, callback: captureResponse, valid: true },
-    { name: "createBook (valid-spaced-title): " + id, body: { title: " " + title }, expectedResponseCodes: [201], parameters: idParameters, callback: captureResponse, valid: true },
-    // Positive counterpart to the "no unexpected-field case" note in
-    // tryToCreateBookWithBadParametersAndExpectError below: locks in that an unrecognized field
-    // is accepted (silently ignored), not merely untested.
-    { name: "createBook (valid-unexpected-field): " + id, body: { title: title, unexpected: "value" }, expectedResponseCodes: [201], parameters: idParameters, callback: captureResponse, valid: true }
-  ];
-
-  var invalidCases = [
-    { label: "missing title", body: {} },
-    { label: "title has wrong type", body: { "title": 12345 } },
-    { label: "title is null", body: { "title": null } },
-    { label: "title is empty", body: { "title": "" } }
-  ];
-
-  variants = variants.concat(invalidCases.map(function(c) {
-    var description = "createBook (invalid - " + c.label + "): " + id;
-    return { name: description, body: c.body, expectedResponseCodes: [400], parameters: { description: description } };
-  }));
-
-  while (true) {
-    var response = requestOneOfDirect("post", "/books", variants);
-    if (response.data.model.valid === true) return response;
-  }
+  return svc.post("/books", {
+    body: JSON.stringify({ title: asString(title) }),
+    expectedResponseCodes: [201],
+    parameters: { description: createDescription("Book", id), id: id },
+    callback: rememberCreatedId("BOOK", id)
+  });
 }
 
-// Claude: same four cases as createBook's invalidCases above (and likewise for the user, loan and
-// hold variants) - two copies of each list to keep in sync. The *WithBadParameters b-threads in
-// lib_stories.js send requests the create* fuzz loops already send.
+// Sends one malformed create request (the required field is missing) and expects it rejected.
+// `id` only labels the event; the SUT never sees it.
 function tryToCreateBookWithBadParametersAndExpectError(id, expectedCode) {
   id = asInteger(id);
-  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
-  var url = "/books";
-  // Gera: buildRestEvent reads `parameters`, not `description`, so the description these variants
-  // carry is silently dropped (the event goes out with parameters:{} and model.name null) - same in
-  // the loan, user and hold variants. And since `id` only fed that description, is it needed?
-  var reqDescription = verifyRejectedDescription("Book", id, "create", "required parameters are missing or invalid");
-  // No "unexpected field" case: the SUT ignores extra fields on this endpoint (only title is
-  // read/validated), so a request with one succeeds rather than being rejected.
-  var cases = [
-    { name: "missing title", body: {} },
-    { name: "title has wrong type", body: { "title": 12345 } },
-    { name: "title is null", body: { "title": null } },
-    { name: "title is empty", body: { "title": "" } }
-  ];
-  var variants = cases.map(function (c) {
-    return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
-  });
-  requestOneOfDirect("post", url, variants);
+  expectedCode = codeOrDefault(expectedCode, 400);
+  var description = verifyRejectedDescription("Book", id, "create", "required parameters are missing or invalid");
+  return svc.post("/books", { body: JSON.stringify({}), expectedResponseCodes: [expectedCode], parameters: { description: description } });
 }
 
-// Claude: the invalid variants here (/books/bad-id, /books/0, /books/-1) don't mention the book,
-// yet every delete of every book re-offers them, as do deleteUser/deleteLoan/deleteHold. Would
-// testing each entity-independent rejection once be enough?
+// sutBookIdRef() is an inert "@{...}" template until actuation, so it is safe to embed at
+// construction time.
 function deleteBook(id) {
   id = asInteger(id);
-  // The SUT id reference is embedded directly at construction time (safe - sutBookIdRef() is an inert
-  // "@{...}" template until actuation), and requestOneOfDirect offers these variants as the
-  // actuatable events themselves - a single sync per call instead of a chooser sync followed by
-  // a second, separate REST sync.
-  var variants = [
-    { name: "deleteBook (valid): " + id, url: "/books/" + sutBookIdRef(id), expectedResponseCodes: [200], parameters: { description: deleteDescription("Book", id), id: id }, valid: true },
-    { name: "deleteBook (invalid - bad-id): " + id, url: "/books/bad-id", expectedResponseCodes: [400] },
-    { name: "deleteBook (invalid - zero): " + id, url: "/books/0", expectedResponseCodes: [400] },
-    { name: "deleteBook (invalid - negative): " + id, url: "/books/-1", expectedResponseCodes: [400] }
-  ];
-  while (true) {
-    var response = requestOneOfDirect("delete", null, variants);
-    if (response.data.model.valid === true) return response;
-  }
+  return svc.delete("/books/" + sutBookIdRef(id), {
+    expectedResponseCodes: [200],
+    parameters: { description: deleteDescription("Book", id), id: id }
+  });
 }
 
-// The book detail endpoint validates its id path parameter (malformed/zero/negative id -> 400)
-// before checking existence (valid-format-but-missing id -> 404), so it gets the same
-// dynamic valid/invalid fuzzing loop as the create/delete actions. See the Fuzzing
-// Interface Layer Contract at the bottom of lib_stories.js.
 function verifyBookDetailExists(id) {
   id = asInteger(id);
-
-  var description = verifyExistsDescription("Book", id, "book detail");
-  // The SUT id reference is embedded directly at construction time - see the sutIdRef doc comment above.
-  var variants = [
-    { name: "readBookDetail (valid-standard): " + id, url: "/books/" + sutBookIdRef(id), expectedResponseCodes: [200], parameters: { description: description, id: id }, valid: true },
-    { name: "readBookDetail (valid-padded-id): " + id, url: "/books/00" + sutBookIdRef(id), expectedResponseCodes: [200], parameters: { description: description, id: id }, valid: true },
-    { name: "readBookDetail (invalid - bad-id): " + id, url: "/books/bad-id", expectedResponseCodes: [400] },
-    { name: "readBookDetail (invalid - zero): " + id, url: "/books/0", expectedResponseCodes: [400] },
-    { name: "readBookDetail (invalid - negative): " + id, url: "/books/-1", expectedResponseCodes: [400] }
-  ];
-  while (true) {
-    var response = requestOneOfDirect("get", null, variants);
-    if (response.data.model.valid === true) return response;
-  }
+  return svc.get("/books/" + sutBookIdRef(id), {
+    expectedResponseCodes: [200],
+    parameters: { description: verifyExistsDescription("Book", id, "book detail"), id: id }
+  });
 }
-
-// verifyBookReadFuzz and verifyBookDeleteFuzz (static per-field fuzz cases) were replaced by
-// the dynamic valid/invalid loop inside createBook/deleteBook/verifyBookDetailExists above.
 
 function tryToUpdateBookAndExpectError(id, body, expectedCode) {
   id = asInteger(id);
-  expectedCode = expectedCode === undefined || expectedCode === null ? 405 : asInteger(expectedCode);
+  expectedCode = codeOrDefault(expectedCode, 405);
   tryToUpdateAndExpectError("Book", id, "/books/" + sutBookIdRef(id), body, expectedCode);
 }
 
@@ -403,10 +238,9 @@ function verifyBookAbsentFromAllLists(id) {
 
 function tryToDeleteBookAndExpectError(id, expectedCode) {
   id = asInteger(id);
-  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
-  var url = "/books/" + sutBookIdRef(id);
+  expectedCode = codeOrDefault(expectedCode, 400);
   var description = verifyRejectedDescription("Book", id, "delete", "the operation is not allowed in this state");
-  svc.delete(url, { expectedResponseCodes: [expectedCode], parameters: { description: description } });
+  svc.delete("/books/" + sutBookIdRef(id), { expectedResponseCodes: [expectedCode], parameters: { description: description } });
 }
 
 function tryToDeleteDeletedBookAndExpectError(id) {
@@ -421,19 +255,16 @@ function tryToDeleteNonexistingBookAndExpectError(id) {
   svc.delete("/books/" + id, { expectedResponseCodes: [404], parameters: { description: description } });
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Broad-deletion reaction wrappers.
-//
-// Trivial pass-throughs to the Any*Deleted EventSets above, used by lib_stories.js's
-// on(matchAny*Deleted(), ...) verify-after-deletion bthreads. Stories no longer block() or
-// wait-for on any narrower, entity-specific matcher (those were removed along with the
-// block() guards they existed for - see lib_stories.js).
-//////////////////////////////////////////////////////////////////////////
-
+// Pass-throughs to the Any*Deleted EventSets above, used by lib_stories.js's
+// on(matchAny*Deleted(), ...) verify-after-deletion bthreads.
 // Claude: do we need these pass-throughs, or can the stories use AnyBookDeleted etc. directly?
 function matchAnyBookDeleted() {
   return AnyBookDeleted;
 }
+
+//////////////////////////////////////////////////////////////////////////
+// Loans
+//////////////////////////////////////////////////////////////////////////
 
 // A successful creation of the loan for this userId/bookId pair (logical ids, as createLoan
 // carries them in its parameters).
@@ -447,182 +278,95 @@ function matchLoanAdded(userId, bookId) {
   });
 }
 
-function deleteLoan(userId, bookId, loanNumber) {
-  userId = asInteger(userId);
-  bookId = asInteger(bookId);
-  loanNumber = loanNumber === undefined || loanNumber === null ? null : asInteger(loanNumber);
-
-  var invalidCases = [
-    { label: "bad-user-id", url: "/loans/bad-user-id/" + bookId },
-    { label: "bad-book-id", url: "/loans/" + userId + "/bad-book-id" },
-    { label: "zero userId", url: "/loans/0/" + bookId },
-    { label: "zero bookId", url: "/loans/" + userId + "/0" },
-    { label: "negative userId", url: "/loans/-1/" + bookId },
-    { label: "negative bookId", url: "/loans/" + userId + "/-1" }
-  ];
-
-  var reqDescription = deleteDescription("Loan", userId + "/" + bookId, loanNumber === null ? "" : "number " + loanNumber);
-  var parameters = { description: reqDescription, userId: userId, bookId: bookId };
-  if (loanNumber !== null) parameters.loanNumber = loanNumber;
-  // The SUT id references are embedded directly at construction time - see the sutIdRef doc comment above.
-  var variants = [{ name: "deleteLoan (valid): " + userId + "/" + bookId, url: "/loans/" + sutUserIdRef(userId) + "/" + sutBookIdRef(bookId), expectedResponseCodes: [200], parameters: parameters, valid: true }];
-  variants = variants.concat(invalidCases.map(function(c) {
-    return { name: "deleteLoan (invalid - " + c.label + "): " + userId + "/" + bookId, url: c.url, expectedResponseCodes: [400] };
-  }));
-
-  while (true) {
-    var response = requestOneOfDirect("delete", null, variants);
-    if (response.data.model.valid === true) return response;
-  }
-}
-
-// verifyLoanReadFuzz and verifyLoanDeleteFuzz (static per-field fuzz cases) were replaced by the
-// dynamic valid/invalid loop inside createLoan/deleteLoan/verifyLoanExists above.
-
-function tryToUpdateLoanAndExpectError(userId, bookId, body, expectedCode) {
-  userId = asInteger(userId);
-  bookId = asInteger(bookId);
-  expectedCode = expectedCode === undefined || expectedCode === null ? 405 : asInteger(expectedCode);
-  tryToUpdateAndExpectError("Loan", userId + "/" + bookId, "/loans/" + sutUserIdRef(userId) + "/" + sutBookIdRef(bookId), body, expectedCode);
-}
-
 // Claude: rememberCreatedId("LOAN", ...) stores a LOAN<n> RTV that nothing ever reads (loans are
-// addressed by their user/book pair), so loanNumber only feeds descriptions. Needed? Also, when
-// tryToCreateLoanAndExpectError passes expectedCode 400, the "valid" variants are still named
-// "createLoan (valid-...)", which already confused StrictGuidedRun.
+// addressed by their user/book pair), so loanNumber only feeds descriptions. Needed?
+//
+// userId/bookId in the body are late-bound "@{...}" placeholders (see the sutIdRef doc comment
+// above). userIdMissing/bookIdMissing are true when the caller is deliberately exercising a
+// nonexistent foreign key (see tryToCreateLoanWithNonexistent{User,Book,UserAndBook}AndExpectError):
+// that id was never created and has no RTV entry.
 function createLoan(userId, bookId, loanNumber, expectedCode, description, userIdMissing, bookIdMissing) {
   userId = asInteger(userId);
   bookId = asInteger(bookId);
-  loanNumber = loanNumber === undefined || loanNumber === null ? null : asInteger(loanNumber);
+  loanNumber = optionalInteger(loanNumber);
+  expectedCode = codeOrDefault(expectedCode, 201);
 
   var reqDescription = description || (createDescription("Loan", userId + "/" + bookId) + (loanNumber === null ? "" : " number " + loanNumber));
-  expectedCode = expectedCode === undefined || expectedCode === null ? 201 : asInteger(expectedCode);
   var parameters = { description: reqDescription, userId: userId, bookId: bookId };
   if (loanNumber !== null) parameters.loanNumber = loanNumber;
-  // bookId in each valid body is a late-bound "@{...}" placeholder (see the sutIdRef doc comment
-  // above), substituted with the SUT id by Provengo's runtime only once the request actually
-  // fires. userIdMissing/bookIdMissing are true when the caller is deliberately exercising a
-  // nonexistent foreign key (see tryToCreateLoanWithNonexistent{User,Book,UserAndBook}AndExpectError):
-  // that id was never created and has no RTV entry.
-  var variants = [
-    { name: "createLoan (valid-standard): " + userId + "/" + bookId, body: { userId: sutUserIdRef(userId, userIdMissing), bookId: sutBookIdRef(bookId, bookIdMissing) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 && loanNumber !== null ? rememberCreatedId("LOAN", loanNumber) : undefined, valid: true },
-    { name: "createLoan (valid-swapped-order): " + userId + "/" + bookId, body: { bookId: sutBookIdRef(bookId, bookIdMissing), userId: sutUserIdRef(userId, userIdMissing) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 && loanNumber !== null ? rememberCreatedId("LOAN", loanNumber) : undefined, valid: true },
-    // Positive counterpart to the "no unexpected-field case" note in
-    // tryToCreateLoanWithBadParametersAndExpectError below: locks in that an unrecognized field
-    // is accepted (silently ignored), not merely untested.
-    { name: "createLoan (valid-unexpected-field): " + userId + "/" + bookId, body: { userId: sutUserIdRef(userId, userIdMissing), bookId: sutBookIdRef(bookId, bookIdMissing), unexpected: "value" }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 && loanNumber !== null ? rememberCreatedId("LOAN", loanNumber) : undefined, valid: true }
-  ];
 
-  var invalidCases = [
-    { label: "missing bookId", body: { "userId": userId } },
-    { label: "missing userId", body: { "bookId": bookId } },
-    { label: "missing all required fields", body: {} },
-    { label: "userId has wrong type", body: { "userId": "bad-user-id", "bookId": bookId } },
-    { label: "bookId has wrong type", body: { "userId": userId, "bookId": "bad-book-id" } },
-    { label: "multiple wrong types", body: { "userId": true, "bookId": false } },
-    { label: "userId is null", body: { "userId": null, "bookId": bookId } },
-    { label: "bookId is null", body: { "userId": userId, "bookId": null } },
-    { label: "userId is zero", body: { "userId": 0, "bookId": bookId } },
-    { label: "bookId is zero", body: { "userId": userId, "bookId": 0 } },
-    { label: "userId is negative", body: { "userId": -userId, "bookId": bookId } },
-    { label: "bookId is negative", body: { "userId": userId, "bookId": -bookId } },
-    { label: "userId is object", body: { "userId": { "val": userId }, "bookId": bookId } },
-    { label: "bookId is object", body: { "userId": userId, "bookId": { "val": bookId } } }
-  ];
-
-  variants = variants.concat(invalidCases.map(function(c) {
-    return { name: "createLoan (invalid - " + c.label + "): " + userId + "/" + bookId, body: c.body, expectedResponseCodes: [400] };
-  }));
-
-  while (true) {
-    var response = requestOneOfDirect("post", "/loans", variants);
-    if (response.data.model.valid === true) return response;
-  }
+  var options = {
+    body: JSON.stringify({ userId: sutUserIdRef(userId, userIdMissing), bookId: sutBookIdRef(bookId, bookIdMissing) }),
+    expectedResponseCodes: [expectedCode],
+    parameters: parameters
+  };
+  if (expectedCode === 201 && loanNumber !== null) options.callback = rememberCreatedId("LOAN", loanNumber);
+  return svc.post("/loans", options);
 }
 
 function tryToCreateLoanAndExpectError(userId, bookId, loanNumber, expectedCode) {
-  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  expectedCode = codeOrDefault(expectedCode, 400);
   return createLoan(userId, bookId, loanNumber, expectedCode, verifyRejectedDescription("Loan", userId + "/" + bookId, "create", "the operation is not allowed in this state"));
 }
 
 // missingUserId/bookId/missingBookId were never created (see generateMissingId()), so they have no
 // RTV entry; createLoan is told which argument(s) to send as a plain id instead of resolving one.
 function tryToCreateLoanWithNonexistentUserAndExpectError(missingUserId, bookId, loanNumber, expectedCode) {
-  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  expectedCode = codeOrDefault(expectedCode, 400);
   return createLoan(missingUserId, bookId, loanNumber, expectedCode, verifyRejectedDescription("Loan", missingUserId + "/" + bookId, "create", "the operation is not allowed in this state"), true, false);
 }
 
 function tryToCreateLoanWithNonexistentBookAndExpectError(userId, missingBookId, loanNumber, expectedCode) {
-  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  expectedCode = codeOrDefault(expectedCode, 400);
   return createLoan(userId, missingBookId, loanNumber, expectedCode, verifyRejectedDescription("Loan", userId + "/" + missingBookId, "create", "the operation is not allowed in this state"), false, true);
 }
 
 function tryToCreateLoanWithNonexistentUserAndBookAndExpectError(missingUserId, missingBookId, loanNumber, expectedCode) {
-  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  expectedCode = codeOrDefault(expectedCode, 400);
   return createLoan(missingUserId, missingBookId, loanNumber, expectedCode, verifyRejectedDescription("Loan", missingUserId + "/" + missingBookId, "create", "the operation is not allowed in this state"), true, true);
 }
 
+// Sends one malformed create request (both required fields missing) and expects it rejected.
+// `userId` only labels the event; the SUT never sees it.
 function tryToCreateLoanWithBadParametersAndExpectError(userId, expectedCode) {
   userId = asInteger(userId);
-  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
-  var url = "/loans";
-  var reqDescription = verifyRejectedDescription("Loan", userId, "create", "required parameters are missing or invalid");
-  // No "unexpected field" case: the SUT ignores extra fields on this endpoint (only userId/bookId
-  // are read/validated - see sut.py's POST /loans), so a request with one succeeds rather than
-  // being rejected. See the identical note on createBook.
-  var cases = [
-    { name: "missing bookId", body: { "userId": userId } },
-    { name: "missing userId", body: { "bookId": userId } },
-    { name: "missing all required fields", body: {} },
-    { name: "userId has wrong type", body: { "userId": "bad-user-id", "bookId": userId } },
-    { name: "bookId has wrong type", body: { "userId": userId, "bookId": "bad-book-id" } },
-    { name: "multiple wrong types", body: { "userId": true, "bookId": false } },
-    { name: "userId and bookId have swapped invalid values", body: { "bookId": userId, "userId": -userId } },
-    { name: "userId is null", body: { "userId": null, "bookId": userId } },
-    { name: "bookId is null", body: { "userId": userId, "bookId": null } },
-    { name: "userId is zero", body: { "userId": 0, "bookId": userId } },
-    { name: "bookId is zero", body: { "userId": userId, "bookId": 0 } },
-    { name: "userId is negative", body: { "userId": -userId, "bookId": userId } },
-    { name: "bookId is negative", body: { "userId": userId, "bookId": -userId } }
-  ];
-  var variants = cases.map(function (c) {
-    return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
-  });
-  requestOneOfDirect("post", url, variants);
+  expectedCode = codeOrDefault(expectedCode, 400);
+  var description = verifyRejectedDescription("Loan", userId, "create", "required parameters are missing or invalid");
+  return svc.post("/loans", { body: JSON.stringify({}), expectedResponseCodes: [expectedCode], parameters: { description: description } });
 }
 
-// The loans search endpoint validates userId/bookId (malformed/zero/negative -> 400) before
-// filtering, so it gets the same dynamic valid/invalid fuzzing loop as the create/delete actions.
+function deleteLoan(userId, bookId, loanNumber) {
+  userId = asInteger(userId);
+  bookId = asInteger(bookId);
+  loanNumber = optionalInteger(loanNumber);
+
+  var reqDescription = deleteDescription("Loan", userId + "/" + bookId, loanNumber === null ? "" : "number " + loanNumber);
+  var parameters = { description: reqDescription, userId: userId, bookId: bookId };
+  if (loanNumber !== null) parameters.loanNumber = loanNumber;
+  return svc.delete("/loans/" + sutUserIdRef(userId) + "/" + sutBookIdRef(bookId), {
+    expectedResponseCodes: [200],
+    parameters: parameters
+  });
+}
+
+function tryToUpdateLoanAndExpectError(userId, bookId, body, expectedCode) {
+  userId = asInteger(userId);
+  bookId = asInteger(bookId);
+  expectedCode = codeOrDefault(expectedCode, 405);
+  tryToUpdateAndExpectError("Loan", userId + "/" + bookId, "/loans/" + sutUserIdRef(userId) + "/" + sutBookIdRef(bookId), body, expectedCode);
+}
+
 // Gera: (bookId, userId) here and in verifyLoanAbsentFromAllLists, but (userId, bookId) in
 // createLoan/deleteLoan, and (bookId, id, userId) in createHold. Mixed argument orders already
-// caused one swapped-ids bug (d242a26) - one order everywhere? Also, the event names below embed
-// the "@{BOOK<n>}" reference (and a stray "Req: " prefix) where every other action uses logical ids.
+// caused one swapped-ids bug (d242a26) - one order everywhere?
 function verifyLoanExists(bookId, userId) {
-  var bookIdRef = sutBookIdRef(bookId);
-  var userIdRef = sutUserIdRef(userId);
+  bookId = asInteger(bookId);
   userId = asInteger(userId);
-
-  var invalidCases = [
-    { label: "bad userId", parameters: { userId: "bad-user-id", bookId: asString(bookIdRef) } },
-    { label: "bad bookId", parameters: { userId: asString(userId), bookId: "bad-book-id" } },
-    { label: "zero userId", parameters: { userId: "0", bookId: asString(bookIdRef) } },
-    { label: "zero bookId", parameters: { userId: asString(userId), bookId: "0" } },
-    { label: "negative userId", parameters: { userId: "-1", bookId: asString(bookIdRef) } },
-    { label: "negative bookId", parameters: { userId: asString(userId), bookId: "-1" } }
-  ];
-
-  var validParameters = { userId: userIdRef, bookId: bookIdRef, description: verifyExistsDescription("Loan", userId + "/" + bookId, "loans") };
-  var variants = [{ name: "readLoans (valid): " + userId + "/" + bookIdRef, parameters: validParameters, expectedResponseCodes: [200], valid: true }];
-  variants = variants.concat(invalidCases.map(function (c) {
-    var eventName = "Req: readLoans (invalid - " + c.label + "): " + userId + "/" + bookIdRef;
-    var parameters = { userId: c.parameters.userId, bookId: c.parameters.bookId, description: eventName };
-    return { name: eventName, parameters: parameters, expectedResponseCodes: [400] };
-  }));
-
-  while (true) {
-    var response = requestOneOfDirect("get", "/loans", variants);
-    if (response.data.model.valid === true) return response;
-  }
+  return readSutList("/loans", {
+    userId: sutUserIdRef(userId),
+    bookId: sutBookIdRef(bookId),
+    description: verifyExistsDescription("Loan", userId + "/" + bookId, "loans")
+  });
 }
 
 // Gera: reads one list, not "all lists", and its only caller always passes bookId, so the
@@ -638,11 +382,10 @@ function verifyLoanAbsentFromAllLists(bookId, userId) {
 
 function tryToDeleteLoanAndExpectError(userId, bookId, expectedCode) {
   userId = asInteger(userId);
-  var bookIdRef = sutBookIdRef(bookId);
-  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
-  var url = "/loans/" + sutUserIdRef(userId) + "/" + bookIdRef;
+  bookId = asInteger(bookId);
+  expectedCode = codeOrDefault(expectedCode, 400);
   var description = verifyRejectedDescription("Loan", userId + "/" + bookId, "delete", "the operation is not allowed in this state");
-  svc.delete(url, { expectedResponseCodes: [expectedCode], parameters: { description: description } });
+  svc.delete("/loans/" + sutUserIdRef(userId) + "/" + sutBookIdRef(bookId), { expectedResponseCodes: [expectedCode], parameters: { description: description } });
 }
 
 function tryToDeleteDeletedLoanAndExpectError(userId, bookId) {
@@ -663,84 +406,40 @@ function matchAnyLoanDeleted() {
   return AnyLoanDeleted;
 }
 
+//////////////////////////////////////////////////////////////////////////
+// Users
+//////////////////////////////////////////////////////////////////////////
+
 function createUser(id, name) {
   id = asInteger(id);
-  name = asString(name);
-
-  var reqDescription = createDescription("User", id);
-  var parameters = { description: reqDescription, id: id };
-  var callback = rememberCreatedId("USER", id);
-  var variants = [
-    { name: "createUser (valid-standard): " + id, body: { name: name }, expectedResponseCodes: [201], parameters: parameters, callback: callback, valid: true },
-    { name: "createUser (valid-spaced-name): " + id, body: { name: " " + name }, expectedResponseCodes: [201], parameters: parameters, callback: callback, valid: true },
-    // Positive counterpart to the "no unexpected-field case" note in
-    // tryToCreateUserWithBadParametersAndExpectError below: locks in that an unrecognized field
-    // is accepted (silently ignored), not merely untested.
-    { name: "createUser (valid-unexpected-field): " + id, body: { name: name, unexpected: "value" }, expectedResponseCodes: [201], parameters: parameters, callback: callback, valid: true }
-  ];
-
-  var invalidCases = [
-    // Claude: "missing name" and "missing all required fields" are the same request ({}).
-    { label: "missing name", body: {} },
-    { label: "missing all required fields", body: {} },
-    { label: "name has wrong type", body: { "name": 12345 } },
-    { label: "name is null", body: { "name": null } },
-    { label: "name is empty", body: { "name": "" } }
-  ];
-
-  variants = variants.concat(invalidCases.map(function(c) {
-    return { name: "createUser (invalid - " + c.label + "): " + id, body: c.body, expectedResponseCodes: [400] };
-  }));
-
-  while (true) {
-    var response = requestOneOfDirect("post", "/users", variants);
-    if (response.data.model.valid === true) return response;
-  }
+  return svc.post("/users", {
+    body: JSON.stringify({ name: asString(name) }),
+    expectedResponseCodes: [201],
+    parameters: { description: createDescription("User", id), id: id },
+    callback: rememberCreatedId("USER", id)
+  });
 }
 
+// Sends one malformed create request (the required field is missing) and expects it rejected.
+// `id` only labels the event; the SUT never sees it.
 function tryToCreateUserWithBadParametersAndExpectError(id, expectedCode) {
   id = asInteger(id);
-  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
-  var url = "/users";
-  var reqDescription = verifyRejectedDescription("User", id, "create", "required parameters are missing or invalid");
-  // No id-related or "unexpected field" cases: the SUT assigns the user's id itself and
-  // silently ignores any other field (only name is read/validated - see sut.py's POST /users),
-  // so there is no rejectable invalid id left to fuzz. See the identical notes on createBook.
-  var cases = [
-    { name: "missing name", body: {} },
-    { name: "name has wrong type", body: { "name": 12345 } },
-    { name: "name is null", body: { "name": null } },
-    { name: "name is empty", body: { "name": "" } }
-  ];
-  var variants = cases.map(function (c) {
-    return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
-  });
-  requestOneOfDirect("post", url, variants);
+  expectedCode = codeOrDefault(expectedCode, 400);
+  var description = verifyRejectedDescription("User", id, "create", "required parameters are missing or invalid");
+  return svc.post("/users", { body: JSON.stringify({}), expectedResponseCodes: [expectedCode], parameters: { description: description } });
 }
 
 function deleteUser(id) {
   id = asInteger(id);
-
-  var variants = [
-    { name: "deleteUser (valid): " + id, url: "/users/" + sutUserIdRef(id), expectedResponseCodes: [200], parameters: { description: deleteDescription("User", id), id: id }, valid: true },
-    { name: "deleteUser (invalid - bad-id): " + id, url: "/users/bad-id", expectedResponseCodes: [400] },
-    { name: "deleteUser (invalid - zero): " + id, url: "/users/0", expectedResponseCodes: [400] },
-    { name: "deleteUser (invalid - negative): " + id, url: "/users/-1", expectedResponseCodes: [400] }
-  ];
-  while (true) {
-    var response = requestOneOfDirect("delete", null, variants);
-    if (response.data.model.valid === true) return response;
-  }
+  return svc.delete("/users/" + sutUserIdRef(id), {
+    expectedResponseCodes: [200],
+    parameters: { description: deleteDescription("User", id), id: id }
+  });
 }
-
-// verifyUserDeleteFuzz (static per-field fuzz cases) was replaced by the dynamic valid/invalid
-// loop inside createUser/deleteUser above. verifyUserReadFuzz was removed and not replaced: the
-// /users search endpoint accepts any `q` value and always answers 200, so there is no rejectable
-// invalid variant to fuzz for user reads (see the note above verifyMissingEntityReadIsRejected).
 
 function tryToUpdateUserAndExpectError(id, body, expectedCode) {
   id = asInteger(id);
-  expectedCode = expectedCode === undefined || expectedCode === null ? 405 : asInteger(expectedCode);
+  expectedCode = codeOrDefault(expectedCode, 405);
   tryToUpdateAndExpectError("User", id, "/users/" + sutUserIdRef(id), body, expectedCode);
 }
 
@@ -758,10 +457,9 @@ function verifyUserAbsentFromAllLists(id) {
 
 function tryToDeleteUserAndExpectError(id, expectedCode) {
   id = asInteger(id);
-  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
-  var url = "/users/" + sutUserIdRef(id);
+  expectedCode = codeOrDefault(expectedCode, 400);
   var description = verifyRejectedDescription("User", id, "delete", "the operation is not allowed in this state");
-  svc.delete(url, { expectedResponseCodes: [expectedCode], parameters: { description: description } });
+  svc.delete("/users/" + sutUserIdRef(id), { expectedResponseCodes: [expectedCode], parameters: { description: description } });
 }
 
 function tryToDeleteDeletedUserAndExpectError(id) {
@@ -780,148 +478,77 @@ function matchAnyUserDeleted() {
   return AnyUserDeleted;
 }
 
+//////////////////////////////////////////////////////////////////////////
+// Holds
+//////////////////////////////////////////////////////////////////////////
+
+// The SUT assigns the hold's id itself (see sut.py's POST /holds, which reads only userId/bookId
+// from the payload); `id` is this story's bookkeeping handle, like a book's id in createBook.
+// userId/bookId in the body are late-bound "@{...}" placeholders (see the sutIdRef doc comment
+// above). bookIdMissing/userIdMissing are true when the caller is deliberately exercising a
+// nonexistent foreign key (see tryToCreateHoldWithNonexistent{User,Book,UserAndBook}AndExpectError):
+// that id was never created and has no RTV entry.
 function createHold(bookId, id, userId, expectedCode, description, bookIdMissing, userIdMissing) {
   bookId = asInteger(bookId);
   id = asInteger(id);
   userId = asInteger(userId);
+  expectedCode = codeOrDefault(expectedCode, 201);
 
   var reqDescription = description || (createDescription("Hold", id) + " for User " + userId + " and Book " + bookId);
-  expectedCode = expectedCode === undefined || expectedCode === null ? 201 : asInteger(expectedCode);
-  var parameters = { description: reqDescription, id: id, userId: userId, bookId: bookId };
-  // bookId in each valid body is a late-bound "@{...}" placeholder (see the sutIdRef doc comment
-  // above), substituted with the SUT id by Provengo's runtime only once the request actually
-  // fires. bookIdMissing/userIdMissing are true when the caller is deliberately exercising a
-  // nonexistent foreign key (see tryToCreateHoldWithNonexistent{User,Book,UserAndBook}AndExpectError):
-  // that id was never created and has no RTV entry.
-  var variants = [
-    { name: "createHold (valid-standard): " + id, body: { userId: sutUserIdRef(userId, userIdMissing), bookId: sutBookIdRef(bookId, bookIdMissing) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 ? rememberCreatedId("HOLD", id) : undefined, valid: true },
-    { name: "createHold (valid-swapped-order): " + id, body: { bookId: sutBookIdRef(bookId, bookIdMissing), userId: sutUserIdRef(userId, userIdMissing) }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 ? rememberCreatedId("HOLD", id) : undefined, valid: true },
-    // Positive counterpart to the "no unexpected-field case" note in
-    // tryToCreateHoldWithBadParametersAndExpectError below: locks in that an unrecognized field
-    // is accepted (silently ignored), not merely untested.
-    { name: "createHold (valid-unexpected-field): " + id, body: { userId: sutUserIdRef(userId, userIdMissing), bookId: sutBookIdRef(bookId, bookIdMissing), unexpected: "value" }, expectedResponseCodes: [expectedCode], parameters: parameters, callback: expectedCode === 201 ? rememberCreatedId("HOLD", id) : undefined, valid: true }
-  ];
-
-  // No id-related cases: the SUT assigns the hold's id itself (see sut.py's POST /holds,
-  // which reads only userId/bookId from the payload) and silently ignores any client-supplied
-  // "id" field, so there is no rejectable invalid id left to fuzz - matching createBook above.
-  var invalidCases = [
-    { name: "missing bookId", body: { "userId": userId } },
-    { name: "missing userId", body: { "bookId": bookId } },
-    { name: "missing all required fields", body: {} },
-    { name: "userId has wrong type", body: { "userId": "bad-user-id", "bookId": bookId } },
-    { name: "bookId has wrong type", body: { "userId": userId, "bookId": "bad-book-id" } },
-    { name: "multiple wrong types", body: { "userId": false, "bookId": "bad-book-id" } },
-    { name: "userId is null", body: { "userId": null, "bookId": bookId } },
-    { name: "bookId is null", body: { "userId": userId, "bookId": null } },
-    { name: "userId is zero", body: { "userId": 0, "bookId": bookId } },
-    { name: "bookId is zero", body: { "userId": userId, "bookId": 0 } },
-    { name: "userId is negative", body: { "userId": -userId, "bookId": bookId } },
-    { name: "bookId is negative", body: { "userId": userId, "bookId": -bookId } },
-    { name: "userId is object", body: { "userId": { "val": userId }, "bookId": bookId } },
-    { name: "bookId is object", body: { "userId": userId, "bookId": { "val": bookId } } }
-  ];
-
-  variants = variants.concat(invalidCases.map(function(c) {
-    return { name: "createHold (invalid - " + c.name + "): " + id, body: c.body, expectedResponseCodes: [400] };
-  }));
-
-  while (true) {
-    var response = requestOneOfDirect("post", "/holds", variants);
-    if (response.data.model.valid === true) return response;
-  }
+  var options = {
+    body: JSON.stringify({ userId: sutUserIdRef(userId, userIdMissing), bookId: sutBookIdRef(bookId, bookIdMissing) }),
+    expectedResponseCodes: [expectedCode],
+    parameters: { description: reqDescription, id: id, userId: userId, bookId: bookId }
+  };
+  if (expectedCode === 201) options.callback = rememberCreatedId("HOLD", id);
+  return svc.post("/holds", options);
 }
 
 // missingBookId/userId/missingUserId were never created (see generateMissingId()), so they have no
 // RTV entry; createHold is told which argument(s) to send as a plain id instead of resolving one.
 function tryToCreateHoldWithNonexistentUserAndExpectError(bookId, id, missingUserId, expectedCode) {
-  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  expectedCode = codeOrDefault(expectedCode, 400);
   return createHold(bookId, id, missingUserId, expectedCode, verifyRejectedDescription("Hold", id, "create", "the operation is not allowed in this state"), false, true);
 }
 
 function tryToCreateHoldWithNonexistentBookAndExpectError(missingBookId, id, userId, expectedCode) {
-  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  expectedCode = codeOrDefault(expectedCode, 400);
   return createHold(missingBookId, id, userId, expectedCode, verifyRejectedDescription("Hold", id, "create", "the operation is not allowed in this state"), true, false);
 }
 
 function tryToCreateHoldWithNonexistentUserAndBookAndExpectError(missingBookId, id, missingUserId, expectedCode) {
-  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
+  expectedCode = codeOrDefault(expectedCode, 400);
   return createHold(missingBookId, id, missingUserId, expectedCode, verifyRejectedDescription("Hold", id, "create", "the operation is not allowed in this state"), true, true);
 }
 
+// Sends one malformed create request (both required fields missing) and expects it rejected.
+// `id`/`userId` only label the event; the SUT never sees them.
 function tryToCreateHoldWithBadParametersAndExpectError(id, userId, expectedCode) {
   id = asInteger(id);
   userId = asInteger(userId);
-  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
-  var url = "/holds";
-  var reqDescription = verifyRejectedDescription("Hold", id, "create", "required parameters are missing or invalid");
-  // No id-related cases: the SUT assigns the hold's id itself and silently ignores any
-  // client-supplied "id" field (see createHold above), so there is no rejectable invalid id left
-  // to fuzz, and no reason to send one on the wire.
-  var cases = [
-    { name: "missing bookId", body: { "userId": userId } },
-    { name: "missing userId", body: { "bookId": userId } },
-    { name: "missing all required fields", body: {} },
-    { name: "userId has wrong type", body: { "userId": "bad-user-id", "bookId": userId } },
-    { name: "bookId has wrong type", body: { "userId": userId, "bookId": "bad-book-id" } },
-    { name: "multiple wrong types", body: { "userId": false, "bookId": "bad-book-id" } },
-    { name: "userId is null", body: { "userId": null, "bookId": userId } },
-    { name: "bookId is null", body: { "userId": userId, "bookId": null } },
-    { name: "userId is zero", body: { "userId": 0, "bookId": userId } },
-    { name: "bookId is zero", body: { "userId": userId, "bookId": 0 } },
-    { name: "userId is negative", body: { "userId": -userId, "bookId": userId } },
-    { name: "bookId is negative", body: { "userId": userId, "bookId": -userId } }
-    // No "unexpected field" case: the SUT ignores extra fields on this endpoint (only
-    // userId/bookId are read/validated - see sut.py's POST /holds), so a request with one
-    // succeeds rather than being rejected. See the identical note on createBook.
-  ];
-  var variants = cases.map(function (c) {
-    return { body: c.body, expectedResponseCodes: [expectedCode], description: reqDescription + " - " + c.name };
-  });
-  requestOneOfDirect("post", url, variants);
+  expectedCode = codeOrDefault(expectedCode, 400);
+  var description = verifyRejectedDescription("Hold", id, "create", "required parameters are missing or invalid");
+  return svc.post("/holds", { body: JSON.stringify({}), expectedResponseCodes: [expectedCode], parameters: { description: description } });
 }
 
-function deleteHold(id, expectedCode, userId, bookId) {
+function deleteHold(id, userId, bookId) {
   id = asInteger(id);
-  // Claude: the one caller passes (id, userId, bookId), and this shuffles the arguments to fit an
-  // (id, expectedCode, userId, bookId) signature. Just make the signature (id, userId, bookId)?
-  if (bookId === undefined && userId !== undefined && userId !== null) {
-    bookId = userId;
-    userId = expectedCode;
-    expectedCode = null;
-  }
-  userId = userId === undefined || userId === null ? null : asInteger(userId);
-  bookId = bookId === undefined || bookId === null ? null : asInteger(bookId);
+  userId = optionalInteger(userId);
+  bookId = optionalInteger(bookId);
 
   var reqDescription = deleteDescription("Hold", id, userId === null || bookId === null ? "" : "for User " + userId + " and Book " + bookId);
-  expectedCode = expectedCode === undefined || expectedCode === null ? 200 : asInteger(expectedCode);
   var parameters = { description: reqDescription, id: id };
   if (userId !== null) parameters.userId = userId;
   if (bookId !== null) parameters.bookId = bookId;
-  var variants = [
-    { name: "deleteHold (valid): " + id, url: "/holds/" + sutHoldIdRef(id), expectedResponseCodes: [expectedCode], parameters: parameters, valid: true },
-    { name: "deleteHold (invalid - bad-id): " + id, url: "/holds/bad-id", expectedResponseCodes: [400] },
-    { name: "deleteHold (invalid - zero): " + id, url: "/holds/0", expectedResponseCodes: [400] },
-    { name: "deleteHold (invalid - negative): " + id, url: "/holds/-1", expectedResponseCodes: [400] }
-  ];
-
-  while (true) {
-    var response = requestOneOfDirect("delete", null, variants);
-    if (response.data.model.valid === true) return response;
-  }
+  return svc.delete("/holds/" + sutHoldIdRef(id), { expectedResponseCodes: [200], parameters: parameters });
 }
-
-// verifyHoldDeleteFuzz (static per-field fuzz cases) was replaced by the dynamic valid/invalid
-// loop inside createHold/deleteHold above. verifyHoldReadFuzz was removed and not replaced: the
-// /holds search endpoint accepts any `q` value and always answers 200, so there is no rejectable
-// invalid variant to fuzz for hold reads (see the note above verifyMissingEntityReadIsRejected).
 
 // Claude: userId/bookId are normalized and then never used.
 function tryToUpdateHoldAndExpectError(id, userId, bookId, body, expectedCode) {
   id = asInteger(id);
   userId = asInteger(userId);
   bookId = asInteger(bookId);
-  expectedCode = expectedCode === undefined || expectedCode === null ? 405 : asInteger(expectedCode);
+  expectedCode = codeOrDefault(expectedCode, 405);
   tryToUpdateAndExpectError("Hold", id, "/holds/" + sutHoldIdRef(id), body, expectedCode);
 }
 
@@ -938,10 +565,9 @@ function verifyHoldAbsentFromAllLists(id) {
 
 function tryToDeleteHoldAndExpectError(id, expectedCode) {
   id = asInteger(id);
-  expectedCode = expectedCode === undefined || expectedCode === null ? 400 : asInteger(expectedCode);
-  var url = "/holds/" + sutHoldIdRef(id);
+  expectedCode = codeOrDefault(expectedCode, 400);
   var description = verifyRejectedDescription("Hold", id, "delete", "the operation is not allowed in this state");
-  svc.delete(url, { expectedResponseCodes: [expectedCode], parameters: { description: description } });
+  svc.delete("/holds/" + sutHoldIdRef(id), { expectedResponseCodes: [expectedCode], parameters: { description: description } });
 }
 
 function tryToDeleteDeletedHoldAndExpectError(id) {

@@ -209,7 +209,7 @@ ctx.bthread("createHold", "UserBook.CanCreateHold", function (userbook) {
 // deleteUser/deleteBook used to wrap their call in block(matchAddHoldOrLoanForUser/Book(...), ...)
 // to guard against a concurrently-created hold/loan turning the delete's expected 200 into a 400.
 // That guard matched on candidate (not-yet-sent) createLoan/createHold events by shape, so it
-// vetoed those events' own valid-shaped variants for as long as this delete offer was merely
+// vetoed those events for as long as this delete offer was merely
 // pending -- and since User.CanDelete/Book.CanDelete become eligible the moment the entity is
 // created, this permanently blocked a fresh user/book's own createLoan(...) from ever completing
 // before the entity got deleted out from under it. Removed; no replacement guard yet.
@@ -240,9 +240,10 @@ ctx.bthread("deleteHold", "Hold.All", function (hold) {
 // generate_unique_id in sut.py), so there is no client-chosen id left that could collide with an
 // existing one. See the RTV helpers (sutBookIdRef etc.) in interfaces.library.js.
 
-// Claude: the *WithBadParameters b-threads (book, loan, hold) send the same invalid bodies that
-// createBook/createLoan/createHold already fuzz in their own loops. They're also spawned once per
-// book/pair/hold, though a rejected create doesn't depend on which entity exists. Needed at all?
+// The *WithBadParameters b-threads (book, loan, hold) are the only place malformed create
+// requests are sent: each sends one request with the required fields missing.
+// Claude: they're spawned once per book/pair/hold, though a rejected create doesn't depend on
+// which entity exists. Once per run would do?
 ctx.bthread("verifyCannotCreateBookWithBadParameters", "Book.All", function (book) {
   tryToCreateBookWithBadParametersAndExpectError(book.bookid);
 });
@@ -340,43 +341,14 @@ bthread("tryToDeleteNonexistingHold", function () {
 });
 
 // =========================================================================
-// Step 1: The Fuzzing Interface Layer Contract
+// Step 1: The Interface Layer Contract
 // =========================================================================
 // Whenever a story requests an action (create, delete, or retrieve an object),
-// the interface layer executes a pre-flight fuzzing and verification sequence
-// IF the SUT actually defines rejection semantics for that action. Some reads
-// (see point 4) have no invalid variant to fuzz and skip straight to the request.
-// Gera: there is no point 4, and the "Point 3's synchronization rule" mentioned in point 3 itself
-// doesn't exist either - stale references?
-//
-// 1. Event Generation & Fuzzing:
-//    The interface defines and requests a set of fuzzed request events:
-//    - Valid Variants: Requests with parameters passed in different orders, types
-//      (e.g., stringified integers), or padded values, which the SUT should accept.
-//    - Invalid Variants: Requests with missing fields, incorrect types, nulls,
-//      negatives, or empty values, designed to verify the SUT's rejection logic.
-//
-// 2. Fuzzing Loop execution:
-//    The system enters a synchronization block requesting the union of all valid
-//    and invalid events:
-//    - If an invalid event is selected: The interface immediately executes a REST
-//      request asserting that the SUT rejects it (expected code 400). It then loops
-//      to request the event set again.
-//    - If a valid event is selected: The interface executes the successful REST
-//      request (expecting 200 or 201) and exits the loop.
-//
-// 3. Retrieve actions and the fuzzing loop:
-//    A read only gets the fuzzing loop (points 1-2) when the SUT itself validates
-//    the read's parameters and can reject it with 400:
-//    - Book detail reads (GET /books/{id}) validate the id path segment, so
-//      verifyBookDetailExists fuzzes it exactly like a delete action.
-//    - Loan list reads (GET /loans) validate userId/bookId query parameters, so
-//      verifyLoanExists fuzzes them the same way.
-//    - Book/user/hold list reads (GET /books|/users|/holds) accept any `q` value
-//      and always answer 200 - there is no invalid variant, so verifyBookExists,
-//      verifyUserExists, and verifyHoldExists read the SUT list directly instead
-//      of running the fuzzing loop. Point 3's synchronization rule does not apply
-//      to these EventSets either, since nothing blocks or waits on a plain read.
+// the interface layer sends exactly one REST request for it, with the response
+// code the SUT is expected to answer (201/200 for the action functions, 400/404/405
+// for the tryTo*AndExpectError functions). One call in a story is one event in
+// the trace; malformed-request checks are separate stories, not a side effect of
+// the actions they are about.
 //
 
 
