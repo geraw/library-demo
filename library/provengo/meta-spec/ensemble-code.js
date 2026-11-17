@@ -1,3 +1,50 @@
+// @provengo summon ctrl
+
+/**
+ * Events "of interest" that a selected suite should cover. Every event of this model is named
+ * after its HTTP verb, so goals are expressed over the trace description in
+ * data.parameters.description (see interfaces.library.js).
+ */
+function described(pattern) {
+    return bp.EventSet("Goal " + pattern, function (e) {
+        var parameters = e.data && e.data.parameters;
+        return !!(parameters && parameters.description && pattern.test(String(parameters.description)));
+    });
+}
+
+const GOALS = [
+    described(/^Create: Loan/),
+    described(/^Delete: Loan/),
+    described(/^Create: Hold/),
+    described(/^Delete: Hold/),
+    described(/^Verify: create Loan .* is rejected because the book is on loan/),
+    described(/^Verify: delete (User|Book) .* is rejected because the (reader|book) (has|is)/),
+    described(/^Verify: (delete|read) .* no longer exists/),
+    described(/^Verify: Book \d+ exists/)
+];
+
+
+/**
+ * Counts how many goals are met by the passed test suite.
+ * @param {Event[][]} ensemble Test suite to be ranked.
+ * @param {EventSet[]} goals Goals to be covered by the test suite.
+ * @returns How many goals were met by the test suite.
+ */
+function countMetGoals(ensemble, goals) {
+    let metGoals = 0;
+    goalLoop: for (let goal of goals) {
+        for ( let test of ensemble ) {
+            for (let event of test) {
+                if ( goal.contains(event) ) {
+                    metGoals++;
+                    continue goalLoop;
+                }
+            }
+        }
+    }
+    return metGoals;
+}
+
 // ============================================================
 // State Coverage
 // ============================================================

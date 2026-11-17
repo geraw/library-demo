@@ -1,0 +1,2 @@
+# Minimal Provengo project: independent checks chained in one b-thread are reachable only in that order
+version: 2

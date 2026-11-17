@@ -1,0 +1,2 @@
+# Minimal Provengo project: demonstrates that on() drops events selected while its handler runs.
+version: 2

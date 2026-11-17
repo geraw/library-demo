@@ -9,7 +9,7 @@ const vm = require("vm");
 const path = require("path");
 
 const SRC = path.join(__dirname, "..", "ensemble-code.js");
-const sandbox = { console, NUMBER_OF_USERS: 4, NUMBER_OF_BOOKS: 4 };
+const sandbox = { console, NUMBER_OF_USERS: 4, NUMBER_OF_BOOKS: 4, bp: { EventSet: function(name, fn) { return { contains: fn }; } } };
 vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync(SRC, "utf8"), sandbox, { filename: SRC });
 

@@ -1,86 +1,32 @@
-# test_ctx
+# Library test model (Provengo)
 
----
-2026-04-20 10:04:55
-geraw
+A Provengo behavioral model of the library REST service in `../sut/sut.py` (readers, books,
+loans, holds). The business rules it encodes and the stories it generates are described in
+[Lib_Rule.MD](Lib_Rule.MD).
 
-Provengo project for spec-ing and testing my system.
+## Layout
 
+| Path | Role |
+|---|---|
+| `lib/utils.js` | Generic helpers: description builders, event accessors, list reads. Loaded first. |
+| `data/` | Project data; a campaign may drop an endpoint override here. Loaded second. |
+| `spec/js/interfaces.library.js` | The REST boundary: one request per action, EventSets, `extractEventData`, SUT-id mapping (RTV). |
+| `spec/js/dal.js` | The Context model: entities, effects of successful events, queries. |
+| `spec/js/lib_stories.js` | The stories: creates, deletes, reads and business-rule rejection checks. |
+| `meta-spec/` | Scenario metadata and the ensemble ranking goals. |
+| `config/provengo.yml` | Provengo configuration. |
 
-## Important Files
+## Run
 
-* README.md This file.
-* [config](config) Configuration files and administrative data.
-    * [provengo.yml](config/provengo.yml) Main Configuration file
-    * [hooks](config/hooks) Hook scripts (pre/post/...)
-* [spec](spec) The code creating the specification space lives here. Organized by language.
-    * [js](spec/js) JavaScript files
-      * [hello-world.js](spec/js/hello-world.js) Initial model file.
-* [meta-spec](meta-spec) Code for working with the specification space
-    * [ensemble-code.js](meta-spec/ensemble-code.js) Sample code for generating test optimized test suites (ensembles)
-    * [book-writer.js](meta-spec/book-writer.js) Sample code for generating test books
-    * [script-writer.js](meta-spec/script-writer.js) Code for generating test scripts.
-* [lib](lib) Place to store JavaScript libraries. Loaded first.
-* [data](data) Place to store data files. Loaded second (so you can use library code to in your data).
-    * [data.js](data/data.js) Sample data file.
-* [products](products) Artifacts generated from the spec (such as run logs, scripts, and test-books) will be stored here. Much like `build` directories in other platforms, this directory can be ignored by version control systems (e.g. `git`).
+With `provengo` on the PATH and the service running on `localhost:23242` (`python ../sut/sut.py`):
 
+```bash
+provengo run .                 # one live scenario against the service
+provengo run --dry .           # model only; stops at the first late-bound SUT id
+provengo sample --size 10 .    # sample scenarios (no service needed)
+provengo analyze -f pdf .      # draw the specification
+provengo ensemble --size 5 .   # pick a suite that covers the goals in meta-spec/ensemble-code.js
+```
 
-## Useful Commands
-
-⚠️ NOTE: In the below listings, we assume that `provengo` is in the system's PATH variable, and that `C:\Users\geraw\provengo\BpTestTell\Context\test_ctx` is the path to this directory.
-
-For full documentation go to [https://docs.provengo.tech](docs.provengo.tech).
-
-### Randomized Run 
-
-Perform a single run through the specification. Good for "Sanity checks", i.e. to see examples of what can happen.
-
-    provengo run --dry C:\Users\geraw\provengo\BpTestTell\Context\test_ctx
-
-
-### Visualize the Spec
-
-Draw the specification in a PDF file.
-
-    provengo analyze -f pdf C:\Users\geraw\provengo\BpTestTell\Context\test_ctx
-
-
-⚠️ NOTE: This requires [Graphviz](http://graphviz.org) to be installed.
-
-
-### Sample Runs from the Spec
-
-Sample 10 scenarios into a file. The scenarios are stored in a file called `samples.json` (this can be changed using the `-o`/`--output-file` switch).
-
-    provengo sample --overwrite --size 10 C:\Users\geraw\provengo\BpTestTell\Context\test_ctx
-
-
-### Create an Optimized Test Suite
-
-Generate a test suite of 5 tests that provides a good coverage of items in the [GOALS](z-ranking.js#L18) array.
-
-**Requires running `sample` first** (the previous command)**.**
-
-    provengo ensemble --size 5 C:\Users\geraw\provengo\BpTestTell\Context\test_ctx
-
-#### Visualize the Spec and the Suite
-
-Draw the specification, and highlight the traces in the optimized test suite create by the previous command.
-
-    provengo analyze -f pdf --highlight ensemble.json C:\Users\geraw\provengo\BpTestTell\Context\test_ctx
-
-### Create Test Scripts for Third Party Systems
-
-Converts the runs in `ensemble.json` to automation test scripts.
-
-    provengo gen-scripts -s ensemble.json C:\Users\geraw\provengo\BpTestTell\Context\test_ctx
-
-## AI code completion
-To enable AI code completion, please use a code completion plugin (e.g., [GitHub Copilot](https://github.com/features/copilot)) and keep open the files inside the [config/ai](config/ai) folder.
-
-## Git MCP Support
-To use this, Open your GitHub copilot on `Agent` mode and run the TechDemos MCP server. 
-In the command palette type `MCP: list servers` and then choose `TechDemos`, then click run. 
-GitMCP support Works with all popular MCP-compatible AI tools, including: `Claude` · `Cursor` · `Windsurf` · `Cline` · `Highlight AI` · `Augment Code`
-Check https://gitmcp.io/Provengo/TechDemos for configurations. 
+The experiment harness that runs this model guided through a scenario catalog, behind an
+observer and against mutated services lives in `../ess-experiment/campaign-v013/`.

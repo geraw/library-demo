@@ -88,7 +88,7 @@ function createBookEntity(data) {
 	// bp.log.info("DAL create book {0}", data.id);
 	ctx.insertEntity(ctx.Entity(bookId(data.id), 'book', {
 		bookid: data.id,
-		title: data.title || data.name
+		title: data.title
 	}));
 
 	let allusers = ctx.runQuery('User.All');
@@ -133,7 +133,6 @@ function createLoanEntity(data) {
 	if (entityExists('Loan.All', loanId(data.userId, data.bookId))) return;
 	// bp.log.info("DAL create loan {0}/{1}", data.userId, data.bookId);
 	ctx.insertEntity(ctx.Entity(loanId(data.userId, data.bookId), 'loan', {
-		loanid: data.loanNumber,
 		userid: data.userId,
 		bookid: data.bookId
 	}));
@@ -145,11 +144,26 @@ function deleteLoanEntity(data) {
 	ctx.removeEntity(loanId(data.userId, data.bookId));
 }
 
+// How many holds this reader/book pair has created so far (cancelled ones included). The DAL
+// keeps one never-removed 'hold-record' entity per creation, so the count is a function of the
+// selected events alone and the stories can derive a hold id that never repeats (see
+// holdIdFor in lib_stories.js). No query is registered over these records, so they spawn no
+// live copies.
+function holdsCreatedFor(userIdValue, bookIdValue) {
+	return ctx.runQuery(function (e) {
+		return e.type === 'hold-record' && sameId(e.userid, userIdValue) && sameId(e.bookid, bookIdValue);
+	}).length;
+}
+
 function createHoldEntity(data) {
 	if (entityExists('Hold.All', holdId(data.id))) return;
 	// bp.log.info("DAL create hold {0} {1} {2}", data.id, data.userId, data.bookId);
 	ctx.insertEntity(ctx.Entity(holdId(data.id), 'hold', {
 		holdid: data.id,
+		userid: data.userId,
+		bookid: data.bookId
+	}));
+	ctx.insertEntity(ctx.Entity('hold-record:' + data.userId + ':' + data.bookId + ':' + holdsCreatedFor(data.userId, data.bookId), 'hold-record', {
 		userid: data.userId,
 		bookid: data.bookId
 	}));
@@ -205,10 +219,6 @@ ctx.registerQuery('Book.CanDelete', function (e) {
 	return e.type === 'book' && !hasLoanForBook(e.bookid) && !hasHoldForBook(e.bookid);
 });
 
-ctx.registerQuery('Book.CannotDelete', function (e) {
-	return e.type === 'book' && (hasLoanForBook(e.bookid) || hasHoldForBook(e.bookid));
-});
-
 ctx.registerQuery('User.All', function (e) {
 	return e.type === 'user';
 });
@@ -221,10 +231,6 @@ ctx.registerQuery('Hold.All', function (e) {
 	return e.type === 'hold';
 });
 
-ctx.registerQuery('Hold.WithoutLoan', function (e) {
-	return e.type === 'hold' && !hasLoanForUser(e.userid) && !hasLoanForBook(e.bookid);
-});
-
 ctx.registerQuery('UserBook.All', function (e) {
 	return e.type === 'user-book';
 });
@@ -233,16 +239,8 @@ ctx.registerQuery('User.CanDelete', function (e) {
 	return e.type === 'user' && !hasLoanForUser(e.userid) && !hasHoldForUser(e.userid);
 });
 
-ctx.registerQuery('User.CannotDelete', function (e) {
-	return e.type === 'user' && (hasLoanForUser(e.userid) || hasHoldForUser(e.userid));
-});
-
 ctx.registerQuery('UserBook.CanCreateHold', function (e) {
 	return e.type === 'user-book';
-});
-
-ctx.registerQuery('UserBook.CannotCreateHold', function (e) {
-	return false;
 });
 
 ctx.registerQuery('UserBook.CanCreateLoan', function (e) {
