@@ -86,8 +86,8 @@ def rows(path):
 
 def default_sets(profile):
     if profile == 'contract':
-        return 'catalog,v013-common,v013-contract,v013-negative,v013-negative-contract'
-    return 'catalog,v013-common,v013-negative,v013-negative-original'
+        return 'catalog,v013-common,v013-contract,v013-negative,v013-negative-contract,v013-gaps'
+    return 'catalog,v013-common,v013-negative,v013-negative-original,v013-gaps'
 
 
 def build_adapter(root, source, jar, java, sets, only):

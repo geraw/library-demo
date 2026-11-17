@@ -1,0 +1,2 @@
+# Minimal Provengo project: spec files share one global scope; the last definition silently wins
+version: 2

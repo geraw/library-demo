@@ -32,14 +32,12 @@ function verifyExistsDescription(entityName, id, how) {
   return "Verify: " + entityDescription(entityName, id) + " exists" + (how ? " (" + how + ")" : "");
 }
 
-// List reads only check that the SUT answers 200 (see readSutList), so they are described as
-// reads, not as verifications of the list's contents.
-function readListAfterCreateDescription(entityName, id, listName) {
-  return "Read: " + listName + " list for " + entityDescription(entityName, id) + " after create";
+function verifyListedDescription(entityName, id, listName) {
+  return "Verify: " + entityDescription(entityName, id) + " is listed in " + listName;
 }
 
-function readListAfterDeleteDescription(entityName, id, listName) {
-  return "Read: " + listName + " list for " + entityDescription(entityName, id) + " after delete";
+function verifyAbsentDescription(entityName, id, listName) {
+  return "Verify: " + entityDescription(entityName, id) + " is absent from " + listName;
 }
 
 function verifyRejectedDescription(entityName, id, action, reason) {
@@ -76,10 +74,13 @@ function getJsonBody(e) {
 // SUT reads.
 //////////////////////////////////////////////////////////////////////////
 
-// Reads a SUT list, expecting 200. svc.get never hands back the HTTP response, so the list's
-// contents cannot be inspected here (that would need a REST callback).
-function readSutList(url, parameters) {
-  return svc.get(url, { parameters: parameters, expectedResponseCodes: [200] });
+// Reads a SUT list, expecting 200. `check` is a REST callback that runs at actuation time with
+// the response (see the content checks in interfaces.library.js); without one only the status
+// code is checked.
+function readSutList(url, parameters, check) {
+  var options = { parameters: parameters, expectedResponseCodes: [200] };
+  if (check) options.callback = check;
+  return svc.get(url, options);
 }
 
 // Reads the detail of an entity that was deleted, expecting 404.

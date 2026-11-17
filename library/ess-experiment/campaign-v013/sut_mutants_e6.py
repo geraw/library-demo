@@ -46,7 +46,7 @@ MUTANTS: Dict[str, Tuple[str, str, str]] = {
     "L4": ("2.10.1", "delete_loan removes every loan of the reader OR of the book (and -> or)", "observer"),
     "L5": ("2.10.2", "delete_loan: 404 for an existing loan (nothing deleted), 200 for a missing one", "native"),
     "L6": ("2.10.3", "delete_loan matches with reader and book swapped (never finds the loan)", "native"),
-    "L7": ("2.11.2", "GET /loans applies the bookId filter to all loans, ignoring the userId filter", "none (list contents are not checked)"),
+    "L7": ("2.11.2", "GET /loans applies the bookId filter to all loans, ignoring the userId filter", "native (content check on filtered list reads)"),
     "L8": ("3.8", "add_loan on a loaned book answers 400 but records the loan anyway", "observer"),
     "H1": ("2.12.2", "add_hold without the reader-exists check", "native"),
     "H2": ("2.12.3", "add_hold without the book-exists check", "native"),

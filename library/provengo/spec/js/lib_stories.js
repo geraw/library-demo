@@ -1,26 +1,26 @@
 const NUMBER_OF_USERS = 4;
 const NUMBER_OF_BOOKS = 4;
 
-// Ids and labels. AtomicInteger, not a plain JS `var n = 1; n++`: BPjs runs b-thread steps
-// concurrently on a thread pool, and a JS ++ on a shared global is not atomic, so two
-// ctx.bthreads could be handed the same number. The counters make numbers unique, not
-// repeatable: which pair gets which hold number depends on scheduling, so a scenario's identity
-// is its reader/book pairs, not its hold and loan numbers (those are labels that reach the DAL
-// and the trace descriptions only, never the wire).
-const nextUserId = new java.util.concurrent.atomic.AtomicInteger(1);
-const nextBookId = new java.util.concurrent.atomic.AtomicInteger(1);
-const nextLoanId = new java.util.concurrent.atomic.AtomicInteger(1);
-const nextHoldId = new java.util.concurrent.atomic.AtomicInteger(1);
-// Reader and book ids that are deliberately never created, for the nonexistent-foreign-key and
-// nonexistent-delete checks. They are sent on the wire as plain ids, and start far above anything
-// the counters above or the SUT will ever issue, so they can never collide with a real entity.
-const nextMissingId = new java.util.concurrent.atomic.AtomicInteger(1000000001);
-
-function generateUserId() { return nextUserId.getAndIncrement(); }
-function generateBookId() { return nextBookId.getAndIncrement(); }
-function generateLoanId() { return nextLoanId.getAndIncrement(); }
-function generateHoldId() { return nextHoldId.getAndIncrement(); }
-function generateMissingId() { return nextMissingId.getAndIncrement(); }
+// Ids are derived from the entities they belong to, never drawn from a shared counter: BPjs
+// runs b-thread steps concurrently between sync points, so a counter shared by several
+// b-threads would hand out numbers in an order that depends on scheduling, and the same event
+// selection would then produce different traces. With everything derived, the trace is a
+// function of the selected events alone.
+//
+// - Readers and books are numbered 1..NUMBER_OF_* by the single b-thread that creates them.
+// - A hold's id is derived from its reader/book pair and from how many holds that pair created
+//   before (the DAL's hold records): pair index + occurrence * NUMBER_OF_USERS * NUMBER_OF_BOOKS.
+//   A pair creates at most one hold at a time, so the occurrence is read when the hold is
+//   requested, and an id never repeats even when a pair holds again after a cancellation.
+// - A loan has no number: the service and the model both identify it by its pair.
+// - Ids that are deliberately never created (nonexistent-foreign-key and nonexistent-delete
+//   checks) are 1000000000 plus the id of the entity on the other side, or a small constant;
+//   they are sent as plain ids and can never collide with a real entity.
+function holdIdFor(userId, bookId) {
+  var pairIndex = (asInteger(userId) - 1) * NUMBER_OF_BOOKS + asInteger(bookId);
+  return pairIndex + holdsCreatedFor(userId, bookId) * NUMBER_OF_USERS * NUMBER_OF_BOOKS;
+}
+function missingId(n) { return 1000000000 + asInteger(n); }
 
 // Names and titles are derived from the id, so a given reader or book is created by the same
 // request in every run and sample.
@@ -59,6 +59,14 @@ function forEachEvent(name, eventSet, handler) {
       bthread(name + " [" + e.data.parameters.description + "]", function () { handler(e); });
     }
   });
+}
+
+// Some existing entity of `query`, to pair a deleted entity with, or null when none exists.
+// Which one is immaterial: the request is rejected for the deleted side. Readers and books are
+// created once (1..N), so when none is left the check is skipped rather than waited for.
+function anyExisting(query) {
+  let all = ctx.runQuery(query);
+  return all.length > 0 ? all[0] : null;
 }
 
 // Re-issues `check` after every event in `changes`, for as long as this b-thread lives. Used
@@ -118,6 +126,18 @@ forEachEvent("verifyDeletedUserCannotBeDeletedAgain", AnyUserDeleted, function (
   tryToDeleteDeletedUserAndExpectError(extractEventData(e).id);
 });
 
+// A deleted reader can neither borrow nor hold; its user-book rows are gone, so these checks
+// pair it with whichever book exists (skipped when no book is left).
+forEachEvent("verifyDeletedUserCannotLoan", AnyUserDeleted, function (e) {
+  let book = anyExisting('Book.All');
+  if (book) tryToCreateLoanWithDeletedUserAndExpectError(extractEventData(e).id, book.bookid);
+});
+
+forEachEvent("verifyDeletedUserCannotHold", AnyUserDeleted, function (e) {
+  let book = anyExisting('Book.All');
+  if (book) tryToCreateHoldWithDeletedUserAndExpectError(extractEventData(e).id, book.bookid);
+});
+
 ctx.bthread("verifyBookExistsAfterCreation", "Book.All", function (book) {
   verifyBookExists(book.bookid);
 });
@@ -155,13 +175,23 @@ forEachEvent("verifyDeletedBookCannotBeDeletedAgain", AnyBookDeleted, function (
   tryToDeleteDeletedBookAndExpectError(extractEventData(e).id);
 });
 
+forEachEvent("verifyDeletedBookCannotBeLoaned", AnyBookDeleted, function (e) {
+  let user = anyExisting('User.All');
+  if (user) tryToCreateLoanWithDeletedBookAndExpectError(user.userid, extractEventData(e).id);
+});
+
+forEachEvent("verifyDeletedBookCannotBeHeld", AnyBookDeleted, function (e) {
+  let user = anyExisting('User.All');
+  if (user) tryToCreateHoldWithDeletedBookAndExpectError(user.userid, extractEventData(e).id);
+});
+
 ctx.bthread("verifyLoanExists", "Loan.All", function (loan) {
   verifyLoanExists(loan.userid, loan.bookid);
 });
 
 // A loan the rules forbid stays forbidden until the loans change (holds never affect loans).
 ctx.bthread("verifyCannotCreateLoan", "UserBook.CannotCreateLoan", function (userbook) {
-  recheckAfterEveryRelationChange(AnyLoanChanged, function () { tryToCreateLoanAndExpectError(userbook.userid, userbook.bookid, generateLoanId()); });
+  recheckAfterEveryRelationChange(AnyLoanChanged, function () { tryToCreateLoanAndExpectError(userbook.userid, userbook.bookid); });
 });
 
 // Unlike users/books/holds, a loan's identity is its userId/bookId pair, so the same loan can be
@@ -200,15 +230,13 @@ forEachEvent("verifyDeletedHoldCannotBeDeletedAgain", AnyHoldDeleted, function (
 /////////////////////////////////////////////////////////////////////////
 
 bthread("createUsers", function () {
-  for (let i = 0; i < NUMBER_OF_USERS; i++) {
-    let id = generateUserId();
+  for (let id = 1; id <= NUMBER_OF_USERS; id++) {
     createUser(id, userName(id));
   }
 });
 
 bthread("createBooks", function () {
-  for (let i = 0; i < NUMBER_OF_BOOKS; i++) {
-    let id = generateBookId();
+  for (let id = 1; id <= NUMBER_OF_BOOKS; id++) {
     createBook(id, bookTitle(id));
   }
 });
@@ -221,11 +249,11 @@ bthread("createBooks", function () {
 //////////////////////////////////////////////////////////////////////////
 
 ctx.bthread("createLoan", "UserBook.CanCreateLoan", function (userbook) {
-  createLoan(userbook.userid, userbook.bookid, generateLoanId());
+  createLoan(userbook.userid, userbook.bookid);
 });
 
 ctx.bthread("createHold", "UserBook.CanCreateHold", function (userbook) {
-  createHold(generateHoldId(), userbook.userid, userbook.bookid);
+  createHold(holdIdFor(userbook.userid, userbook.bookid), userbook.userid, userbook.bookid);
 });
 
 /////////////////////////////////////////////////////////////////////////
@@ -250,7 +278,7 @@ ctx.bthread("deleteBook", "Book.CanDelete", function (book) {
 });
 
 ctx.bthread("deleteLoan", "Loan.All", function (loan) {
-  deleteLoan(loan.userid, loan.bookid, loan.loanid);
+  deleteLoan(loan.userid, loan.bookid);
 });
 
 ctx.bthread("deleteHold", "Hold.All", function (hold) {
@@ -262,48 +290,49 @@ ctx.bthread("deleteHold", "Hold.All", function (hold) {
 //
 // A nonexistent foreign key only needs some existing entity on the other side
 // of the pair, so each check runs once per user, once per book, or once per
-// run - not once per user-book pair. Loan and hold numbers passed here are
-// labels for the rejected request; the SUT never sees them.
+// run - not once per user-book pair. The missing id is derived from the
+// existing side (missingId(u) is "the book reader u asks for that does not
+// exist"); the once-per-run checks use small constants.
 //////////////////////////////////////////////////////////////////////////
 
 ctx.bthread("verifyCannotCreateLoanWithNonexistentBook", "User.All", function (user) {
-  tryToCreateLoanWithNonexistentBookAndExpectError(user.userid, generateMissingId(), generateLoanId());
+  tryToCreateLoanWithNonexistentBookAndExpectError(user.userid, missingId(user.userid));
 });
 
 ctx.bthread("verifyCannotCreateLoanWithNonexistentUser", "Book.All", function (book) {
-  tryToCreateLoanWithNonexistentUserAndExpectError(generateMissingId(), book.bookid, generateLoanId());
+  tryToCreateLoanWithNonexistentUserAndExpectError(missingId(book.bookid), book.bookid);
 });
 
 bthread("verifyCannotCreateLoanWithNonexistentUserAndBook", function () {
-  tryToCreateLoanWithNonexistentUserAndBookAndExpectError(generateMissingId(), generateMissingId(), generateLoanId());
+  tryToCreateLoanWithNonexistentUserAndBookAndExpectError(missingId(1), missingId(2));
 });
 
 ctx.bthread("verifyCannotCreateHoldWithNonexistentBook", "User.All", function (user) {
-  tryToCreateHoldWithNonexistentBookAndExpectError(generateHoldId(), user.userid, generateMissingId());
+  tryToCreateHoldWithNonexistentBookAndExpectError(user.userid, missingId(user.userid));
 });
 
 ctx.bthread("verifyCannotCreateHoldWithNonexistentUser", "Book.All", function (book) {
-  tryToCreateHoldWithNonexistentUserAndExpectError(generateHoldId(), generateMissingId(), book.bookid);
+  tryToCreateHoldWithNonexistentUserAndExpectError(missingId(book.bookid), book.bookid);
 });
 
 bthread("verifyCannotCreateHoldWithNonexistentUserAndBook", function () {
-  tryToCreateHoldWithNonexistentUserAndBookAndExpectError(generateHoldId(), generateMissingId(), generateMissingId());
+  tryToCreateHoldWithNonexistentUserAndBookAndExpectError(missingId(1), missingId(2));
 });
 
 bthread("tryToDeleteNonexistingUser", function () {
-  tryToDeleteNonexistingUserAndExpectError(generateMissingId());
+  tryToDeleteNonexistingUserAndExpectError(missingId(1));
 });
 
 bthread("tryToDeleteNonexistingBook", function () {
-  tryToDeleteNonexistingBookAndExpectError(generateMissingId());
+  tryToDeleteNonexistingBookAndExpectError(missingId(1));
 });
 
 bthread("tryToDeleteNonexistingLoan", function () {
-  tryToDeleteNonexistingLoanAndExpectError(generateMissingId(), generateMissingId());
+  tryToDeleteNonexistingLoanAndExpectError(missingId(1), missingId(2));
 });
 
 bthread("tryToDeleteNonexistingHold", function () {
-  tryToDeleteNonexistingHoldAndExpectError(generateMissingId());
+  tryToDeleteNonexistingHoldAndExpectError(missingId(1));
 });
 
 // =========================================================================
@@ -316,11 +345,8 @@ bthread("tryToDeleteNonexistingHold", function () {
 // verifyMissingEntityReadIsRejected). One call in a story is one event in the
 // trace. Negative stories only exercise business rules (blocked deletes,
 // forbidden loans, nonexistent or deleted entities); the model never sends a
-// malformed request or calls a route the service does not expose.
-//
-// Known gap: the model never attempts a loan or a hold for an entity that was
-// DELETED (its user-book row disappears with it); "a loan for a nonexistent
-// entity is rejected" is exercised with ids that were never created instead.
+// malformed request or calls a route the service does not expose. Every read
+// checks the response contents against the SUT ids recorded at creation.
 
 // =========================================================================
 // Coverage

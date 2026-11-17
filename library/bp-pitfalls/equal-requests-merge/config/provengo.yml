@@ -1,0 +1,2 @@
+# Minimal Provengo project: two b-threads requesting an equal event are both advanced by one selection
+version: 2

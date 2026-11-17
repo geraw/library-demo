@@ -58,7 +58,7 @@ def classify(event):
     codes = [int(c) for c in data.get('expectedResponseCodes', [])]
     outcome = 'ok' if codes and all(200 <= c < 300 for c in codes) else 'rejected-' + '/'.join(str(c) for c in codes)
     parameters = data.get('parameters') or {}
-    ids = {k: int(parameters[k]) for k in ('id', 'userId', 'bookId', 'loanNumber') if isinstance(parameters.get(k), (int, float))}
+    ids = {k: int(parameters[k]) for k in ('id', 'userId', 'bookId') if isinstance(parameters.get(k), (int, float))}
     description = str(parameters.get('description', ''))
     if not ids:
         # Rejection checks (tryTo*AndExpectError) label the event with the logical id in the

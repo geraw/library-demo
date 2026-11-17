@@ -74,7 +74,7 @@ public class V013GuidedSuiteHarness {
     public static void main(String[] args) throws Exception {
         String model = args[0], output = args[1];
         int caseTimeout = Integer.parseInt(args[2]);
-        List<String> sets = List.of("catalog", "v013-common", "v013-contract", "v013-negative", "v013-negative-contract");
+        List<String> sets = List.of("catalog", "v013-common", "v013-contract", "v013-negative", "v013-negative-contract", "v013-gaps");
         String only = null, boundary = "observer", resetUrl = null;
         boolean list = false, smoke = false;
         for (int i = 3; i < args.length; i++) {

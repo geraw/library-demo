@@ -50,6 +50,8 @@ PREDICTED = {
     'verifyBookAbsentFromBooksAfterDeletion': {'readBooks'}, 'verifyBookAbsentFromLoansAfterDeletion': {'readLoans'}, 'verifyBookAbsentFromHoldsAfterDeletion': {'readHolds'},
     'verifyLoanAbsentAfterDeletion': {'readLoans'}, 'verifyHoldAbsentAfterDeletion': {'readHolds'},
     'verifyDeletedUserCannotBeDeletedAgain': {'rejectDeleteUser404'}, 'verifyDeletedBookCannotBeDeletedAgain': {'rejectDeleteBook404'},
+    'verifyDeletedUserCannotLoan': {'rejectCreateLoan400'}, 'verifyDeletedUserCannotHold': {'rejectCreateHold400'},
+    'verifyDeletedBookCannotBeLoaned': {'rejectCreateLoan400'}, 'verifyDeletedBookCannotBeHeld': {'rejectCreateHold400'},
     'verifyDeletedBookDetailIsRejected': {'rejectReadBookDetail404'},
     'verifyDeletedLoanCannotBeDeletedAgain': {'rejectDeleteLoan404'}, 'verifyDeletedHoldCannotBeDeletedAgain': {'rejectDeleteHold404'},
     'verifyLoanBlocksUserDeletion': {'rejectDeleteUser400'}, 'verifyHoldBlocksUserDeletion': {'rejectDeleteUser400'},

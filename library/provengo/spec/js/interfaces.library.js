@@ -28,9 +28,8 @@
 // `parameters` as the query string; the service ignores the keys it does not use.
 //
 // Argument order: an entity's own id first, then userId, then bookId. A loan has
-// no id of its own on the wire (the service addresses it by its reader/book pair),
-// so loan functions take (userId, bookId, loanNumber); loanNumber is the story's
-// label for the loan and reaches the DAL and the trace descriptions only.
+// no id of its own (the service and the model both address it by its reader/book
+// pair), so loan functions take (userId, bookId).
 //////////////////////////////////////////////////////////////////////////
 
 var host = (typeof host !== 'undefined') ? host : 'localhost';
@@ -39,8 +38,6 @@ var protocol = (typeof protocol !== 'undefined') ? protocol : 'http';
 var path = '';
 
 const svc = new RESTSession(protocol + "://" + host + ":" + port + path, "provengo-client", { headers: { "Content-Type": "application/json", "api_key": "special-key" } });
-
-function modelFail(msg) { bp.log.error(msg); throw new Error(msg); }
 
 function optionalInteger(value) {
   return value === undefined || value === null ? null : asInteger(value);
@@ -51,7 +48,7 @@ function optionalInteger(value) {
 // lib/utils.js.
 
 // Boundary adapter from concrete REST events to semantic event data. Consumers depend on
-// fields like id, userId, bookId, title and loanNumber without knowing where they came from:
+// fields like id, userId, bookId and title without knowing where they came from:
 // ids come from `parameters` (the logical ids; the body and URL carry SUT ids or late-bound
 // "@{...}" references), the client-supplied name and title from the body.
 function extractEventData(e) {
@@ -63,8 +60,7 @@ function extractEventData(e) {
     title: body.title,
     name: body.name,
     userId: parameters.userId,
-    bookId: parameters.bookId,
-    loanNumber: parameters.loanNumber
+    bookId: parameters.bookId
   };
 }
 
@@ -89,7 +85,7 @@ function rtvKey(entityType, id) {
 // Returns a late-bound "@{...}" expression, substituted with the SUT id by Provengo's
 // runtime only once the sampled scenario actually executes the request that carries it.
 //
-// Pass missing = true for an id that was deliberately never created (generateMissingId() in
+// Pass missing = true for an id that was deliberately never created (missingId() in
 // lib_stories.js, 1000000001 and up): its RTV key was never set, so resolving `@{...}` for it
 // would throw a ReferenceError at actuation time. The plain id is sent instead; it cannot
 // collide with any SUT-assigned id, so no lookup is needed.
@@ -101,20 +97,97 @@ function sutUserIdRef(id, missing) { return sutIdRef("USER", id, missing); }
 function sutBookIdRef(id, missing) { return sutIdRef("BOOK", id, missing); }
 function sutHoldIdRef(id, missing) { return sutIdRef("HOLD", id, missing); }
 
-// A JSON body with reader and book ids. The references are written unquoted, so after
-// Provengo substitutes the SUT id the body carries JSON numbers, not numeric strings.
+// A JSON body with reader and book ids. A late-bound "@{...}" reference has to sit inside a JSON
+// string: the body must be valid JSON before Provengo substitutes the SUT id, because the sampler
+// (which never actuates) silently ends a scenario at an event whose body it cannot parse. The
+// service accepts numeric-string ids, so after substitution the body carries "userId":"288673".
 function pairBody(userRef, bookRef) {
-  return '{"userId":' + userRef + ',"bookId":' + bookRef + '}';
+  return JSON.stringify({ userId: userRef, bookId: bookRef });
 }
 
-// The callback runs at actuation time, when the create response is available; it stores the
-// SUT id under this entity's RTV key.
+//////////////////////////////////////////////////////////////////////////
+// REST callbacks.
+//
+// A callback runs at actuation time, in Provengo's run-code scope, with the
+// HTTP response (`response.code`, `response.body`). It is serialized with the
+// event, so it must be self-contained: JavaScript built-ins, the `pvg` object
+// (`pvg.rtv.set` / `pvg.rtv.get` for the run-time variables), and the strings
+// closed over at construction time. Throwing fails the actuation, and with it
+// the scenario, the same way an unexpected response code does.
+//////////////////////////////////////////////////////////////////////////
+
+// Stores the SUT id from a create response under this entity's RTV key.
 function rememberCreatedId(entityType, id) {
   var key = rtvKey(entityType, id);
   return function (response) {
     var body = JSON.parse(response.body);
-    if (body.id === undefined || body.id === null) modelFail("Create response did not contain id");
+    if (body.id === undefined || body.id === null) throw new Error("Create response did not contain id");
     pvg.rtv.set(key, body.id);
+    return true;
+  };
+}
+
+// Content checks for list and detail reads: the response is compared with the SUT id that
+// rememberCreatedId recorded for the entity the read is about. A deleted entity's key still
+// resolves (the SUT never reuses an id, and the model never reuses a logical id), which is what
+// the absence checks rely on.
+
+// The list contains an element whose `id` is this entity's SUT id.
+function expectListed(entityType, id) {
+  var key = rtvKey(entityType, id);
+  return function (response) {
+    var sut = String(pvg.rtv.get(key));
+    var list = JSON.parse(response.body);
+    for (var i = 0; i < list.length; i++) if (String(list[i].id) === sut) return true;
+    throw new Error(key + " (SUT id " + sut + ") is missing from the list: " + response.body);
+  };
+}
+
+// No element of the list has this entity's SUT id in `field` ("id", "userId" or "bookId").
+function expectNotListed(entityType, id, field) {
+  var key = rtvKey(entityType, id);
+  return function (response) {
+    var sut = String(pvg.rtv.get(key));
+    var list = JSON.parse(response.body);
+    for (var i = 0; i < list.length; i++) {
+      if (String(list[i][field]) === sut) throw new Error(key + " (SUT id " + sut + ") is still in the list: " + response.body);
+    }
+    return true;
+  };
+}
+
+// The list is exactly the one loan of this reader/book pair.
+function expectLoanListed(userId, bookId) {
+  var userKey = rtvKey("USER", userId), bookKey = rtvKey("BOOK", bookId);
+  return function (response) {
+    var user = String(pvg.rtv.get(userKey)), book = String(pvg.rtv.get(bookKey));
+    var list = JSON.parse(response.body);
+    if (list.length !== 1 || String(list[0].userId) !== user || String(list[0].bookId) !== book) {
+      throw new Error("Expected exactly the loan of " + userKey + "/" + bookKey + " (SUT ids " + user + "/" + book + "), got: " + response.body);
+    }
+    return true;
+  };
+}
+
+// The list is empty. Used for reads filtered by the service (GET /loans?userId=...&bookId=...):
+// anything the filter lets through is wrong, not only the entity the read is about - a filter
+// that ignores one of its parameters is exactly the kind of fault this catches.
+function expectEmptyList(what) {
+  return function (response) {
+    var list = JSON.parse(response.body);
+    if (list.length !== 0) throw new Error("Expected no " + what + ", got: " + response.body);
+    return true;
+  };
+}
+
+// The detail response is this book.
+function expectBookDetail(id) {
+  var key = rtvKey("BOOK", id);
+  return function (response) {
+    var sut = String(pvg.rtv.get(key));
+    var body = JSON.parse(response.body);
+    if (String(body.id) !== sut) throw new Error("Expected " + key + " (SUT id " + sut + "), got: " + response.body);
+    return true;
   };
 }
 
@@ -195,11 +268,10 @@ function matchLoanAdded(userId, bookId) {
 // normalize argument types, build URLs/bodies, and attach semantic parameters
 // that extractEventData() can later expose to other layers.
 //
-// The list reads (verify*Exists / verify*AbsentFrom*) only check that the SUT
-// answers 200 - see readSutList. Checking the list's contents would need a REST
-// callback, so their descriptions say "Read:", not "Verify:". verifyBookDetailExists
-// is the one real existence check: GET /books/{id} answers 200 only for a book
-// that exists.
+// Every 200 read (verify*Exists / verify*AbsentFrom* / verifyBookDetailExists)
+// checks the response contents with a REST callback (see the content checks
+// above), not just the status code; the one 404 read
+// (verifyMissingEntityReadIsRejected) is checked by its status code.
 //////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////
@@ -233,28 +305,29 @@ function verifyBookDetailExists(id) {
   id = asInteger(id);
   return svc.get("/books/" + sutBookIdRef(id), {
     expectedResponseCodes: [200],
-    parameters: { description: verifyExistsDescription("Book", id, "book detail"), id: id }
+    parameters: { description: verifyExistsDescription("Book", id, "book detail"), id: id },
+    callback: expectBookDetail(id)
   });
 }
 
 function verifyBookExists(id) {
   id = asInteger(id);
-  return readSutList("/books", { q: sutBookIdRef(id), description: readListAfterCreateDescription("Book", id, "books") });
+  return readSutList("/books", { q: sutBookIdRef(id), description: verifyListedDescription("Book", id, "books") }, expectListed("BOOK", id));
 }
 
 function verifyBookAbsentFromBooks(id) {
   id = asInteger(id);
-  return readSutList("/books", { q: sutBookIdRef(id), description: readListAfterDeleteDescription("Book", id, "books") });
+  return readSutList("/books", { q: sutBookIdRef(id), description: verifyAbsentDescription("Book", id, "books") }, expectNotListed("BOOK", id, "id"));
 }
 
 function verifyBookAbsentFromLoans(id) {
   id = asInteger(id);
-  return readSutList("/loans", { bookId: sutBookIdRef(id), description: readListAfterDeleteDescription("Book", id, "loans") });
+  return readSutList("/loans", { bookId: sutBookIdRef(id), description: verifyAbsentDescription("Book", id, "loans") }, expectEmptyList("loans of Book " + id));
 }
 
 function verifyBookAbsentFromHolds(id) {
   id = asInteger(id);
-  return readSutList("/holds", { q: sutBookIdRef(id), description: readListAfterDeleteDescription("Book", id, "holds") });
+  return readSutList("/holds", { q: sutBookIdRef(id), description: verifyAbsentDescription("Book", id, "holds") }, expectNotListed("BOOK", id, "bookId"));
 }
 
 // 400: the book is on loan or on hold.
@@ -275,8 +348,8 @@ function tryToDeleteDeletedBookAndExpectError(id) {
   });
 }
 
-// 404: the id was never created (see generateMissingId()), so it has no RTV entry and is sent
-// as a plain id.
+// 404: the id was never created (see missingId()), so it has no RTV entry and is sent as a
+// plain id.
 function tryToDeleteNonexistingBookAndExpectError(id) {
   id = asInteger(id);
   svc.delete("/books/" + id, {
@@ -309,22 +382,22 @@ function deleteUser(id) {
 
 function verifyUserExists(id) {
   id = asInteger(id);
-  return readSutList("/users", { q: sutUserIdRef(id), description: readListAfterCreateDescription("User", id, "users") });
+  return readSutList("/users", { q: sutUserIdRef(id), description: verifyListedDescription("User", id, "users") }, expectListed("USER", id));
 }
 
 function verifyUserAbsentFromUsers(id) {
   id = asInteger(id);
-  return readSutList("/users", { q: sutUserIdRef(id), description: readListAfterDeleteDescription("User", id, "users") });
+  return readSutList("/users", { q: sutUserIdRef(id), description: verifyAbsentDescription("User", id, "users") }, expectNotListed("USER", id, "id"));
 }
 
 function verifyUserAbsentFromLoans(id) {
   id = asInteger(id);
-  return readSutList("/loans", { userId: sutUserIdRef(id), description: readListAfterDeleteDescription("User", id, "loans") });
+  return readSutList("/loans", { userId: sutUserIdRef(id), description: verifyAbsentDescription("User", id, "loans") }, expectEmptyList("loans of User " + id));
 }
 
 function verifyUserAbsentFromHolds(id) {
   id = asInteger(id);
-  return readSutList("/holds", { q: sutUserIdRef(id), description: readListAfterDeleteDescription("User", id, "holds") });
+  return readSutList("/holds", { q: sutUserIdRef(id), description: verifyAbsentDescription("User", id, "holds") }, expectNotListed("USER", id, "userId"));
 }
 
 // 400: the reader has a loan or a hold.
@@ -358,60 +431,62 @@ function tryToDeleteNonexistingUserAndExpectError(id) {
 // Loans
 //////////////////////////////////////////////////////////////////////////
 
-function createLoan(userId, bookId, loanNumber) {
+function createLoan(userId, bookId) {
   userId = asInteger(userId);
   bookId = asInteger(bookId);
-  loanNumber = optionalInteger(loanNumber);
-  var parameters = { description: createDescription("Loan", userId + "/" + bookId) + (loanNumber === null ? "" : " number " + loanNumber), userId: userId, bookId: bookId };
-  if (loanNumber !== null) parameters.loanNumber = loanNumber;
   return svc.post("/loans", {
     body: pairBody(sutUserIdRef(userId), sutBookIdRef(bookId)),
     expectedResponseCodes: [201],
-    parameters: parameters
+    parameters: { description: createDescription("Loan", userId + "/" + bookId), userId: userId, bookId: bookId }
   });
 }
 
 // A loan request the rules reject (400). userIdMissing/bookIdMissing are true when the caller is
 // deliberately exercising a nonexistent foreign key: that id was never created and has no RTV
 // entry, so it is sent as a plain id (see sutIdRef).
-function rejectedLoan(userId, bookId, loanNumber, reason, userIdMissing, bookIdMissing) {
+function rejectedLoan(userId, bookId, reason, userIdMissing, bookIdMissing) {
   userId = asInteger(userId);
   bookId = asInteger(bookId);
-  loanNumber = optionalInteger(loanNumber);
-  var parameters = { description: verifyRejectedDescription("Loan", userId + "/" + bookId, "create", reason), userId: userId, bookId: bookId };
-  if (loanNumber !== null) parameters.loanNumber = loanNumber;
   return svc.post("/loans", {
     body: pairBody(sutUserIdRef(userId, userIdMissing), sutBookIdRef(bookId, bookIdMissing)),
     expectedResponseCodes: [400],
-    parameters: parameters
+    parameters: { description: verifyRejectedDescription("Loan", userId + "/" + bookId, "create", reason), userId: userId, bookId: bookId }
   });
 }
 
-function tryToCreateLoanAndExpectError(userId, bookId, loanNumber) {
-  return rejectedLoan(userId, bookId, loanNumber, "the book is on loan", false, false);
+// The pair is in UserBook.CannotCreateLoan: the book is on loan, or (under the original rules)
+// the reader already has a loan.
+function tryToCreateLoanAndExpectError(userId, bookId) {
+  return rejectedLoan(userId, bookId, "the book or the reader already has a loan", false, false);
 }
 
-function tryToCreateLoanWithNonexistentUserAndExpectError(missingUserId, bookId, loanNumber) {
-  return rejectedLoan(missingUserId, bookId, loanNumber, "the reader does not exist", true, false);
+function tryToCreateLoanWithNonexistentUserAndExpectError(missingUserId, bookId) {
+  return rejectedLoan(missingUserId, bookId, "the reader does not exist", true, false);
 }
 
-function tryToCreateLoanWithNonexistentBookAndExpectError(userId, missingBookId, loanNumber) {
-  return rejectedLoan(userId, missingBookId, loanNumber, "the book does not exist", false, true);
+function tryToCreateLoanWithNonexistentBookAndExpectError(userId, missingBookId) {
+  return rejectedLoan(userId, missingBookId, "the book does not exist", false, true);
 }
 
-function tryToCreateLoanWithNonexistentUserAndBookAndExpectError(missingUserId, missingBookId, loanNumber) {
-  return rejectedLoan(missingUserId, missingBookId, loanNumber, "neither the reader nor the book exists", true, true);
+function tryToCreateLoanWithNonexistentUserAndBookAndExpectError(missingUserId, missingBookId) {
+  return rejectedLoan(missingUserId, missingBookId, "neither the reader nor the book exists", true, true);
 }
 
-function deleteLoan(userId, bookId, loanNumber) {
+// The reader or the book existed and was deleted; its RTV entry still resolves to the old SUT id.
+function tryToCreateLoanWithDeletedUserAndExpectError(deletedUserId, bookId) {
+  return rejectedLoan(deletedUserId, bookId, "the reader no longer exists", false, false);
+}
+
+function tryToCreateLoanWithDeletedBookAndExpectError(userId, deletedBookId) {
+  return rejectedLoan(userId, deletedBookId, "the book no longer exists", false, false);
+}
+
+function deleteLoan(userId, bookId) {
   userId = asInteger(userId);
   bookId = asInteger(bookId);
-  loanNumber = optionalInteger(loanNumber);
-  var parameters = { description: deleteDescription("Loan", userId + "/" + bookId, loanNumber === null ? "" : "number " + loanNumber), userId: userId, bookId: bookId };
-  if (loanNumber !== null) parameters.loanNumber = loanNumber;
   return svc.delete("/loans/" + sutUserIdRef(userId) + "/" + sutBookIdRef(bookId), {
     expectedResponseCodes: [200],
-    parameters: parameters
+    parameters: { description: deleteDescription("Loan", userId + "/" + bookId), userId: userId, bookId: bookId }
   });
 }
 
@@ -421,8 +496,8 @@ function verifyLoanExists(userId, bookId) {
   return readSutList("/loans", {
     userId: sutUserIdRef(userId),
     bookId: sutBookIdRef(bookId),
-    description: readListAfterCreateDescription("Loan", userId + "/" + bookId, "loans")
-  });
+    description: verifyListedDescription("Loan", userId + "/" + bookId, "loans")
+  }, expectLoanListed(userId, bookId));
 }
 
 function verifyLoanAbsent(userId, bookId) {
@@ -431,8 +506,8 @@ function verifyLoanAbsent(userId, bookId) {
   return readSutList("/loans", {
     userId: sutUserIdRef(userId),
     bookId: sutBookIdRef(bookId),
-    description: readListAfterDeleteDescription("Loan", userId + "/" + bookId, "loans")
-  });
+    description: verifyAbsentDescription("Loan", userId + "/" + bookId, "loans")
+  }, expectEmptyList("loan of " + userId + "/" + bookId));
 }
 
 // 404: the loan existed and was returned.
@@ -473,28 +548,36 @@ function createHold(id, userId, bookId) {
   });
 }
 
-// A hold request the rules reject (400); see rejectedLoan for the *Missing flags.
-function rejectedHold(id, userId, bookId, reason, userIdMissing, bookIdMissing) {
-  id = asInteger(id);
+// A hold request the rules reject (400); see rejectedLoan for the *Missing flags. A rejected
+// hold gets no id: it never exists, so it is described by its reader/book pair.
+function rejectedHold(userId, bookId, reason, userIdMissing, bookIdMissing) {
   userId = asInteger(userId);
   bookId = asInteger(bookId);
   return svc.post("/holds", {
     body: pairBody(sutUserIdRef(userId, userIdMissing), sutBookIdRef(bookId, bookIdMissing)),
     expectedResponseCodes: [400],
-    parameters: { description: verifyRejectedDescription("Hold", id, "create", reason), id: id, userId: userId, bookId: bookId }
+    parameters: { description: verifyRejectedDescription("Hold", "for User " + userId + " and Book " + bookId, "create", reason), userId: userId, bookId: bookId }
   });
 }
 
-function tryToCreateHoldWithNonexistentUserAndExpectError(id, missingUserId, bookId) {
-  return rejectedHold(id, missingUserId, bookId, "the reader does not exist", true, false);
+function tryToCreateHoldWithNonexistentUserAndExpectError(missingUserId, bookId) {
+  return rejectedHold(missingUserId, bookId, "the reader does not exist", true, false);
 }
 
-function tryToCreateHoldWithNonexistentBookAndExpectError(id, userId, missingBookId) {
-  return rejectedHold(id, userId, missingBookId, "the book does not exist", false, true);
+function tryToCreateHoldWithNonexistentBookAndExpectError(userId, missingBookId) {
+  return rejectedHold(userId, missingBookId, "the book does not exist", false, true);
 }
 
-function tryToCreateHoldWithNonexistentUserAndBookAndExpectError(id, missingUserId, missingBookId) {
-  return rejectedHold(id, missingUserId, missingBookId, "neither the reader nor the book exists", true, true);
+function tryToCreateHoldWithNonexistentUserAndBookAndExpectError(missingUserId, missingBookId) {
+  return rejectedHold(missingUserId, missingBookId, "neither the reader nor the book exists", true, true);
+}
+
+function tryToCreateHoldWithDeletedUserAndExpectError(deletedUserId, bookId) {
+  return rejectedHold(deletedUserId, bookId, "the reader no longer exists", false, false);
+}
+
+function tryToCreateHoldWithDeletedBookAndExpectError(userId, deletedBookId) {
+  return rejectedHold(userId, deletedBookId, "the book no longer exists", false, false);
 }
 
 function deleteHold(id, userId, bookId) {
@@ -509,12 +592,12 @@ function deleteHold(id, userId, bookId) {
 
 function verifyHoldExists(id) {
   id = asInteger(id);
-  return readSutList("/holds", { q: sutHoldIdRef(id), description: readListAfterCreateDescription("Hold", id, "holds") });
+  return readSutList("/holds", { q: sutHoldIdRef(id), description: verifyListedDescription("Hold", id, "holds") }, expectListed("HOLD", id));
 }
 
 function verifyHoldAbsent(id) {
   id = asInteger(id);
-  return readSutList("/holds", { q: sutHoldIdRef(id), description: readListAfterDeleteDescription("Hold", id, "holds") });
+  return readSutList("/holds", { q: sutHoldIdRef(id), description: verifyAbsentDescription("Hold", id, "holds") }, expectNotListed("HOLD", id, "id"));
 }
 
 // 404: the hold existed and was cancelled.

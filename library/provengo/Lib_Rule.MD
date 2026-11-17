@@ -19,8 +19,12 @@ or query parameter. Ids that are deliberately never created (1000000001 and up) 
 plain values; they cannot collide with a service id.
 
 Every event, rejection checks included, carries its logical ids in the REST `parameters` (`id`,
-or `userId`/`bookId`) together with a `description` that is the trace line. Loan and hold
-numbers are labels for the trace and the DAL; they never reach the service.
+or `userId`/`bookId`) together with a `description` that is the trace line. Ids are derived,
+never counted: readers and books are numbered by the single b-thread that creates them, a hold's
+id is derived from its reader/book pair and from how many holds that pair created before (so it
+never repeats), a loan has no id of its own, and a never-created id is 1000000000 plus the id of
+the entity on the other side (or a small constant for the once-per-run checks). The trace is
+therefore a function of the selected events alone, not of the scheduling of b-threads.
 
 ## Main Entities
 
@@ -79,7 +83,7 @@ Rules:
   (the original service's rule; the experiment contract in `../sut/README_ISSTA_BUGS.md` drops
   the per-user part, and the campaign harness patches `UserBook.CanCreateLoan` accordingly).
 - While a loan is active, another loan for the same book, or for the same pair, is rejected
-  with `400`.
+  with `400`; under the original rule a second loan for the same reader is rejected too.
 - A loan for a reader or a book that does not exist is rejected with `400`.
 - A loan can be deleted (returned) when it exists; after that the pair can be loaned again.
 - Returning a loan that no longer exists, or never existed, is rejected with `404`.
@@ -123,12 +127,17 @@ is one event in the trace. Rejection checks (`tryTo*AndExpectError`,
 `verifyMissingEntityReadIsRejected`) cover business-rule rejections only: deletes blocked by a
 loan or hold, loans the rules forbid, and entities that do not exist or were deleted. The model
 never sends a malformed request (missing fields, wrong types, nulls, zero or negative ids) and
-never calls a route the service does not expose. Ids in request bodies are JSON numbers.
+never calls a route the service does not expose. Ids in request bodies are late-bound
+references inside JSON strings (`"userId":"@{USER2}"`), so the service receives numeric strings
+(never-created ids are plain JSON numbers); a body must be valid JSON before substitution or the
+sampler ends the scenario there.
 
-List reads (`GET /users|/books|/loans|/holds`) check only that the service answers `200`; their
-trace lines therefore read `Read: <list> list for <entity> after create|delete`. The one real
-existence check is the book detail read, `GET /books/{id}`, which answers `200` only for a book
-that exists (`Verify: Book 3 exists (book detail)`).
+Every read checks the response contents with a REST callback that runs at actuation time and
+compares the response with the service ids recorded at creation (`pvg.rtv.get`): a list read
+after a create must contain the entity (`Verify: Book 3 is listed in books`), a list read after
+a delete must not (`Verify: Book 3 is absent from loans`), a loan read must return exactly the
+loan of that pair, and the book detail read must return that book (`Verify: Book 3 exists (book
+detail)`). A failed check fails the scenario the same way an unexpected status code does.
 
 ## Stories
 
@@ -157,6 +166,9 @@ Checks after deletion (one b-thread per deletion event, each check independent):
 - `verifyDeletedBookDetailIsRejected` expects `404` from `GET /books/{id}`.
 - `verifyDeleted{User,Book,Loan,Hold}CannotBeDeletedAgain` expect `404` from a repeated delete.
   For loans the checks stop if the same pair is loaned again first.
+- `verifyDeletedUserCannot{Loan,Hold}`, `verifyDeletedBookCannotBe{Loaned,Held}` expect `400`
+  from a loan or hold that names the deleted entity, paired with whichever counterpart exists
+  (skipped when none is left).
 
 Business-rule rejections:
 
@@ -169,26 +181,23 @@ Business-rule rejections:
   user, once per run.
 - `tryToDeleteNonexisting{User,Book,Loan,Hold}`: once per run, with never-created ids.
 
-Known gap: the model never attempts a loan or a hold for an entity that was deleted (its
-`user-book` row disappears with it); nonexistent foreign keys are exercised with ids that were
-never created.
-
 ## Trace Format
 
 ```text
 Create: User 2
 Create: Book 3
-Create: Loan 2/3 number 1
-Create: Hold 4 for User 2 and Book 3
-Read: loans list for Loan 2/3 after create
+Create: Loan 2/3
+Create: Hold 7 for User 2 and Book 3
+Verify: Loan 2/3 is listed in loans
 Verify: Book 3 exists (book detail)
 Verify: delete User 2 is rejected because the reader has a loan or a hold
 Verify: create Loan 2/3 is rejected because the book is on loan
-Delete: Loan 2/3 number 1
-Delete: Hold 4 for User 2 and Book 3
-Read: users list for User 2 after delete
+Delete: Loan 2/3
+Delete: Hold 7 for User 2 and Book 3
+Verify: User 2 is absent from users
 Verify: read Book 3 is rejected because the book no longer exists
-Verify: delete Hold 4 is rejected because the hold no longer exists
+Verify: create Hold for User 2 and Book 3 is rejected because the reader no longer exists
+Verify: delete Hold 7 is rejected because the hold no longer exists
 Verify: delete User 1000000001 is rejected because the reader does not exist
 ```
 
@@ -198,4 +207,5 @@ The service issues random six-digit ids per entity type and never reuses one (`s
 `generate_unique_id`). A run-time variable recorded at creation therefore stays a valid
 reference to that entity for the rest of the run, even after it was deleted; it can never
 resolve to an unrelated entity that reused the id. The service accepts ids as integers or as
-numeric strings; the model sends integers.
+numeric strings; the model sends numeric strings in bodies (see the contract above), plain
+numbers for never-created ids, and plain integers in paths.

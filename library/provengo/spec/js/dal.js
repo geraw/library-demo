@@ -133,7 +133,6 @@ function createLoanEntity(data) {
 	if (entityExists('Loan.All', loanId(data.userId, data.bookId))) return;
 	// bp.log.info("DAL create loan {0}/{1}", data.userId, data.bookId);
 	ctx.insertEntity(ctx.Entity(loanId(data.userId, data.bookId), 'loan', {
-		loanid: data.loanNumber,
 		userid: data.userId,
 		bookid: data.bookId
 	}));
@@ -145,11 +144,26 @@ function deleteLoanEntity(data) {
 	ctx.removeEntity(loanId(data.userId, data.bookId));
 }
 
+// How many holds this reader/book pair has created so far (cancelled ones included). The DAL
+// keeps one never-removed 'hold-record' entity per creation, so the count is a function of the
+// selected events alone and the stories can derive a hold id that never repeats (see
+// holdIdFor in lib_stories.js). No query is registered over these records, so they spawn no
+// live copies.
+function holdsCreatedFor(userIdValue, bookIdValue) {
+	return ctx.runQuery(function (e) {
+		return e.type === 'hold-record' && sameId(e.userid, userIdValue) && sameId(e.bookid, bookIdValue);
+	}).length;
+}
+
 function createHoldEntity(data) {
 	if (entityExists('Hold.All', holdId(data.id))) return;
 	// bp.log.info("DAL create hold {0} {1} {2}", data.id, data.userId, data.bookId);
 	ctx.insertEntity(ctx.Entity(holdId(data.id), 'hold', {
 		holdid: data.id,
+		userid: data.userId,
+		bookid: data.bookId
+	}));
+	ctx.insertEntity(ctx.Entity('hold-record:' + data.userId + ':' + data.bookId + ':' + holdsCreatedFor(data.userId, data.bookId), 'hold-record', {
 		userid: data.userId,
 		bookid: data.bookId
 	}));
