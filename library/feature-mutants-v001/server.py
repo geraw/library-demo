@@ -71,10 +71,14 @@ def select_fault(fault):
         book_slots[:] = [book["id"] for book in original.books]
 
 
-if __name__ == "__main__":
+def main(default_port=23242):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--faults", choices=("C1", "C2", "C3"), help="Enable one fault.")
-    parser.add_argument("--port", type=int, default=23242)
+    parser.add_argument("--port", type=int, default=default_port)
     args = parser.parse_args()
     select_fault(args.faults)
-    app.run(host="127.0.0.1", port=args.port)
+    app.run(host="127.0.0.1", port=args.port, threaded=False)
+
+
+if __name__ == "__main__":
+    main()
