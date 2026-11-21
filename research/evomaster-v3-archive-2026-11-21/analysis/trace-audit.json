@@ -1,0 +1,2637 @@
+{
+  "method": "Input-projected CRUD replay against unfiltered collection reads, by-ID reads, and POST response echoes; this is an offline consistency oracle, not native tool attribution.",
+  "archives": [
+    {
+      "archive": "upload/EvoMaster-all-evidence-20261120.zip",
+      "cells": [
+        {
+          "run": "featurefuzz-20261120-161032-6db624",
+          "tool": "evomaster",
+          "arm": "C1",
+          "trace": "featurefuzz-20261120-161032-6db624\\evomaster\\C1\\http.jsonl",
+          "tool_requests": 29750,
+          "anomalies": {
+            "get_collection_mismatch": 221
+          },
+          "examples": [
+            {
+              "order": 464,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/loans",
+              "expected_count": 22,
+              "actual_count": 4,
+              "expected_ids": [
+                442284,
+                639026,
+                434183,
+                258723,
+                826394,
+                662827,
+                287028,
+                959933
+              ],
+              "actual_ids": [
+                639026,
+                571532,
+                455637,
+                885668
+              ]
+            },
+            {
+              "order": 508,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/loans",
+              "expected_count": 26,
+              "actual_count": 8,
+              "expected_ids": [
+                442284,
+                639026,
+                434183,
+                258723,
+                826394,
+                662827,
+                287028,
+                959933
+              ],
+              "actual_ids": [
+                639026,
+                571532,
+                455637,
+                885668,
+                345536,
+                112264,
+                399775,
+                746466
+              ]
+            },
+            {
+              "order": 523,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/loans",
+              "expected_count": 26,
+              "actual_count": 8,
+              "expected_ids": [
+                442284,
+                639026,
+                434183,
+                258723,
+                826394,
+                662827,
+                287028,
+                959933
+              ],
+              "actual_ids": [
+                639026,
+                571532,
+                455637,
+                885668,
+                345536,
+                112264,
+                399775,
+                746466
+              ]
+            },
+            {
+              "order": 692,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/loans",
+              "expected_count": 40,
+              "actual_count": 22,
+              "expected_ids": [
+                442284,
+                639026,
+                434183,
+                258723,
+                826394,
+                662827,
+                287028,
+                959933
+              ],
+              "actual_ids": [
+                639026,
+                571532,
+                455637,
+                885668,
+                345536,
+                112264,
+                399775,
+                746466
+              ]
+            },
+            {
+              "order": 710,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/loans",
+              "expected_count": 41,
+              "actual_count": 23,
+              "expected_ids": [
+                442284,
+                639026,
+                434183,
+                258723,
+                826394,
+                662827,
+                287028,
+                959933
+              ],
+              "actual_ids": [
+                639026,
+                571532,
+                455637,
+                885668,
+                345536,
+                112264,
+                399775,
+                746466
+              ]
+            },
+            {
+              "order": 1125,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/loans",
+              "expected_count": 77,
+              "actual_count": 28,
+              "expected_ids": [
+                442284,
+                639026,
+                434183,
+                258723,
+                826394,
+                662827,
+                287028,
+                959933
+              ],
+              "actual_ids": [
+                887438,
+                890567,
+                846234,
+                660597,
+                473156,
+                538057,
+                613831,
+                677569
+              ]
+            },
+            {
+              "order": 1169,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/loans",
+              "expected_count": 78,
+              "actual_count": 1,
+              "expected_ids": [
+                442284,
+                639026,
+                434183,
+                258723,
+                826394,
+                662827,
+                287028,
+                959933
+              ],
+              "actual_ids": [
+                613831
+              ]
+            },
+            {
+              "order": 1231,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/loans",
+              "expected_count": 92,
+              "actual_count": 10,
+              "expected_ids": [
+                442284,
+                639026,
+                434183,
+                258723,
+                826394,
+                662827,
+                287028,
+                959933
+              ],
+              "actual_ids": [
+                588703,
+                174505,
+                234077,
+                662227,
+                860463,
+                768577,
+                404554,
+                131679
+              ]
+            },
+            {
+              "order": 1306,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/loans",
+              "expected_count": 96,
+              "actual_count": 14,
+              "expected_ids": [
+                442284,
+                639026,
+                434183,
+                258723,
+                826394,
+                662827,
+                287028,
+                959933
+              ],
+              "actual_ids": [
+                588703,
+                174505,
+                234077,
+                662227,
+                860463,
+                768577,
+                404554,
+                131679
+              ]
+            },
+            {
+              "order": 1353,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/loans",
+              "expected_count": 97,
+              "actual_count": 15,
+              "expected_ids": [
+                442284,
+                639026,
+                434183,
+                258723,
+                826394,
+                662827,
+                287028,
+                959933
+              ],
+              "actual_ids": [
+                588703,
+                174505,
+                234077,
+                662227,
+                860463,
+                768577,
+                404554,
+                131679
+              ]
+            },
+            {
+              "order": 1424,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/loans",
+              "expected_count": 101,
+              "actual_count": 19,
+              "expected_ids": [
+                442284,
+                639026,
+                434183,
+                258723,
+                826394,
+                662827,
+                287028,
+                959933
+              ],
+              "actual_ids": [
+                588703,
+                174505,
+                234077,
+                662227,
+                860463,
+                768577,
+                404554,
+                131679
+              ]
+            },
+            {
+              "order": 1438,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/loans",
+              "expected_count": 103,
+              "actual_count": 21,
+              "expected_ids": [
+                442284,
+                639026,
+                434183,
+                258723,
+                826394,
+                662827,
+                287028,
+                959933
+              ],
+              "actual_ids": [
+                588703,
+                174505,
+                234077,
+                662227,
+                860463,
+                768577,
+                404554,
+                131679
+              ]
+            }
+          ]
+        },
+        {
+          "run": "featurefuzz-20261120-161032-6db624",
+          "tool": "evomaster",
+          "arm": "C2",
+          "trace": "featurefuzz-20261120-161032-6db624\\evomaster\\C2\\http.jsonl",
+          "tool_requests": 33060,
+          "anomalies": {
+            "get_collection_mismatch": 328
+          },
+          "examples": [
+            {
+              "order": 21701,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 2212,
+              "actual_count": 2211,
+              "expected_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ],
+              "actual_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ]
+            },
+            {
+              "order": 21782,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 2214,
+              "actual_count": 2213,
+              "expected_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ],
+              "actual_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ]
+            },
+            {
+              "order": 21819,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 2216,
+              "actual_count": 2215,
+              "expected_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ],
+              "actual_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ]
+            },
+            {
+              "order": 21828,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 2217,
+              "actual_count": 2216,
+              "expected_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ],
+              "actual_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ]
+            },
+            {
+              "order": 21837,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 2221,
+              "actual_count": 2220,
+              "expected_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ],
+              "actual_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ]
+            },
+            {
+              "order": 21850,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 2226,
+              "actual_count": 2225,
+              "expected_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ],
+              "actual_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ]
+            },
+            {
+              "order": 21866,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 2229,
+              "actual_count": 2228,
+              "expected_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ],
+              "actual_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ]
+            },
+            {
+              "order": 21876,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 2233,
+              "actual_count": 2232,
+              "expected_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ],
+              "actual_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ]
+            },
+            {
+              "order": 21964,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 2234,
+              "actual_count": 2233,
+              "expected_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ],
+              "actual_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ]
+            },
+            {
+              "order": 21977,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 2240,
+              "actual_count": 2239,
+              "expected_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ],
+              "actual_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ]
+            },
+            {
+              "order": 21995,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 2240,
+              "actual_count": 2239,
+              "expected_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ],
+              "actual_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ]
+            },
+            {
+              "order": 22041,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 2242,
+              "actual_count": 2240,
+              "expected_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ],
+              "actual_ids": [
+                585323,
+                345069,
+                408932,
+                357174,
+                965863,
+                319088,
+                324248,
+                317810
+              ]
+            }
+          ]
+        },
+        {
+          "run": "featurefuzz-20261120-161032-6db624",
+          "tool": "evomaster",
+          "arm": "C3",
+          "trace": "featurefuzz-20261120-161032-6db624\\evomaster\\C3\\http.jsonl",
+          "tool_requests": 31710,
+          "anomalies": {
+            "get_collection_mismatch": 512,
+            "get_by_id_mismatch": 119
+          },
+          "examples": [
+            {
+              "order": 89,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/books",
+              "expected_count": 19,
+              "actual_count": 21,
+              "expected_ids": [
+                872794,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263,
+                950092,
+                966033
+              ],
+              "actual_ids": [
+                872794,
+                440979,
+                369078,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263
+              ]
+            },
+            {
+              "order": 130,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/books",
+              "expected_count": 35,
+              "actual_count": 37,
+              "expected_ids": [
+                872794,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263,
+                950092,
+                966033
+              ],
+              "actual_ids": [
+                872794,
+                440979,
+                369078,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263
+              ]
+            },
+            {
+              "order": 170,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/books",
+              "expected_count": 43,
+              "actual_count": 46,
+              "expected_ids": [
+                872794,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263,
+                950092,
+                966033
+              ],
+              "actual_ids": [
+                872794,
+                440979,
+                369078,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263
+              ]
+            },
+            {
+              "order": 173,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/books",
+              "expected_count": 43,
+              "actual_count": 46,
+              "expected_ids": [
+                872794,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263,
+                950092,
+                966033
+              ],
+              "actual_ids": [
+                872794,
+                440979,
+                369078,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263
+              ]
+            },
+            {
+              "order": 188,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/books",
+              "expected_count": 52,
+              "actual_count": 55,
+              "expected_ids": [
+                872794,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263,
+                950092,
+                966033
+              ],
+              "actual_ids": [
+                872794,
+                440979,
+                369078,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263
+              ]
+            },
+            {
+              "order": 270,
+              "kind": "get_by_id_mismatch",
+              "method": "GET",
+              "path": "/books/683413",
+              "expected": {
+                "id": 683413,
+                "title": "dkpvUh3uh"
+              },
+              "actual": {
+                "id": 683413,
+                "title": "gGcmr9sQ7aQrWCLp"
+              }
+            },
+            {
+              "order": 338,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/books",
+              "expected_count": 72,
+              "actual_count": 81,
+              "expected_ids": [
+                872794,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263,
+                950092,
+                966033
+              ],
+              "actual_ids": [
+                872794,
+                440979,
+                369078,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263
+              ]
+            },
+            {
+              "order": 351,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/books",
+              "expected_count": 74,
+              "actual_count": 83,
+              "expected_ids": [
+                872794,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263,
+                950092,
+                966033
+              ],
+              "actual_ids": [
+                872794,
+                440979,
+                369078,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263
+              ]
+            },
+            {
+              "order": 524,
+              "kind": "get_by_id_mismatch",
+              "method": "GET",
+              "path": "/books/721180",
+              "expected": {
+                "id": 721180,
+                "title": "gGcmr9sQ7aQrWCLp"
+              },
+              "actual": {
+                "id": 721180,
+                "title": "_Ha"
+              }
+            },
+            {
+              "order": 539,
+              "kind": "get_by_id_mismatch",
+              "method": "GET",
+              "path": "/books/235901",
+              "expected": {
+                "id": 235901,
+                "title": "i1"
+              },
+              "actual": {
+                "id": 235901,
+                "title": "v"
+              }
+            },
+            {
+              "order": 563,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/books",
+              "expected_count": 94,
+              "actual_count": 107,
+              "expected_ids": [
+                872794,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263,
+                950092,
+                966033
+              ],
+              "actual_ids": [
+                872794,
+                440979,
+                369078,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263
+              ]
+            },
+            {
+              "order": 612,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/books",
+              "expected_count": 97,
+              "actual_count": 110,
+              "expected_ids": [
+                872794,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263,
+                950092,
+                966033
+              ],
+              "actual_ids": [
+                872794,
+                440979,
+                369078,
+                440979,
+                369078,
+                475794,
+                957298,
+                139263
+              ]
+            }
+          ]
+        },
+        {
+          "run": "featurefuzz-20261120-161032-6db624",
+          "tool": "evomaster",
+          "arm": "baseline",
+          "trace": "featurefuzz-20261120-161032-6db624\\evomaster\\baseline\\http.jsonl",
+          "tool_requests": 25850,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "literature-v003-20261120-145304-0b5980",
+          "tool": "evomaster",
+          "arm": "B1",
+          "trace": "literature-v003-20261120-145304-0b5980\\evomaster\\B1\\http.jsonl",
+          "tool_requests": 14925,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "literature-v003-20261120-145304-0b5980",
+          "tool": "evomaster",
+          "arm": "B2",
+          "trace": "literature-v003-20261120-145304-0b5980\\evomaster\\B2\\http.jsonl",
+          "tool_requests": 14957,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "literature-v003-20261120-145304-0b5980",
+          "tool": "evomaster",
+          "arm": "B3",
+          "trace": "literature-v003-20261120-145304-0b5980\\evomaster\\B3\\http.jsonl",
+          "tool_requests": 15122,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "literature-v003-20261120-145304-0b5980",
+          "tool": "evomaster",
+          "arm": "B4",
+          "trace": "literature-v003-20261120-145304-0b5980\\evomaster\\B4\\http.jsonl",
+          "tool_requests": 13537,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "literature-v003-20261120-145304-0b5980",
+          "tool": "evomaster",
+          "arm": "B5",
+          "trace": "literature-v003-20261120-145304-0b5980\\evomaster\\B5\\http.jsonl",
+          "tool_requests": 14601,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "literature-v003-20261120-145304-0b5980",
+          "tool": "evomaster",
+          "arm": "B6",
+          "trace": "literature-v003-20261120-145304-0b5980\\evomaster\\B6\\http.jsonl",
+          "tool_requests": 14840,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "literature-v003-20261120-145304-0b5980",
+          "tool": "evomaster",
+          "arm": "baseline",
+          "trace": "literature-v003-20261120-145304-0b5980\\evomaster\\baseline\\http.jsonl",
+          "tool_requests": 14999,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "netbox-gitea-20261120-153041-f39c63",
+          "tool": "evomaster",
+          "arm": "F1",
+          "trace": "netbox-gitea-20261120-153041-f39c63\\evomaster\\F1\\http.jsonl",
+          "tool_requests": 31489,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "netbox-gitea-20261120-153041-f39c63",
+          "tool": "evomaster",
+          "arm": "F2",
+          "trace": "netbox-gitea-20261120-153041-f39c63\\evomaster\\F2\\http.jsonl",
+          "tool_requests": 28936,
+          "anomalies": {
+            "post_echo_mismatch": 816,
+            "get_collection_mismatch": 849
+          },
+          "examples": [
+            {
+              "order": 313,
+              "kind": "post_echo_mismatch",
+              "method": "POST",
+              "path": "/holds",
+              "input": {
+                "userId": 705952,
+                "bookId": 100170
+              },
+              "response": {
+                "bookId": 363535,
+                "id": 647209,
+                "userId": 705952
+              }
+            },
+            {
+              "order": 791,
+              "kind": "post_echo_mismatch",
+              "method": "POST",
+              "path": "/holds",
+              "input": {
+                "userId": 742850,
+                "bookId": 838274
+              },
+              "response": {
+                "bookId": 522394,
+                "id": 590550,
+                "userId": 742850
+              }
+            },
+            {
+              "order": 803,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 80,
+              "actual_count": 80,
+              "expected_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ],
+              "actual_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ]
+            },
+            {
+              "order": 821,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 83,
+              "actual_count": 83,
+              "expected_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ],
+              "actual_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ]
+            },
+            {
+              "order": 836,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 88,
+              "actual_count": 88,
+              "expected_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ],
+              "actual_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ]
+            },
+            {
+              "order": 854,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 88,
+              "actual_count": 88,
+              "expected_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ],
+              "actual_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ]
+            },
+            {
+              "order": 856,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 88,
+              "actual_count": 88,
+              "expected_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ],
+              "actual_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ]
+            },
+            {
+              "order": 901,
+              "kind": "post_echo_mismatch",
+              "method": "POST",
+              "path": "/holds",
+              "input": {
+                "userId": 686569,
+                "bookId": 725374
+              },
+              "response": {
+                "bookId": 903848,
+                "id": 574456,
+                "userId": 686569
+              }
+            },
+            {
+              "order": 905,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 91,
+              "actual_count": 91,
+              "expected_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ],
+              "actual_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ]
+            },
+            {
+              "order": 939,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 92,
+              "actual_count": 92,
+              "expected_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ],
+              "actual_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ]
+            },
+            {
+              "order": 1025,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 95,
+              "actual_count": 95,
+              "expected_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ],
+              "actual_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ]
+            },
+            {
+              "order": 1030,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 97,
+              "actual_count": 97,
+              "expected_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ],
+              "actual_ids": [
+                536075,
+                208948,
+                610192,
+                785170,
+                658473,
+                925984,
+                809837,
+                948395
+              ]
+            }
+          ]
+        },
+        {
+          "run": "netbox-gitea-20261120-153041-f39c63",
+          "tool": "evomaster",
+          "arm": "F3",
+          "trace": "netbox-gitea-20261120-153041-f39c63\\evomaster\\F3\\http.jsonl",
+          "tool_requests": 30709,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "netbox-gitea-20261120-153041-f39c63",
+          "tool": "evomaster",
+          "arm": "F4",
+          "trace": "netbox-gitea-20261120-153041-f39c63\\evomaster\\F4\\http.jsonl",
+          "tool_requests": 31500,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "netbox-gitea-20261120-153041-f39c63",
+          "tool": "evomaster",
+          "arm": "F5",
+          "trace": "netbox-gitea-20261120-153041-f39c63\\evomaster\\F5\\http.jsonl",
+          "tool_requests": 31478,
+          "anomalies": {
+            "post_echo_mismatch": 2346
+          },
+          "examples": [
+            {
+              "order": 30,
+              "kind": "post_echo_mismatch",
+              "method": "POST",
+              "path": "/holds",
+              "input": {
+                "userId": 226934,
+                "bookId": 986984
+              },
+              "response": {
+                "bookId": 986984,
+                "id": 818764,
+                "userId": 137925
+              }
+            },
+            {
+              "order": 32,
+              "kind": "post_echo_mismatch",
+              "method": "POST",
+              "path": "/holds",
+              "input": {
+                "userId": 720201,
+                "bookId": 986984
+              },
+              "response": {
+                "bookId": 986984,
+                "id": 295314,
+                "userId": 137925
+              }
+            },
+            {
+              "order": 61,
+              "kind": "post_echo_mismatch",
+              "method": "POST",
+              "path": "/holds",
+              "input": {
+                "userId": 720201,
+                "bookId": 526011
+              },
+              "response": {
+                "bookId": 526011,
+                "id": 381009,
+                "userId": 677125
+              }
+            },
+            {
+              "order": 201,
+              "kind": "post_echo_mismatch",
+              "method": "POST",
+              "path": "/holds",
+              "input": {
+                "userId": 292324,
+                "bookId": 411394
+              },
+              "response": {
+                "bookId": 411394,
+                "id": 810694,
+                "userId": 137925
+              }
+            },
+            {
+              "order": 290,
+              "kind": "post_echo_mismatch",
+              "method": "POST",
+              "path": "/holds",
+              "input": {
+                "userId": 137925,
+                "bookId": 377784
+              },
+              "response": {
+                "bookId": 377784,
+                "id": 759990,
+                "userId": 588220
+              }
+            },
+            {
+              "order": 321,
+              "kind": "post_echo_mismatch",
+              "method": "POST",
+              "path": "/holds",
+              "input": {
+                "userId": 991337,
+                "bookId": 463811
+              },
+              "response": {
+                "bookId": 463811,
+                "id": 802165,
+                "userId": 910424
+              }
+            },
+            {
+              "order": 401,
+              "kind": "post_echo_mismatch",
+              "method": "POST",
+              "path": "/holds",
+              "input": {
+                "userId": 738829,
+                "bookId": 214555
+              },
+              "response": {
+                "bookId": 214555,
+                "id": 974913,
+                "userId": 720201
+              }
+            },
+            {
+              "order": 428,
+              "kind": "post_echo_mismatch",
+              "method": "POST",
+              "path": "/holds",
+              "input": {
+                "userId": 260012,
+                "bookId": 928333
+              },
+              "response": {
+                "bookId": 928333,
+                "id": 963159,
+                "userId": 172650
+              }
+            },
+            {
+              "order": 432,
+              "kind": "post_echo_mismatch",
+              "method": "POST",
+              "path": "/holds",
+              "input": {
+                "userId": 651929,
+                "bookId": 214555
+              },
+              "response": {
+                "bookId": 214555,
+                "id": 435156,
+                "userId": 720201
+              }
+            },
+            {
+              "order": 434,
+              "kind": "post_echo_mismatch",
+              "method": "POST",
+              "path": "/holds",
+              "input": {
+                "userId": 880522,
+                "bookId": 411394
+              },
+              "response": {
+                "bookId": 411394,
+                "id": 829097,
+                "userId": 137925
+              }
+            },
+            {
+              "order": 444,
+              "kind": "post_echo_mismatch",
+              "method": "POST",
+              "path": "/holds",
+              "input": {
+                "userId": 929651,
+                "bookId": 487710
+              },
+              "response": {
+                "bookId": 487710,
+                "id": 368066,
+                "userId": 704252
+              }
+            },
+            {
+              "order": 478,
+              "kind": "post_echo_mismatch",
+              "method": "POST",
+              "path": "/holds",
+              "input": {
+                "userId": 189488,
+                "bookId": 463811
+              },
+              "response": {
+                "bookId": 463811,
+                "id": 919128,
+                "userId": 910424
+              }
+            }
+          ]
+        },
+        {
+          "run": "netbox-gitea-20261120-153041-f39c63",
+          "tool": "evomaster",
+          "arm": "F6",
+          "trace": "netbox-gitea-20261120-153041-f39c63\\evomaster\\F6\\http.jsonl",
+          "tool_requests": 24682,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "netbox-gitea-20261120-153041-f39c63",
+          "tool": "evomaster",
+          "arm": "baseline",
+          "trace": "netbox-gitea-20261120-153041-f39c63\\evomaster\\baseline\\http.jsonl",
+          "tool_requests": 30173,
+          "anomalies": {},
+          "examples": []
+        }
+      ]
+    },
+    {
+      "archive": "restler-validated-20261119-154213-146b9f-analysis.zip",
+      "cells": [
+        {
+          "run": "campaign/featurefuzz/featurefuzz-20261119-165652-3d918f",
+          "tool": "restler",
+          "arm": "C1",
+          "trace": "campaign/featurefuzz/featurefuzz-20261119-165652-3d918f/restler/C1/http.jsonl",
+          "tool_requests": 4793,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "campaign/featurefuzz/featurefuzz-20261119-165652-3d918f",
+          "tool": "restler",
+          "arm": "C2",
+          "trace": "campaign/featurefuzz/featurefuzz-20261119-165652-3d918f/restler/C2/http.jsonl",
+          "tool_requests": 5017,
+          "anomalies": {
+            "get_collection_mismatch": 314
+          },
+          "examples": [
+            {
+              "order": 1512,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 28,
+              "actual_count": 26,
+              "expected_ids": [
+                307845,
+                670994,
+                501379,
+                120610,
+                478400,
+                989133,
+                473890,
+                245801
+              ],
+              "actual_ids": [
+                307845,
+                670994,
+                501379,
+                120610,
+                478400,
+                989133,
+                473890,
+                245801
+              ]
+            },
+            {
+              "order": 1516,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 26,
+              "actual_count": 24,
+              "expected_ids": [
+                307845,
+                670994,
+                501379,
+                120610,
+                478400,
+                989133,
+                473890,
+                245801
+              ],
+              "actual_ids": [
+                307845,
+                670994,
+                501379,
+                120610,
+                478400,
+                989133,
+                473890,
+                245801
+              ]
+            },
+            {
+              "order": 1518,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 25,
+              "actual_count": 23,
+              "expected_ids": [
+                307845,
+                670994,
+                501379,
+                120610,
+                478400,
+                989133,
+                473890,
+                245801
+              ],
+              "actual_ids": [
+                307845,
+                670994,
+                501379,
+                120610,
+                478400,
+                989133,
+                473890,
+                245801
+              ]
+            },
+            {
+              "order": 1544,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 15,
+              "actual_count": 13,
+              "expected_ids": [
+                629886,
+                586697,
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688
+              ],
+              "actual_ids": [
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688,
+                366861,
+                330718
+              ]
+            },
+            {
+              "order": 1546,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 15,
+              "actual_count": 13,
+              "expected_ids": [
+                629886,
+                586697,
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688
+              ],
+              "actual_ids": [
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688,
+                366861,
+                330718
+              ]
+            },
+            {
+              "order": 1547,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 15,
+              "actual_count": 13,
+              "expected_ids": [
+                629886,
+                586697,
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688
+              ],
+              "actual_ids": [
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688,
+                366861,
+                330718
+              ]
+            },
+            {
+              "order": 1557,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 16,
+              "actual_count": 14,
+              "expected_ids": [
+                629886,
+                586697,
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688
+              ],
+              "actual_ids": [
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688,
+                366861,
+                330718
+              ]
+            },
+            {
+              "order": 1559,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 16,
+              "actual_count": 14,
+              "expected_ids": [
+                629886,
+                586697,
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688
+              ],
+              "actual_ids": [
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688,
+                366861,
+                330718
+              ]
+            },
+            {
+              "order": 1560,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 16,
+              "actual_count": 14,
+              "expected_ids": [
+                629886,
+                586697,
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688
+              ],
+              "actual_ids": [
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688,
+                366861,
+                330718
+              ]
+            },
+            {
+              "order": 1573,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 17,
+              "actual_count": 15,
+              "expected_ids": [
+                629886,
+                586697,
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688
+              ],
+              "actual_ids": [
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688,
+                366861,
+                330718
+              ]
+            },
+            {
+              "order": 1575,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 17,
+              "actual_count": 15,
+              "expected_ids": [
+                629886,
+                586697,
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688
+              ],
+              "actual_ids": [
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688,
+                366861,
+                330718
+              ]
+            },
+            {
+              "order": 1576,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 17,
+              "actual_count": 15,
+              "expected_ids": [
+                629886,
+                586697,
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688
+              ],
+              "actual_ids": [
+                232761,
+                677534,
+                450786,
+                176362,
+                957333,
+                485688,
+                366861,
+                330718
+              ]
+            }
+          ]
+        },
+        {
+          "run": "campaign/featurefuzz/featurefuzz-20261119-165652-3d918f",
+          "tool": "restler",
+          "arm": "C3",
+          "trace": "campaign/featurefuzz/featurefuzz-20261119-165652-3d918f/restler/C3/http.jsonl",
+          "tool_requests": 5268,
+          "anomalies": {
+            "get_by_id_mismatch": 21
+          },
+          "examples": [
+            {
+              "order": 452,
+              "kind": "get_by_id_mismatch",
+              "method": "GET",
+              "path": "/books/494295",
+              "expected": {
+                "id": 494295,
+                "title": "LibraryTrial"
+              },
+              "actual": {
+                "id": 494295,
+                "title": "fuzzstring"
+              }
+            },
+            {
+              "order": 593,
+              "kind": "get_by_id_mismatch",
+              "method": "GET",
+              "path": "/books/416089",
+              "expected": {
+                "id": 416089,
+                "title": "LibraryTrial"
+              },
+              "actual": {
+                "id": 416089,
+                "title": "fuzzstring"
+              }
+            },
+            {
+              "order": 596,
+              "kind": "get_by_id_mismatch",
+              "method": "GET",
+              "path": "/books/416089",
+              "expected": {
+                "id": 416089,
+                "title": "LibraryTrial"
+              },
+              "actual": {
+                "id": 416089,
+                "title": "fuzzstring"
+              }
+            },
+            {
+              "order": 603,
+              "kind": "get_by_id_mismatch",
+              "method": "GET",
+              "path": "/books/751732",
+              "expected": {
+                "id": 751732,
+                "title": "LibraryTrial"
+              },
+              "actual": {
+                "id": 751732,
+                "title": "fuzzstring"
+              }
+            },
+            {
+              "order": 606,
+              "kind": "get_by_id_mismatch",
+              "method": "GET",
+              "path": "/books/751732",
+              "expected": {
+                "id": 751732,
+                "title": "LibraryTrial"
+              },
+              "actual": {
+                "id": 751732,
+                "title": "fuzzstring"
+              }
+            },
+            {
+              "order": 614,
+              "kind": "get_by_id_mismatch",
+              "method": "GET",
+              "path": "/books/415361",
+              "expected": {
+                "id": 415361,
+                "title": "LibraryTrial"
+              },
+              "actual": {
+                "id": 415361,
+                "title": "fuzzstring"
+              }
+            },
+            {
+              "order": 617,
+              "kind": "get_by_id_mismatch",
+              "method": "GET",
+              "path": "/books/415361",
+              "expected": {
+                "id": 415361,
+                "title": "LibraryTrial"
+              },
+              "actual": {
+                "id": 415361,
+                "title": "fuzzstring"
+              }
+            },
+            {
+              "order": 619,
+              "kind": "get_by_id_mismatch",
+              "method": "GET",
+              "path": "/books/415361",
+              "expected": {
+                "id": 415361,
+                "title": "LibraryTrial"
+              },
+              "actual": {
+                "id": 415361,
+                "title": "fuzzstring"
+              }
+            },
+            {
+              "order": 626,
+              "kind": "get_by_id_mismatch",
+              "method": "GET",
+              "path": "/books/352242",
+              "expected": {
+                "id": 352242,
+                "title": "LibraryTrial"
+              },
+              "actual": {
+                "id": 352242,
+                "title": "fuzzstring"
+              }
+            },
+            {
+              "order": 629,
+              "kind": "get_by_id_mismatch",
+              "method": "GET",
+              "path": "/books/352242",
+              "expected": {
+                "id": 352242,
+                "title": "LibraryTrial"
+              },
+              "actual": {
+                "id": 352242,
+                "title": "fuzzstring"
+              }
+            },
+            {
+              "order": 631,
+              "kind": "get_by_id_mismatch",
+              "method": "GET",
+              "path": "/books/352242",
+              "expected": {
+                "id": 352242,
+                "title": "LibraryTrial"
+              },
+              "actual": {
+                "id": 352242,
+                "title": "fuzzstring"
+              }
+            },
+            {
+              "order": 1157,
+              "kind": "get_by_id_mismatch",
+              "method": "GET",
+              "path": "/books/143499",
+              "expected": {
+                "id": 143499,
+                "title": "fuzzstring"
+              },
+              "actual": {
+                "id": 143499,
+                "title": "LibraryTrial"
+              }
+            }
+          ]
+        },
+        {
+          "run": "campaign/featurefuzz/featurefuzz-20261119-165652-3d918f",
+          "tool": "restler",
+          "arm": "baseline",
+          "trace": "campaign/featurefuzz/featurefuzz-20261119-165652-3d918f/restler/baseline/http.jsonl",
+          "tool_requests": 5186,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "campaign/literature-v003/literature-v003-20261119-154317-8f33d3",
+          "tool": "restler",
+          "arm": "B1",
+          "trace": "campaign/literature-v003/literature-v003-20261119-154317-8f33d3/restler/B1/http.jsonl",
+          "tool_requests": 4202,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "campaign/literature-v003/literature-v003-20261119-154317-8f33d3",
+          "tool": "restler",
+          "arm": "B2",
+          "trace": "campaign/literature-v003/literature-v003-20261119-154317-8f33d3/restler/B2/http.jsonl",
+          "tool_requests": 3843,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "campaign/literature-v003/literature-v003-20261119-154317-8f33d3",
+          "tool": "restler",
+          "arm": "B3",
+          "trace": "campaign/literature-v003/literature-v003-20261119-154317-8f33d3/restler/B3/http.jsonl",
+          "tool_requests": 3303,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "campaign/literature-v003/literature-v003-20261119-154317-8f33d3",
+          "tool": "restler",
+          "arm": "B4",
+          "trace": "campaign/literature-v003/literature-v003-20261119-154317-8f33d3/restler/B4/http.jsonl",
+          "tool_requests": 4127,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "campaign/literature-v003/literature-v003-20261119-154317-8f33d3",
+          "tool": "restler",
+          "arm": "B5",
+          "trace": "campaign/literature-v003/literature-v003-20261119-154317-8f33d3/restler/B5/http.jsonl",
+          "tool_requests": 4324,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "campaign/literature-v003/literature-v003-20261119-154317-8f33d3",
+          "tool": "restler",
+          "arm": "B6",
+          "trace": "campaign/literature-v003/literature-v003-20261119-154317-8f33d3/restler/B6/http.jsonl",
+          "tool_requests": 4395,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "campaign/literature-v003/literature-v003-20261119-154317-8f33d3",
+          "tool": "restler",
+          "arm": "baseline",
+          "trace": "campaign/literature-v003/literature-v003-20261119-154317-8f33d3/restler/baseline/http.jsonl",
+          "tool_requests": 4136,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "campaign/netbox-gitea/netbox-gitea-20261119-162013-77d1e1",
+          "tool": "restler",
+          "arm": "F1",
+          "trace": "campaign/netbox-gitea/netbox-gitea-20261119-162013-77d1e1/restler/F1/http.jsonl",
+          "tool_requests": 5360,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "campaign/netbox-gitea/netbox-gitea-20261119-162013-77d1e1",
+          "tool": "restler",
+          "arm": "F2",
+          "trace": "campaign/netbox-gitea/netbox-gitea-20261119-162013-77d1e1/restler/F2/http.jsonl",
+          "tool_requests": 5291,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "campaign/netbox-gitea/netbox-gitea-20261119-162013-77d1e1",
+          "tool": "restler",
+          "arm": "F3",
+          "trace": "campaign/netbox-gitea/netbox-gitea-20261119-162013-77d1e1/restler/F3/http.jsonl",
+          "tool_requests": 5226,
+          "anomalies": {
+            "get_collection_mismatch": 300
+          },
+          "examples": [
+            {
+              "order": 1747,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 38,
+              "actual_count": 43,
+              "expected_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ],
+              "actual_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ]
+            },
+            {
+              "order": 1748,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 38,
+              "actual_count": 43,
+              "expected_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ],
+              "actual_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ]
+            },
+            {
+              "order": 1749,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 38,
+              "actual_count": 43,
+              "expected_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ],
+              "actual_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ]
+            },
+            {
+              "order": 1750,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 38,
+              "actual_count": 43,
+              "expected_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ],
+              "actual_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ]
+            },
+            {
+              "order": 1751,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 38,
+              "actual_count": 43,
+              "expected_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ],
+              "actual_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ]
+            },
+            {
+              "order": 1753,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 38,
+              "actual_count": 43,
+              "expected_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ],
+              "actual_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ]
+            },
+            {
+              "order": 1754,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 38,
+              "actual_count": 43,
+              "expected_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ],
+              "actual_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ]
+            },
+            {
+              "order": 1757,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 38,
+              "actual_count": 43,
+              "expected_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ],
+              "actual_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ]
+            },
+            {
+              "order": 1758,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 38,
+              "actual_count": 43,
+              "expected_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ],
+              "actual_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ]
+            },
+            {
+              "order": 1762,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 38,
+              "actual_count": 43,
+              "expected_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ],
+              "actual_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ]
+            },
+            {
+              "order": 1763,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 38,
+              "actual_count": 43,
+              "expected_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ],
+              "actual_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ]
+            },
+            {
+              "order": 1768,
+              "kind": "get_collection_mismatch",
+              "method": "GET",
+              "path": "/holds",
+              "expected_count": 38,
+              "actual_count": 43,
+              "expected_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ],
+              "actual_ids": [
+                525922,
+                878187,
+                997726,
+                623663,
+                814044,
+                836444,
+                162873,
+                650655
+              ]
+            }
+          ]
+        },
+        {
+          "run": "campaign/netbox-gitea/netbox-gitea-20261119-162013-77d1e1",
+          "tool": "restler",
+          "arm": "F4",
+          "trace": "campaign/netbox-gitea/netbox-gitea-20261119-162013-77d1e1/restler/F4/http.jsonl",
+          "tool_requests": 5178,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "campaign/netbox-gitea/netbox-gitea-20261119-162013-77d1e1",
+          "tool": "restler",
+          "arm": "F5",
+          "trace": "campaign/netbox-gitea/netbox-gitea-20261119-162013-77d1e1/restler/F5/http.jsonl",
+          "tool_requests": 5095,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "campaign/netbox-gitea/netbox-gitea-20261119-162013-77d1e1",
+          "tool": "restler",
+          "arm": "F6",
+          "trace": "campaign/netbox-gitea/netbox-gitea-20261119-162013-77d1e1/restler/F6/http.jsonl",
+          "tool_requests": 5225,
+          "anomalies": {},
+          "examples": []
+        },
+        {
+          "run": "campaign/netbox-gitea/netbox-gitea-20261119-162013-77d1e1",
+          "tool": "restler",
+          "arm": "baseline",
+          "trace": "campaign/netbox-gitea/netbox-gitea-20261119-162013-77d1e1/restler/baseline/http.jsonl",
+          "tool_requests": 4779,
+          "anomalies": {},
+          "examples": []
+        }
+      ]
+    }
+  ]
+}

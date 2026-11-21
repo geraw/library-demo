@@ -51,3 +51,8 @@ This branch is based on `codex/restler-v3-archive-2026-11-19` and contains the R
 
 - `research/restler-v3-archive-2026-11-19/README.md`
 - `research/restler-v3-archive-2026-11-19/SHA256SUMS.json`
+
+
+## Trace audit and recovered source references
+
+The 36-cell offline HTTP-trace audit and its limits are documented in [`analysis/TRACE_AUDIT.md`](analysis/TRACE_AUDIT.md). Six distinct B/F/C mutant arms show mismatches under an independent consistency oracle; this is not a claim that RESTler or EvoMaster natively reported six detections. The F/C code under `source-reference/` is hash-mismatched reference material, not byte-identical campaign source; see `source-reference/PROVENANCE.md`.
