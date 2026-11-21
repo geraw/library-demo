@@ -33,10 +33,6 @@ if ($volume.AvailableFreeSpace -lt $requiredBytes) {
     throw "Insufficient free space. Need about $([math]::Round($requiredBytes / 1GB, 2)) GB; available $([math]::Round($volume.AvailableFreeSpace / 1GB, 2)) GB."
 }
 
-$dirty = & git -C $repo status --porcelain
-if ($LASTEXITCODE -ne 0) { throw 'Could not inspect Git status.' }
-if ($dirty) { throw 'Working tree is not clean. Commit or stash existing changes, then rerun.' }
-
 & git -C $repo fetch origin $branch
 if ($LASTEXITCODE -ne 0) { throw 'Could not fetch the archive branch.' }
 
@@ -117,8 +113,8 @@ $manifestPath = Join-Path $evidenceDirectory 'parts-manifest.json'
 
 & git -C $repo add -- $relativeEvidencePath
 if ($LASTEXITCODE -ne 0) { throw 'Git add failed.' }
-& git -C $repo commit -m 'Add complete EvoMaster campaign evidence archive'
-if ($LASTEXITCODE -ne 0) { throw 'Git commit failed.' }
+& git -C $repo commit --only -m 'Add complete EvoMaster campaign evidence archive' -- $relativeEvidencePath
+if ($LASTEXITCODE -ne 0) { throw 'Git commit failed. Other local changes were left untouched.' }
 & git -C $repo push origin $branch
 if ($LASTEXITCODE -ne 0) { throw 'Git push failed. The commit remains local; retry the push after resolving the remote issue.' }
 
