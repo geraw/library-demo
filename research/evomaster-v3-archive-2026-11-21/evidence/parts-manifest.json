@@ -1,0 +1,39 @@
+{
+    "archive":  "EvoMaster-all-evidence-20261120.zip",
+    "archive_size_bytes":  529710328,
+    "archive_sha256":  "4e29fde3f73e62f81b8859ca11693d436a68dec424f2f6e1e11ec17797b0f1c2",
+    "part_size_limit_bytes":  94371840,
+    "part_count":  6,
+    "parts":  [
+                  {
+                      "file":  "EvoMaster-all-evidence-20261120.zip.part001",
+                      "size_bytes":  94371840,
+                      "sha256":  "da359120e42f20bcee1c0d9827cf760d7cebe7a14fb29bb2eac83ac0603d81dd"
+                  },
+                  {
+                      "file":  "EvoMaster-all-evidence-20261120.zip.part002",
+                      "size_bytes":  94371840,
+                      "sha256":  "22ca30b70b8b5c12c6b36963b185e283a5afc7424ee00106961a1e5707976a23"
+                  },
+                  {
+                      "file":  "EvoMaster-all-evidence-20261120.zip.part003",
+                      "size_bytes":  94371840,
+                      "sha256":  "af980bc84f46ab7b693ec0606e6f7dd2bb5d83b730c7f807fa7dfc13cf358f4e"
+                  },
+                  {
+                      "file":  "EvoMaster-all-evidence-20261120.zip.part004",
+                      "size_bytes":  94371840,
+                      "sha256":  "b5816d1c25c3986062f7ed191bed91e152815bbead066c1344a93a9239bb3388"
+                  },
+                  {
+                      "file":  "EvoMaster-all-evidence-20261120.zip.part005",
+                      "size_bytes":  94371840,
+                      "sha256":  "fce845f9e20c1f015d83efe1df458dc2254bb8934145274cdaa6e788806aa161"
+                  },
+                  {
+                      "file":  "EvoMaster-all-evidence-20261120.zip.part006",
+                      "size_bytes":  57851128,
+                      "sha256":  "5715b4e016fb82c2d9142c94ba21a0d77af871d2690ee350985cf0a7296b69e0"
+                  }
+              ]
+}
