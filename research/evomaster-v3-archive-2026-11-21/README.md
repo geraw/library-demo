@@ -15,42 +15,33 @@ All 18 cells are marked `COMPLETED` in the source summaries. Completion and HTTP
 
 ## Full evidence archive
 
-The full archive was received on 2026-11-21 and passed ZIP integrity validation. Its SHA-256 is `4e29fde3f73e62f81b8859ca11693d436a68dec424f2f6e1e11ec17797b0f1c2`. It contains 426 files, including all 18 per-cell `http.jsonl` traces, generated test reports, native and server logs, run commands, effective configuration, OpenAPI files, and campaign summaries. Its compressed size is about 506 MB.
+The complete source archive has been uploaded to this branch as six parts under `evidence/`, together with `parts-manifest.json`. The manifest records each part's byte size and SHA-256, as well as the original archive's size and SHA-256.
 
-GitHub rejects individual repository files above 100 MB. The archive therefore must be split into sub-100-MB parts before it can be committed. The checked-in uploader handles this and records SHA-256 hashes for the original archive and every part.
+The original ZIP passed integrity validation before upload. It contains 426 files, including all 18 per-cell `http.jsonl` traces, generated test reports, native and server logs, run commands, effective configuration, OpenAPI files, and campaign summaries. The original archive is 529,710,328 bytes (about 506 MiB) and has SHA-256:
 
-1. Fetch and switch to this branch in the local clone:
+`4e29fde3f73e62f81b8859ca11693d436a68dec424f2f6e1e11ec17797b0f1c2`
 
-   ```powershell
-   git fetch origin codex/restler-evomaster-archive-2026-11-21
-   git switch --track -c codex/restler-evomaster-archive-2026-11-21 origin/codex/restler-evomaster-archive-2026-11-21
-   ```
+It is split because GitHub limits the size of an individual repository file. The six parts are all below GitHub's 100 MB per-file limit. GitHub emitted its standard warning for files above the recommended 50 MB; the push completed successfully.
 
-   If the local branch already exists, use `git switch codex/restler-evomaster-archive-2026-11-21`.
+## Restore and verify the archive
 
-2. Run the uploader from the repository root:
+Clone this branch (it includes the RESTler archive as well):
 
-   ```powershell
-   .\research\evomaster-v3-archive-2026-11-21\Upload-EvoMaster-Evidence.ps1 `
-     -ArchivePath 'C:\work\temp\EvoMaster-all-evidence-20261120.zip' `
-     -RepositoryPath 'C:\work\temp\library-demo'
-   ```
+```powershell
+git clone --branch codex/restler-evomaster-archive-2026-11-21 --single-branch https://github.com/geraw/library-demo.git C:\work\temp\library-demo-evidence
+```
 
-   It creates 90-MiB parts, a `parts-manifest.json`, commits them, and pushes this branch. It stops if the working tree is dirty or free disk space is insufficient. The upload is about 506 MB, so the Git push may take some time.
+Reassemble the ZIP and verify every part and the final archive hash:
 
-3. To reconstruct and verify the original ZIP after cloning the repository:
+```powershell
+.\research\evomaster-v3-archive-2026-11-21\Join-EvoMaster-Evidence.ps1 -RepositoryPath 'C:\work\temp\library-demo-evidence' -DestinationPath 'C:\work\temp\EvoMaster-all-evidence-20261120-restored.zip'
+```
 
-   ```powershell
-   .\research\evomaster-v3-archive-2026-11-21\Join-EvoMaster-Evidence.ps1 `
-     -RepositoryPath 'C:\work\temp\library-demo' `
-     -DestinationPath 'C:\work\temp\EvoMaster-all-evidence-20261120-restored.zip'
-   ```
-
-The archive upload is not complete until the numbered parts and `parts-manifest.json` appear under `research/evomaster-v3-archive-2026-11-21/evidence/` on this branch.
+The script stops if a part is missing or its checksum differs. On success, it verifies the reconstructed archive's byte size and SHA-256 against the manifest.
 
 ## Evidence interpretation
 
-The campaign summary records execution status, HTTP request counts, and server-error counts. The raw traces and EvoMaster reports should be reviewed before making mutation-attribution or bug-detection claims.
+The campaign summary records execution status, HTTP request counts, and server-error counts. Review the raw traces and EvoMaster reports before making mutation-attribution or bug-detection claims.
 
 The C-arm rows match the uploaded `summary(6).csv`. B- and F-arm rows match the PowerShell summary output shared on 2026-11-21.
 
