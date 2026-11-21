@@ -13,6 +13,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $branch = 'codex/restler-evomaster-archive-2026-11-21'
 $relativeEvidencePath = 'research/evomaster-v3-archive-2026-11-21/evidence'
+$expectedArchiveSha256 = '4e29fde3f73e62f81b8859ca11693d436a68dec424f2f6e1e11ec17797b0f1c2'
 
 $archive = (Resolve-Path -LiteralPath $ArchivePath).Path
 $repo = (Resolve-Path -LiteralPath $RepositoryPath).Path
@@ -21,6 +22,11 @@ if (-not (Test-Path -LiteralPath (Join-Path $repo '.git'))) {
 }
 
 $archiveInfo = Get-Item -LiteralPath $archive
+$archiveSha256 = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+if ($archiveSha256 -ne $expectedArchiveSha256) {
+    throw "Archive SHA-256 mismatch. Expected $expectedArchiveSha256; found $archiveSha256."
+}
+
 $requiredBytes = [int64]($archiveInfo.Length * 2 + 512MB)
 $volume = [System.IO.DriveInfo]::new([System.IO.Path]::GetPathRoot($repo))
 if ($volume.AvailableFreeSpace -lt $requiredBytes) {
@@ -97,7 +103,7 @@ try {
 $manifest = [ordered]@{
     archive = [System.IO.Path]::GetFileName($archive)
     archive_size_bytes = $archiveInfo.Length
-    archive_sha256 = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+    archive_sha256 = $archiveSha256
     part_size_limit_bytes = $partBytes
     part_count = $parts.Count
     parts = @($parts)
