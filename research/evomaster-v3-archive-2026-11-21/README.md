@@ -15,7 +15,7 @@ All 18 cells are marked `COMPLETED` in the source summaries. Completion and HTTP
 
 ## Full evidence archive
 
-The full archive was received on 2026-11-21 and passed ZIP integrity validation. It contains 426 files, including all 18 per-cell `http.jsonl` traces, generated test reports, native and server logs, run commands, effective configuration, OpenAPI files, and campaign summaries. Its compressed size is about 506 MB.
+The full archive was received on 2026-11-21 and passed ZIP integrity validation. Its SHA-256 is `4e29fde3f73e62f81b8859ca11693d436a68dec424f2f6e1e11ec17797b0f1c2`. It contains 426 files, including all 18 per-cell `http.jsonl` traces, generated test reports, native and server logs, run commands, effective configuration, OpenAPI files, and campaign summaries. Its compressed size is about 506 MB.
 
 GitHub rejects individual repository files above 100 MB. The archive therefore must be split into sub-100-MB parts before it can be committed. The checked-in uploader handles this and records SHA-256 hashes for the original archive and every part.
 
