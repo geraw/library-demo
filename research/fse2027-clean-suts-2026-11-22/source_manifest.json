@@ -1,0 +1,72 @@
+{
+  "package": "Clean typed Garage and Pharmacy SUT baselines for FSE 2027",
+  "revision": "1.1.0-standalone-clean-baseline",
+  "fse_source_archive_sha256": "f9c2b7a22496897efe00d1a7f44ae8b3b0f155deaa22acee25b09037ec3a305d",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 3280,
+      "sha256": "52293e9d8210f1836ac0de9fbf756570990755f316f5b1996498c9ae16ec319f"
+    },
+    {
+      "path": "garage/garage_sut.py",
+      "bytes": 40641,
+      "sha256": "ef0e9746f04f6cdd429c1f051adb8b3b16d543a76d2ebbc9259d77ff42d35566"
+    },
+    {
+      "path": "garage/openapi.json",
+      "bytes": 36655,
+      "sha256": "c7fe670895da76ba019ef48db7832be145a6cc58ebef9fa3fdec1083097c0e2e"
+    },
+    {
+      "path": "pharmacy/app.py",
+      "bytes": 36922,
+      "sha256": "3926ba640a2bc3cd4554c63f4f1a2eed566d3c376640560d7b12f3cabad6fa20"
+    },
+    {
+      "path": "pharmacy/openapi.json",
+      "bytes": 53645,
+      "sha256": "756bb2232ff23345d44e16bffd24bef9a89ce19f0a75710ea2ccdc738ee08291"
+    },
+    {
+      "path": "requirements.txt",
+      "bytes": 33,
+      "sha256": "390c948a7257830ec3c2cbf64cda43930582c0678a54b90a22b444a19a68aa1f"
+    },
+    {
+      "path": "run_garage.py",
+      "bytes": 134,
+      "sha256": "6e1a2d95e533a240573749a8061f9616ea627663a7902915e0c9bce1165dbd7e"
+    },
+    {
+      "path": "run_pharmacy.py",
+      "bytes": 112,
+      "sha256": "1855e8dde340972eb628fb650eef37f81307f1a55f278c4cbe3c2ecc1ee2ce92"
+    },
+    {
+      "path": "WHATSAPP_UPDATE_HE.md",
+      "bytes": 1212,
+      "sha256": "9db9c30cc7bd42b5a850aa9c8087f4c56961e1ba4cfef61146959dd41ba6c28d"
+    }
+  ],
+  "garage": {
+    "openapi_operations": 33,
+    "runtime_routes": 33,
+    "seeded_faults_included": false,
+    "standalone_sut": "garage/garage_sut.py"
+  },
+  "pharmacy": {
+    "openapi_operations": 30,
+    "runtime_routes": 30,
+    "seeded_faults_included": false,
+    "standalone_sut": "pharmacy/app.py",
+    "provenance": "New clean reconstruction from supplied Pharmacy type-check SUT plus full FSE API surface"
+  },
+  "checks": [
+    "Python AST syntax parsing passed for both standalone SUT files",
+    "Each standalone SUT embeds its OpenAPI request schemas and validator",
+    "Embedded OpenAPI documents match the separate JSON contracts",
+    "No import or runtime file dependency on type_validation.py or openapi.json"
+  ],
+  "runtime_http_tests": "Not run in this packaging pass."
+}
